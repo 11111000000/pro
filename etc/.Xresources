@@ -1,0 +1,53 @@
+Xft.antialias: true
+Xft.autohint: 0
+Xft.hintstyle: hintfull
+Xft.hinting: true
+Xft.lcdfilter: lcddefault
+Xft.rgba: rgb
+URxvt.saveLines:32767
+URxvt.scrollBar: false
+URxvt.borderColor: #000000
+URxvt.borderLess: false
+URxvt.internalBorder:   0
+URxvt.scrollTtyOutput: false
+URxvt.keysym.M-k: command:\033]720;8\007
+URxvt.keysym.M-j: command:\033]721;8\007
+URxvt.perl-ext-common: default,keyboard-select,clipboard,font-size,fullscreen,selection-to-clipboard,tabbedex
+URxvt.keysym.M-Esc:      perl:keyboard-select:activate
+URxvt.keysym.M-Plus:     perl:font-size:increase
+URxvt.keysym.M-Minus:    perl:font-size:decrease
+URxvt.keysym.M-Escape:   perl:keyboard-select:activate
+URxvt.keysym.M-/:        perl:keyboard-select:search
+URxvt.keysym.F11:        perl:fullscreen:switch
+URxvt.keysym.M-z:        perl:fullscreen:switch
+URxvt.keysym.C-equal:    perl:font-size:incglobal
+URxvt.keysym.C-minus:    perl:font-size:decglobal
+URxvt.keysym.M-p:        perl:tabbedex:prev_tab
+URxvt.keysym.M-n:        perl:tabbedex:next_tab
+URxvt.keysym.M-h:        perl:tabbedex:prev_tab
+URxvt.keysym.M-l:        perl:tabbedex:next_tab
+URxvt.keysym.M-t:        perl:tabbedex:new_tab
+URxvt.keysym.M-r:        perl:tabbedex:rename_tab
+URxvt.font: xft:Fira Code:size=11:autohint=true:antialias=true
+URxvt*background: [90]#000000
+URxvt*foreground: [90]#ffffff
+URxvt.shading: 0.5
+URxvt.transparent: true
+URxvt.inheritPixmap: true
+URxvt.depth: 32
+Xmessage*font: xft:Fira Code:size=13:autohint=true:antialias=true
+Xmessage*background: #3c3c3c
+Xmessage*foreground: #c2c2c2
+Xmessage*form.*.shapeStyle: rectangle
+Xmessage*Scrollbar.width: 1
+Xmessage*Scrollbar.borderWidth: 0
+Xmessage*Buttons: Quit
+Xmessage*defaultButton: Quit
+Xmessage*international: true
+Emacs.font: Iosevka 12
+Emacs.fullscreen: maximized
+Emacs.menuBar: 1
+Emacs.toolBar: 0
+Emacs.verticalScrollBars: off
+Emacs.FontBackend: xft
+*international: true
