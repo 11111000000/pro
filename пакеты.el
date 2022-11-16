@@ -15,7 +15,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(straight-use-package 'use-package) ;; install use-package via straight
-
+(straight-use-package 'use-package) 
+(straight-use-package 'org)
 (provide 'пакеты)
 ;;; dobro-straight.el ends here

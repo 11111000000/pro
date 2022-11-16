@@ -1,14 +1,15 @@
 ;; * История
 ;; ** Сохранение истории 
 
-;; Сохранять действия в ~~/.emacs.d/history~
 
-(setq-default history-delete-duplicates t
-              history-length 300
-              savehist-autosave-interval 300
-              savehist-file "~/.emacs.d/history")
-
-(savehist-mode t)
+(use-package savehist  
+  :straight (:type built-in)
+  :custom
+  (history-delete-duplicates t)
+  (history-length 300)
+  (savehist-autosave-interval 300)
+  :config
+  (savehist-mode t))
 
 ;; ** Текстовая Машина Времени
 
@@ -98,6 +99,7 @@
 
 (use-package no-littering
   :ensure t
+  :after savehist
   :custom ((make-backup-files t)
            (delete-by-moving-to-trash t)
            (backup-by-copying t)
@@ -109,7 +111,7 @@
            (version-control t))
   :config    
   (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)  
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
   (setq
    auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
