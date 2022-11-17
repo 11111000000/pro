@@ -71,9 +71,22 @@ and `defcustom' forms reset their default values."
 
 ;; **  Geiser
 
-(use-package geiser 
-  :ensure t 
-  :config)
+(use-package geiser
+  :ensure t
+  :custom 
+  (geiser-default-implementation 'guile)
+  (geiser-active-implementations '(guile))
+  (geiser-implementations-alist '(((regexp "\\.scm$") guile)))
+  :config
+  (setq geiser-mode-start-repl-p nil))
+
+(use-package geiser-guile
+  :requires geiser
+  :config
+  ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")
+  (setq geiser-guile-manual-lookup-nodes
+	      '("guile"
+          "guix")))
 
 ;;  Geiser Guile
                                         ;

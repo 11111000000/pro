@@ -57,7 +57,7 @@
 
 (use-package consult-yasnippet 
   :ensure t 
-  :bind ("C-c y" . consult-yasnippet))
+  :bind ("C-c y y" . consult-yasnippet))
 
 (use-package consult-dash 
   :ensure t 

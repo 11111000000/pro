@@ -153,9 +153,24 @@ ARG - backward"
 
 ;; ** Сниппеты
 
-(use-package yasnippet 
-  :ensure t 
-  :init (yas-global-mode 1))
+(use-package yasnippet
+  :ensure t
+  :hook
+  (prog-mode . yas-minor-mode)
+  :bind
+  (("C-c y n" . yas-new-snippet)
+   ("C-c y v" . yas-visit-snippet-file)
+   ("C-c y i" . yas-insert-snippet)
+   ("C-c y y" . yas-insert-snippet)
+   )
+  :config
+  (yas-reload-all)
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets")))
+
+;; (use-package yasnippet 
+;;   :ensure t 
+;;   :init (yas-global-mode 1))
 
 (use-package yasnippet-snippets 
   :ensure t 

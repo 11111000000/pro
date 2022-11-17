@@ -57,7 +57,21 @@
 
 (global-set-key (kbd "C-c m") 'popwin:messages)
 
-;; ** Тулбар и меню скрыты
+;; ** Предотвращаем мигание при запуске
+
+;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
+(setq frame-inhibit-implied-resize t)
+
+
+;; ** Тулбар скрыт
 
 (when (bound-and-true-p tool-bar-mode)
   (tool-bar-mode -1))
@@ -65,7 +79,7 @@
 (when (bound-and-true-p menu-bar-mode)
   (menu-bar-mode -1))
 
-;; ** Подсказка комбинаций
+;; ** Подсказка комбинаций кавиш
 
 (use-package guide-key
   :ensure t
@@ -97,9 +111,7 @@
 ;; ** Справка
 
 (use-package info   
-  :bind (
-         :map Info-mode-map
-
+  :bind (:map Info-mode-map
          ("DEL" . Info-history-back)
          ("B" . Info-history-back)
          ("F" . Info-history-forward)
@@ -114,7 +126,7 @@
 
 (use-package eldoc-box
   :ensure t
-  :custom ((eldoc-idle-delay 1))
+  :custom ((eldoc-idle-delay . 1))
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
