@@ -43,7 +43,7 @@
   :config
   (dashboard-setup-startup-hook)
   :init
-  ;(dashboard-refresh-buffer)
+  (dashboard-refresh-buffer)
   )
 
 (provide 'пульт-управления)
