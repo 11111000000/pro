@@ -124,20 +124,20 @@
 
 ;; ** Документация во всплывающем окне
 
-(use-package eldoc-box
-  :ensure t
-  :custom ((eldoc-idle-delay . 1))
+(use-package eldoc-box  
+  :if window-system
+  :custom (eldoc-idle-delay 1)
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
-         (eglot-managed-mode-hook . eldoc-box-hover-mode)
-         (eldoc-box-frame-hook . (lambda () (setq cursor-in-non-selected-windows nil)))
-         )
+         (eglot-managed-mode . eldoc-box-hover-mode)
+         (eldoc-box-frame-hook . (lambda () (setq cursor-in-non-selected-windows nil))))
   
   :config
   (setq-default cursor-in-non-selected-windows nil)
   
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :family "Iosevka" :weight 'normal :italic nil :height 110))
+  (set-face-attribute 'eldoc-box-body nil :family "Iosevka" :weight 'normal :italic nil :height 110)
+  )
 
 ;; ** Статистика
 
