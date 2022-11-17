@@ -3,7 +3,7 @@
 (use-package projectile
   :ensure t
   :custom ((projectile-sort-order 'recently-active)
-           (projectile-project-search-path '("~/Проекты/"))
+           (projectile-project-search-path '("~/Projects/"))
            (projectile-switch-project-action #'projectile-dired)
            )
   :bind (

@@ -192,7 +192,7 @@
 
 ;; ** Скроллбар
 
-(scroll-bar-mode -1)
+(if window-system (scroll-bar-mode -1))
 
 ;; ** Иконки
 
@@ -203,7 +203,7 @@
 ;; > cp ~/tmp/all-the-icons/fonts/* ~/.local/share/fonts
 
 (use-package all-the-icons
-  :if window-system
+  ;;:if window-system
   :ensure t
   )
 

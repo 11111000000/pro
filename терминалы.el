@@ -75,7 +75,7 @@
   (eshell-cmpl-cycle-completions nil)
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
-  (eshell-prompt-regexp "❯❯❯ ")
+  (eshell-prompt-regexp "$ ")
   (eshell-visual-commands '("htop" "zsh" "vim"))
   
   :init
@@ -126,6 +126,7 @@
 
 (use-package vterm
   :ensure t
+  :disabled t
   :config
   (defun turn-off-chrome ()
     (hl-line-mode -1)
@@ -134,6 +135,7 @@
 
 (use-package vterm-toggle
   :ensure t
+  :after vterm
   :custom
   (vterm-toggle-fullscreen-p nil "Open a vterm in another window.")
   (vterm-toggle-scope 'project)
