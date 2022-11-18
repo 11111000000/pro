@@ -153,20 +153,31 @@ ARG - backward"
 
 ;; ** Сниппеты
 
+(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "программирование")) "etc/yasnippet.template.txt"))
+
+(defun dobro/yas-new-snippet-with-example ()
+  "Создать новый сниппет со шпаргалкой."
+    (interactive)
+    (funcall-interactively 'yas-new-snippet)
+    (erase-buffer)
+    (insert-file dobro/yas-new-snippet-prompt-file))
+
 (use-package yasnippet
   :ensure t
   :hook
   (prog-mode . yas-minor-mode)
-  :bind
-  (("C-c y n" . yas-new-snippet)
+  :bind (
    ("C-c y v" . yas-visit-snippet-file)
    ("C-c y i" . yas-insert-snippet)
-   ("C-c y y" . yas-insert-snippet)
+   ("C-c y y" . yas-insert-snippet)   
+   ("C-c y n" . dobro/yas-new-snippet-with-example)
    )
   :config
   (yas-reload-all)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets")))
+        '("~/.emacs.d/snippets"))
+
+  )
 
 ;; (use-package yasnippet 
 ;;   :ensure t 

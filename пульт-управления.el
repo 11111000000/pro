@@ -40,9 +40,8 @@
                                                 :height 1.1
                                                 :v-adjust -0.05
                                                 :face 'font-lock-keyword-face))
-  :config
-  (dashboard-setup-startup-hook)
-  :init
+  :init  
+  ;;(dashboard-setup-startup-hook)
   (dashboard-refresh-buffer)
   )
 

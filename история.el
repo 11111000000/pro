@@ -1,14 +1,35 @@
 ;; * История
 ;; ** Сохранение истории 
 
+;; ** Бэкапы и временные файлы
 
-(use-package savehist  
+(use-package no-littering
+  :ensure t
+  :custom ((make-backup-files t)
+           (delete-by-moving-to-trash t)
+           (backup-by-copying t)
+           (kept-new-versions 25)
+           (kept-old-versions 25)
+           (delete-old-versions t)                                         
+           (create-lockfiles nil)
+           (vc-make-backup-files t)
+           (version-control t))
+  :config      
+  (setq
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+
+(use-package savehist
+  :after (no-littering)
   :straight (:type built-in)
   :custom
   (history-delete-duplicates t)
   (history-length 300)
   (savehist-autosave-interval 300)
-  :config
+  (savehist-file "~/.emacs.d/var/savehist.el")
+  (savehist-additional-variables '(kill-ring search-ring))
+  :config  
   (savehist-mode t))
 
 ;; ** Текстовая Машина Времени
@@ -29,16 +50,17 @@
          ("M-u" . undo-tree-visualize))
   :init (global-undo-tree-mode 1))
 
-
 ;; Вернуться к последней правке
 
 (use-package goto-last-change :ensure t
+  :after (no-littering)
   :ensure t
   :bind (("C-c C-," . goto-last-point)))
 
 ;; Вернуться к предыдущей позиции курсора
 
-(use-package goto-last-point 
+(use-package goto-last-point
+  :after (no-littering)
   :ensure t
   :bind (("C-c ," . goto-last-point))
   :config
@@ -71,13 +93,14 @@
 
 (use-package saveplace
   :ensure t
-  :custom (save-place-file "~/.emacs.d/places")
+  :after (no-littering)  
   :init
   (save-place-mode t))
 
 ;; ** Недавние файлы
 
-(use-package recentf  
+(use-package recentf
+  :after (no-littering)
   :custom ((recentf-max-saved-items 512)
            (recentf-max-menu-items 100)
            (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
@@ -87,35 +110,14 @@
                               "-autoloads\\.el\\'"
                               "\\.elc\\'"
                               "/TAGS\\'")))
-  :config 
+  :config
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
   (recentf-mode t))
 
 ;; ** История копирования
 
 (setq-default kill-ring-max 300                
               save-interprogram-paste-before-kill t)
-
-;; ** Бэкапы и временные файлы
-
-(use-package no-littering
-  :ensure t
-  :after savehist
-  :custom ((make-backup-files t)
-           (delete-by-moving-to-trash t)
-           (backup-by-copying t)
-           (kept-new-versions 25)
-           (kept-old-versions 25)
-           (delete-old-versions t)                                         
-           (create-lockfiles nil)
-           (vc-make-backup-files t)
-           (version-control t))
-  :config    
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-  (setq
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
-
 
 (provide 'история)

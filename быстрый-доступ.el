@@ -39,7 +39,9 @@
          ("M-s s" . consult-line)
          ("M-s M-s" . consult-line-multi)
          ("C-x y" . consult-yank-from-kill-ring)
-         ("<help> a" . consult-apropos)) 
+         ("<help> a" . consult-apropos)
+         ("s-m" . consult-imenu-multi)
+         ) 
   :config
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-root-function #'projectile-project-root

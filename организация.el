@@ -197,9 +197,9 @@
 
 ;; ** Org
 
-(use-package org-rainbow-tags  
-  ;; :load-path "emacs-lisp/org-rainbow-tags/"
-  :hook ((org-mode . org-rainbow-tags-mode))
-  :init)
+;; (use-package org-rainbow-tags  
+;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"
+;;   :hook ((org-mode . org-rainbow-tags-mode))
+;;   :init)
 
 (provide 'организация)

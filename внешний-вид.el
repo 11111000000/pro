@@ -126,7 +126,8 @@
 
 (use-package eldoc-box
   :ensure t
-  :custom ((eldoc-idle-delay . 1))
+  :custom
+  (eldoc-idle-delay 1)
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
@@ -174,25 +175,17 @@
 
 ;; Минибуфер во фрейме поверх окна
 
-;; (use-package mini-frame
-;;   :ensure t
-;;   :config (custom-set-variables
-;;            '(mini-frame-show-parameters
-;;              '(
-;;                (child-frame-border-width . 1)
-;;                (internal-border-width . 1)
-;;                (top . 0)
-;;                (width . 1.0)
-;;                (left . 0)
-;;                )
-
-;;              )
-;;            '(mini-frame-standalone t)
-;;            )
-;;   :init
-;;   (mini-frame-mode t)
-;;   )
-
+(use-package mini-frame
+  :disabled t
+  :custom
+  (mini-frame-show-parameters '((child-frame-border-width . 0)
+                                (internal-border-width . 0)
+                                (top . 0)
+                                (width . 1.0)
+                                (left . 0)))
+  (mini-frame-standalone t)
+  :init
+  (mini-frame-mode -1))
 
 ;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/ 
 
@@ -204,7 +197,7 @@
 
 ;; ** Скроллбар
 
-(scroll-bar-mode -1)
+(if window-system (scroll-bar-mode -1))
 
 ;; ** Иконки
 
