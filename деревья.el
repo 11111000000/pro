@@ -17,7 +17,6 @@
          ("u" . dired-up-directory))
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode)
-         ;;(dired-mode . hl-line-mode)
          )
   :custom 
   ;; (dired-listing-switches "-aBhlv --group-directories-first")
