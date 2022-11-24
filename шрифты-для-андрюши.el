@@ -5,7 +5,7 @@
   (set-face-attribute 'default nil 
                       :family "Droid Sans Mono" 
                       :weight 'normal 
-                      :height 160) 
+                      :height 100) 
   (set-face-attribute 'fixed-pitch nil 
                       :family "Droid Sans Mono" 
                       :weight 'normal 
