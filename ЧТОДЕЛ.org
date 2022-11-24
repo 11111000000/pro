@@ -53,4 +53,10 @@ https://github.com/leotaku/flycheck-aspell
 
 * [0%] Outshine
 ** TODO outshine bullets не должны заменять каменты с пробелами от начала строк
-* TODO 
+* EInk
+** TODO Определение EInk экрана
+** Настройки для Eink
+*** DONE Настройки цветов в Termux
+*** DONE Выбрать оптимальную цветовую тему
+*** TODO Протестировать скорость ввода текста на Kon-Tiki
+*** TODO Протестировать скорость ввода текста на Air

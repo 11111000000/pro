@@ -202,10 +202,15 @@
   :hook ((org-mode . org-rainbow-tags-mode))
   :init)
 
-;; Создание презентаций
+;; ** Создание презентаций
 
 (use-package ox-reveal
   :straight '(ox-reveal :host github :repo "yjwen/org-reveal")
   )
+
+;; ** Org modern
+
+(use-package org-modern
+  :if window-system)
 
 (provide 'организация)

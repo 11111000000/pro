@@ -3,7 +3,7 @@
   :bind (:map dashboard-mode-map
               ("C-g" . dashboard-refresh-buffer))
   :custom 
-  (dashboard-startup-banner "~/Добро/lisp.png")
+  (dashboard-startup-banner (concat (file-name-directory (locate-library "пульт-управления")) "lisp.png"))
   (dashboard-banner-logo-title "Добро пожаловать в свободную систему!")
   (dashboard-center-content t)
   (dashboard-items '((recents  . 3)
