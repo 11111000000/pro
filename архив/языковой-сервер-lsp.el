@@ -2,7 +2,7 @@
 
 (use-package lsp-mode 
   :ensure t 
-  :after tree-sitter 
+  ;;:after tree-sitter 
   :commands (lsp lsp-deferred)
   ;;:hook (
            ;; (typescript-mode . lsp-deferred)

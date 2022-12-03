@@ -1,6 +1,8 @@
 ;; * Пакетный менеджер Straight
 
-(setq straight-use-package-by-default t) ;; have use-package use straight.el by default.
+(setq-default straight-use-package-by-default t
+      straight-vc-git-default-clone-depth 1
+      )
 
 (defvar bootstrap-version)
 (let ((bootstrap-file

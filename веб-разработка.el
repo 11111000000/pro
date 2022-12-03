@@ -59,13 +59,14 @@
 
 (use-package typescript-mode
   :ensure t
-  :after tree-sitter  
+  ;;:after tree-sitter  
   :config  
   (define-derived-mode typescript-react-mode typescript-mode
     "Typescript JSX")
 
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))    
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx)))
+  ;(add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx))
+  )
 
 ;; (use-package tsi
 ;;   :ensure t

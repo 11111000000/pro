@@ -84,23 +84,23 @@
 
 ;; ** Документация для автодополнения
 
-(use-package corfu-doc
-  :ensure t
-  :after corfu
-  :hook (corfu-mode . corfu-doc-mode)
-  :bind (:map corfu-map              
-              ("M-?" . #'corfu-doc-toggle)              
-              ("C-v" . #'corfu-doc-scroll-up)
-              ("M-v" . #'corfu-doc-scroll-down))
-  :custom
+;; (use-package corfu-doc
+;;   :ensure t
+;;   :after corfu
+;;   :hook (corfu-mode . corfu-doc-mode)
+;;   :bind (:map corfu-map              
+;;               ("M-?" . #'corfu-doc-toggle)              
+;;               ("C-v" . #'corfu-doc-scroll-up)
+;;               ("M-v" . #'corfu-doc-scroll-down))
+;;   :custom
   
-  (corfu-doc-delay 0.5)
-  (corfu-doc-max-width 70)
-  (corfu-doc-max-height 20)
+;;   (corfu-doc-delay 0.5)
+;;   (corfu-doc-max-width 70)
+;;   (corfu-doc-max-height 20)
 
-  ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-  ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-  ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
   (corfu-echo-documentation nil))
 
 ;; ** Автодополнение для терминала
