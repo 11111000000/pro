@@ -1,3 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 (defun подключить-модуль (feature &optional filename) 
   "Как `require', но с аккуратной обработкой ошибок.
 
@@ -418,3 +422,4 @@
 ;;              keys)))
 
 (provide 'разные-функции)
+;;; разные-функции.el ends here

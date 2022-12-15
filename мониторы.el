@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 (require 'exwm-randr)
 
 (setq exwm-randr-workspace-output-plist '(0 "VGA-1" 1 "LVDS-1"))

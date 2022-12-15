@@ -1,4 +1,8 @@
-;;; Проект
+;;; package --- Summary
+;; Проекты
+;;; Commentary:
+;;; Code:
+;;; Модуль для работы с проектами
 
 (use-package projectile
   :ensure t
@@ -42,7 +46,7 @@
   (org-projectile-per-project)
   )
 
-;;; Git
+;;; Система контроля версий Git
 
 (use-package magit
   :ensure t
@@ -57,11 +61,14 @@
 
 (use-package magit-todos :ensure t)
 
+;;; Автоматизация проекта
 
-;;; Docker
 (use-package prodigy
   :ensure t
   :bind (("C-c C-p" . prodigy)))
+
+;;; Контейнеры Docker
+
 
 (use-package docker
   :bind (("C-c d" . docker))
@@ -89,7 +96,9 @@
   :init
   :config)
 
+;;; Поддержка Github
+
 (use-package github)
 
 (provide 'проекты)
-;;; dobro-projects.el ends here
+;;; проекты.el ends here

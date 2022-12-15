@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Код
 ;;; Дерево синтаксиса
 
@@ -204,6 +207,11 @@ ARG - backward"
 
 ;;; Ошибки Flymake во всплывающем окне
 
+(use-package flymake-popon
+  :hook ((flymake-mode) . flymake-popon-mode)
+  :straight '(flymake-popon :type git
+  :repo "https://codeberg.org/akib/emacs-flymake-popon.git"))
+
 ;; (use-package flymake-posframe  
 ;;   :load-path "emacs-lisp/flymake-posframe"
 ;;   :hook (flymake-mode . flymake-posframe-mode))
@@ -216,5 +224,4 @@ ARG - backward"
 
 
 (provide 'программирование)
-
-;;; dobro-code.el ends here
+;;; программирование.el ends here

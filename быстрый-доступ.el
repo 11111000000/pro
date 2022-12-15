@@ -1,7 +1,7 @@
 ;;; package --- Summary
 ;;; Commentary:
 ;;; Code:
-;;; Глобальное автодополнение на базе vertico и consult
+;;; Вертикальные списки
 
 (use-package vertico 
   :ensure t 
@@ -22,7 +22,7 @@
 	;; 	             args)))
   :init (vertico-mode t))
 
-;; Сортировка
+;;; Сортировка
 
 (use-package orderless 
   :ensure t
@@ -30,12 +30,14 @@
               '((file 
                  (styles partial-completion)))))
 
-;; Подписи и дополнительная информация
+;;; Подписи и дополнительная информация
 
 (use-package marginalia 
   :ensure t 
   :custom (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)) 
   :init (marginalia-mode))
+
+;;; Функции на базе автодополения
 
 (use-package consult 
   :ensure t 
@@ -64,15 +66,21 @@
   ;; (setq consult-ripgrep-args "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
   )
 
+;;; Дополнение сниппетов
+
 (use-package consult-yasnippet 
   :ensure t 
   :bind ("C-c y y" . consult-yasnippet))
+
+;;; Поиск по документации (dash)
 
 (use-package consult-dash 
   :ensure t 
   :bind (("M-s d" . consult-dash)) 
   :config (consult-customize consult-dash 
                              :initial (thing-at-point 'symbol)))
+
+;;; Поиск файлов
 
 (defun dobro/consult-ag-from-current-path () 
   (interactive)
@@ -82,6 +90,8 @@
   :ensure t 
   :bind (:map dired-mode-map
               ("s" . dobro/consult-ag-from-current-path)))
+
+;;; Поиск по языковым серверам
 
 (use-package consult-lsp
   :after (lsp consult)
@@ -94,3 +104,4 @@
   :bind (:map eglot-mode-map ("s-t" . #'consult-eglot-symbols)))
 
 (provide 'быстрый-доступ)
+;;; быстрый-доступ.el ends here

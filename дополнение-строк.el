@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Автодополнение текста на базе Corfu
 ;;; Инициализация Corfu
 

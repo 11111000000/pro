@@ -1,5 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Конфигурация Org-mode
-;; 
 ;;; Базовые настройки
 
 (load-library "find-lisp")

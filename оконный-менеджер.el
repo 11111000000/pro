@@ -1,3 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 ;;; Xorg
 
 ;; Emacs X Window Manager - полноценный тайловый оконный менеджер

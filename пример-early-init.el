@@ -1,3 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 ;;; Оптимизация загрузки пакетного менеджера
 
 (setq package-enable-at-startup nil)

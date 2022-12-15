@@ -1,5 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Конфигурация списков файлов и деревьев
-
 ;;; Файлы и каталоги
 
 (use-package dired

@@ -1,3 +1,8 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+;;; Дашбоард
+
 (use-package dashboard
   :ensure t
   :bind (:map dashboard-mode-map
@@ -46,3 +51,4 @@
   )
 
 (provide 'пульт-управления)
+;;; пульт-управления.el ends here

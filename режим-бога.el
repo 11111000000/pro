@@ -1,12 +1,17 @@
 ;;; package --- Summary
 ;;; Commentary:
 ;;; Code:
+
 (require 'mule)
+
+;;; Функция для выключения русского
 
 (defun toggle-off-input-method ()
   (interactive)
   (if current-input-method (deactivate-input-method))
   )
+
+;;; Режим Бога (всегда Ctrl)
 
 (use-package god-mode
   :ensure t

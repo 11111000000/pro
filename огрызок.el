@@ -1,3 +1,7 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 (modify-all-frames-parameters '((inhibit-double-buffering . t)))
 
 (use-package exec-path-from-shell

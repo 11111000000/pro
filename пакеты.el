@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Пакетный менеджер Straight
 
 (setq straight-use-package-by-default t) ;; have use-package use straight.el by default.
@@ -18,4 +21,4 @@
 (straight-use-package 'use-package) 
 (straight-use-package 'org)
 (provide 'пакеты)
-;;; dobro-straight.el ends here
+;;; пакеты.el ends here

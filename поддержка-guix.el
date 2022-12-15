@@ -16,4 +16,5 @@
 (with-eval-after-load 'yasnippet
   (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
 
-(provide 'поддержка-guix
+(provide 'поддержка-guix)
+;;; поддержка-guix.el ends here
