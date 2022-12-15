@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 ;;; Поддержка Javascript 
 
 (use-package eslint-rc

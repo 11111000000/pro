@@ -1,5 +1,8 @@
-;; * Lisp
-;; ** Emacs Lisp
+;;; package --- Summary
+;; LISP
+;;; Commentary:
+;;; Code:
+;;; Emacs Lisp
 
 (use-package emacs-lisp
   :straight (:type built-in)
@@ -51,25 +54,8 @@ and `defcustom' forms reset their default values."
   :ensure t 
   :defer t)
 
-;;  Изучение API Elisp
 
-(use-package elisp-demos 
-  :ensure t 
-  :config)
-
-;; Дополнительная справка
-
-(use-package helpful 
-  :ensure t 
-  :defer t
-  :bind (("C-h f" . helpful-callable)
-         ("C-h v" . helpful-variable)
-         ("C-h k" . helpful-key)
-         ("C-c d" . helpful-at-point)
-         ("C-h F" . helpful-function)
-         ("C-h C" . helpful-command)))
-
-;; **  Geiser
+;;; Geiser
 
 (use-package geiser
   :ensure t
@@ -97,7 +83,7 @@ and `defcustom' forms reset their default values."
 
                                         ;(with-eval-after-load 'yasnippet
                                         ;  (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
-;; ** Форматирование
+;;; Форматирование
 
 ;; (use-package elisp-autofmt
 ;;   :load-path "emacs-lisp/emacs-lisp-autofmt/"
@@ -114,8 +100,5 @@ and `defcustom' forms reset their default values."
   ;;           (add-hook 'before-save-hook #'elisp-format-buffer))))
   )
 
-
-
-;; *  dobro-lisp
-
 (provide 'лисп)
+;;; лисп.el ends here

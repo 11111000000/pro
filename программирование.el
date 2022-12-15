@@ -1,5 +1,5 @@
-;; * Код
-;; ** Дерево синтаксиса
+;;; Код
+;;; Дерево синтаксиса
 
 ;; Генератор инкрементальных парсеров
 
@@ -12,7 +12,7 @@
   :ensure t
   :after tree-sitter)
 
-;; ** Языковой сервер
+;;; Языковой сервер
 
 ;; Eglot теперь встроен в EMACS
 
@@ -33,7 +33,7 @@
   (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
   (add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio"))))
 
-;; ** Скобки
+;;; Скобки
 
 ;; Подсвечивать все скобки
 
@@ -44,7 +44,7 @@
             "[][(){}]")) 
   :config (global-paren-face-mode t))
 
-;; *** Парные скобки
+;;;; Парные скобки
 
 ;; Прыгать между парными скобками
 
@@ -62,7 +62,7 @@ ARG - backward"
 
 (global-set-key (kbd "C-%") 'forward-or-backward-sexp)
 
-;; *** Умные скобки
+;;;; Умные скобки
 
 ;; TODO: заменить пакетом, основанным на tree-sitter ?
 
@@ -93,7 +93,7 @@ ARG - backward"
   ;; (show-paren-mode -1)
   )
 
-;; *** Подсветка глубины скобок
+;;;; Подсветка глубины скобок
 
 (defvar my/hl-paren-face)
 (setq my/hl-paren-face (face-foreground 'default))
@@ -106,7 +106,7 @@ ARG - backward"
            (hl-paren-background-colors  '(nil nil nil nil nil))) 
   :config (global-highlight-parentheses-mode t))
 
-;; ** Идентификаторы
+;;; Идентификаторы
 
 (use-package color-identifiers-mode 
   :ensure t 
@@ -132,7 +132,7 @@ ARG - backward"
          (emacs-lisp-mode . rainbow-identifiers-mode))
   :bind (("C-c hl" . rainbow-identifiers-mode)))
 
-;; ** Форматирование
+;;; Форматирование
 
 (use-package format-all 
   :ensure t 
@@ -151,7 +151,7 @@ ARG - backward"
 ;;   ;;(apheleia-global-mode nil)
 ;;   )
 
-;; ** Сниппеты
+;;; Сниппеты
 
 (defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "программирование")) "etc/yasnippet.template.txt"))
 
@@ -187,13 +187,13 @@ ARG - backward"
   :ensure t 
   :init)
 
-;; ** Подсветка цветов
+;;; Подсветка цветов
 
 (use-package rainbow-mode
   :hook (prog-mode)
   :ensure t)
 
-;; ** Flymake
+;;; Flymake
 
 (use-package flymake
   :hook ((prog-mode) . flymake-mode)
@@ -202,7 +202,7 @@ ARG - backward"
                ("M-p" . flymake-goto-prev-error))
   )
 
-;; ** Ошибки Flymake во всплывающем окне
+;;; Ошибки Flymake во всплывающем окне
 
 ;; (use-package flymake-posframe  
 ;;   :load-path "emacs-lisp/flymake-posframe"

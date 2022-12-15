@@ -1,5 +1,5 @@
-;; * Автодополнение (Company)
-;; ** Company
+;;; Автодополнение (Company)
+;;; Company
 
 (use-package company 
   :ensure t 
@@ -85,7 +85,7 @@
   (require 'desktop)                    ;this line is needed.
   (push '(company-posframe-mode . nil) desktop-minor-mode-table))
 
-;; ** Сниппеты
+;;; Сниппеты
 
 (use-package yasnippet 
   :ensure t 

@@ -1,6 +1,6 @@
-;; * Конфигурация списков файлов и деревьев
+;;; Конфигурация списков файлов и деревьев
 
-;; ** Файлы и каталоги
+;;; Файлы и каталоги
 
 (use-package dired
   :straight (:type built-in)
@@ -28,7 +28,7 @@
   (global-auto-revert-non-file-buffers t)
   (dired-hide-details-hide-symlink-targets nil))
 
-;; ** Редактор каталогов WDired
+;;; Редактор каталогов WDired
 
 ;; Редактор запускается в Dired при нажатии на C-c C-c, далее можно производить любые действия
 ;; со списком файлов, как-будто это обычный текст и сохранить изменения, повторно нажав C-c C-c, или
@@ -46,7 +46,7 @@
          ("C-g C-g" . wdired-exit)
          ("ESC" . wdired-exit)))
 
-;; ** Дерево
+;;; Дерево
 
 (use-package treemacs
   :ensure t
@@ -131,20 +131,20 @@
         ("C-x t M-t" . treemacs-find-tag)))
 
 
-;; ** Иконки 
+;;; Иконки 
 
 (use-package treemacs-icons-dired
   :ensure t
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   )
 
-;; ** Дерево для проектов
+;;; Дерево для проектов
 
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
 
-;; ** Дерево для Git
+;;; Дерево для Git
 
 (use-package treemacs-magit
   :after (treemacs magit)
@@ -158,3 +158,5 @@
 (use-package ag :ensure t)
 
 (provide 'деревья)
+;;; деревья.el ends here
+

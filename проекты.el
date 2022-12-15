@@ -89,5 +89,7 @@
   :init
   :config)
 
+(use-package github)
+
 (provide 'проекты)
 ;;; dobro-projects.el ends here

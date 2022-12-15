@@ -1,6 +1,6 @@
-;; * Конфигурация Org-mode
+;;; Конфигурация Org-mode
 ;; 
-;; ** Базовые настройки
+;;; Базовые настройки
 
 (load-library "find-lisp")
 
@@ -12,13 +12,13 @@
          :map org-mode-map
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
-           (org-agenda-files (find-lisp-find-files "~/Org" "\.org$"))
+           (org-agenda-files (find-lisp-find-files "~/Организация" "\.org$"))
            (org-todo-keywords '((sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
   :init)
 
-;; ** Красивые заголовки
+;;; Красивые заголовки
 
 (use-package org-bullets
   :if window-system
@@ -34,19 +34,19 @@
            ))
 
 
-;; ** Иконки приоритетов
+;;; Иконки приоритетов
 
 
 (use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
 
 
-;; ** Иконка свёртки заголовков
+;;; Иконка свёртки заголовков
 
 
 (setq-default org-ellipsis "…")
 
 
-;; ** Картинки
+;;; Картинки
 
 ;; По-умолчанию изображения в Org-файлах показаны:
 
@@ -57,7 +57,7 @@
 
 (setq-default org-image-actual-width nil)
 
-;; ** Блоки кода
+;;; Блоки кода
 
 ;; Скрываем блоки кода при открытии документа
 
@@ -112,7 +112,7 @@
 
 (setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
 
-;; ** Клавиши
+;;; Клавиши
 
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
@@ -165,8 +165,8 @@
     (show-children) 
     (recenter-top-bottom)))
 
-;; ** Учёт времени
-;; *** Помодоро
+;;; Учёт времени
+;;;; Помодоро
 
 ;; Простой таймер для учёта рабочего времени и перерывов:
 
@@ -181,13 +181,13 @@
   	       (org-pomodoro-play-sounds 1)))
 
 
-;; ** TODO Поли-моды
+;;; TODO Поли-моды
 
 ;; https://polymode.github.io/usage/
 
-;; ** TODO Таблицы
+;;; TODO Таблицы
 
-;; ** Заметки
+;;; Заметки
 
 (use-package org-noter
   :ensure t
@@ -195,7 +195,7 @@
         :map doc-view-mode-map
         ("i" . org-noter-insert-note)))
 
-;; ** Org
+;;; Org
 
 ;; (use-package org-rainbow-tags  
 ;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"

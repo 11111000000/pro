@@ -1,4 +1,4 @@
-;; * Темы
+;;; Темы
 
 (use-package kaolin-themes
   :config

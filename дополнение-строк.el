@@ -1,5 +1,5 @@
-;; * Автодополнение текста на базе Corfu
-;; ** Инициализация Corfu
+;;; Автодополнение текста на базе Corfu
+;;; Инициализация Corfu
 
 ;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
 (defun corfu-enable-always-in-minibuffer ()
@@ -47,7 +47,7 @@
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
   )
 
-;; ** Расширения для автодополнения
+;;; Расширения для автодополнения
 
 (use-package cape
   :ensure t
@@ -82,7 +82,7 @@
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
 )
 
-;; ** Документация для автодополнения
+;;; Документация для автодополнения
 
 (use-package corfu-doc
   :ensure t
@@ -103,12 +103,12 @@
   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
   (corfu-echo-documentation nil))
 
-;; ** Автодополнение для терминала
+;;; Автодополнение для терминала
 
 (use-package corfu-terminal
   :ensure t)
 
-;; ** Иконки для автодополнения
+;;; Иконки для автодополнения
 
 (use-package kind-icon 
   :ensure t 
@@ -124,7 +124,7 @@
                (interactive)
                (kind-icon-reset-cache))))
 
-;; ** История автодополнения
+;;; История автодополнения
 
 ;; (use-package corfu-history
   

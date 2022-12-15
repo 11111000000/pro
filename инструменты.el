@@ -1,6 +1,9 @@
-;; * Инструменты
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+;;; Инструменты
 
-;; ** Открыть с помощью...
+;;; Открыть с помощью...
 
 (use-package openwith
   :ensure t
@@ -14,7 +17,7 @@
                                 ("\\.ods\\'" "soffice" (file))
                                 ("\\.xopp\\'" "xournalpp" (file)))))
 
-;; ** Запускалка приложений
+;;; Запускалка приложений
 
 ;; (use-package bon-app-launcher  
 ;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)

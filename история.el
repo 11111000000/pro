@@ -1,40 +1,23 @@
-;; * История
-;; ** Сохранение истории 
+;;; package --- Summary
+;; История
+;;; Commentary:
+;; Функции для работы с историей, хранением и
+;; восстановлением состояний
+;;; Code:
+;;; Сохранение истории
 
-;; ** Бэкапы и временные файлы
+;; Сохранять действия в ~~/.emacs.d/history~
 
-(use-package no-littering
-  :ensure t
-  :custom ((make-backup-files t)
-           (delete-by-moving-to-trash t)
-           (backup-by-copying t)
-           (kept-new-versions 25)
-           (kept-old-versions 25)
-           (delete-old-versions t)                                         
-           (create-lockfiles nil)
-           (vc-make-backup-files t)
-           (version-control t))
-  :config      
-  (setq
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+(setq-default history-delete-duplicates t
+              history-length 300
+              savehist-autosave-interval 300
+              savehist-file "~/.emacs.d/history")
 
+(savehist-mode t)
 
-(use-package savehist
-  :after (no-littering)
-  :straight (:type built-in)
-  :custom
-  (history-delete-duplicates t)
-  (history-length 300)
-  (savehist-autosave-interval 300)
-  (savehist-file "~/.emacs.d/var/savehist.el")
-  (savehist-additional-variables '(kill-ring search-ring))
-  :config  
-  (savehist-mode t))
+;;; Текстовая Машина Времени
 
-;; ** Текстовая Машина Времени
-
-;; Дерево версий текста
+;;;; Дерево версий текста
 
 (use-package undo-tree
   :ensure t
@@ -50,17 +33,16 @@
          ("M-u" . undo-tree-visualize))
   :init (global-undo-tree-mode 1))
 
-;; Вернуться к последней правке
+
+;;;; Вернуться к последней правке
 
 (use-package goto-last-change :ensure t
-  :after (no-littering)
   :ensure t
   :bind (("C-c C-," . goto-last-point)))
 
-;; Вернуться к предыдущей позиции курсора
+;;;; Вернуться к предыдущей позиции курсора
 
-(use-package goto-last-point
-  :after (no-littering)
+(use-package goto-last-point 
   :ensure t
   :bind (("C-c ," . goto-last-point))
   :config
@@ -78,7 +60,7 @@
 ;;   :config
 ;;   (backward-forward-mode t))
 
-;; ** История окон
+;;; Путешествие по истории окон
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>
 
@@ -89,18 +71,17 @@
   :init
   (winner-mode 1))
 
-;; ** Память места
+;;; Помнить места
 
 (use-package saveplace
   :ensure t
-  :after (no-littering)  
+  :custom (save-place-file "~/.emacs.d/places")
   :init
   (save-place-mode t))
 
-;; ** Недавние файлы
+;;; Помнить недавние файлы
 
-(use-package recentf
-  :after (no-littering)
+(use-package recentf  
   :custom ((recentf-max-saved-items 512)
            (recentf-max-menu-items 100)
            (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
@@ -110,14 +91,35 @@
                               "-autoloads\\.el\\'"
                               "\\.elc\\'"
                               "/TAGS\\'")))
-  :config
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  :config 
   (recentf-mode t))
 
-;; ** История копирования
+;;; История копирования
 
 (setq-default kill-ring-max 300                
               save-interprogram-paste-before-kill t)
 
+;;; Бэкапы и временные файлы
+
+(use-package no-littering
+  :ensure t
+  :custom ((make-backup-files t)
+           (delete-by-moving-to-trash t)
+           (backup-by-copying t)
+           (kept-new-versions 25)
+           (kept-old-versions 25)
+           (delete-old-versions t)                                         
+           (create-lockfiles nil)
+           (vc-make-backup-files t)
+           (version-control t))
+  :config    
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)  
+  (setq
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+
+
 (provide 'история)
+;;; история.el ends here

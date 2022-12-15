@@ -1,4 +1,7 @@
-;;;; Шрифт
+;;; package --- Summary
+;; Шрифты для MacOS
+;;; Commentary:
+;;; Code:
 
 (defun update-font-settings () 
   (interactive) 
@@ -41,4 +44,5 @@
 (global-set-key (kbd "s-=") 'text-scale-increase)
 (global-set-key (kbd "s-_") 'text-scale-set)
 
-(provide 'dobro-font-macos)
+(provide 'шрифты-для-огрызка)
+;;; шрифты-для-огрызка.el ends here

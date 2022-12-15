@@ -1,4 +1,7 @@
-;; * Глобальное автодополнение на базе vertico и consult
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+;;; Глобальное автодополнение на базе vertico и consult
 
 (use-package vertico 
   :ensure t 
@@ -19,11 +22,15 @@
 	;; 	             args)))
   :init (vertico-mode t))
 
+;; Сортировка
+
 (use-package orderless 
   :ensure t
   :init (setq completion-styles '(orderless basic) completion-category-defaults nil completion-category-overrides 
               '((file 
                  (styles partial-completion)))))
+
+;; Подписи и дополнительная информация
 
 (use-package marginalia 
   :ensure t 

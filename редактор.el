@@ -1,5 +1,5 @@
-;; * Редактор
-;; ** Кодировка
+;;; Редактор
+;;; Кодировка
 
 ;;; Code:
 (set-language-environment 'utf-8)
@@ -12,7 +12,7 @@
       default-file-name-coding-system 'utf-8
       x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; **  Клавиатура
+;;;  Клавиатура
 
 ;; Язык клавиатуры
 
@@ -27,7 +27,7 @@
   (add-to-list 'reverse-im-input-methods "russian-computer")
   (reverse-im-mode t))
 
-;; **  Курсор
+;;;  Курсор
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
 
@@ -41,9 +41,9 @@
   :ensure t
   :straight '(cursor-chg :host github :repo "emacsmirror/cursor-chg"))
 
-(setq curchg-input-method-cursor-color "sky blue"
+(setq curchg-input-method-cursor-color "red"
       curchg-default-cursor-type 'bar
-      curchg-default-cursor-color "lime green"
+      curchg-default-cursor-color "#333"
       curchg-change-cursor-on-input-method-flag t)
 
 (change-cursor-mode t)
@@ -83,7 +83,7 @@
 ;;   (beacon-color "#ffaa00")
 ;;   :hook (after-init . beacon-mode))
 
-;; **  Выделение
+;;;  Выделение
 
 ;; http://www.cs.man.ac.uk/~chl/secondary-selection.html
 ;; https://emacs.stackexchange.com/questions/17056/what-is-the-origin-of-the-term-yank
@@ -140,7 +140,7 @@
   "Удалить до начала строки."
   (interactive) (kill-line 0))
 
-;; **  Поиск и замена
+;;;  Поиск и замена
 
 (global-set-key (kbd "M-r") 'replace-string)
 (global-set-key (kbd "M-R") 'replace-regexp)
@@ -148,7 +148,7 @@
 (global-set-key (kbd "C-c r") 'replace-regexp)
 (global-set-key (kbd "C-c M-r") 'replace-regexp)
 
-;; **  Перемещение блоков
+;;;  Перемещение блоков
 
 (use-package shift-text
   :ensure t
@@ -159,20 +159,20 @@
   ("C-S-M-f" . shift-text-right)
   ("C-S-M-b" . shift-text-left))
 
-;; **  Отображения текста по центру ("режим чтения")
+;;;  Отображения текста по центру ("режим чтения")
 
 (use-package olivetti
   :ensure t
   :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)))
 
-;; **  Закладки
+;;;  Закладки
 
 (use-package bookmark
   :config
   (setq bookmark-save-flag t))
 
-;; **  Режим чтения
+;;;  Режим чтения
 
 ;; (use-package view
 ;;   :bind (
@@ -199,7 +199,7 @@
 ;;   :init
 ;;   )
 
-;; **  Красивые типографские символы
+;;;  Красивые типографские символы
 
 ;; Последовательности символов можно заменить на один глиф. Но при наведении курсора, мы хотим видеть оригинал:
 
@@ -212,7 +212,7 @@
 (global-prettify-symbols-mode +1)
 (setq prettify-symbols-unprettify-at-point t)
 
-;; **  Переносы
+;;;  Переносы
 
 (setq-default truncate-lines t
               truncate-partial-width-windows 50
@@ -223,7 +223,7 @@
 (visual-line-mode t)
 (global-set-key (kbd "C-$") 'toggle-truncate-lines)
 
-;; **  Конфигурация отступов
+;;;  Конфигурация отступов
 
 ;; По умолчанию отступы в 2 пробела
 
@@ -251,14 +251,14 @@
   :init
   (editorconfig-mode 1))
 
-;; **  Сравнение
+;;;  Сравнение
 
 ;; Плоское, горизонтальное расположение при сравнении буферов
 
 (setq-default ediff-window-setup-function 'ediff-setup-windows-plain
               ediff-split-window-function 'split-window-horizontally)
 
-;; **  Редактировать как Root
+;;;  Редактировать как Root
 
 ;; Функция edit-current-file-as-root позволяет легко открыть
 ;; текущий файл с правами root
@@ -303,7 +303,7 @@
   (setq ispell-program-name "aspell")
   (setq ispell-silently-savep t))
 
-;; ** Outshine
+;;; Outshine
 
 (use-package outshine  
   :ensure t
@@ -314,12 +314,15 @@
               ("C-<return>" . outshine-insert-heading)
               ("C-<tab>" . outshine-cycle)))
 
-;; (use-package outshine-bullets
-;;   ;; :load-path "emacs-lisp/outshine-bullets"
-;;   :hook ((outshine-mode . outshine-bullets-mode))
-;;   :custom (
-;; 	   (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣" "‣"))
-;; 	   ))
+(use-package outshine-bullets
+  :disabled t 
+  :straight '(outshine-bullets :host github :repo "alphapapa/outshine-bullets")
+  :ensure
+  ;; :load-path "emacs-lisp/outshine-bullets"
+  :hook ((outshine-mode . outshine-bullets-mode))
+  :custom (
+	   (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣" "‣"))
+	   ))
 
 (use-package markdown-mode :ensure t)
 

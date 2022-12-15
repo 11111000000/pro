@@ -1,4 +1,4 @@
-;; * Языковой Сервер (LSP)
+;;; Языковой Сервер (LSP)
 
 (use-package lsp-mode 
   :ensure t 
@@ -133,7 +133,7 @@
   :commands lsp-treemacs-errors-list 
   :config)
 
-;; ** Sonar lint
+;;; Sonar lint
 
 (use-package lsp-sonarlint 
   :ensure t 
@@ -142,7 +142,7 @@
   :config (require 'lsp-sonarlint-typescript) 
   (require 'lsp-sonarlint-javascript))
 
-;; ** LSP Docker
+;;; LSP Docker
 
 (use-package lsp-docker 
   :ensure t)

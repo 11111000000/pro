@@ -1,4 +1,4 @@
-;; *** Источник пакетов Melpa
+;;;; Источник пакетов Melpa
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -8,7 +8,7 @@
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa") 
   (package-refresh-contents))
 
-;; *** Макрос Use-package
+;;;; Макрос Use-package
 
 (unless (package-installed-p 'use-package) 
   (package-refresh-contents) 
@@ -18,6 +18,6 @@
                      (require 'use-package) 
                      (setq-default use-package-verbose t)))
 
-;; ** Настройки customize
+;;; Настройки customize
 
 ;; (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))

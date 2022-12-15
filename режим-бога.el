@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 (require 'mule)
 
 (defun toggle-off-input-method ()
@@ -82,3 +85,4 @@
   (обновить-курсор))
 
 (provide 'режим-бога)
+;;; режим-бога.el ends here

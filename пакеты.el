@@ -1,4 +1,4 @@
-;; * Пакетный менеджер Straight
+;;; Пакетный менеджер Straight
 
 (setq straight-use-package-by-default t) ;; have use-package use straight.el by default.
 

@@ -1,17 +1,8 @@
-;; *  UI
-;; ** Изменение размера шрифта
-
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C-M-=") 'text-scale-set)
-
-
-;; ** Сокращение диалогов до y/n
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;; ** Буферы
+;;; package --- Summary
+;;  Внешний вид
+;;; Commentary:
+;;; Code:
+;;; Буферы
 
 ;; Уникальные имена для буферов
 
@@ -28,18 +19,6 @@
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "s-r") (lambda () (interactive) (revert-buffer t t)))
 
-;; Перемещение по окнам
-
-(global-set-key (kbd "s-h") 'windmove-left)
-(global-set-key (kbd "s-j") 'windmove-down)
-(global-set-key (kbd "s-k") 'windmove-up)
-(global-set-key (kbd "s-l") 'windmove-right)
-
-(global-set-key (kbd "s-H") 'buf-move-left)
-(global-set-key (kbd "s-J") 'buf-move-down)
-(global-set-key (kbd "s-K") 'buf-move-up)
-(global-set-key (kbd "s-L") 'buf-move-right)
-
 ;; Асинхронные буферы скрыты
 
 (add-to-list 'display-buffer-alist
@@ -49,15 +28,15 @@
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
-;; ** Полноэкранный режим
+;;; Полноэкранный режим
 
 (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen) ;; Mac style
 
-;; ** Сообщения
+;;; Сообщения
 
 (global-set-key (kbd "C-c m") 'popwin:messages)
 
-;; ** Предотвращаем мигание при запуске
+;;; Предотвращаем мигание при запуске
 
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 
@@ -71,7 +50,7 @@
 (setq frame-inhibit-implied-resize t)
 
 
-;; ** Тулбар скрыт
+;;; Тулбар скрыт
 
 (when (bound-and-true-p tool-bar-mode)
   (tool-bar-mode -1))
@@ -79,7 +58,7 @@
 (when (bound-and-true-p menu-bar-mode)
   (menu-bar-mode -1))
 
-;; ** Подсказка комбинаций кавиш
+;;; Подсказка комбинаций кавиш
 
 (use-package guide-key
   :ensure t
@@ -108,7 +87,7 @@
   :init
   (guide-key-mode t))
 
-;; ** Справка
+;;; Справка
 
 (use-package info   
   :bind (:map Info-mode-map
@@ -122,7 +101,7 @@
          ("<XF86Back>" . nil)
          ("<XF86Forward>" . nil)))
 
-;; ** Документация во всплывающем окне
+;;; Документация во всплывающем окне
 
 (use-package eldoc-box
   :ensure t
@@ -140,7 +119,7 @@
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
   (set-face-attribute 'eldoc-box-body nil :family "Iosevka" :weight 'normal :italic nil :height 110))
 
-;; ** Статистика
+;;; Статистика
 
 (use-package keyfreq
   :ensure t
@@ -148,7 +127,7 @@
   (keyfreq-mode)
   (keyfreq-autosave-mode))
 
-;; ** Минибуфер
+;;; Минибуфер
 
 ;; Когда 7 секунд пользователь ничего не делает, в минибуфере отображается /Системный Монитор/ с часами слева:
 
@@ -191,15 +170,27 @@
 
 (setq-default enable-recursive-minibuffers nil)
 
-;; ** Показать текущее время
+;;; Показать текущее время
 
 (global-set-key (kbd "s-<f1>") (lambda () (interactive) (print (current-time-string))))
 
-;; ** Скроллбар
+;;; Изменение размера шрифта
+
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C-M-=") 'text-scale-set)
+
+;;; Сокращение диалогов до y/n
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+
+;;; Скроллбар
 
 (if window-system (scroll-bar-mode -1))
 
-;; ** Иконки
+;;; Иконки
 
 ;; Во первых нужны сами иконочные шрифты, поместим их в ~/.locale/share/fonts :
 
@@ -212,7 +203,7 @@
   :ensure t
   )
 
-;; ** Цвет
+;;; Цвет
 
 ;; Цветовые темы не должны накладываться друг на друга
 
@@ -227,7 +218,7 @@
   "Run `after-load-theme-hook'."
   (run-hooks 'after-load-theme-hook))
 
-;; ** Изображения
+;;; Изображения
 
 (use-package image+
   :ensure t  
@@ -238,7 +229,7 @@
                ("+" . imagex-sticky-maximize)
                ("=" . imagex-sticky-zoom-in)
                ("-" . imagex-sticky-zoom-out))))
-;; ** Прокрутка
+;;; Прокрутка
 
 ;; Настройки прокрутки
 
@@ -261,7 +252,7 @@
   :config (eyebrowse-mode))
 
 
-;; ** Меню для буфера
+;;; Меню для буфера
 
 ;; Меню для режима текущего файла, например в Org-mode показывает список заголовков как своего рода директории
 
@@ -271,7 +262,14 @@
   )
 
 
-;; ** Перемещение окон
+;;; Перемещение по окнам
+
+(global-set-key (kbd "s-h") 'windmove-left)
+(global-set-key (kbd "s-j") 'windmove-down)
+(global-set-key (kbd "s-k") 'windmove-up)
+(global-set-key (kbd "s-l") 'windmove-right)
+
+;;; Перемещение окон
 
 (use-package buffer-move
   :ensure t
@@ -283,7 +281,7 @@
   :config
   )
 
-;; ** Золотое сечение
+;;; Золотое сечение
 
 ;; Даёт больше места текущему окну:
 
@@ -297,7 +295,7 @@
   :config
   (golden-ratio-mode -1))
 
-;; ** Обзор
+;;; Обзор
 
 ;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
 
@@ -369,7 +367,7 @@
   ;;   :config
   ;;   (sml/setup))
 
-;; ** Popwin - предсказуемые попапы
+;;; Popwin - предсказуемые попапы
 
 (use-package popwin
   :ensure t
@@ -487,7 +485,7 @@
   
   )
 
-;; ** Переключение окон
+;;; Переключение окон
 
 (use-package ace-window
   :ensure t
@@ -500,8 +498,9 @@
          ("s-F" . ace-swap-window)))
 
 
-;; ** TODO Путь в заголовке
+;;; TODO Путь в заголовке
 
 
 
 (provide 'внешний-вид)
+;;; внешний-вид.el ends here

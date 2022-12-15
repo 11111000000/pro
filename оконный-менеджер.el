@@ -137,14 +137,14 @@
     (interactive)
     (sit-for 1) 
     (async-shell-command
-     "scrot '/home/az/Screenshots/%Y-%m-%d-%H-%M_$wx$h.png' -s -e 'xclip -selection clipboard -target image/png -i $f' &"
+     "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -s -e 'xclip -selection clipboard -target image/png -i $f' &"
      nil nil))
   
   (defun dobro/take-screenshot ()
     "Получить скриншот."
     (interactive)
     (sit-for 1)
-    (async-shell-command "scrot '/home/az/Screenshots/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
+    (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
   
   (exwm-input-set-key (kbd "<print>") 'dobro/take-screenshot-region)
   (exwm-input-set-key (kbd "s-s") 'dobro/take-screenshot-region)
@@ -244,8 +244,12 @@
                                       height 175 x 30 y 30 managed t))) 
   :init
 
-  ;; START EXWM
+  ;; Запуск EXWM
+  
   (exwm-enable t)
+
+  ;; Запуск программ в трее
+  
   (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
   (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
   (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet") 
@@ -268,24 +272,6 @@
   :init (push ?\C-\\ exwm-input-prefix-keys))
 
 ;; Кстати, этот модуль предварительно надо скачать (по какой-то причине его нет в поставке ExWM)
-
-;;;; Трей
-
-;; Трей - область иконок, высотой 16, расположеная в нижнем правом углу
-
-;; (use-package exwm-systemtray 
-;;   :if window-system 
-;;   :after (exwm) 
-;;   :custom ((exwm-systemtray-height 16)) 
-;;   :config (exwm-systemtray-enable)
-;;   ;; TODO (if (not(running-process "pasystray")) ...)
-;;   (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
-;;   (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
-;;   (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet") 
-;;   (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t") 
-;;   (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
-;;   ;;(start-process-shell-command "wicd-client" nil "dbus-launch wicd-client --tray")
-;;   )
 
 ;;;; Редактирование любых полей ввода через EMACS
 
