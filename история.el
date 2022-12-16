@@ -16,7 +16,6 @@
 (savehist-mode t)
 
 ;;; Текстовая Машина Времени
-
 ;;;; Дерево версий текста
 
 (use-package undo-tree
@@ -82,8 +81,11 @@
 ;;; Помнить недавние файлы
 
 (use-package recentf  
-  :custom ((recentf-max-saved-items 512)
-           (recentf-max-menu-items 100)
+  :custom ((recentf-max-saved-items 512)   ;; всего
+           (recentf-max-menu-items 100)    ;; меню
+
+           ;; ...исключая некоторые:
+           
            (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
                               "/\\.emacs\\.d/elpa" ; ELPA
                               "/\\.emacs\\.d/etc/"
@@ -103,10 +105,10 @@
 
 (use-package no-littering
   :ensure t
-  :custom ((make-backup-files t)
-           (delete-by-moving-to-trash t)
-           (backup-by-copying t)
-           (kept-new-versions 25)
+  :custom ((make-backup-files t)               
+           (delete-by-moving-to-trash t)       
+           (backup-by-copying t)               
+           (kept-new-versions 25)              
            (kept-old-versions 25)
            (delete-old-versions t)                                         
            (create-lockfiles nil)

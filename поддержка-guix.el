@@ -1,12 +1,15 @@
-;;; Guix
+;;; package --- Summary
+;; Guix
+;;; Commentary:
+;;; Code:
 
-;; Пакеты
+;;; Пакеты
 
 (if (file-exists-p "/home/az/.guix-profile/share/emacs/site-lisp")
     (add-to-list 'load-path "/home/az/.guix-profile/share/emacs/site-lisp")
   (guix-emacs-autoload-packages))
 
-;;  Geiser Guile
+;;;  Geiser Guile
 
 (use-package geiser-guile  
   :config

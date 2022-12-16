@@ -1,7 +1,7 @@
 * Инициализация
 ** ACTIVE Использовать early-init
 ** DONE [#A] Починить историю recentf
-Как-будто её сломал режим no-littering
+/Как-будто её сломал режим no-littering/
 
 * [100%] Пакетный менеджер
 ** DONE Straight

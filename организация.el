@@ -35,18 +35,14 @@
            (org-hide-leading-stars nil)
            ))
 
-
 ;;; Иконки приоритетов
 
-
 (use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
-
 
 ;;; Иконка свёртки заголовков
 
 
 (setq-default org-ellipsis "…")
-
 
 ;;; Картинки
 
@@ -197,11 +193,32 @@
         :map doc-view-mode-map
         ("i" . org-noter-insert-note)))
 
-;;; Org
+;;; Цветные тэги
 
 ;; (use-package org-rainbow-tags  
 ;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"
 ;;   :hook ((org-mode . org-rainbow-tags-mode))
 ;;   :init)
+
+;;; Режим Org в обычных файлах
+
+(use-package outshine  
+  :ensure t
+  :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
+         (outline-minor-mode . outshine-mode)
+         (outline-minor-mode . iimage-mode))
+  :bind (:map outshine-mode-map
+              ("C-<return>" . outshine-insert-heading)
+              ("C-<tab>" . outshine-cycle)))
+
+(use-package outshine-bullets
+  :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets")
+  
+  ;; :load-path "emacs-lisp/outshine-bullets"
+  :hook ((outshine-mode . outshine-bullets-mode))
+  :custom (
+	   (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣" "‣"))
+	   ))
+
 
 (provide 'организация)

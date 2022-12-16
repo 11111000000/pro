@@ -306,26 +306,8 @@
   (setq ispell-program-name "aspell")
   (setq ispell-silently-savep t))
 
-;;; Outshine
 
-(use-package outshine  
-  :ensure t
-  :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
-         (outline-minor-mode . outshine-mode)
-         (outline-minor-mode . iimage-mode))
-  :bind (:map outshine-mode-map
-              ("C-<return>" . outshine-insert-heading)
-              ("C-<tab>" . outshine-cycle)))
-
-(use-package outshine-bullets
-  :disabled t 
-  :straight '(outshine-bullets :host github :repo "alphapapa/outshine-bullets")
-  :ensure
-  ;; :load-path "emacs-lisp/outshine-bullets"
-  :hook ((outshine-mode . outshine-bullets-mode))
-  :custom (
-	   (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣" "‣"))
-	   ))
+;;; Поддержка языка  разметки Markdown
 
 (use-package markdown-mode :ensure t)
 

@@ -11,8 +11,7 @@
 
 ;; Функция для реального перевыполнения форм в буфере
 
-
-(defun my/eval-buffer () 
+(defun my/eval-buffer ()
   "Execute the current buffer as Lisp code.
 Top-level forms are evaluated with `eval-defun' so that `defvar'
 and `defcustom' forms reset their default values." 

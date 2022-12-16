@@ -1,30 +1,30 @@
-;;; package --- Summary
+;;; внешний-вид.el --- Внешний вид и интерфейс
 ;;  Внешний вид
 ;;; Commentary:
 ;;; Code:
 ;;; Буферы
 
-;; Уникальные имена для буферов
+;;;; Уникальные имена для буферов
 
 (setq uniquify-buffer-name-style 'forward)
 
-;; Включаем автоактуализацию всех буферов
+;;;; Включаем автоактуализацию всех буферов
 
 (global-auto-revert-mode t)
 (setq-default global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)
+(setq-default auto-revert-verbose nil)
 
-;; Клавиша для принудительного обновления
+;;;; Клавиша для принудительного обновления
 
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "s-r") (lambda () (interactive) (revert-buffer t t)))
 
-;; Асинхронные буферы скрыты
+;;;; Асинхронные буферы скрыты
 
 (add-to-list 'display-buffer-alist
              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-;;  Новые асинхронные буферы переименовываются не спрашивая ничего:
+;;;;  Новые асинхронные буферы переименовываются не спрашивая ничего:
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
@@ -58,77 +58,9 @@
 (when (bound-and-true-p menu-bar-mode)
   (menu-bar-mode -1))
 
-;;; Подсказка комбинаций кавиш
-
-(use-package guide-key
-  :ensure t
-  :defer t
-  :diminish " C-?"
-  :custom
-  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "s-p"
-                                   "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
-   (guide-key/popup-window-position 'top)
-   (guide-key/recursive-key-sequence-flag t)
-   (guide-key/idle-delay 1.7)
-   (guide-key/text-scale-amount -1)
-   (guide-key/highlight-prefix-regexp "Prefix")
-   (guide-key/highlight-command-regexp
-    '("rectangle"
-      ("buffer" . "sky blue")
-      ("org" . "cornflower blue")
-      ("outshine" . "Dark Violet")
-      ("helm" . "lime green")
-      ("consult" . "lime green")
-      ("popwin" . "hot pink")
-      ("macro" . "medium orchid")
-      ("region" . "cadet blue")
-      ("mark" . "moccasin")))
-   )
-  :init
-  (guide-key-mode t))
-
-;;; Справка
-
-(use-package info   
-  :bind (:map Info-mode-map
-         ("DEL" . Info-history-back)
-         ("B" . Info-history-back)
-         ("F" . Info-history-forward)
-         ("h" . Info-up)
-         ("j" . next-line)
-         ("k" . previous-line)
-         ("l" . Info-follow-nearest-node)
-         ("<XF86Back>" . nil)
-         ("<XF86Forward>" . nil)))
-
-;;; Документация во всплывающем окне
-
-(use-package eldoc-box
-  :ensure t
-  :custom
-  (eldoc-idle-delay 1)
-  :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
-         (prog-mode . eldoc-box-hover-mode)
-         (eglot-managed-mode-hook . eldoc-box-hover-mode)
-         (eldoc-box-frame-hook . (lambda () (setq cursor-in-non-selected-windows nil)))
-         )
-  
-  :config
-  (setq-default cursor-in-non-selected-windows nil)
-  
-  (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :family "Iosevka" :weight 'normal :italic nil :height 110))
-
-;;; Статистика
-
-(use-package keyfreq
-  :ensure t
-  :config
-  (keyfreq-mode)
-  (keyfreq-autosave-mode))
-
 ;;; Минибуфер
 
+;;;; Системный монитор
 ;; Когда 7 секунд пользователь ничего не делает, в минибуфере отображается /Системный Монитор/ с часами слева:
 
 (use-package symon
@@ -144,7 +76,8 @@
   (symon-display)
 )
 
-;; Размер шрифта в минибуфере
+;;;; Размер шрифта в минибуфере
+
 ;; TODO конфликт с taoline ?
 ;; (dolist
 ;;     (buf (list " *Minibuf-0*" " *Minibuf-1*" " *Echo Area 0*" " *Echo Area 1*" "*Quail Completions*"))
@@ -152,7 +85,7 @@
 ;;     (with-current-buffer buf
 ;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
 
-;; Минибуфер во фрейме поверх окна
+;;;; Минибуфер во фрейме поверх окна
 
 (use-package mini-frame
   :disabled t
@@ -166,6 +99,7 @@
   :init
   (mini-frame-mode -1))
 
+;;;; Отключаем рекурсивные минибуферы
 ;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/ 
 
 (setq-default enable-recursive-minibuffers nil)
@@ -261,7 +195,6 @@
   :custom ((imenu-auto-rescan t))  
   )
 
-
 ;;; Перемещение по окнам
 
 (global-set-key (kbd "s-h") 'windmove-left)
@@ -315,57 +248,7 @@
          ("s-SPC" . buffer-expose-choose)
          ("s-<tab>" . buffer-expose-reset)
          ) 
-  :init  
-  )
-
-  ;; (use-package time
-  ;;   :custom
-  ;;   (display-time-24hr-format t)
-  ;;   (display-time-use-mail-icon t)
-  ;;   (display-time-day-and-date nil)
-  ;;   (display-time-world-list '(("Asia/Irkutsk" "IRK")
-  ;; 			     ("Europe/Moscow" "MSK")))
-  ;;   :config
-  ;;   (display-time-mode))
-
-  ;; (use-package dashboard  
-  ;;   :requires all-the-icons
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (dashboard-banner-logo-title "DOBRO")
-  ;;   (dashboard-startup-banner 'logo)
-  ;;   (dashboard-center-content t)
-  ;;   (dashboard-show-shortcuts nil)
-  ;;   (dashboard-items '((recents . 5)
-  ;;   		     (bookmarks . 5)
-  ;;   		     (agenda . 5)
-  ;;   		     (registers . 5)))
-  ;;   (dashboard-set-heading-icons t)
-  ;;   (dashboard-set-file-icons t)
-  ;;   (dashboard-set-navigator t)
-  ;;   (dashboard-set-init-info t)
-  ;;   (dashboard-set-footer nil)
-  ;;   (show-week-agenda-p t)
-  ;;   (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  ;;   :config
-  ;;   (dashboard-setup-startup-hook))
-
-  ;; (use-package fancy-battery
-  ;;   :ensure t
-  ;;   :config
-  ;;     (setq fancy-battery-show-percentage t)
-  ;;     (setq battery-update-interval 15)
-  ;;     (if window-system
-  ;;       (fancy-battery-mode)
-  ;;       (display-battery-mode)))
-
-  ;; (use-package smart-mode-line  
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (sml/no-confirm-load-theme t)
-  ;;   (sml/theme 'respectful)
-  ;;   :config
-  ;;   (sml/setup))
+  :init)
 
 ;;; Popwin - предсказуемые попапы
 
@@ -452,20 +335,7 @@
   :config
   (taoline-mode 1))
 
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :custom ((doom-modeline-height 8))
-;;   :config
-;;   (custom-set-faces
-;;    '(mode-line ((t (:family "Iosevka" :height 140))))
-;;    '(mode-line-inactive ((t (:family "Iosevka" :height 140)))))
-;;   :init 
-;;   (doom-modeline-mode t))
-
-
-;; Конец файла
-
-;; Мини-карта
+;;; Мини-карта
 
 (use-package minimap 
   :ensure t

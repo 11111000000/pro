@@ -1,7 +1,8 @@
 ;;; package --- Summary
+;; Дополнение строк
 ;;; Commentary:
+;; Автодополнение текста на базе Corfu
 ;;; Code:
-;;; Автодополнение текста на базе Corfu
 ;;; Инициализация Corfu
 
 ;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
@@ -138,3 +139,4 @@
 ;;   (corfu-history-mode))
 
 (provide 'дополнение-строк)
+;;; дополнение-строк.el ends here
