@@ -1,6 +1,6 @@
-;;; package --- Summary
-;; Сеть и Интернет
+;;; сеть.el --- Сеть и Интернет
 ;;; Commentary:
+;; Конфигурация сетевых сервисов, браузеров и мессенджеров
 ;;; Code:
 ;;; Ускорение работы SSH
 
@@ -145,7 +145,7 @@
 ;;   :init
 ;;   (setq alert-default-style 'notifier))
 
-;;; Карты
+;;; Карты OSM
 
 (use-package osm
   :ensure t)

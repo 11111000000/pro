@@ -1,9 +1,7 @@
-;;; package --- Summary
+;;; инструменты.el --- Разные полезные инструменты
 ;;; Commentary:
 ;;; Code:
-;;; Инструменты
-
-;;; Открыть с помощью...
+;;;; Открыть файл с помощью чего-нибудь
 
 (use-package openwith
   :ensure t
@@ -17,16 +15,18 @@
                                 ("\\.ods\\'" "soffice" (file))
                                 ("\\.xopp\\'" "xournalpp" (file)))))
 
-;;; Запускалка приложений
-
-;; (use-package bon-app-launcher  
-;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)
-;;   )
+;;;; Запускалка приложений из системного меню
 
 (use-package app-launcher  
   :straight '(app-launcher :host github :repo "SebastienWae/app-launcher")
   :bind (("s-x" . app-launcher-run-app))
   )
 
+;; (use-package bon-app-launcher  
+;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)
+;;   )
+
+
 
 (provide 'инструменты)
+;;; инструменты.el ends here

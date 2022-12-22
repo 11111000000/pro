@@ -1,7 +1,9 @@
-;;; package --- Summary
+;;; терминалы.el --- Терминалы
 ;;; Commentary:
+
+;; Конфигурация терминалов
+
 ;;; Code:
-;;; Терминалы
 ;;; Мульти-терминалы
 
 (use-package multi-term
@@ -15,20 +17,14 @@
          ("M-±" . multi-term-dedicated-toggle)
          ("C-c to" . multi-term-dedicated-toggle)
          :map term-mode-map
-
          ("C-c C-j" . az/term-toggle-mode)
          ("C-c C-k" . az/term-toggle-mode)
-
          :map term-raw-map
-
          ("C-c C-j" . az/term-toggle-mode)
          ("C-c C-k" . az/term-toggle-mode))
-
   :custom ((term-buffer-maximum-size 0)
            (show-trailing-whitespace nil))
-
   :config
-
   (add-hook 'term-mode-hook
             (lambda ()
               (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
@@ -39,7 +35,7 @@
 ;; Функция для переключение режима перемещения по терминалу
 
 (defun az/term-toggle-mode ()
-  "Toggles term between line mode and char mode."
+  "Toggle term between line mode and char mode."
   (interactive)
   (if (term-in-line-mode)
       (term-char-mode)
@@ -51,7 +47,10 @@
   :ensure t
   :demand t)
 
+;;;; Настройка приглашения Eshell
+
 (defun custom-eshell-prompt ()
+  "Настройка приглашения оболочки EShell."
   (let* (
          (git-branch-unparsed
           (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))

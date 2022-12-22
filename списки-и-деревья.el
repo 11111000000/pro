@@ -1,14 +1,14 @@
-;;; package --- Summary
+;;; списки-и-деревья --- Списки и Деревья (не только файлов)
 ;;; Commentary:
+;; Конфигурация списков файлов и деревьев
 ;;; Code:
-;;; Конфигурация списков файлов и деревьев
 ;;; Файлы и каталоги
 
 (use-package dired
   :straight (:type built-in)
   :bind (("C-x d" . dired-jump)
          ("C-x C-d" . dired-jump)
-         :map dired-mode-map         
+         :map dired-mode-map
          ("j" . dired-next-line)
          ("k" . dired-previous-line)
          ("l" . dired-find-file)
@@ -138,7 +138,12 @@
 (use-package treemacs-icons-dired
   :ensure t
   :hook (dired-mode . treemacs-icons-dired-enable-once)
-  )
+  :init
+  (add-hook 'after-load-theme-hook 
+          (lambda () 
+            (treemacs-icons-dired-mode -1)
+            (sleep-for 0 100)
+            (treemacs-icons-dired-mode 1))))
 
 ;;; Дерево для проектов
 
@@ -159,5 +164,5 @@
 
 (use-package ag :ensure t)
 
-(provide 'деревья)
-;;; деревья.el ends here
+(provide 'списки-и-деревья)
+;;; списки-и-деревья.el ends here

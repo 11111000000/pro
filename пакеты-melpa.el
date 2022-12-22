@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; пакеты-melpa.el --- Пакеты MELPA
 ;;; Commentary:
 ;;; Code:
 ;;;; Источник пакетов Melpa
@@ -22,5 +22,4 @@
                      (setq-default use-package-verbose t)))
 
 ;;; Настройки customize
-
 ;; (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))

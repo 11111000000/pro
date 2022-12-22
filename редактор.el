@@ -1,5 +1,4 @@
-;;; package --- Summary
-;; Редактор
+;;; редактор.el --- Редактор
 ;;; Commentary:
 ;;; Code:
 ;;; Кодировка
@@ -29,27 +28,6 @@
   (add-to-list 'reverse-im-modifiers 'super)
   (add-to-list 'reverse-im-input-methods "russian-computer")
   (reverse-im-mode t))
-
-;;; Курсор
-
-;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
-
-(setq cursor-type 'box)
-(blink-cursor-mode t)
-(setq x-stretch-cursor t)
-
-;; В зависимости от включенного режима ввода, курсор меняет свой вид
-
-(use-package cursor-chg
-  :ensure t
-  :straight '(cursor-chg :host github :repo "emacsmirror/cursor-chg"))
-
-(setq curchg-input-method-cursor-color "red"
-      curchg-default-cursor-type 'bar
-      curchg-default-cursor-color "#333"
-      curchg-change-cursor-on-input-method-flag t)
-
-(change-cursor-mode t)
 
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 

@@ -1,5 +1,6 @@
-;;; package --- Summary
+;;; пример-early-init.el --- Пример файла раннего запуска
 ;;; Commentary:
+;; Этот файл можно скопировать в ~/.emacs.d/early-init.el
 ;;; Code:
 ;;; Оптимизация загрузки пакетного менеджера
 
@@ -7,12 +8,12 @@
 
 ;;; Оптимизация загрузки UI
 
-(push '(menu-bar-lines . 0) default-frame-alist)
+;; (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-
-(set-face-attribute 'default nil :height 160)
 
 (setq inhibit-startup-screen t)
 (setq window-resize-pixelwise t)
 (setq frame-resize-pixelwise t)
+(setq frame-inhibit-implied-resize t)
+;;; пример-early-init.el ends here.

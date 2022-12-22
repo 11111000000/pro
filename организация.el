@@ -1,8 +1,7 @@
-;;; package --- Summary
+;;; организация.el --- Конфигурация Org-mode и Outline/Outshine
 ;;; Commentary:
 ;;; Code:
-;;; Конфигурация Org-mode
-;;; Базовые настройки
+;;;; Базовые настройки
 
 (load-library "find-lisp")
 
@@ -20,7 +19,7 @@
   (require 'org-compat)
   :init)
 
-;;; Красивые заголовки
+;;;; Красивые заголовки
 
 (use-package org-bullets
   :if window-system
@@ -35,19 +34,17 @@
            (org-hide-leading-stars nil)
            ))
 
-;;; Иконки приоритетов
+;;;; Иконки приоритетов
 
 (use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
 
-;;; Иконка свёртки заголовков
-
+;;;; Иконка свёртки
 
 (setq-default org-ellipsis "…")
 
-;;; Картинки
+;;;; Картинки
 
 ;; По-умолчанию изображения в Org-файлах показаны:
-
 
 (setq-default org-startup-with-inline-images nil)
 
@@ -55,7 +52,7 @@
 
 (setq-default org-image-actual-width nil)
 
-;;; Блоки кода
+;;;; Блоки кода
 
 ;; Скрываем блоки кода при открытии документа
 
@@ -110,7 +107,7 @@
 
 (setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
 
-;;; Клавиши
+;;;; Клавиши
 
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
@@ -163,7 +160,7 @@
     (show-children) 
     (recenter-top-bottom)))
 
-;;; Учёт времени
+;;;; TODO Учёт времени
 ;;;; Помодоро
 
 ;; Простой таймер для учёта рабочего времени и перерывов:
@@ -179,13 +176,12 @@
   	       (org-pomodoro-play-sounds 1)))
 
 
-;;; TODO Поли-моды
+;;;; TODO Поли-моды
 
 ;; https://polymode.github.io/usage/
 
-;;; TODO Таблицы
-
-;;; Заметки
+;;;; TODO Таблицы
+;;;; Заметки
 
 (use-package org-noter
   :ensure t
@@ -193,17 +189,18 @@
         :map doc-view-mode-map
         ("i" . org-noter-insert-note)))
 
-;;; Цветные тэги
+;;;; Цветные тэги
 
 ;; (use-package org-rainbow-tags  
 ;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"
 ;;   :hook ((org-mode . org-rainbow-tags-mode))
 ;;   :init)
 
-;;; Режим Org в обычных файлах
+;;;; Организация кода
 
-(use-package outshine  
+(use-package outshine
   :ensure t
+  :custom ((outshine-startup-folded-p nil))
   :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
          (outline-minor-mode . outshine-mode)
          (outline-minor-mode . iimage-mode))
@@ -212,13 +209,12 @@
               ("C-<tab>" . outshine-cycle)))
 
 (use-package outshine-bullets
-  :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets")
-  
-  ;; :load-path "emacs-lisp/outshine-bullets"
+  :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets") 
   :hook ((outshine-mode . outshine-bullets-mode))
-  :custom (
-	   (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣" "‣"))
-	   ))
-
+  ;; :custom (
+	;;    (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣"))
+	;;    )
+  )
 
 (provide 'организация)
+;;; организация.el ends here

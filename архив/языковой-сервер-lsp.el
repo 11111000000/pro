@@ -148,53 +148,6 @@
   :ensure t)
 
 
-;;;;; DAP
-
-(use-package dap-mode 
-  :ensure t
-  ;; :hook (
-  ;;        (js-mode . dap-mode)
-  ;;        ;; (js-mode . dap-ui-mode)
-  ;;        ;; (typescript-mode . dap-mode)
-  ;;        ;; (typescript-mode . dap-ui-mode)
-  ;;        )
-  :bind (:map dap-mode-map
-              ("C-c bb" . dap-ui-breakpoints) 
-              ("C-c bl" . dap-ui-locals) 
-              ("C-c bt" . dap-breakpoint-toggle) 
-              ("C-c bd" . dap-breakpoint-delete) 
-              ("C-c bi" . dap-step-in) 
-              ("C-c bo" . dap-step-out) 
-              ("C-c bc" . dap-continue) 
-              ("<f5>" . dap-continue) 
-              ("<f6>" . dap-step-in) 
-              ("<f7>" . dap-step-out)) 
-  :config (setq dap-auto-configure-features '(locals expression breakpoints)) 
-  (require 'dap-chrome) 
-  (require 'dap-firefox)
-
-  ;;   (dap-register-debug-template
-  ;;    "Test"
-  ;;    (list :type "chrome"
-  ;;          :cwd "/home/az/Projects/Test"
-  ;;          :mode "url"
-  ;;          :request "launch"
-  ;;          :webRoot "/home/az/Projects/Test"
-  ;;          :runtimeExecutable "/usr/bin/chromium-ungoogled"
-  ;;          :url "file:///home/az/Projects/Test/index.html"
-  ;;          :name "Test"))
-
-  ;;   ;; (dap-register-debug-template
-  ;;   ;;  "PlasmaFinance"
-  ;;   ;;  (list :type "chrome"
-  ;;   ;;        :cwd "/home/az/Projects/Plasma/hyper-dex-widget"
-  ;;   ;;        :mode "url"
-  ;;   ;;        :request "launch"
-  ;;   ;;        :webRoot "/home/az/Projects/Plasma/hyper-dex-widget"
-  ;;   ;;        :runtimeExecutable "/home/az/Projects/Plasma/chromium-plasma"
-  ;;   ;;        :url "http://localhost:3000"
-  ;;   ;;        :name "PlasmaFinance"))
-  )
 
 
 (provide 'dobro-code-lsp)

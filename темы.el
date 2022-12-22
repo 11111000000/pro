@@ -1,4 +1,6 @@
-;;; Темы
+;;; Commentary
+;; Темы
+;;; Code
 
 (use-package kaolin-themes
   :config

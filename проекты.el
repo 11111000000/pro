@@ -1,15 +1,13 @@
-;;; package --- Summary
-;; Проекты
+;;; проекты.el --- Управление проектами
 ;;; Commentary:
 ;;; Code:
-;;; Модуль для работы с проектами
+;;;; Модуль для работы с проектами
 
 (use-package projectile
   :ensure t
   :custom ((projectile-sort-order 'recently-active)
            (projectile-project-search-path '("~/Проекты/"))
-           (projectile-switch-project-action #'projectile-dired)
-           )
+           (projectile-switch-project-action #'projectile-dired))
   :bind (
          ("s-P" . projectile-add-known-project)
          ("C-c p C-p" . projectile-add-known-project)
@@ -24,7 +22,7 @@
 
   (projectile-mode t))
 
-;;; Заметки к проекту
+;;;; Заметки к проекту
 
 (use-package org-projectile
   :ensure t
@@ -43,10 +41,9 @@
   ;;   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
   ;;   (push (org-projectile-project-todo-entry) org-capture-templates))
   :init
-  (org-projectile-per-project)
-  )
+  (org-projectile-per-project))
 
-;;; Система контроля версий Git
+;;;; Система контроля версий Git
 
 (use-package magit
   :ensure t
@@ -61,14 +58,13 @@
 
 (use-package magit-todos :ensure t)
 
-;;; Автоматизация проекта
+;;;; Автоматизация проекта
 
 (use-package prodigy
   :ensure t
   :bind (("C-c C-p" . prodigy)))
 
-;;; Контейнеры Docker
-
+;;;; Контейнеры
 
 (use-package docker
   :bind (("C-c d" . docker))
@@ -82,21 +78,21 @@
   :config)
 
 ;; (use-package slime-docker
-;; :ensure t  
+;; :ensure t
 ;; :init
 ;; :config)
 
 (use-package docker-compose-mode
-  :ensure t  
+  :ensure t
   :init
   :config)
 
 (use-package docker-tramp
-  :ensure t  
+  :ensure t
   :init
   :config)
 
-;;; Поддержка Github
+;;;; Поддержка Github
 
 (use-package github)
 

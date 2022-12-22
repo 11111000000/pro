@@ -1,41 +1,33 @@
-;;; package --- Summary
-;; LISP
+;;; лисп.el --- LISP
 ;;; Commentary:
 ;;; Code:
-;;; Emacs Lisp
+;;;; Emacs Lisp
 
 (use-package emacs-lisp
   :straight (:type built-in)
   :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . eval-buffer)))
+              ("C-c C-c" . my/eval-buffer)))
 
-;; Функция для реального перевыполнения форм в буфере
+;;;;; Функция для реального перевыполнения форм в буфере
 
 (defun my/eval-buffer ()
   "Execute the current buffer as Lisp code.
 Top-level forms are evaluated with `eval-defun' so that `defvar'
-and `defcustom' forms reset their default values." 
-  (interactive) 
+and `defcustom' forms reset their default values."
+  (interactive)
   (save-excursion (goto-char (point-min)) 
                   (while (not (eobp)) 
                     (forward-sexp) 
                     (eval-defun nil))))
 
-;; Функция для поиска определения символа в Elisp
-
-                                        ;   (defun find-symbol-at-point ()
-                                        ;   "Find the symbol at point, i.e. go to definition."
-                                        ;   (interactive)
-                                        ;   (let ((sym (symbol-at-point)))
-                                        ;     (if (boundp sym)
-                                        ; 	(find-variable sym)
-                                        ;       (find-function sym))))
-
-                                        ; (define-key lisp-mode-shared-map (kbd "M-.") 'find-symbol-at-point)
-                                        ; (define-key emacs-lisp-mode-map (kbd "M-.") 'find-symbol-at-point)
+(use-package flymake-elisp-config
+  :straight '(flymake-elisp-config :repo "https://github.com/ROCKTAKEY/flymake-elisp-config.git")
+  :config
+  (flymake-elisp-config-global-mode)
+  (flymake-elisp-config-auto-mode))
 
 
-;; Статический анализатор для Elisp
+;;;;; Статический анализатор для Elisp
 
 (use-package elsa 
   :ensure t 
@@ -46,7 +38,7 @@ and `defcustom' forms reset their default values."
   :after flycheck 
   :config (flycheck-elsa-setup))
 
-;; Автоматическое тестирование и отладка конфига Emacs
+;;;;; Автоматическое тестирование и отладка конфига Emacs
 
 (use-package bug-hunter 
   :disabled t 
@@ -54,7 +46,25 @@ and `defcustom' forms reset their default values."
   :defer t)
 
 
-;;; Geiser
+;;;;; Форматирование ELISP
+
+(use-package elisp-format 
+  :ensure t
+  ;; :hook
+  ;; ((emacs-lisp-mode
+  ;;         .
+  ;;         (lambda
+  ;;           ()
+  ;;           (add-hook 'before-save-hook #'elisp-format-buffer))))
+  )
+
+;; (use-package elisp-autofmt
+;;   :load-path "emacs-lisp/emacs-lisp-autofmt/"
+;;   :commands (elisp-autofmt-mode)
+;;   :hook (emacs-lisp-mode . elisp-autofmt-mode))
+
+
+;;;; REPL к разным LISP-ам
 
 (use-package geiser
   :ensure t
@@ -82,22 +92,7 @@ and `defcustom' forms reset their default values."
 
                                         ;(with-eval-after-load 'yasnippet
                                         ;  (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
-;;; Форматирование
 
-;; (use-package elisp-autofmt
-;;   :load-path "emacs-lisp/emacs-lisp-autofmt/"
-;;   :commands (elisp-autofmt-mode)
-;;   :hook (emacs-lisp-mode . elisp-autofmt-mode))
-
-(use-package elisp-format 
-  :ensure t
-  ;; :hook
-  ;; ((emacs-lisp-mode
-  ;;         .
-  ;;         (lambda
-  ;;           ()
-  ;;           (add-hook 'before-save-hook #'elisp-format-buffer))))
-  )
 
 (provide 'лисп)
 ;;; лисп.el ends here

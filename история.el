@@ -1,22 +1,35 @@
-;;; package --- Summary
-;; История
+;;; история.el --- История
 ;;; Commentary:
 ;; Функции для работы с историей, хранением и
 ;; восстановлением состояний
 ;;; Code:
-;;; Сохранение истории
+;;;; Сохранение истории
+
+(use-package no-littering
+  :ensure t
+  :custom ((make-backup-files t)
+           (delete-by-moving-to-trash t)
+           (backup-by-copying t)
+           (kept-new-versions 25)
+           (history-delete-duplicates t)
+           (history-length 300)
+           (savehist-autosave-interval 300)
+           ;;(savehist-file "~/.emacs.d/history")
+           (kept-old-versions 25)
+           (delete-old-versions t)
+           (create-lockfiles nil)
+           (vc-make-backup-files t)
+           (version-control t))
+  :config
+  (savehist-mode t)  
+  (setq
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;; Сохранять действия в ~~/.emacs.d/history~
 
-(setq-default history-delete-duplicates t
-              history-length 300
-              savehist-autosave-interval 300
-              savehist-file "~/.emacs.d/history")
-
-(savehist-mode t)
-
-;;; Текстовая Машина Времени
-;;;; Дерево версий текста
+;;;; Текстовая Машина Времени
+;;;;; Дерево версий текста
 
 (use-package undo-tree
   :ensure t
@@ -33,20 +46,19 @@
   :init (global-undo-tree-mode 1))
 
 
-;;;; Вернуться к последней правке
+;;;;; Вернуться к последней правке
 
 (use-package goto-last-change :ensure t
   :ensure t
   :bind (("C-c C-," . goto-last-point)))
 
-;;;; Вернуться к предыдущей позиции курсора
+;;;;; Вернуться к предыдущей позиции курсора
 
-(use-package goto-last-point 
+(use-package goto-last-point
   :ensure t
   :bind (("C-c ," . goto-last-point))
   :config
-  (goto-last-point-mode t)
-  )
+  (goto-last-point-mode t))
 
 ;; (use-package backward-forward
 ;;   :ensure t
@@ -59,68 +71,50 @@
 ;;   :config
 ;;   (backward-forward-mode t))
 
-;;; Путешествие по истории окон
+;;;; Путешествие по истории окон
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>
 
-(use-package winner  
+(use-package winner
   :bind (("<XF86Back>" . winner-undo)
          ("<XF86Forward>" . winner-redo)
          ("s-u" . winner-undo))
   :init
   (winner-mode 1))
 
-;;; Помнить места
+;;;; Помнить места
 
 (use-package saveplace
   :ensure t
-  :custom (save-place-file "~/.emacs.d/places")
+  :after (no-littering)
+  ;;:custom (save-place-file "~/.emacs.d/places")
   :init
   (save-place-mode t))
 
-;;; Помнить недавние файлы
+;;;; Помнить недавние файлы
 
-(use-package recentf  
+(use-package recentf
+  :after (no-littering)
   :custom ((recentf-max-saved-items 512)   ;; всего
            (recentf-max-menu-items 100)    ;; меню
 
            ;; ...исключая некоторые:
-           
+
            (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
-                              "/\\.emacs\\.d/elpa" ; ELPA
-                              "/\\.emacs\\.d/etc/"
-                              "/\\.emacs\\.d/var/"
+                              "/\\.emacs\\.d/elpa" ; ELPA                              
                               "-autoloads\\.el\\'"
+                              no-littering-var-directory
+                              no-littering-etc-directory
                               "\\.elc\\'"
-                              "/TAGS\\'")))
-  :config 
+                              "/TAGS\\'"))
+           )
+  :config
   (recentf-mode t))
 
-;;; История копирования
+;;;; История копирования
 
-(setq-default kill-ring-max 300                
+(setq-default kill-ring-max 300
               save-interprogram-paste-before-kill t)
-
-;;; Бэкапы и временные файлы
-
-(use-package no-littering
-  :ensure t
-  :custom ((make-backup-files t)               
-           (delete-by-moving-to-trash t)       
-           (backup-by-copying t)               
-           (kept-new-versions 25)              
-           (kept-old-versions 25)
-           (delete-old-versions t)                                         
-           (create-lockfiles nil)
-           (vc-make-backup-files t)
-           (version-control t))
-  :config    
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)  
-  (setq
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
 
 
 (provide 'история)

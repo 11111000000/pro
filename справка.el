@@ -1,13 +1,13 @@
-;;; package --- Summary
+;;; справка.el --- Справка и подсказки
 ;;; Commentary:
 ;;; Code:
-;;; Справка
+;;;; Справка
 
 (use-package help
   :straight (:type built-in)
   )
 
-;;; Info
+;;;; Info
 
 (use-package info   
   :bind (:map Info-mode-map
@@ -22,7 +22,7 @@
          ("<XF86Forward>" . nil)))
 
 
-;;; Дополнительная справка
+;;;; Дополнительная справка
 
 (use-package helpful 
   :ensure t 
@@ -34,13 +34,13 @@
          ("C-h F" . helpful-function)
          ("C-h C" . helpful-command)))
 
-;;;  Изучение API Elisp
+;;;; Изучение API Elisp
 
 (use-package elisp-demos 
   :ensure t 
   :config)
 
-;;; Подсказка комбинаций кавиш
+;;;; Подсказка комбинаций кавиш
 
 (use-package guide-key
   :ensure t
@@ -64,30 +64,31 @@
       ("popwin" . "hot pink")
       ("macro" . "medium orchid")
       ("region" . "cadet blue")
-      ("mark" . "moccasin")))
-   )
+      ("mark" . "moccasin"))))
   :init
   (guide-key-mode t))
 
-;;; Документация по языку во всплывающем окне
+;;;; Документация по языку во всплывающем окне
 
 (use-package eldoc-box
   :ensure t
   :custom
-  (eldoc-idle-delay 1)
+  (eldoc-idle-delay 1)  
+  
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
-         (eldoc-box-frame-hook . (lambda () (setq cursor-in-non-selected-windows nil)))
-         )
-  
+         (eldoc-box-frame-hook . (lambda ()
+                                   (setq cursor-in-non-selected-windows nil))))
   :config
+  (require 'eldoc)
   (setq-default cursor-in-non-selected-windows nil)
-  
+  (setq-default eldoc-documentation-strategy #'eldoc-documentation-enthusiast)
+  (setq-default eldoc-documentation-function #'eldoc-documentation-enthusiast)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :family "Iosevka" :weight 'normal :italic nil :height 110))
+  (set-face-attribute 'eldoc-box-body nil :family "Fira Code" :weight 'normal :italic nil :height 0.8))
 
-;;; Статистика нажатий
+;;;; Статистика нажатий
 
 (use-package keyfreq
   :ensure t

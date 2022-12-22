@@ -1,57 +1,55 @@
-;;; package --- Summary
-;; Дополнение строк
+;;; дополнение-строк.el --- Дополнение строк
 ;;; Commentary:
 ;; Автодополнение текста на базе Corfu
 ;;; Code:
-;;; Инициализация Corfu
+;;;; Инициализация Corfu
 
 ;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
-(defun corfu-enable-always-in-minibuffer ()
-  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-  (unless (or (bound-and-true-p mct--active) ; Useful if I ever use MCT
+(defun в-минибуфере-включать-corfu ()
+  "Включать Corfu в минибуфере если Vertico/Mct не активны."
+  (unless (or (bound-and-true-p mct--active)
               (bound-and-true-p vertico--input))
     (setq-local corfu-auto nil)
     (corfu-mode 1)))
 
-(use-package corfu 
-  :ensure t 
+(use-package corfu
+  :ensure t
   :bind (:map corfu-map
-              ("<escape>". corfu-quit) 
-              ("<return>" . corfu-insert) 
-              ("C-h" . corfu-show-documentation) 
-              ("M-l" . corfu-show-location)
-              ("C-n" . nil)
-              ("C-p" . nil)
+              ("<escape>". corfu-quit)
+              ("<return>" . corfu-insert)
+              ("C-h" . corfu-info-documentation)
+              ("M-l" . corfu-info-location)
+              ("C-n" . corfu-quit)
+              ("C-p" . corfu-quit)
               ("M-n" . corfu-next)
               ("M-p" . corfu-previous)
-              ("TAB" . corfu-next) 
-              ([tab] . corfu-next)              
-              ("S-TAB" . corfu-previous) 
-              ([backtab] . corfu-previous)) 
+              ("TAB" . corfu-next)
+              ([tab] . corfu-next)
+              ("S-TAB" . corfu-previous)
+              ([backtab] . corfu-previous))
   :custom
-  (tab-always-indent 'complete) 
-  (completion-cycle-threshold nil) 
-  (corfu-auto t) 
-  (corfu-auto-prefix 2) 
-  (corfu-auto-delay 0.25)
+  (tab-always-indent 'complete)
+  (completion-cycle-threshold nil)
+  (corfu-auto t)
+  (corfu-auto-prefix 3)
+  (corfu-auto-delay 1)
   ;; (corfu-min-width 80)
   ;; (corfu-max-width corfu-min-width)
-  (corfu-count 14) 
-  (corfu-scroll-margin 4) 
+  (corfu-count 5)
+  (corfu-scroll-margin 2)
   (corfu-cycle t)
   (corfu-echo-documentation nil)
   (corfu-separator ?\s) 
-  (corfu-quit-no-match 'separator) 
-  (corfu-preview-current 'insert) 
+  (corfu-quit-no-match 'separator)
+  (corfu-preview-current 'insert)
   (corfu-preselect-first t)
   
   :init
 
   (global-corfu-mode)
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
-  )
+  (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
 
-;;; Расширения для автодополнения
+;;;; Расширения для автодополнения
 
 (use-package cape
   :ensure t
@@ -86,7 +84,7 @@
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
 )
 
-;;; Документация для автодополнения
+;;;; Документация для автодополнения
 
 (use-package corfu-doc
   :ensure t
@@ -98,7 +96,7 @@
               ("M-v" . #'corfu-doc-scroll-down))
   :custom
   
-  (corfu-doc-delay 0.5)
+  (corfu-doc-delay .8)
   (corfu-doc-max-width 70)
   (corfu-doc-max-height 20)
 
@@ -107,12 +105,12 @@
   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
   (corfu-echo-documentation nil))
 
-;;; Автодополнение для терминала
+;;;; Автодополнение для терминала
 
 (use-package corfu-terminal
   :ensure t)
 
-;;; Иконки для автодополнения
+;;;; Иконки для автодополнения
 
 (use-package kind-icon 
   :ensure t 
@@ -128,7 +126,7 @@
                (interactive)
                (kind-icon-reset-cache))))
 
-;;; История автодополнения
+;;;; История автодополнения
 
 ;; (use-package corfu-history
   

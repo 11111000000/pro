@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; режим-бога.el --- Режим бога (Всегда Ctrl)
 ;;; Commentary:
 ;;; Code:
 

@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; огрызок.el --- Настройки для макбука
 ;;; Commentary:
 ;;; Code:
 
@@ -9,13 +9,6 @@
   :init
   (exec-path-from-shell-initialize))
 
-(global-set-key (kbd "s-w") 'delete-window)
-(global-set-key (kbd "C-w") 'delete-window)
-
-(global-set-key (kbd "s-d") 'nil)
-(global-set-key (kbd "s-t") 'make-frame)
-
-(global-set-key (kbd "s-q") 'delete-frame)
 
 (use-package smooth-scroll
   :ensure t
@@ -27,6 +20,14 @@
 (global-set-key (kbd "s-+") 'text-scale-increase)
 (global-set-key (kbd "s-=") 'text-scale-increase)
 (global-set-key (kbd "s-_") 'text-scale-set)
+
+(global-set-key (kbd "s-w") 'delete-window)
+(global-set-key (kbd "C-w") 'delete-window)
+
+(global-set-key (kbd "s-d") 'nil)
+(global-set-key (kbd "s-t") 'make-frame)
+
+(global-set-key (kbd "s-q") 'delete-frame)
 
 ;; (add-hook 'window-setup-hook (lambda()
 ;;                                  (setq ns-auto-hide-menu-bar t)

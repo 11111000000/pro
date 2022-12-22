@@ -1,82 +1,56 @@
-;;; внешний-вид.el --- Внешний вид и интерфейс
-;;  Внешний вид
+;;; внешний-вид.el --- Интерфейс
+;; Внешний вид и интерфейс
 ;;; Commentary:
 ;;; Code:
-;;; Буферы
+;;;; Сокращение диалогов до y/n
 
-;;;; Уникальные имена для буферов
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;;;; Буферы
+;;;;; Уникальные имена для буферов
 
 (setq uniquify-buffer-name-style 'forward)
 
-;;;; Включаем автоактуализацию всех буферов
+;;;;; Включаем автоактуализацию всех буферов
 
 (global-auto-revert-mode t)
 (setq-default global-auto-revert-non-file-buffers t)
 (setq-default auto-revert-verbose nil)
 
-;;;; Клавиша для принудительного обновления
+;;;;; Клавиша для принудительного обновления
 
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "s-r") (lambda () (interactive) (revert-buffer t t)))
 
-;;;; Асинхронные буферы скрыты
+;;;;; Асинхронные буферы скрыты
 
 (add-to-list 'display-buffer-alist
              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-;;;;  Новые асинхронные буферы переименовываются не спрашивая ничего:
+;;;;;  Новые асинхронные буферы переименовываются не спрашивая ничего:
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
-;;; Полноэкранный режим
+;;;; Полноэкранный режим
 
 (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen) ;; Mac style
 
-;;; Сообщения
+;;;; Сообщения
 
 (global-set-key (kbd "C-c m") 'popwin:messages)
 
-;;; Предотвращаем мигание при запуске
-
-;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
-
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we easily halve startup times with fonts that are
-;; larger than the system default.
-(setq frame-inhibit-implied-resize t)
-
-
-;;; Тулбар скрыт
+;;;; Тулбар скрыт
 
 (when (bound-and-true-p tool-bar-mode)
   (tool-bar-mode -1))
 
-(when (bound-and-true-p menu-bar-mode)
-  (menu-bar-mode -1))
+;;;; Меню не скрыто
 
-;;; Минибуфер
+;; (when (bound-and-true-p menu-bar-mode)
+;;   (menu-bar-mode -1))
 
-;;;; Системный монитор
-;; Когда 7 секунд пользователь ничего не делает, в минибуфере отображается /Системный Монитор/ с часами слева:
-
-(use-package symon
-  :disabled t
-  :ensure t    
-  :if window-system
-  :custom
-  (symon-delay 12)
-  (symon-sparkline-type 'gridded)
-  (symon-monitors '(symon-current-time-monitor symon-linux-memory-monitor symon-linux-cpu-monitor symon-linux-battery-monitor))
-  :init
-  (symon-mode) 
-  (symon-display)
-)
-
-;;;; Размер шрифта в минибуфере
+;;;; Минибуфер
+;;;;; Размер шрифта в минибуфере
 
 ;; TODO конфликт с taoline ?
 ;; (dolist
@@ -85,7 +59,7 @@
 ;;     (with-current-buffer buf
 ;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
 
-;;;; Минибуфер во фрейме поверх окна
+;;;;; Минибуфер во фрейме поверх окна
 
 (use-package mini-frame
   :disabled t
@@ -99,45 +73,34 @@
   :init
   (mini-frame-mode -1))
 
-;;;; Отключаем рекурсивные минибуферы
+;;;;; Отключаем рекурсивные минибуферы
 ;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/ 
 
 (setq-default enable-recursive-minibuffers nil)
 
-;;; Показать текущее время
+;;;; Показать текущее время win+F1
 
 (global-set-key (kbd "s-<f1>") (lambda () (interactive) (print (current-time-string))))
 
-;;; Изменение размера шрифта
+;;;; Изменение размера шрифта
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
 
-;;; Сокращение диалогов до y/n
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-
-;;; Скроллбар
+;;;; Скроллбар
 
 (if window-system (scroll-bar-mode -1))
 
-;;; Иконки
-
-;; Во первых нужны сами иконочные шрифты, поместим их в ~/.locale/share/fonts :
-
-;; > mkdir -p ~/.local/share/fonts/ ~/tmp/
-;; > git clone git@github.com:domtronn/all-the-icons.el.git ~/tmp/all-the-icons
-;; > cp ~/tmp/all-the-icons/fonts/* ~/.local/share/fonts
+;;;; Иконки
 
 (use-package all-the-icons
   :if window-system
   :ensure t
   )
 
-;;; Цвет
+;;;; Цвет
 
 ;; Цветовые темы не должны накладываться друг на друга
 
@@ -152,7 +115,35 @@
   "Run `after-load-theme-hook'."
   (run-hooks 'after-load-theme-hook))
 
-;;; Изображения
+;;;; Курсор
+
+
+;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
+
+(setq cursor-type 'box)
+(blink-cursor-mode t)
+(setq x-stretch-cursor t)
+
+;; В зависимости от включенного режима ввода, курсор меняет свой вид
+
+(use-package cursor-chg
+  :ensure t
+  :straight '(cursor-chg :host github :repo "emacsmirror/cursor-chg")
+  :config
+  (change-cursor-mode t)
+  (setq curchg-input-method-cursor-color "violet"
+        curchg-default-cursor-type 'bar
+        curchg-default-cursor-color (face-attribute 'default :foreground)
+        curchg-change-cursor-on-input-method-flag t)
+  
+  (add-hook 'after-load-theme-hook 
+          (lambda () 
+            (setq curchg-default-cursor-color (face-attribute 'default :foreground))
+            ))
+  )
+
+
+;;;; Изображения
 
 (use-package image+
   :ensure t  
@@ -163,7 +154,8 @@
                ("+" . imagex-sticky-maximize)
                ("=" . imagex-sticky-zoom-in)
                ("-" . imagex-sticky-zoom-out))))
-;;; Прокрутка
+
+;;;; Прокрутка
 
 ;; Настройки прокрутки
 
@@ -186,7 +178,7 @@
   :config (eyebrowse-mode))
 
 
-;;; Меню для буфера
+;;;; Меню для буфера
 
 ;; Меню для режима текущего файла, например в Org-mode показывает список заголовков как своего рода директории
 
@@ -195,14 +187,14 @@
   :custom ((imenu-auto-rescan t))  
   )
 
-;;; Перемещение по окнам
+;;;; Перемещение по окнам
 
 (global-set-key (kbd "s-h") 'windmove-left)
 (global-set-key (kbd "s-j") 'windmove-down)
 (global-set-key (kbd "s-k") 'windmove-up)
 (global-set-key (kbd "s-l") 'windmove-right)
 
-;;; Перемещение окон
+;;;; Перемещение окон
 
 (use-package buffer-move
   :ensure t
@@ -214,7 +206,7 @@
   :config
   )
 
-;;; Золотое сечение
+;;;; Золотое сечение
 
 ;; Даёт больше места текущему окну:
 
@@ -228,7 +220,7 @@
   :config
   (golden-ratio-mode -1))
 
-;;; Обзор
+;;;; Обзор
 
 ;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
 
@@ -250,7 +242,7 @@
          ) 
   :init)
 
-;;; Popwin - предсказуемые попапы
+;;;; Popwin - предсказуемые попапы
 
 (use-package popwin
   :ensure t
@@ -310,7 +302,7 @@
 ;; Функция для переключения окна в попапе по имени буфера
 
 (defun om/popwin-toggle-name (name)
-  "Toggle popup window by name"
+  "Toggle popup window by NAME."
   (let ((buf (get-buffer name)))
     (if (get-buffer-window buf t)
         (ignore-errors (delete-window (get-buffer-window buf t)))
@@ -335,7 +327,7 @@
   :config
   (taoline-mode 1))
 
-;;; Мини-карта
+;;;; Мини-карта
 
 (use-package minimap 
   :ensure t
@@ -355,7 +347,7 @@
   
   )
 
-;;; Переключение окон
+;;;; Переключение окон
 
 (use-package ace-window
   :ensure t
@@ -368,7 +360,7 @@
          ("s-F" . ace-swap-window)))
 
 
-;;; TODO Путь в заголовке
+;;;; TODO Путь в заголовке
 
 
 

@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; разные-функции.el --- Разные функции
 ;;; Commentary:
 ;;; Code:
 

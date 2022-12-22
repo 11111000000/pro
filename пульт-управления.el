@@ -1,13 +1,13 @@
-;;; package --- Summary
+;;; пульт-управления.el --- Пульт управления
 ;;; Commentary:
 ;;; Code:
-;;; Дашбоард
+;;; Дашборд
 
 (use-package dashboard
   :ensure t
   :bind (:map dashboard-mode-map
               ("C-g" . dashboard-refresh-buffer))
-  :custom 
+  :custom
   (dashboard-startup-banner "~/Добро/lisp.png")
   (dashboard-banner-logo-title "Добро пожаловать в свободную систему!")
   (dashboard-center-content t)
@@ -23,7 +23,7 @@
                           ("Projects:" . "Проекты:")
                           ("Registers:" . "Регистры")))
   (dashboard-set-heading-icons t)
-  (dashboard-set-file-icons t)                        
+  (dashboard-set-file-icons t)
   (dashboard-set-navigator nil)
   (dashboard-navigator-buttons
    `(;; line1
@@ -45,7 +45,7 @@
                                                 :height 1.1
                                                 :v-adjust -0.05
                                                 :face 'font-lock-keyword-face))
-  :init  
+  :init
   ;;(dashboard-setup-startup-hook)
   (dashboard-refresh-buffer)
   )

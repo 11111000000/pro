@@ -1,5 +1,4 @@
-;;; package --- Summary
-;; Шрифты для MacOS
+;;; шрифты-для-огрызка.el --- Шрифты для MacOS
 ;;; Commentary:
 ;;; Code:
 

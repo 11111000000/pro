@@ -1,7 +1,6 @@
-;;; package --- Summary
+;;; пакеты.el --- Пакетный менеджер Straight
 ;;; Commentary:
 ;;; Code:
-;;; Пакетный менеджер Straight
 
 (setq straight-use-package-by-default t) ;; have use-package use straight.el by default.
 

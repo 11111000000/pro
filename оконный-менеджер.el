@@ -1,44 +1,40 @@
-;;; package --- Summary
+;;; оконный-менеджер.el --- Оконный менеджер
 ;;; Commentary:
-;;; Code:
-
-;;; Xorg
-
 ;; Emacs X Window Manager - полноценный тайловый оконный менеджер
-
+;;; Code:
 ;;;; Xelb
 
-(use-package xelb 
-  :ensure t 
-  :if window-system 
+(use-package xelb
+  :ensure t
+  :if window-system
   ;; :load-path "emacs-lisp/xelb/"
   )
 
 ;;;; ExWM
 
-(defvar az/default-simulation-keys 
-  '(([?\C-b] . left) 
-    ([?\M-b] . C-left) 
-    ([?\C-f] . right) 
-    ([?\M-f] . C-right) 
-    ([?\C-p] . up) 
-    ([?\C-n] . down) 
-    ([?\C-a] . home) 
-    ([?\C-e] . end) 
-    ([?\M-v] . prior) 
-    ([?\C-v] . next) 
-    ([?\C-d] . ?\C-x) 
+(defvar az/default-simulation-keys
+  '(([?\C-b] . left)
+    ([?\M-b] . C-left)
+    ([?\C-f] . right)
+    ([?\M-f] . C-right)
+    ([?\C-p] . up)
+    ([?\C-n] . down)
+    ([?\C-a] . home)
+    ([?\C-e] . end)
+    ([?\M-v] . prior)
+    ([?\C-v] . next)
+    ([?\C-d] . ?\C-x)
     ([?\M-d] . (C-S-right delete))
     ;; cut/paste.
-    ([?\M-y] . ?\C-c) 
-    ([?\M-w] . ?\C-c) 
+    ([?\M-y] . ?\C-c)
+    ([?\M-w] . ?\C-c)
     ([?\C-y] . ?\C-v)
     ;; search
     ([?\C-s] . ?\C-f)))
 
 ;; (exwm-input-set-simulation-keys az/default-simulation-keys)
 
-(use-package exwm 
+(use-package exwm
   :ensure t
   :if window-system 
   :custom ((exwm-workspace-number 5) 
@@ -256,12 +252,10 @@
   
   (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
   (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
-  (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet") 
-  (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t") 
+  (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
+  (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
   (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
-
   )
-
 
 ;;;; Режимы ввода EMACS в приложениях
 

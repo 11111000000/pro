@@ -1,7 +1,7 @@
 ;;; веб-разработка.el --- HTML, CSS, Javascript, Typescript
 ;;; Commentary:
 ;;; Code:
-;;; Поддержка Javascript
+;;;; Javascript
 
 (use-package eslint-rc
   :ensure t
@@ -58,7 +58,7 @@
 
 ;; (add-hook 'rjsx-mode-hook #'use-eslint-from-node-modules)
 
-;;; Typescript
+;;;; Typescript
 
 (use-package typescript-mode
   :ensure t
