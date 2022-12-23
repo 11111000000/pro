@@ -2,8 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 ;;;; Elfeed
-(use-package elfeed 
-  :ensure t 
+(use-package elfeed
+  :ensure t
   :custom (elfeed-feeds '("http://nullprogram.com/feed" ("https://www.youtube.com/feeds/videos.xml?channel_id=UC8tThli1ZY7LW5Dxqr3Y0jA"
                                                          video) ;; Emacs macros channel
                           "hnrss.org/replies/?id=celeritascelery" "hnrss.org/newest?points=100"

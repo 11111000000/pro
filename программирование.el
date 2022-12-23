@@ -120,41 +120,6 @@ ARG - backward"
 ;;   ;;(apheleia-global-mode nil)
 ;;   )
 
-;;;; Сниппеты
-
-(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "программирование")) "etc/yasnippet.template.txt"))
-
-(defun dobro/yas-new-snippet-with-example ()
-  "Создать новый сниппет со шпаргалкой."
-  (interactive)
-  (funcall-interactively 'yas-new-snippet)
-  (erase-buffer)
-  (insert-file dobro/yas-new-snippet-prompt-file))
-
-(use-package yasnippet
-  :ensure t
-  :hook
-  (prog-mode . yas-minor-mode)
-  :bind (
-         ("C-c y v" . yas-visit-snippet-file)
-         ("C-c y i" . yas-insert-snippet)
-         ("C-c y y" . yas-insert-snippet)   
-         ("C-c y n" . dobro/yas-new-snippet-with-example)
-         )
-  :config
-  (yas-reload-all)
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"))
-
-  )
-
-;; (use-package yasnippet 
-;;   :ensure t 
-;;   :init (yas-global-mode 1))
-
-(use-package yasnippet-snippets 
-  :ensure t 
-  :init)
 
 ;;;; Подсветка цветов
 
@@ -189,6 +154,42 @@ ARG - backward"
 ;;   :after flymake
 ;;   :config
 ;;   (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
+
+;;;; Сниппеты
+
+(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "программирование")) "etc/yasnippet.template.txt"))
+
+(defun dobro/yas-new-snippet-with-example ()
+  "Создать новый сниппет со шпаргалкой."
+  (interactive)
+  (funcall-interactively 'yas-new-snippet)
+  (erase-buffer)
+  (insert-file dobro/yas-new-snippet-prompt-file))
+
+(use-package yasnippet
+  :ensure t
+  :hook
+  (prog-mode . yas-minor-mode)
+  :bind (
+         ("C-c y v" . yas-visit-snippet-file)
+         ("C-c y i" . yas-insert-snippet)
+         ("C-c y y" . yas-insert-snippet)
+         ("C-c y n" . dobro/yas-new-snippet-with-example)
+         )
+  :config
+  (yas-reload-all)
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"))
+
+  )
+
+;; (use-package yasnippet
+;;   :ensure t
+;;   :init (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :init)
 
 
 ;;;; Дерево синтаксиса
@@ -225,8 +226,7 @@ ARG - backward"
   (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
   (add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio"))))
 
-
-;;;; DAP
+;;;; Дебаггер
 
 (use-package dap-mode 
   :ensure t

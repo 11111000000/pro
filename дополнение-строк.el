@@ -39,11 +39,11 @@
   (corfu-scroll-margin 2)
   (corfu-cycle t)
   (corfu-echo-documentation nil)
-  (corfu-separator ?\s) 
+  (corfu-separator ?\s)
   (corfu-quit-no-match 'separator)
   (corfu-preview-current 'insert)
   (corfu-preselect-first t)
-  
+
   :init
 
   (global-corfu-mode)
@@ -90,12 +90,12 @@
   :ensure t
   :after corfu
   :hook (corfu-mode . corfu-doc-mode)
-  :bind (:map corfu-map              
-              ("M-?" . #'corfu-doc-toggle)              
+  :bind (:map corfu-map
+              ("M-?" . #'corfu-doc-toggle)
               ("C-v" . #'corfu-doc-scroll-up)
               ("M-v" . #'corfu-doc-scroll-down))
   :custom
-  
+
   (corfu-doc-delay .8)
   (corfu-doc-max-width 70)
   (corfu-doc-max-height 20)
@@ -112,12 +112,12 @@
 
 ;;;; Иконки для автодополнения
 
-(use-package kind-icon 
-  :ensure t 
-  :after corfu 
+(use-package kind-icon
+  :ensure t
+  :after corfu
   :custom
-  (kind-icon-use-icons t) 
-  (kind-icon-default-face 'corfu-default) 
+  (kind-icon-use-icons t)
+  (kind-icon-default-face 'corfu-default)
   (kind-icon-blend-background nil)
   (kind-icon-blend-frac 0.08)
   :config
@@ -129,12 +129,13 @@
 ;;;; История автодополнения
 
 ;; (use-package corfu-history
-  
 ;;   :after corfu
 ;;   :config
 ;;   (with-eval-after-load 'safehist
 ;;     (cl-pushnew 'corfu-history savehist-additional-variables))
 ;;   (corfu-history-mode))
+
+
 
 (provide 'дополнение-строк)
 ;;; дополнение-строк.el ends here

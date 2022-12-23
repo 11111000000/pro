@@ -34,5 +34,6 @@
 ;;                                  (set-frame-position nil 0 -24)
 ;;                                  (set-frame-size nil (display-pixel-width) (display-pixel-height) t)))
 
+(global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen) ;; Mac style
 
 (provide 'огрызок)

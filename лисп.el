@@ -6,18 +6,18 @@
 (use-package emacs-lisp
   :straight (:type built-in)
   :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . my/eval-buffer)))
+              ("C-c C-c" . перевыполнить-буфер)))
 
 ;;;;; Функция для реального перевыполнения форм в буфере
 
-(defun my/eval-buffer ()
-  "Execute the current buffer as Lisp code.
-Top-level forms are evaluated with `eval-defun' so that `defvar'
-and `defcustom' forms reset their default values."
+(defun перевыполнить-буфер ()
+  "Вызвать выполнения кода в текущем буфере.
+Верхне-уровневые формы выполняются `eval-defun', таким
+образом `defvar' и `defcustom' устанавливаются заново."
   (interactive)
-  (save-excursion (goto-char (point-min)) 
-                  (while (not (eobp)) 
-                    (forward-sexp) 
+  (save-excursion (goto-char (point-min))
+                  (while (not (eobp))
+                    (forward-sexp)
                     (eval-defun nil))))
 
 (use-package flymake-elisp-config
@@ -29,26 +29,26 @@ and `defcustom' forms reset their default values."
 
 ;;;;; Статический анализатор для Elisp
 
-(use-package elsa 
-  :ensure t 
+(use-package elsa
+  :ensure t
   :defer t)
 
-(use-package flycheck-elsa 
-  :ensure t 
-  :after flycheck 
+(use-package flycheck-elsa
+  :ensure t
+  :after flycheck
   :config (flycheck-elsa-setup))
 
 ;;;;; Автоматическое тестирование и отладка конфига Emacs
 
-(use-package bug-hunter 
-  :disabled t 
-  :ensure t 
+(use-package bug-hunter
+  :disabled t
+  :ensure t
   :defer t)
 
 
 ;;;;; Форматирование ELISP
 
-(use-package elisp-format 
+(use-package elisp-format
   :ensure t
   ;; :hook
   ;; ((emacs-lisp-mode
@@ -68,7 +68,7 @@ and `defcustom' forms reset their default values."
 
 (use-package geiser
   :ensure t
-  :custom 
+  :custom
   (geiser-default-implementation 'guile)
   (geiser-active-implementations '(guile))
   (geiser-implementations-alist '(((regexp "\\.scm$") guile)))

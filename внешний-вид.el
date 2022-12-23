@@ -7,50 +7,59 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;;;; Буферы
-;;;;; Уникальные имена для буферов
+
+;; Уникальные имена для буферов
 
 (setq uniquify-buffer-name-style 'forward)
 
-;;;;; Включаем автоактуализацию всех буферов
+;; Включаем автоактуализацию всех буферов
 
 (global-auto-revert-mode t)
 (setq-default global-auto-revert-non-file-buffers t)
 (setq-default auto-revert-verbose nil)
 
-;;;;; Клавиша для принудительного обновления
+;; Клавиша для принудительного обновления
 
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "s-r") (lambda () (interactive) (revert-buffer t t)))
 
-;;;;; Асинхронные буферы скрыты
+;; Асинхронные буферы скрыты
 
 (add-to-list 'display-buffer-alist
              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-;;;;;  Новые асинхронные буферы переименовываются не спрашивая ничего:
+;; Новые асинхронные буферы переименовываются не спрашивая ничего:
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
-;;;; Полноэкранный режим
+;; Изменение размера шрифта
 
-(global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen) ;; Mac style
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C-M-=") 'text-scale-set)
+                                        
+;; Скроллбар
 
-;;;; Сообщения
+(if window-system (scroll-bar-mode -1))
 
-(global-set-key (kbd "C-c m") 'popwin:messages)
-
-;;;; Тулбар скрыт
+;;;; Тулбар
 
 (when (bound-and-true-p tool-bar-mode)
   (tool-bar-mode -1))
 
-;;;; Меню не скрыто
+;;;; Меню
 
 ;; (when (bound-and-true-p menu-bar-mode)
 ;;   (menu-bar-mode -1))
 
 ;;;; Минибуфер
-;;;;; Размер шрифта в минибуфере
+
+;; Сообщения
+
+(global-set-key (kbd "C-c m") 'popwin:messages)
+
+;; Размер шрифта в минибуфере
 
 ;; TODO конфликт с taoline ?
 ;; (dolist
@@ -59,7 +68,7 @@
 ;;     (with-current-buffer buf
 ;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
 
-;;;;; Минибуфер во фрейме поверх окна
+;; Минибуфер во фрейме поверх окна
 
 (use-package mini-frame
   :disabled t
@@ -73,25 +82,15 @@
   :init
   (mini-frame-mode -1))
 
-;;;;; Отключаем рекурсивные минибуферы
-;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/ 
+;; Отключаем рекурсивные минибуферы
+;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/
 
 (setq-default enable-recursive-minibuffers nil)
 
-;;;; Показать текущее время win+F1
+;; Показать текущее время win+F1
 
 (global-set-key (kbd "s-<f1>") (lambda () (interactive) (print (current-time-string))))
 
-;;;; Изменение размера шрифта
-
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C-M-=") 'text-scale-set)
-
-;;;; Скроллбар
-
-(if window-system (scroll-bar-mode -1))
 
 ;;;; Иконки
 
@@ -100,7 +99,7 @@
   :ensure t
   )
 
-;;;; Цвет
+;;;; Цветовые темы
 
 ;; Цветовые темы не должны накладываться друг на друга
 
@@ -116,7 +115,6 @@
   (run-hooks 'after-load-theme-hook))
 
 ;;;; Курсор
-
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
 
@@ -138,10 +136,7 @@
   
   (add-hook 'after-load-theme-hook 
           (lambda () 
-            (setq curchg-default-cursor-color (face-attribute 'default :foreground))
-            ))
-  )
-
+            (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
 
 ;;;; Изображения
 
@@ -203,8 +198,7 @@
          ("s-J" . buf-move-down)
          ("s-H" . buf-move-left)
          ("s-L" . buf-move-right))
-  :config
-  )
+  :config)
 
 ;;;; Золотое сечение
 
@@ -333,8 +327,7 @@
   :ensure t
   :config
   (custom-set-faces
-   '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))
-                                      ))
+   '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
   :custom 
   (minimap-window-location 'right)
   
@@ -343,9 +336,7 @@
     (interactive)
     (if (null minimap-bufname)
         (minimap-create)
-      (minimap-kill)))
-  
-  )
+      (minimap-kill))))
 
 ;;;; Переключение окон
 
@@ -359,10 +350,7 @@
   :bind (("s-f" . ace-window)
          ("s-F" . ace-swap-window)))
 
-
 ;;;; TODO Путь в заголовке
-
-
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here

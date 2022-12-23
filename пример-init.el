@@ -1,6 +1,12 @@
 ;;; пример-init.el --- Пример init.el
 ;;; Commentary:
+
 ;; Этот файл можно скопировать в ~/.emacs.d/init.el
+;; или подключить прямо из него так:
+;; ;;; ~/emacs.d/init.el
+;; (add-to-list 'load-path "~/Добро")
+;; (require 'пример-init)
+
 ;;; Code:
 
 ;; (add-to-list 'load-path "~/Добро")
@@ -36,4 +42,5 @@
 (подключить-модуль 'мониторы)
 
 (provide 'пример-init)
+
 ;;; пример-init.el ends here

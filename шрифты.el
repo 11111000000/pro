@@ -6,14 +6,14 @@
   "Настройки шрифтов."
   (interactive)
   (set-face-attribute 'default nil
-                      :family "Fira Mono"
+                      :family "Iosevka"
                       :weight 'normal
                       :height 120)
   (set-face-attribute 'fixed-pitch nil
-                      :family "Fira Mono"
+                      :family "Iosevka"
                       :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-                      :family "Fira Sans"
+                      :family "Iosevka Aile"
                       :weight 'normal)
   ;; (set-face-attribute 'font-lock-comment-face nil
   ;;                     :family "Fira Sans"
@@ -42,8 +42,6 @@
 (обновить-настройки-шрифтов)
 
 ;; Межстрочный интервал
-
-
 (setq-default line-spacing 1)
 
 (provide 'шрифты)

@@ -116,6 +116,5 @@
 (setq-default kill-ring-max 300
               save-interprogram-paste-before-kill t)
 
-
 (provide 'история)
 ;;; история.el ends here
