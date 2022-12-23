@@ -20,6 +20,7 @@
 (setenv "GPG_AGENT_INFO" nil)
 
 ;;;;; Список пар логин-пароль к ресурсам
+
 ;; это простой текстовый файл *.authinfo*, зашифрованый GPG2:
 
 ;;(setq auth-sources '("~/.authinfo.gpg"))

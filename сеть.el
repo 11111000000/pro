@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;; Конфигурация сетевых сервисов, браузеров и мессенджеров
 ;;; Code:
-;;; Ускорение работы SSH
+;;;; Ускорение работы SSH
 
 (setq tramp-ssh-controlmaster-options t)
 (setq tramp-chunksize 500)
@@ -14,7 +14,7 @@
                      tramp-file-name-regexp))
 
 
-;;; Telegram
+;;;; Telegram
 
 (use-package telega
   :ensure t
@@ -28,16 +28,16 @@
   :config    
   )
 
-;;; URL открывается в текстовом браузере в новой вкладке или в Хроме.
+;;;; URL открывается в текстовом браузере в новой вкладке или в Хроме.
 
 (setq-default browse-url-browser-function 'eww-browse-url
               browse-url-new-window-flag t
               browse-url-generic-program "chromium")
 
 
-;;; EWW - Браузер на ELISP
+;;;; EWW - Браузер на ELISP
 
-;;;; Нумерация ссылков 
+;;;;; Нумерация ссылков 
 
 (use-package eww-lnum
   :ensure t
@@ -48,7 +48,7 @@
    :map eww-mode-map
    ("F" . eww-lnum-follow)))
 
-;;; W3M - альтернативный текстовый браузер
+;;;; W3M - альтернативный текстовый браузер
 
 (use-package w3m
   :ensure t
@@ -87,7 +87,7 @@
                 w3m-session-autosave t
                 w3m-session-load-last-sessions t))
 
-;;; HTTP-запросы
+;;;; HTTP-запросы
 
 (use-package plz
   ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
@@ -96,7 +96,7 @@
 ;; (use-package ement
 ;;   :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))
 
-;;; Slack
+;;;; Slack
 
 ;; (use-package helm-slack :after (slack)) ;; optional
 
@@ -145,7 +145,7 @@
 ;;   :init
 ;;   (setq alert-default-style 'notifier))
 
-;;; Карты OSM
+;;;; Карты OSM
 
 (use-package osm
   :ensure t)

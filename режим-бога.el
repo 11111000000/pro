@@ -4,14 +4,15 @@
 
 (require 'mule)
 
-;;; Функция для выключения русского
+;;;; Функция для выключения русского
 
 (defun toggle-off-input-method ()
+  "Выключение текущего метода ввода."
   (interactive)
   (if current-input-method (deactivate-input-method))
   )
 
-;;; Режим Бога (всегда Ctrl)
+;;;; Режим Бога (всегда Ctrl)
 
 (use-package god-mode
   :ensure t
