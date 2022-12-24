@@ -173,23 +173,25 @@
   :config (eyebrowse-mode))
 
 
-;;;; Меню для буфера
+;;;; Меню режима
 
-;; Меню для режима текущего файла, например в Org-mode показывает список заголовков как своего рода директории
+;; Меню для текущего файла, в Org-mode например, показывает список заголовков
+;; как своего рода директории
 
 (use-package imenu
   :defer t
   :custom ((imenu-auto-rescan t))  
   )
 
-;;;; Перемещение по окнам
+;;;; Окна
+;;;;; Перемещение по окнам
 
 (global-set-key (kbd "s-h") 'windmove-left)
 (global-set-key (kbd "s-j") 'windmove-down)
 (global-set-key (kbd "s-k") 'windmove-up)
 (global-set-key (kbd "s-l") 'windmove-right)
 
-;;;; Перемещение окон
+;;;;; Перемещение окон
 
 (use-package buffer-move
   :ensure t
@@ -200,7 +202,7 @@
          ("s-L" . buf-move-right))
   :config)
 
-;;;; Золотое сечение
+;;;;; Золотое сечение
 
 ;; Даёт больше места текущему окну:
 
@@ -214,7 +216,7 @@
   :config
   (golden-ratio-mode -1))
 
-;;;; Обзор
+;;;;; Обзор
 
 ;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
 
@@ -236,7 +238,7 @@
          ) 
   :init)
 
-;;;; Popwin - предсказуемые попапы
+;;;;; Popwin - предсказуемые попапы
 
 (use-package popwin
   :ensure t
@@ -321,6 +323,18 @@
   :config
   (taoline-mode 1))
 
+;;;;; Переключение окон
+
+(use-package ace-window
+  :ensure t
+  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+              aw-char-position 'left
+              aw-ignore-current nil
+              aw-leading-char-style 'char
+              aw-scope 'frame)
+  :bind (("s-f" . ace-window)
+         ("s-F" . ace-swap-window)))
+
 ;;;; Мини-карта
 
 (use-package minimap 
@@ -337,18 +351,6 @@
     (if (null minimap-bufname)
         (minimap-create)
       (minimap-kill))))
-
-;;;; Переключение окон
-
-(use-package ace-window
-  :ensure t
-  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-              aw-char-position 'left
-              aw-ignore-current nil
-              aw-leading-char-style 'char
-              aw-scope 'frame)
-  :bind (("s-f" . ace-window)
-         ("s-F" . ace-swap-window)))
 
 ;;;; TODO Путь в заголовке
 

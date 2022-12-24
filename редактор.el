@@ -287,5 +287,9 @@
 
 (use-package markdown-mode :ensure t)
 
+;;;; Вставить имя файла
+
+(global-set-key (kbd "C-c f") (lambda () (interactive) (insert (buffer-name))))
+
 (provide 'редактор)
-;;; dobro-editor.el ends here
+;;; редактор.el ends here

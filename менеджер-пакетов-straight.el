@@ -1,4 +1,4 @@
-;;; пакеты.el --- Пакетный менеджер Straight
+;;; менеджер-пакетов-straight.el --- Пакетный менеджер Straight
 ;;; Commentary:
 ;;; Code:
 
@@ -19,5 +19,5 @@
 
 (straight-use-package 'use-package) 
 (straight-use-package 'org)
-(provide 'пакеты)
-;;; пакеты.el ends here
+(provide 'менеджер-пакетов-straight)
+;;; менеджер-пакетов-straight.el ends here
