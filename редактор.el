@@ -183,7 +183,8 @@
 
 ;; Последовательности символов можно заменить на один глиф. Но при наведении курсора, мы хотим видеть оригинал:
 
-(use-package fira-code-mode :ensure t
+(use-package fira-code-mode
+  :if window-system
   :ensure t
   :hook ((prog-mode . fira-code-mode))
   :config

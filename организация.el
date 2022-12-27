@@ -211,9 +211,10 @@
 (use-package outshine-bullets
   :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets") 
   :hook ((outshine-mode . outshine-bullets-mode))
-  ;; :custom (
-	;;    (outshine-bullets-bullet-list '("‣" "‣" "‣" "‣"))
-	;;    )
+  :custom (
+           
+	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))
+	   )
   )
 
 (provide 'организация)

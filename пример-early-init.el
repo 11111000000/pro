@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;; Этот файл можно скопировать в ~/.emacs.d/early-init.el
 ;;; Code:
-;;; Оптимизация загрузки пакетного менеджера
+;;;; Оптимизация загрузки пакетного менеджера
 
 (setq package-enable-at-startup nil)
 
-;;; Оптимизация загрузки UI
+;;;; Оптимизация загрузки UI
 
 ;; (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
