@@ -30,7 +30,7 @@
   :bind (("C-h f" . helpful-callable)
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)
-         ("C-c d" . helpful-at-point)
+         ("C-h ." . helpful-at-point)
          ("C-h F" . helpful-function)
          ("C-h C" . helpful-command)))
 

@@ -15,6 +15,7 @@
 ;;;; Режим Бога (всегда Ctrl)
 
 (use-package god-mode
+  :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
   :ensure t
   :defer t
   :diminish " ☯"

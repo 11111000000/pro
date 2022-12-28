@@ -23,9 +23,9 @@
            ;; (telega-emoji-use-images t)
            (telega-emoji-font-family "Noto Color Emoji")
            )
-  :hook ((telega-root-mode . telega-notifications-mode)         
+  :hook ((telega-root-mode . telega-notifications-mode)
          (telega-load-hook . global-telega-url-shorten-mode))
-  :config    
+  :config
   )
 
 ;;;; URL открывается в текстовом браузере в новой вкладке или в Хроме.
@@ -37,7 +37,7 @@
 
 ;;;; EWW - Браузер на ELISP
 
-;;;;; Нумерация ссылков 
+;;;;; Нумерация ссылков
 
 (use-package eww-lnum
   :ensure t

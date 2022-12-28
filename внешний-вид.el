@@ -38,7 +38,7 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
-                                        
+
 ;; Скроллбар
 
 (if window-system (scroll-bar-mode -1))
@@ -71,16 +71,15 @@
 ;; Минибуфер во фрейме поверх окна
 
 (use-package mini-frame
-  :disabled t
   :custom
   (mini-frame-show-parameters '((child-frame-border-width . 0)
                                 (internal-border-width . 0)
-                                (top . 0)
-                                (width . 1.0)
-                                (left . 0)))
+                                (top . 0.3)
+                                (width . 0.8)
+                                (left . 0.5)))
   (mini-frame-standalone t)
   :init
-  (mini-frame-mode -1))
+  (mini-frame-mode t))
 
 ;; Отключаем рекурсивные минибуферы
 ;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/
@@ -133,15 +132,15 @@
         curchg-default-cursor-type 'bar
         curchg-default-cursor-color (face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
-  
-  (add-hook 'after-load-theme-hook 
-          (lambda () 
+
+  (add-hook 'after-load-theme-hook
+          (lambda ()
             (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
 
 ;;;; Изображения
 
 (use-package image+
-  :ensure t  
+  :ensure t
   :after 'image-mode
   :hook (image-mode . image+)
   :bind ((:map image-mode-map
@@ -180,7 +179,7 @@
 
 (use-package imenu
   :defer t
-  :custom ((imenu-auto-rescan t))  
+  :custom ((imenu-auto-rescan t))
   )
 
 ;;;; Окна
@@ -235,7 +234,7 @@
          ("SPC" . buffer-expose-choose)
          ("s-SPC" . buffer-expose-choose)
          ("s-<tab>" . buffer-expose-reset)
-         ) 
+         )
   :init)
 
 ;;;;; Popwin - предсказуемые попапы
@@ -244,7 +243,7 @@
   :ensure t
   :defer t
   :bind (
-         ("C-c b" . popwin:popup-buffer)    
+         ("C-c b" . popwin:popup-buffer)
          ("C-c ." . popwin:stick-popup-window)
          )
   :config
@@ -282,13 +281,13 @@
           ("Run.rkt" :noselect t :position right :width .5 :stick t)
           ("chrome dev" :noselect nil :position bottom :stick t :height .5)
           ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
-          ("chrome dev2" :noselect t :position top :height 15 :stick t)                  
+          ("chrome dev2" :noselect t :position top :height 15 :stick t)
           ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
-          ("chrome app" :noselect nil :position right :stick t :width .5)                  
+          ("chrome app" :noselect nil :position right :stick t :width .5)
           ("ff dev" :noselect nil :position bottom :height .5 :stick t)
           ("ff" :noselect nil :position right :width .5 :stick t)
-          
-          (sldb-mode :stick t)                  
+
+          (sldb-mode :stick t)
           ;;(shell-mode :stick nil :position bottom )
           ))
   (popwin-mode 1)
@@ -337,14 +336,14 @@
 
 ;;;; Мини-карта
 
-(use-package minimap 
+(use-package minimap
   :ensure t
   :config
   (custom-set-faces
    '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
-  :custom 
+  :custom
   (minimap-window-location 'right)
-  
+
   (defun my/toggle-minimap ()
     "Toggle minimap for current buffer."
     (interactive)

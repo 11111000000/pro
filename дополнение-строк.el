@@ -12,8 +12,13 @@
     (setq-local corfu-auto nil)
     (corfu-mode 1)))
 
+
+  
+  
+
 (use-package corfu
-  :ensure t
+  :straight (corfu :files (:defaults "extensions/*")
+                   :includes (corfu-info corfu-history))
   :bind (:map corfu-map
               ("<escape>". corfu-quit)
               ("<return>" . corfu-insert)
@@ -33,6 +38,7 @@
   (corfu-auto t)
   (corfu-auto-prefix 3)
   (corfu-auto-delay 1)
+  (corfu-popupinfo-delay 0)
   ;; (corfu-min-width 80)
   ;; (corfu-max-width corfu-min-width)
   (corfu-count 5)
@@ -46,7 +52,8 @@
 
   :init
 
-  (global-corfu-mode)
+  (global-corfu-mode)  
+  (corfu-popupinfo-mode)
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
 
 ;;;; Расширения для автодополнения
@@ -86,24 +93,24 @@
 
 ;;;; Документация для автодополнения
 
-(use-package corfu-doc
-  :ensure t
-  :after corfu
-  :hook (corfu-mode . corfu-doc-mode)
-  :bind (:map corfu-map
-              ("M-?" . #'corfu-doc-toggle)
-              ("C-v" . #'corfu-doc-scroll-up)
-              ("M-v" . #'corfu-doc-scroll-down))
-  :custom
+;; (use-package corfu-doc
+;;   :ensure t
+;;   :after corfu
+;;   :hook (corfu-mode . corfu-doc-mode)
+;;   :bind (:map corfu-map
+;;               ("M-?" . #'corfu-doc-toggle)
+;;               ("C-v" . #'corfu-doc-scroll-up)
+;;               ("M-v" . #'corfu-doc-scroll-down))
+;;   :custom
 
-  (corfu-doc-delay .8)
-  (corfu-doc-max-width 70)
-  (corfu-doc-max-height 20)
+;;   (corfu-doc-delay .8)
+;;   (corfu-doc-max-width 70)
+;;   (corfu-doc-max-height 20)
 
-  ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-  ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-  ;; documentation shown in both the echo area and in the `corfu-doc' popup.
-  (corfu-echo-documentation nil))
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+;;   (corfu-echo-documentation nil))
 
 ;;;; Автодополнение для терминала
 
