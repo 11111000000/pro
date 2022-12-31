@@ -1,4 +1,4 @@
-;;; ленты-новостей.el --- Ленты новостей RSS
+;;; интернет-новости.el --- Ленты новостей RSS
 ;;; Commentary:
 ;;; Code:
 ;;;; Elfeed
@@ -10,5 +10,5 @@
                           "https://www.reddit.com/r/emacs.rss" "https://irreal.org/blog/?feed=rss2"
                           "https://sachachua.com/blog/category/emacs-news/feed")))
 
-(provide 'ленты-новостей)
-;;; ленты-новостей.el ends here
+(provide 'интернет-новости)
+;;; интернет-новости.el ends here
