@@ -4,7 +4,7 @@
 ;; Конфигурация терминалов
 
 ;;; Code:
-;;; Мульти-терминалы
+;;;; Мульти-терминалы
 
 (use-package multi-term
   :ensure t
@@ -41,13 +41,13 @@
       (term-char-mode)
     (term-line-mode)))
 
-;;; Выпадающий терминал Eshell
+;;;; Выпадающий терминал Eshell
 
 (use-package shrink-path
   :ensure t
   :demand t)
 
-;;;; Настройка приглашения Eshell
+;;;;; Настройка приглашения Eshell
 
 (defun custom-eshell-prompt ()
   "Настройка приглашения оболочки EShell."
@@ -115,7 +115,7 @@
 ;;   )
 
 
-;;; Другие терминалы
+;;;; Другие терминалы
 
 (global-set-key (kbd "C-c tr")
                 (lambda () (interactive)

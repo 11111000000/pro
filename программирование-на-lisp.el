@@ -1,4 +1,4 @@
-;;; лисп.el --- LISP
+;;; программирование-на-lisp.el --- LISP
 ;;; Commentary:
 ;;; Code:
 ;;;; Emacs Lisp
@@ -21,7 +21,7 @@
                     (eval-defun nil))))
 
 (use-package flymake-elisp-config
-  :straight '(flymake-elisp-config :repo "https://github.com/ROCKTAKEY/flymake-elisp-config.git")
+  :straight '(flymake-elisp-config  :host github :repo "ROCKTAKEY/flymake-elisp-config")
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
@@ -94,5 +94,5 @@
                                         ;  (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
 
 
-(provide 'лисп)
-;;; лисп.el ends here
+(provide 'программирование-на-lisp)
+;;; программирование-на-lisp.el ends here

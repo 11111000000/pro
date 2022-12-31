@@ -1,4 +1,4 @@
-;;; проекты.el --- Управление проектами
+;;; управление-проектами.el --- Управление проектами
 ;;; Commentary:
 ;;; Code:
 ;;;; Модуль для работы с проектами
@@ -87,14 +87,14 @@
   :init
   :config)
 
-(use-package docker-tramp
-  :ensure t
-  :init
-  :config)
+;; (use-package docker-tramp
+;;   :ensure t
+;;   :init
+;;   :config)
 
 ;;;; Поддержка Github
 
 (use-package github)
 
-(provide 'проекты)
-;;; проекты.el ends here
+(provide 'управление-проектами)
+;;; управление-проектами.el ends here

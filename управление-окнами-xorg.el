@@ -1,4 +1,4 @@
-;;; оконный-менеджер.el --- Оконный менеджер
+;;; управление-окнами-xorg.el --- Оконный менеджер ExWM
 ;;; Commentary:
 ;; Emacs X Window Manager - полноценный тайловый оконный менеджер
 ;;; Code:
@@ -49,8 +49,7 @@
             (lambda 
               () 
               (exwm-workspace-rename-buffer exwm-class-name)))
-  (require 'exwm-systemtray)
-  (exwm-systemtray-enable)
+  
 
   ;; Глобальные клавиши над всеми приложениями
   (dotimes (i 10) 
@@ -250,11 +249,15 @@
 
   ;; Запуск программ в трее
   
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+  
   (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
   (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
   (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
   (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
   (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
+  
   )
 
 ;;;; Режимы ввода EMACS в приложениях
@@ -291,4 +294,4 @@
   )
 
 
-(provide 'оконный-менеджер)
+(provide 'управление-окнами-xorg)

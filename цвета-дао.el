@@ -1,4 +1,4 @@
-;;; дао.el --- EMACS и Пустота
+;;; цвета-дао.el --- EMACS и Пустота
 ;;; Commentary:
 
 ;; /AST не имеет ни цвета ни вкуса ни запаха, ни - физических размера или веса, какой-либо формы - только структуру/
@@ -22,7 +22,7 @@
   :init
   ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-lisp/tao-theme-emacs")
   (load-theme 'tao-yang 't)
-  (require 'face-remap))
+  (загрузить 'face-remap))
 
-(provide 'дао)
-;;; дао.el ends here
+(provide 'цвета-дао)
+;;; цвета-дао.el ends here

@@ -41,6 +41,8 @@
 
 (use-package consult
   :ensure t
+  :custom (
+           (consult-preview-key (kbd "M-.")))
   :bind (("C-x b" . consult-buffer)
          ("C-x C-b" . consult-buffer-other-window)
          ("s-b" . consult-buffer)

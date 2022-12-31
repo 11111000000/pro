@@ -7,4 +7,5 @@
   (load-theme 'kaolin-dark t)
   (kaolin-treemacs-theme))
 
-provide 'темы
+provide 'цветовые-темы
+;;; цветовые-темы.el ends here

@@ -142,7 +142,8 @@ ARG - backward"
 ;;;; Сообщения статического анализатора во всплывающем окне
 
 (use-package flymake-popon
-  :custom ((flymake-popon-delay .8))
+  :custom ((flymake-popon-delay .8)
+           (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
   :hook ((flymake-mode) . flymake-popon-mode)
   :straight '(flymake-popon :type git
                             :repo "https://codeberg.org/akib/emacs-flymake-popon.git"))
@@ -251,15 +252,15 @@ ARG - backward"
               ("<f7>" . dap-step-out))
   :config
   (setq dap-auto-configure-features '(locals expression breakpoints))
-  (require 'dap-chrome)
-  (require 'dap-firefox)
-  (require 'dap-node))
+  (загрузить 'dap-chrome)
+  (загрузить 'dap-firefox)
+  (загрузить 'dap-node))
 
 ;;;; Конструктор регулярных выражений
 
 ;; Замечательный инструмент, позволяющий визуально контролировать создание поисковых выражений
 
-(require 're-builder)
+(загрузить 're-builder)
 
 ;; Используем синтаксис string (так меньше экранировать спец. символы)
 

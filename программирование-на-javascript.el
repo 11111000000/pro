@@ -1,4 +1,4 @@
-;;; веб-разработка.el --- HTML, CSS, Javascript, Typescript
+;;; программирование-на-javascript.el --- Поддержка Javascript, Typescript
 ;;; Commentary:
 ;;; Code:
 ;;;; Javascript
@@ -92,5 +92,5 @@
                                         ;( "C-c l" . ts-load-file-and-go)
               ))
 
-(provide 'веб-разработка)
-
+(provide 'программирование-на-javascript)
+;;; программирование-на-javascript.el ends here.

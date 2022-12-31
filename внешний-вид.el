@@ -76,8 +76,13 @@
                                 (internal-border-width . 0)
                                 (top . 0.3)
                                 (width . 0.8)
-                                (left . 0.5)))
+                                (height . 0.3)
+                                (left . 0.5)))  
   (mini-frame-standalone t)
+  (mini-frame-resize nil)
+  (mini-frame-color-shift-step 7)
+  (mini-frame-internal-border-color "#333333")
+  :config   
   :init
   (mini-frame-mode t))
 
@@ -162,8 +167,8 @@
 
 ;; Плавная прокрутка
 
-                                        ; (when (fboundp 'pixel-scroll-mode)
-                                        ;   (pixel-scroll-mode 1))
+(when (fboundp 'pixel-scroll-mode)
+  (pixel-scroll-mode t))
 
 ;; Сохранение расположения
 
@@ -352,6 +357,10 @@
       (minimap-kill))))
 
 ;;;; TODO Путь в заголовке
+
+;;; Показывать буфер с ошибками только при ошибках
+
+(setq warning-minimum-level :error)
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here

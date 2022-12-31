@@ -100,7 +100,7 @@
 
 (bind-keys*
  ("M-o" . vi-open-line)
- ("C-M-o" . vi-open-line) 
+ ("C-M-o" . vi-open-line)
  ("M-O" . vi-open-line-above)
  ("C-M-O" . vi-open-line-above))
 
@@ -241,13 +241,13 @@
 
 ;;;; Редактировать как Root
 
-(defun edit-current-file-as-root () "Edit as root the file associated with the current buffer"
-       (interactive)
-       (if (buffer-file-name)
-           (progn
-             (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
-             (find-file file))
-         (message "Buffer is not associated to a file.")))
+(defun edit-current-file-as-root ()
+  "Edit as root the file associated with the current buffer"
+  (interactive)
+  (if (buffer-file-name)
+      (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
+        (find-file file))
+    (message "Buffer is not associated to a file.")))
 
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 

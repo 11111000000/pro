@@ -29,7 +29,7 @@
 
      (add-hook 'exwm-randr-screen-change-hook
                'monitor-on-right)
-     
+
      )
   )
 
