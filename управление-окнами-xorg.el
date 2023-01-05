@@ -251,13 +251,15 @@
   
   (require 'exwm-systemtray)
   (exwm-systemtray-enable)
-  
-  (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
-  (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
-  (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
-  (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
-  (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
-  
+  (eval-after-load 'exwm-systemtray
+    (progn
+      (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
+      (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
+      (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
+      (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
+      (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
+      )
+    )
   )
 
 ;;;; Режимы ввода EMACS в приложениях
