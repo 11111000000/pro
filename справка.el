@@ -68,11 +68,10 @@
 
 (leaf eldoc-box
   :ensure t
-  :custom
-  (eldoc-idle-delay . 1)
+  :custom ((eldoc-idle-delay . 0.5))
   
-  :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
-         (prog-mode . eldoc-box-hover-mode)
+  :hook ((emacs-lisp-mode-hook . eldoc-box-hover-mode)
+         (prog-mode-hook . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
          (eldoc-box-frame-hook . (lambda ()
                                    (setq cursor-in-non-selected-windows nil))))

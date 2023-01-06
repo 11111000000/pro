@@ -131,7 +131,7 @@ ARG - backward"
 ;;;; Статическая проверка кода
 
 (leaf flymake
-  :hook ((prog-mode) . flymake-mode)
+  :hook (prog-mode-hook . flymake-mode)
   :bind (:flymake-mode-map
               ("M-n" . flymake-goto-next-error)
               ("M-p" . flymake-goto-prev-error)))
@@ -141,9 +141,8 @@ ARG - backward"
 (leaf flymake-popon
   :custom ((flymake-popon-delay . .8)
            (flymake-popon-posframe-extra-arguments . '(:poshandler posframe-poshandler-point-bottom-left-corner)))
-  :hook ((flymake-mode) . flymake-popon-mode)  
-  :el-get (flymake-popon :url "https://codeberg.org/akib/emacs-flymake-popon.git")
-  )
+  :hook ((flymake-mode-hook . flymake-popon-mode))
+  :el-get (flymake-popon :url "https://codeberg.org/akib/emacs-flymake-popon.git"))
 
 ;; (leaf flymake-posframe
 ;;   :load-path "emacs-lisp/flymake-posframe"

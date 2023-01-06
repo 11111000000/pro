@@ -16,8 +16,8 @@
           ("h" . dired-up-directory)
           ("b" . dired-up-directory)
           ("u" . dired-up-directory)))
-  :hook ((dired-mode . dired-hide-details-mode)
-         (dired-mode . hl-line-mode)
+  :hook ((dired-mode-hook . dired-hide-details-mode)
+         (dired-mode-hook . hl-line-mode)
          ;;(dired-mode . hl-line-mode)
          )
   :custom ((ls-lisp-dirs-first . t)
@@ -132,7 +132,7 @@
 
 (leaf treemacs-icons-dired
   :ensure t
-  :hook ((dired-mode . treemacs-icons-dired-enable))
+  :hook ((dired-mode-hook . treemacs-icons-dired-enable-once))
   :init
   (add-hook 'after-load-theme-hook 
           (lambda () 

@@ -151,44 +151,28 @@
   (exwm-input-set-key (kbd "s-S-s") 'dobro/take-screenshot)
   
   (exwm-input-set-key (kbd "s-!") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 1))) 
   (exwm-input-set-key (kbd "s-@") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 2))) 
   (exwm-input-set-key (kbd "s-#") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 3))) 
   (exwm-input-set-key (kbd "s-$") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 4))) 
   (exwm-input-set-key (kbd "s-%") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 5))) 
   (exwm-input-set-key (kbd "s-^") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 6))) 
   (exwm-input-set-key (kbd "s-&") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 7))) 
   (exwm-input-set-key (kbd "s-)") 
-                      (lambda 
-                        () 
-                        (interactive) 
+                      (lambda () (interactive) 
                         (exwm-workspace-move-window 0))) 
   (exwm-input-set-key (kbd "s-<left>") 'shrink-window-horizontally) 
   (exwm-input-set-key (kbd "s-<right>") 'enlarge-window-horizontally) 
@@ -250,16 +234,15 @@
   ;; Запуск программ в трее
   
   (require 'exwm-systemtray)
+  
   (exwm-systemtray-enable)
-  (eval-after-load 'exwm-systemtray
-    (progn
-      (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
-      (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
-      (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
-      (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
-      (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
-      )
-    )
+  
+  (start-process-shell-command "pasystray" nil "dbus-launch pasystray") 
+  (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t") 
+  (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
+  (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
+  (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
+
   )
 
 ;;;; Режимы ввода EMACS в приложениях

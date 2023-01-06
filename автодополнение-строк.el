@@ -3,7 +3,7 @@
 ;; Автодополнение текста на базе Corfu
 ;;; Code:
 ;;;; Инициализация Corfu
-
+  
 ;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
 (defun в-минибуфере-включать-corfu ()
   "Включать Corfu в минибуфере если Vertico/Mct не активны."
