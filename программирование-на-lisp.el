@@ -3,12 +3,7 @@
 ;;; Code:
 ;;;; Emacs Lisp
 
-(use-package emacs-lisp
-  :straight (:type built-in)
-  :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . перевыполнить-буфер)))
-
-;;;;; Функция для реального перевыполнения форм в буфере
+;; Функция для реального перевыполнения форм в буфере
 
 (defun перевыполнить-буфер ()
   "Вызвать выполнения кода в текущем буфере.
@@ -19,9 +14,14 @@
                   (while (not (eobp))
                     (forward-sexp)
                     (eval-defun nil))))
+;; (leaf emacs-lisp
+;;   :bind ((:emacs-lisp-mode-map
+;;           ("C-c C-c" . перевыполнить-буфер))))
 
-(use-package flymake-elisp-config
-  :straight '(flymake-elisp-config  :host github :repo "ROCKTAKEY/flymake-elisp-config")
+(define-key emacs-lisp-mode-map (kbd "C-c C-c") #'перевыполнить-буфер)
+
+(leaf flymake-elisp-config
+  :el-get ROCKTAKEY/flymake-elisp-config
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
@@ -29,26 +29,23 @@
 
 ;;;;; Статический анализатор для Elisp
 
-(use-package elsa
-  :ensure t
-  :defer t)
+(leaf elsa :ensure t)
 
-(use-package flycheck-elsa
+(leaf flycheck-elsa
   :ensure t
   :after flycheck
   :config (flycheck-elsa-setup))
 
 ;;;;; Автоматическое тестирование и отладка конфига Emacs
 
-(use-package bug-hunter
+(leaf bug-hunter
   :disabled t
-  :ensure t
-  :defer t)
+  :ensure t)
 
 
 ;;;;; Форматирование ELISP
 
-(use-package elisp-format
+(leaf elisp-format
   :ensure t
   ;; :hook
   ;; ((emacs-lisp-mode
@@ -58,7 +55,7 @@
   ;;           (add-hook 'before-save-hook #'elisp-format-buffer))))
   )
 
-;; (use-package elisp-autofmt
+;; (leaf elisp-autofmt
 ;;   :load-path "emacs-lisp/emacs-lisp-autofmt/"
 ;;   :commands (elisp-autofmt-mode)
 ;;   :hook (emacs-lisp-mode . elisp-autofmt-mode))
@@ -66,17 +63,15 @@
 
 ;;;; REPL к разным LISP-ам
 
-(use-package geiser
-  :ensure t
+(leaf geiser
   :custom
-  (geiser-default-implementation 'guile)
-  (geiser-active-implementations '(guile))
-  (geiser-implementations-alist '(((regexp "\\.scm$") guile)))
+  ((geiser-default-implementation . 'guile)
+  (geiser-active-implementations . '(guile))
+  (geiser-implementations-alist . '(((regexp "\\.scm$") guile))))
   :config
   (setq geiser-mode-start-repl-p nil))
 
-(use-package geiser-guile
-  :requires geiser
+(leaf geiser-guile
   :config
   ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")
   (setq geiser-guile-manual-lookup-nodes
@@ -85,7 +80,7 @@
 
 ;;  Geiser Guile
                                         ;
-                                        ;(use-package geiser-guile
+                                        ;(leaf geiser-guile
                                         ;  :config
                                         ;  (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
                                         ;  (add-to-list 'geiser-guile-load-path "~/System/channels/chan"))

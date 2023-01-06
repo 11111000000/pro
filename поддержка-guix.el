@@ -10,7 +10,7 @@
 
 ;;; Geiser Guile
 
-(use-package geiser-guile
+(leaf geiser-guile
   :config
 ;; (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
   (add-to-list 'geiser-guile-load-path "~/System/channels/chan"))

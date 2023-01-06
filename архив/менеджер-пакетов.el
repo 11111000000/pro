@@ -9,14 +9,14 @@
 (require 'package)
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
+(unless (package-installed-p 'leaf)
   (package-refresh-contents)
-  (package-install 'use-package))
+  (package-install 'leaf))
 
 (custom-set-variables
- '(use-package-enable-imenu-support t))
+ '(leaf-enable-imenu-support t))
 
-(eval-when-compile (require 'use-package))
+(eval-when-compile (require 'leaf))
 
 (provide 'менеджер-пакетов)
 ;;; менеджер-пакетов.el ends here

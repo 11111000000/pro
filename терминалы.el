@@ -6,24 +6,22 @@
 ;;; Code:
 ;;;; Мульти-терминалы
 
-(use-package multi-term
+(leaf multi-term
   :ensure t
-  :defer t
-  :bind (
-         ("C-c tt" . multi-term)
+  :bind (("C-c tt" . multi-term)
          ("<s-return>" . multi-term)
          ("C-c tn" . multi-term-next)
          ("C-c tp" . multi-term-prev)
          ("M-±" . multi-term-dedicated-toggle)
          ("C-c to" . multi-term-dedicated-toggle)
-         :map term-mode-map
-         ("C-c C-j" . az/term-toggle-mode)
-         ("C-c C-k" . az/term-toggle-mode)
-         :map term-raw-map
+         (:term-mode-map
          ("C-c C-j" . az/term-toggle-mode)
          ("C-c C-k" . az/term-toggle-mode))
-  :custom ((term-buffer-maximum-size 0)
-           (show-trailing-whitespace nil))
+         (:term-raw-map
+         ("C-c C-j" . az/term-toggle-mode)
+         ("C-c C-k" . az/term-toggle-mode)))
+  :custom ((term-buffer-maximum-size . 0)
+           (show-trailing-whitespace . nil))
   :config
   (add-hook 'term-mode-hook
             (lambda ()
@@ -43,9 +41,8 @@
 
 ;;;; Выпадающий терминал Eshell
 
-(use-package shrink-path
-  :ensure t
-  :demand t)
+(leaf shrink-path
+  :ensure t)
 
 ;;;;; Настройка приглашения Eshell
 
@@ -68,17 +65,16 @@
              (propertize "$" 'face `(:foreground "#ff79c6"))             
              )))
 
-(use-package eshell
+(leaf eshell
   :ensure t
-  :custom
-  (eshell-prompt-function 'custom-eshell-prompt)
-  (eshell-highlight-prompt nil)
-  (eshell-hist-ignoredups t)
-  (eshell-cmpl-cycle-completions nil)
-  (eshell-cmpl-ignore-case t)
-  (eshell-ask-to-save-history (quote always))
-  (eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("htop" "zsh" "vim"))
+  :custom ((eshell-prompt-function . 'custom-eshell-prompt)
+           (eshell-highlight-prompt . nil)
+           (eshell-hist-ignoredups . t)
+           (eshell-cmpl-cycle-completions . nil)
+           (eshell-cmpl-ignore-case . t)
+           (eshell-ask-to-save-history . (quote always))
+           (eshell-prompt-regexp . "❯❯❯ ")
+           (eshell-visual-commands . '("htop" "zsh" "vim")))
   
   :init
   (add-hook 'eshell-mode-hook
@@ -89,26 +85,25 @@
                 (define-key eshell-mode-map [down] 'next-line)
                 ))))
 
-;; (use-package eshell-did-you-mean
+;; (leaf eshell-did-you-mean
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
 ;;   :ensure t)
 
-(use-package eshell-toggle
+(leaf eshell-toggle
   :ensure t
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-default-directory "~")
-  (eshell-toggle-run-command nil)
-  (eshell-toggle-init-function #'eshell-toggle-init-eshell)
+  :custom(
+          (eshell-toggle-size-fraction . 3)
+          (eshell-toggle-use-projectile-root . t)
+          (eshell-toggle-default-directory . "~")
+          (eshell-toggle-run-command . nil)
+          (eshell-toggle-init-function . #'eshell-toggle-init-eshell))
   ;; :quelpa
   ;; (eshell-toggle :repo "4DA/eshell-toggle" :fetcher github :version original)
-  :bind
-  ("M-`" . eshell-toggle)
-  ("M-§" . eshell-toggle))
+  :bind (("M-`" . eshell-toggle)
+         ("M-§" . eshell-toggle)))
 
-;; (use-package aweshell
+;; (leaf aweshell
 ;;   :ensure t
 ;;   :straight '(aweshell :host github :repo "manateelazycat/aweshell")
 ;;   :config
@@ -126,7 +121,7 @@
                   (start-process-shell-command "Retro Term" nil "cool-retro-term")))
 
 
-(use-package vterm
+(leaf vterm
   :ensure t
   :config
   (defun turn-off-chrome ()
@@ -134,16 +129,16 @@
     (display-line-numbers-mode -1))
   :hook (vterm-mode . turn-off-chrome))
 
-(use-package vterm-toggle
+(leaf vterm-toggle
   :ensure t
-  :custom
-  (vterm-toggle-fullscreen-p nil "Open a vterm in another window.")
-  (vterm-toggle-scope 'project)
+  :custom(
+  (vterm-toggle-fullscreen-p . nil)
+  (vterm-toggle-scope . 'project))
   :bind (("C-c tv" . #'vterm-toggle)
-         :map vterm-mode-map
+         (:vterm-mode-map
          ("C-\\" . #'popper-cycle)
          ("s-t" . #'vterm) 
-         ("s-v" . #'vterm-yank)
+         ("s-v" . #'vterm-yank))
          ))
 
 (provide 'терминалы)

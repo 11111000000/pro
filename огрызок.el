@@ -4,13 +4,13 @@
 
 (modify-all-frames-parameters '((inhibit-double-buffering . t)))
 
-(use-package exec-path-from-shell
+(leaf exec-path-from-shell
   :ensure t
   :init
   (exec-path-from-shell-initialize))
 
 
-(use-package smooth-scroll
+(leaf smooth-scroll
   :ensure t
   :config
   (smooth-scroll-mode -1)

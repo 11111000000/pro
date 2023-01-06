@@ -5,12 +5,13 @@
 
 ;; Подсвечивать все скобки
 
-(use-package paren-face
+(leaf paren-face
   :ensure t
   :if window-system
-  :custom ((paren-face-regexp
-            "[][(){}]"))
-  :config (global-paren-face-mode t))
+  :custom ((paren-face-regexp . "[][(){}]"))
+  :config
+  (global-paren-face-mode t)
+  )
 
 ;;;;; Парные скобки
 
@@ -34,7 +35,7 @@ ARG - backward"
 
 ;; TODO: заменить пакетом, основанным на tree-sitter ?
 
-(use-package smartparens
+(leaf smartparens
   :ensure t
   :diminish "()"
   :bind  (("C-^" . sp-unwrap-sexp)
@@ -60,7 +61,7 @@ ARG - backward"
 (defvar my/hl-paren-face)
 (setq my/hl-paren-face (face-foreground 'default))
 
-(use-package highlight-parentheses
+(leaf highlight-parentheses
   :ensure t
   :custom ((hl-paren-colors
             `("MediumOrchid2" "MediumAquamarine" "CornflowerBlue" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
@@ -77,7 +78,7 @@ ARG - backward"
 
 ;;;; Идентификаторы
 
-(use-package color-identifiers-mode
+(leaf color-identifiers-mode
   :if  window-system
   :ensure t
   :diminish (color-identifiers-mode . "≡ ")
@@ -87,17 +88,15 @@ ARG - backward"
          (js-mode . color-identifiers-mode)
          ;;(typescript-mode . color-identifiers-mode)
          )
-  :custom ((color-identifiers-coloring-method
-            'hash)
-           (color-identifiers:num-colors 16)
-           (color-identifiers:color-luminance 0.4)
-           (color-identifiers:min-color-saturation 0.2)
-           (color-identifiers:max-color-saturation 0.7)))
+  :custom ((color-identifiers-coloring-method . 'hash)
+           (color-identifiers:num-colors . 16)
+           (color-identifiers:color-luminance . 0.4)
+           (color-identifiers:min-color-saturation . 0.2)
+           (color-identifiers:max-color-saturation . 0.7)))
 
-(use-package rainbow-identifiers
+(leaf rainbow-identifiers
   :if window-system
   :ensure t
-  :defer t
   :diminish (rainbow-identifiers-mode . "≡ ")
   :hook ((typescript-mode . rainbow-identifiers-mode)
          (emacs-lisp-mode . rainbow-identifiers-mode))
@@ -105,7 +104,7 @@ ARG - backward"
 
 ;;;; Форматирование
 
-(use-package format-all
+(leaf format-all
   :ensure t
   :hook ((ess-r-mode . format-all-mode)
          (python-mode . format-all-mode)
@@ -114,7 +113,7 @@ ARG - backward"
   :config (custom-set-variables '(format-all-formatters (quote (("Python" black)
                                                                 ("R" styler))))))
 
-;; (use-package apheleia
+;; (leaf apheleia
 ;;   :ensure t
 ;;   :hook ((js-mode . aphelia-mode)
 ;;          (typescript-mode . aphelia-mode))
@@ -125,34 +124,32 @@ ARG - backward"
 
 ;;;; Подсветка цветов
 
-(use-package rainbow-mode
+(leaf rainbow-mode
   :hook (prog-mode)
   :ensure t)
 
 ;;;; Статическая проверка кода
 
-(use-package flymake
+(leaf flymake
   :hook ((prog-mode) . flymake-mode)
-
-  :bind (:map flymake-mode-map
+  :bind (:flymake-mode-map
               ("M-n" . flymake-goto-next-error)
-              ("M-p" . flymake-goto-prev-error))
-  )
+              ("M-p" . flymake-goto-prev-error)))
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 
-(use-package flymake-popon
-  :custom ((flymake-popon-delay .8)
-           (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
-  :hook ((flymake-mode) . flymake-popon-mode)
-  :straight '(flymake-popon :type git
-                            :repo "https://codeberg.org/akib/emacs-flymake-popon.git"))
+(leaf flymake-popon
+  :custom ((flymake-popon-delay . .8)
+           (flymake-popon-posframe-extra-arguments . '(:poshandler posframe-poshandler-point-bottom-left-corner)))
+  :hook ((flymake-mode) . flymake-popon-mode)  
+  :el-get (flymake-popon :url "https://codeberg.org/akib/emacs-flymake-popon.git")
+  )
 
-;; (use-package flymake-posframe
+;; (leaf flymake-posframe
 ;;   :load-path "emacs-lisp/flymake-posframe"
 ;;   :hook (flymake-mode . flymake-posframe-mode))
 
-;; (use-package flymake-diagnostic-at-point
+;; (leaf flymake-diagnostic-at-point
 ;;   :ensure t
 ;;   :after flymake
 ;;   :config
@@ -169,10 +166,9 @@ ARG - backward"
   (erase-buffer)
   (insert-file dobro/yas-new-snippet-prompt-file))
 
-(use-package yasnippet
+(leaf yasnippet
   :ensure t
-  :hook
-  (prog-mode . yas-minor-mode)
+  :hook (prog-mode . yas-minor-mode)
   :bind (
          ("C-c y v" . yas-visit-snippet-file)
          ("C-c y i" . yas-insert-snippet)
@@ -182,15 +178,13 @@ ARG - backward"
   :config
   (yas-reload-all)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"))
+        '("~/.emacs.d/snippets")))
 
-  )
-
-;; (use-package yasnippet
+;; (leaf yasnippet
 ;;   :ensure t
 ;;   :init (yas-global-mode 1))
 
-(use-package yasnippet-snippets
+(leaf yasnippet-snippets
   :ensure t
   :init)
 
@@ -199,12 +193,12 @@ ARG - backward"
 
 ;; Генератор инкрементальных парсеров
 
-(use-package tree-sitter
+(leaf tree-sitter
   :ensure t
   :config (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
-(use-package tree-sitter-langs
+(leaf tree-sitter-langs
   :ensure t
   :after tree-sitter)
 
@@ -212,26 +206,26 @@ ARG - backward"
 
 ;; Eglot теперь встроен в EMACS
 
-(use-package eglot
+(leaf eglot
   :ensure t
   :hook ((go-mode . eglot-ensure)
          (haskell-mode . eglot-ensure)
          (typescript-mode . eglot-ensure)
          (js-mode . eglot-ensure)
          (rust-mode . eglot-ensure))
-  :bind (:map eglot-mode-map
+  :bind ((:eglot-mode-map
               ("C-c a r" . #'eglot-rename)
               ("C-<down-mouse-1>" . #'xref-find-definitions)
               ("C-S-<down-mouse-1>" . #'xref-find-references)
-              ("C-c C-c" . #'eglot-code-actions))
-  :custom
-  (eglot-autoshutdown t)
+              ("C-c C-c" . #'eglot-code-actions)))
+  :custom ((eglot-autoshutdown . t))
+  :config
   (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
   (add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio"))))
 
 ;;;; Дебаггер
 
-(use-package dap-mode
+(leaf dap-mode
   :ensure t
   ;; :hook (
   ;;        (js-mode . dap-mode)
@@ -239,17 +233,17 @@ ARG - backward"
   ;;        ;; (typescript-mode . dap-mode)
   ;;        ;; (typescript-mode . dap-ui-mode)
   ;;        )
-  :bind (:map dap-mode-map
-              ("C-c bb" . dap-ui-breakpoints)
-              ("C-c bl" . dap-ui-locals)
-              ("C-c bt" . dap-breakpoint-toggle)
-              ("C-c bd" . dap-breakpoint-delete)
-              ("C-c bi" . dap-step-in)
-              ("C-c bo" . dap-step-out)
-              ("C-c bc" . dap-continue)
-              ("<f5>" . dap-continue)
-              ("<f6>" . dap-step-in)
-              ("<f7>" . dap-step-out))
+  :bind ((:dap-mode-map
+         ;; ("C-c bb" . dap-ui-breakpoints)
+         ;; ("C-c bl" . dap-ui-locals)
+         ;; ("C-c bt" . dap-breakpoint-toggle)
+         ;; ("C-c bd" . dap-breakpoint-delete)
+         ;; ("C-c bi" . dap-step-in)
+         ;; ("C-c bo" . dap-step-out)
+         ;; ("C-c bc" . dap-continue)
+         ("<f5>" . dap-continue)
+         ("<f6>" . dap-step-in)
+         ("<f7>" . dap-step-out)))
   :config
   (setq dap-auto-configure-features '(locals expression breakpoints))
   (загрузить 'dap-chrome)

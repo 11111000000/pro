@@ -2,7 +2,7 @@
 ;; Темы
 ;;; Code
 
-(use-package kaolin-themes
+(leaf kaolin-themes
   :config
   (load-theme 'kaolin-dark t)
   (kaolin-treemacs-theme))

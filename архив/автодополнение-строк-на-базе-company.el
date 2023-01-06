@@ -1,7 +1,7 @@
 ;;; Автодополнение (Company)
 ;;; Company
 
-(use-package company 
+(leaf company 
   :ensure t 
   :custom ((company-idle-delay 
             1) 
@@ -49,7 +49,7 @@
 
 ;; Быстрая справка в попапе при дополнении
 
-;; (use-package company-quickhelp
+;; (leaf company-quickhelp
 ;;   :ensure t
 ;;   :config
 ;;   (company-quickhelp-mode -1)
@@ -57,7 +57,7 @@
 
 ;; Иконки и быстрая справка (пока непонятно, нужно ли это)
 
-;; (use-package company-box
+;; (leaf company-box
 ;;   :ensure t
 ;;   :hook (company-mode . nil)
 ;;   :config
@@ -75,7 +75,7 @@
 
 ;; Показывать автодополнение в отдельном фрейме поверх основного окна - это позволяет использовать режимы с переменной шириной шрифта и масштабировать размеры
 
-(use-package company-posframe 
+(leaf company-posframe 
   :ensure t 
   :custom ((company-posframe-quickhelp-delay 
             .
@@ -87,11 +87,11 @@
 
 ;;; Сниппеты
 
-(use-package yasnippet 
+(leaf yasnippet 
   :ensure t 
   :init (yas-global-mode 1))
 
-(use-package yasnippet-snippets 
+(leaf yasnippet-snippets 
   :ensure t 
   :init)
 
@@ -104,7 +104,7 @@
 ;;   (add-hook hook config-company-elisp-setup))
 
 
-;; (use-package company-tabnine
+;; (leaf company-tabnine
 ;;   :ensure t
 ;;   :bind (("M-<tab>" . company-tabnine))
 ;;   :config

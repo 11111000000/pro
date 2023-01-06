@@ -11,58 +11,50 @@
               (bound-and-true-p vertico--input))
     (setq-local corfu-auto nil)
     (corfu-mode 1)))
-
-
-  
   
 
-(use-package corfu
-  :straight (corfu :files (:defaults "extensions/*")
-                   :includes (corfu-info corfu-history))
-  :bind (:map corfu-map
-              ("<escape>". corfu-quit)
-              ("<return>" . corfu-insert)
-              ("C-h" . corfu-info-documentation)
-              ("M-l" . corfu-info-location)
-              ("C-n" . corfu-quit)
-              ("C-p" . corfu-quit)
-              ("M-n" . corfu-next)
-              ("M-p" . corfu-previous)
-              ("TAB" . corfu-next)
-              ([tab] . corfu-next)
-              ("S-TAB" . corfu-previous)
-              ([backtab] . corfu-previous))
-  :custom
-  (tab-always-indent 'complete)
-  (completion-cycle-threshold nil)
-  (corfu-auto t)
-  (corfu-auto-prefix 3)
-  (corfu-auto-delay 1)
-  (corfu-popupinfo-delay 0)
-  ;; (corfu-min-width 80)
-  ;; (corfu-max-width corfu-min-width)
-  (corfu-count 5)
-  (corfu-scroll-margin 2)
-  (corfu-cycle t)
-  (corfu-echo-documentation nil)
-  (corfu-separator ?\s)
-  (corfu-quit-no-match 'separator)
-  (corfu-preview-current 'insert)
-  (corfu-preselect-first t)
-
+(leaf corfu
+  :bind ((:corfu-map
+          ("<escape>". corfu-quit)
+          ("<return>" . corfu-insert)
+          ("C-h" . corfu-info-documentation)
+          ("M-l" . corfu-info-location)
+          ("C-n" . corfu-quit)
+          ("C-p" . corfu-quit)
+          ("M-n" . corfu-next)
+          ("M-p" . corfu-previous)
+          ("TAB" . corfu-next)
+          ([tab] . corfu-next)
+          ("S-TAB" . corfu-previous)
+          ([backtab] . corfu-previous)))
+  :custom ((tab-always-indent . 'complete)
+           (completion-cycle-threshold . nil)
+           (corfu-auto . t)
+           (corfu-auto-prefix . 3)
+           (corfu-auto-delay . 1)
+           (corfu-popupinfo-delay . 0)
+           ;; (corfu-min-width 80)
+           ;; (corfu-max-width corfu-min-width)
+           (corfu-count . 5)
+           (corfu-scroll-margin . 2)
+           (corfu-cycle . t)
+           (corfu-echo-documentation . nil)
+           (corfu-separator . ?\s)
+           (corfu-quit-no-match . 'separator)
+           (corfu-preview-current . 'insert)
+           (corfu-preselect-first . t))
   :init
-
-  (global-corfu-mode)  
+  (global-corfu-mode)
   (corfu-popupinfo-mode)
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
 
 ;;;; Расширения для автодополнения
 
-(use-package cape
+(leaf cape
   :ensure t
-  :bind (("C-c o p" . completion-at-point) ;; capf
-         ("C-c o t" . complete-tag)        ;; etags
-         ("C-c o d" . cape-dabbrev)        ;; or dabbrev-completion
+  :bind (("C-c o p" . completion-at-point)
+         ("C-c o t" . complete-tag)
+         ("C-c o d" . cape-dabbrev)
          ("C-c o h" . cape-history)
          ("C-c o f" . cape-file)
          ("C-c o k" . cape-keyword)
@@ -93,7 +85,7 @@
 
 ;;;; Документация для автодополнения
 
-;; (use-package corfu-doc
+;; (leaf corfu-doc
 ;;   :ensure t
 ;;   :after corfu
 ;;   :hook (corfu-mode . corfu-doc-mode)
@@ -107,42 +99,39 @@
 ;;   (corfu-doc-max-width 70)
 ;;   (corfu-doc-max-height 20)
 
-;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' leaf to be
 ;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
 ;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
 ;;   (corfu-echo-documentation nil))
 
 ;;;; Автодополнение для терминала
 
-(use-package corfu-terminal
+(leaf corfu-terminal
   :ensure t)
 
 ;;;; Иконки для автодополнения
 
-(use-package kind-icon
+(leaf kind-icon
   :ensure t
   :after corfu
-  :custom
-  (kind-icon-use-icons t)
-  (kind-icon-default-face 'corfu-default)
-  (kind-icon-blend-background nil)
-  (kind-icon-blend-frac 0.08)
+  :custom ((kind-icon-use-icons . t)
+           (kind-icon-default-face . 'corfu-default)
+           (kind-icon-blend-background . nil)
+           (kind-icon-blend-frac . 0.08))
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (add-hook 'kb/themes-hooks #'(lambda ()
-               (interactive)
-               (kind-icon-reset-cache))))
+                                 (interactive)
+                                 (kind-icon-reset-cache))))
 
 ;;;; История автодополнения
 
-;; (use-package corfu-history
+;; (leaf corfu-history
 ;;   :after corfu
 ;;   :config
 ;;   (with-eval-after-load 'safehist
 ;;     (cl-pushnew 'corfu-history savehist-additional-variables))
 ;;   (corfu-history-mode))
-
-
 
 (provide 'автодополнение-строк)
 ;;; автодополнение-строк.el ends here

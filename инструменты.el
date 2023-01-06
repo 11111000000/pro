@@ -3,7 +3,7 @@
 ;;; Code:
 ;;;; Открыть файл с помощью чего-нибудь
 
-(use-package openwith
+(leaf openwith
   :ensure t
   :config
   (openwith-mode t)
@@ -17,12 +17,12 @@
 
 ;;;; Запускалка приложений из системного меню
 
-(use-package app-launcher  
-  :straight '(app-launcher :host github :repo "SebastienWae/app-launcher")
+(leaf app-launcher  
+  :el-get SebastienWae/app-launcher
   :bind (("s-x" . app-launcher-run-app))
   )
 
-;; (use-package bon-app-launcher  
+;; (leaf bon-app-launcher  
 ;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)
 ;;   )
 

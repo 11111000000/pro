@@ -16,12 +16,12 @@
 
 ;;;; Telegram
 
-(use-package telega
+(leaf telega
   :ensure t
-  :custom ((telega-use-docker t)
-           (telega-use-images t)
+  :custom ((telega-use-docker . t)
+           (telega-use-images . t)
            ;; (telega-emoji-use-images t)
-           (telega-emoji-font-family "Noto Color Emoji"))
+           (telega-emoji-font-family . "Noto Color Emoji"))
   :hook ((telega-root-mode . telega-notifications-mode)
          (telega-load-hook . global-telega-url-shorten-mode)
          (telega-root-mode . hl-line-mode))
@@ -33,44 +33,38 @@
               browse-url-new-window-flag t
               browse-url-generic-program "chromium")
 
-
 ;;;; EWW - Браузер на ELISP
-
 ;;;;; Нумерация ссылков
 
-(use-package eww-lnum
+(leaf eww-lnum
   :ensure t
-  :demand t
   :after eww
-  :bind
-  (
-   :map eww-mode-map
-   ("F" . eww-lnum-follow)))
+  :bind (:eww-mode-map
+         ("F" . eww-lnum-follow)))
 
 ;;;; W3M - альтернативный текстовый браузер
 
-(use-package w3m
+(leaf w3m
   :ensure t
-  :defer t
   :hook (w3m-mode . w3m-lnum-mode)
-  :bind (:map w3m-mode-map
-              ("C-<tab>" . w3m-tab-next-buffer)
-              ("C-<iso-lefttab>" . w3m-tab-previous-buffer)
-              ("C-w" . w3m-delete-buffer)
-              ("M-n" . w3m-tab-next-buffer)
-              ("M-p" . w3m-tab-previous-buffer)
-              ("<S-return>" . w3m-view-this-url-background-session)
-              ("<M-return>" . w3m-view-this-url-background-session)
-              ("B" . w3m-view-previous-page)
-              ("F" . w3m-view-next-page)
-              ("<M-left>" . w3m-view-previous-page)
-              ("<M-right>" . w3m-view-previous-page)
-              ("F" . w3m-view-next-page)
-              ("M-s" . nil)
-              ("<XF86Back>" . nil)
-              ("<XF86Forward>" . nil)
-              ("C-r" . w3m-reload-this-page)
-              ("C-S-R" . w3m-reload-this-page)
+  :bind (:w3m-mode-map
+         ("C-<tab>" . w3m-tab-next-buffer)
+         ("C-<iso-lefttab>" . w3m-tab-previous-buffer)
+         ("C-w" . w3m-delete-buffer)
+         ("M-n" . w3m-tab-next-buffer)
+         ("M-p" . w3m-tab-previous-buffer)
+         ("<S-return>" . w3m-view-this-url-background-session)
+         ("<M-return>" . w3m-view-this-url-background-session)
+         ("B" . w3m-view-previous-page)
+         ("F" . w3m-view-next-page)
+         ("<M-left>" . w3m-view-previous-page)
+         ("<M-right>" . w3m-view-previous-page)
+         ("F" . w3m-view-next-page)
+         ("M-s" . nil)
+         ("<XF86Back>" . nil)
+         ("<XF86Forward>" . nil)
+         ("C-r" . w3m-reload-this-page)
+         ("C-S-R" . w3m-reload-this-page)
               )
   :config
 
@@ -88,18 +82,18 @@
 
 ;;;; HTTP-запросы
 
-(use-package plz
+(leaf plz
   ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
   )
 
-;; (use-package ement
+;; (leaf ement
 ;;   :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))
 
 ;;;; Slack
 
-;; (use-package helm-slack :after (slack)) ;; optional
+;; (leaf helm-slack :after (slack)) ;; optional
 
-;; (use-package slack
+;; (leaf slack
 ;;   :ensure t
 ;;   :commands (slack-start)
 ;;   :init
@@ -139,14 +133,14 @@
 ;;   ;;   ",3" 'slack-message-embed-channel)
 ;; )
 
-;; (use-package alert
+;; (leaf alert
 ;;   :commands (alert)
 ;;   :init
 ;;   (setq alert-default-style 'notifier))
 
 ;;;; Карты OSM
 
-(use-package osm
+(leaf osm
   :ensure t)
 
 (provide 'интернет-общение)

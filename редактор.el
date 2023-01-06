@@ -21,26 +21,26 @@
 
 ;; Трансляция сочетаний клавиш при включеном русском
 
-(use-package reverse-im
+(leaf reverse-im
   :ensure t
   :config
+  (reverse-im-mode t)
   (add-to-list 'reverse-im-modifiers 'super)
   (add-to-list 'reverse-im-input-methods "russian-computer")
-  (reverse-im-mode t))
+  )
 
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 
-(use-package avy
+(leaf avy
   :ensure t
-  :defer t
   :bind   (("C-z" . avy-goto-char)
            ("s-z" . avy-goto-char)
            ("M-z" . avy-goto-char))
-  :custom ((avy-background nil)))
+  :custom ((avy-background . nil)))
 
 ;; Мульти-курсор
 
-(use-package multiple-cursors
+(leaf multiple-cursors
   :ensure t
   :bind (("C-c SPC" . mc/mark-all-like-this)
          ("C-c C-SPC" . mc/unmark-all-like-this)
@@ -58,7 +58,7 @@
 
 ;; Подсвечивать курсор при мгновенном перемещении, чтобы он не потерялся
 
-;; (use-package beacon
+;; (leaf beacon
 ;;   :custom
 ;;   (beacon-color "#ffaa00")
 ;;   :hook (after-init . beacon-mode))
@@ -70,7 +70,7 @@
 
 ;; Выделять "изнутри"
 
-(use-package expand-region
+(leaf expand-region
   :ensure t
   :bind
   ("M-SPC" . er/expand-region)
@@ -106,7 +106,7 @@
 
 ;; Операция над выделением или текущей линией
 
-(use-package whole-line-or-region
+(leaf whole-line-or-region
   :ensure t
   :bind (("M-y" . whole-line-or-region-kill-ring-save) ;; TODO Пофиксить в org
          ("s-y" . whole-line-or-region-kill-ring-save) ;; TODO Пофиксить в org
@@ -130,31 +130,30 @@
 
 ;;;; Перемещение блоков
 
-(use-package shift-text
-  :ensure t
-  :defer t
-  :bind
+(leaf shift-text
+  :ensure t  
+  :bind (
   ("C-S-M-p" . shift-text-up)
   ("C-S-M-n" . shift-text-down)
   ("C-S-M-f" . shift-text-right)
-  ("C-S-M-b" . shift-text-left))
+  ("C-S-M-b" . shift-text-left)))
 
 ;;;; Отображения текста по центру ("режим чтения")
 
-(use-package olivetti
+(leaf olivetti
   :ensure t
   :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
-  :custom ((olivetti-minimum-body-width 80)))
+  :custom ((olivetti-minimum-body-width . 80)))
 
 ;;;; Закладки
 
-(use-package bookmark
+(leaf bookmark
   :config
   (setq bookmark-save-flag t))
 
 ;;;; Режим чтения
 
-;; (use-package view
+;; (leaf view
 ;;   :bind (
 ;;          ("M-i" . read-only-mode)
 ;;          ("<escape>" . read-only-mode)
@@ -183,8 +182,8 @@
 
 ;; Последовательности символов можно заменить на один глиф. Но при наведении курсора, мы хотим видеть оригинал:
 
-(use-package fira-code-mode
-  :if window-system
+(leaf fira-code-mode
+  :if (window-system)
   :ensure t
   :hook ((prog-mode . fira-code-mode))
   :config
@@ -219,7 +218,7 @@
 
 ;; Автоматически определять отступы
 
-(use-package dtrt-indent
+(leaf dtrt-indent
   :ensure t
   :init
   (dtrt-indent-global-mode t)
@@ -227,7 +226,7 @@
 
 ;; Настройка отступов берётся из файла .editorconfig
 
-(use-package editorconfig
+(leaf editorconfig
   :ensure t
   :init
   (editorconfig-mode 1))
@@ -251,21 +250,21 @@
 
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 
-(use-package string-inflection
+(leaf string-inflection
   :ensure t
   ;;:load-path "emacs-lisp/string-inflection"
   )
 
 ;; Подсветка идентации
 
-(use-package highlight-indent-guides
+(leaf highlight-indent-guides
    :ensure t
    :hook ((prog-mode . highlight-indent-guides-mode)
           (yaml-mode . highlight-indent-guides-mode))
    :custom
-   (highlight-indent-guides-method 'character)
-   (highlight-indent-guides-responsive 'top)
-   (highlight-indent-guides-auto-character-face-perc 5)
+   (highlight-indent-guides-method . 'character)
+   (highlight-indent-guides-responsive . 'top)
+   (highlight-indent-guides-auto-character-face-perc . 5)
    )
 
 ;; Поддержка очень длинных файлов
@@ -274,7 +273,7 @@
 
 ;; Проверка орфографии
 
-(use-package flymake-aspell
+(leaf flymake-aspell
   :ensure t
   :hook ((text-mode . flymake-aspell-setup)
          (org-mode . flymake-aspell-setup))
@@ -283,10 +282,9 @@
   (setq ispell-program-name "aspell")
   (setq ispell-silently-savep t))
 
-
 ;;;; Поддержка языка  разметки Markdown
 
-(use-package markdown-mode :ensure t)
+(leaf markdown-mode :ensure t)
 
 ;;;; Вставить имя файла
 

@@ -1,7 +1,7 @@
 ;;; Helm
 ;;;; Базовая настройка HELM
 
-(use-package helm
+(leaf helm
   :ensure t
   :custom (
            (helm-M-x-always-save-history t)
@@ -109,7 +109,7 @@
 
 ;;;; Поиск строки во всех буферах
 
-(use-package helm-swoop
+(leaf helm-swoop
   :ensure t  
   :bind (("M-s" . nil)
          ("C-M-s" . helm-swoop-from-isearch)
@@ -122,9 +122,8 @@
 
 ;;;; Список команд мажорного мода  M-S-X (C-M-x)
 
-(use-package helm-smex
-  :ensure t  
-  :defer t
+(leaf helm-smex
+  :ensure t    
   :bind (("M-X" . helm-smex-major-mode-commands) 
          ("C-M-x" . helm-smex-major-mode-commands)
          )
@@ -134,20 +133,18 @@
 
 ;;;; Список биндингов
 
-(use-package helm-descbinds
+(leaf helm-descbinds
   :ensure t
-  :defer t
   :bind (("<f1> w" . helm-descbinds)
          ("<f1> b" . helm-descbinds)))
 
 
 ;;;; Быстрый поиск строки по файлам рекурсивно
 
-;; (use-package helm-ls-hg
+;; (leaf helm-ls-hg
 ;;   :bind (("C-c hgf" . helm-hg-find-files-in-project)))
 
-(use-package helm-ag
-  :defer t
+(leaf helm-ag  
   :bind (("C-c sa" . helm-do-grep-ag) )
   :custom ( (helm-ag-fuzzy-match t)
             (helm-ag-use-agignore t)
@@ -156,7 +153,7 @@
 
 ;;; HELM для exwm
 
-(use-package helm-exwm
+(leaf helm-exwm
   :ensure t
   :if window-system
   :after (exwm)
@@ -169,11 +166,11 @@
 
 ;;; Helm + lsp
 
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(leaf helm-lsp :commands helm-lsp-workspace-symbol)
 
 ;;; Helm FLX
   
-; (use-package helm-flx
+; (leaf helm-flx
 ;   :ensure t
 ;   :init
 ;   (helm-flx-mode t)
@@ -181,14 +178,14 @@
 
 ;;; Helm dash
 
-; (use-package helm-dash
+; (leaf helm-dash
 ;   :ensure t
 ;   :init
 ;   (setq helm-dash-browser-func 'eww))
 
 ;;; Helm posframe
 
-(use-package helm-posframe
+(leaf helm-posframe
   :ensure t
   :custom ((helm-posframe-border-width 1) 
            (helm-posframe-font "Fira Code")
@@ -250,17 +247,17 @@
 
 ;;; Helm tree sitter
 
-(use-package helm-tree-sitter
+(leaf helm-tree-sitter
   :ensure t
     :bind (("s-m" . helm-tree-sitter))
 
     )
 
-(use-package helm-tramp  
+(leaf helm-tramp  
   :ensure t  
   )
 
-(use-package helm-projectile
+(leaf helm-projectile
   :after projectile
   :ensure t)
 

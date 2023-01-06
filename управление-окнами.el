@@ -11,9 +11,8 @@
 
 ;;;; Перемещение окон
 
-(use-package buffer-move
-  :ensure t
-  :defer t
+(leaf buffer-move
+  :ensure t  
   :bind (("s-K" . buf-move-up)
          ("s-J" . buf-move-down)
          ("s-H" . buf-move-left)
@@ -24,9 +23,8 @@
 
 ;; Даёт больше места текущему окну
 
-(use-package golden-ratio
-  :ensure t
-  :defer t
+(leaf golden-ratio
+  :ensure t  
   :bind(("C-x +" . golden-ratio)
         ("C-x =" . balance-windows)
         ("C-x _" . maximize-window)
@@ -38,11 +36,11 @@
 
 ;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
 
-(use-package buffer-expose
+(leaf buffer-expose
   :ensure t
   ;; :load-path "emacs-lisp/buffer-expose"
   :bind (("<s-iso-lefttab>" . buffer-expose)
-         :map buffer-expose-grid-map
+         (:buffer-expose-grid-map
          ("d" . buffer-expose-kill-buffer)
          ("h" . buffer-expose-left-window)
          ("j" . buffer-expose-down-window)
@@ -52,15 +50,14 @@
          ("RET" . buffer-expose-choose)
          ("SPC" . buffer-expose-choose)
          ("s-SPC" . buffer-expose-choose)
-         ("s-<tab>" . buffer-expose-reset)
+         ("s-<tab>" . buffer-expose-reset)) 
          )
   :init)
 
 ;;;; Popwin - предсказуемые попапы
 
-(use-package popwin
+(leaf popwin
   :ensure t
-  :defer t
   :bind (
          ("C-c b" . popwin:popup-buffer)
          ("C-c ." . popwin:stick-popup-window)
@@ -122,14 +119,13 @@
         (ignore-errors (delete-window (get-buffer-window buf t)))
       (popwin:pop-to-buffer buf t))))
 
-;; (use-package scratch-pop
+;; (leaf scratch-pop
 ;;   :ensure t
-;;   :defer t
 ;;   :bind (("C-`" . scratch-pop)))
 
 ;;;; Переключение окон
 
-(use-package ace-window
+(leaf ace-window
   :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
               aw-char-position 'left

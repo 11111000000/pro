@@ -14,10 +14,9 @@
 
 ;;;; Режим Бога (всегда Ctrl)
 
-(use-package god-mode
+(leaf god-mode
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
-  :ensure t
-  :defer t
+  :ensure t  
   :diminish " ☯"
   :hook (((god-mode-disabled god-mode-enabled) . обновить-курсор)
          ;;(god-mode-enabled . restore-input-method)
@@ -36,7 +35,7 @@
          ;; ("C-l" . forward-char)
          ;; ("C-S-p" . scroll-down-command)
          ;; ("C-S-n" . scroll-up-command)
-         :map god-local-mode-map
+         (:god-local-mode-map
          ("C-\\" . nil)
          ("i" . god-local-mode)
          ("RET" . (lambda () (interactive)))
@@ -57,9 +56,10 @@
          ;; ("C-j". next-line)
          ;; ("C-k" . previous-line)
          )
+         )
 
   :custom 
-  (god-exempt-major-modes
+  ((god-exempt-major-modes .
    '(dired-mode wdired-mode image-mode help-mode grep-mode exwm-mode
      xref--xref-buffer-mode minibuffer-mode help-mode
      vc-annotate-mode eshell-mode shell-mode term-mode
@@ -77,7 +77,7 @@
      racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
      lsp-ui-imenu-mode vterm-mode dashboard-mode))
 
-  (god-exempt-predicates (list #'god-exempt-mode-p))
+  (god-exempt-predicates . (list #'god-exempt-mode-p)))
   :init
 
   (global-set-key (kbd "C-<f1>") help-map)

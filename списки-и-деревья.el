@@ -4,31 +4,29 @@
 ;;; Code:
 ;;;; Файлы и каталоги
 
-(use-package dired
-  :straight (:type built-in)
+(leaf dired
   :bind (("C-x d" . dired-jump)
          ("C-x C-d" . dired-jump)
-         :map dired-mode-map
-         ("j" . dired-next-line)
-         ("k" . dired-previous-line)
-         ("l" . dired-find-file)
-         ("f" . dired-find-file)
-         ("o" . dired-find-file)
-         ("h" . dired-up-directory)
-         ("b" . dired-up-directory)
-         ("u" . dired-up-directory))
+         (:dired-mode-map
+          ("j" . dired-next-line)
+          ("k" . dired-previous-line)
+          ("l" . dired-find-file)
+          ("f" . dired-find-file)
+          ("o" . dired-find-file)
+          ("h" . dired-up-directory)
+          ("b" . dired-up-directory)
+          ("u" . dired-up-directory)))
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode)
          ;;(dired-mode . hl-line-mode)
          )
-  :custom 
-  ;; (dired-listing-switches "-aBhlv --group-directories-first")
-  (ls-lisp-dirs-first t)
-  (ls-lisp-use-insert-directory-program nil)
-	(dired-dwim-target t)
-  (dired-auto-revert-buffer t)
-  (global-auto-revert-non-file-buffers t)
-  (dired-hide-details-hide-symlink-targets nil))
+  :custom ((ls-lisp-dirs-first . t)
+           (ls-lisp-use-insert-directory-program . nil)
+           ;(dired-listing-switches . "-aBhv --group-directories-first")
+           (dired-dwim-target . t)
+           (dired-auto-revert-buffer . t)
+           (global-auto-revert-non-file-buffers . t)
+           (dired-hide-details-hide-symlink-targets . nil)))
 
 ;;;; Редактор каталогов WDired
 
@@ -36,21 +34,19 @@
 ;; действия со списком файлов, как-будто это обычный текст и сохранить изменения,
 ;; нажав C-c C-c или отменить C-g
 
-(use-package wdired
-  :ensure t  
-  :after dired
-  :bind (
-         :map dired-mode-map
-         ("C-c C-c" . wdired-change-to-wdired-mode)
-         :map wdired-mode-map
-         ("C-c C-r" . replace-string)
-         ("C-c r" . replace-regexp)
-         ("C-g C-g" . wdired-exit)
-         ("ESC" . wdired-exit)))
+(leaf wdired
+  :after (dired)
+  :bind ((:dired-mode-map
+          ("C-c C-c" . wdired-change-to-wdired-mode))
+         (:wdired-mode-map
+	        ("C-c C-r" . replace-string)
+          ("C-c r" . replace-regexp)
+          ("C-g C-g" . wdired-exit)
+          ("ESC" . wdired-exit))))
 
 ;;;; Дерево
 
-(use-package treemacs
+(leaf treemacs
   :ensure t
   :init
   (with-eval-after-load 'winum
@@ -122,22 +118,21 @@
 
     (treemacs-hide-gitignored-files-mode nil))
   :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("M-t" . treemacs)
-        ("C-x t d"   . treemacs-select-directory)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
+  ((
+    ("C-x t 1"   . treemacs-delete-other-windows)
+    ("C-x t t"   . treemacs)
+    ;("M-t"       . treemacs-select-window)
+    ("M-t" . treemacs)
+    ("C-x t d"   . treemacs-select-directory)
+    ("C-x t B"   . treemacs-bookmark)
+    ("C-x t C-t" . treemacs-find-file)
+    ("C-x t M-t" . treemacs-find-tag))))
 
 ;;;; Иконки 
 
-(use-package treemacs-icons-dired
+(leaf treemacs-icons-dired
   :ensure t
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :hook ((dired-mode . treemacs-icons-dired-enable))
   :init
   (add-hook 'after-load-theme-hook 
           (lambda () 
@@ -147,22 +142,22 @@
 
 ;;;; Дерево для проектов
 
-(use-package treemacs-projectile
+(leaf treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
 
 ;;;; Дерево для Git
 
-(use-package treemacs-magit
+(leaf treemacs-magit
   :after (treemacs magit)
   :ensure t)
 
-;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+;; (leaf treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
 ;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
 ;;   :ensure t
 ;;   :config (treemacs-set-scope-type 'Perspectives))
 
-(use-package ag :ensure t)
+(leaf ag :ensure t)
 
 (provide 'списки-и-деревья)
 ;;; списки-и-деревья.el ends here

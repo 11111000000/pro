@@ -5,21 +5,21 @@
 ;;; Code:
 ;;;; Сохранение истории
 
-(use-package no-littering
+(leaf no-littering
   :ensure t
-  :custom ((make-backup-files t)
-           (delete-by-moving-to-trash t)
-           (backup-by-copying t)
-           (kept-new-versions 25)
-           (history-delete-duplicates t)
-           (history-length 300)
-           (savehist-autosave-interval 300)
+  :custom ((make-backup-files . t)
+           (delete-by-moving-to-trash . t)
+           (backup-by-copying . t)
+           (kept-new-versions . 25)
+           (history-delete-duplicates . t)
+           (history-length . 300)
+           (savehist-autosave-interval . 300)
            ;;(savehist-file "~/.emacs.d/history")
-           (kept-old-versions 25)
-           (delete-old-versions t)
-           (create-lockfiles nil)
-           (vc-make-backup-files t)
-           (version-control t))
+           (kept-old-versions . 25)
+           (delete-old-versions . t)
+           (create-lockfiles . nil)
+           (vc-make-backup-files . t)
+           (version-control . t))
   :config
   (savehist-mode t)  
   (setq
@@ -31,14 +31,14 @@
 ;;;; Текстовая Машина Времени
 ;;;;; Дерево версий текста
 
-(use-package undo-tree
+(leaf undo-tree
   :ensure t
   :diminish " ⸙"
   :custom
-  (undo-tree-auto-save-history t)
-  (undo-tree-history-directory-alist `((".*" . ,(expand-file-name "~/.emacs.d/undo/"))))
-  (undo-tree-visualizer-timestamps t)
-  (undo-tree-visualizer-diff nil)
+  (undo-tree-auto-save-history . t)
+  (undo-tree-history-directory-alist . `((".*" . ,(expand-file-name "~/.emacs.d/undo/"))))
+  (undo-tree-visualizer-timestamps . t)
+  (undo-tree-visualizer-diff . nil)
 
   :bind (("C-M--" . undo-tree-visualize)
          ("C-M-_" . undo-tree-visualize)
@@ -48,19 +48,19 @@
 
 ;;;;; Вернуться к последней правке
 
-(use-package goto-last-change :ensure t
+(leaf goto-last-change :ensure t
   :ensure t
   :bind (("C-c C-," . goto-last-point)))
 
 ;;;;; Вернуться к предыдущей позиции курсора
 
-(use-package goto-last-point
+(leaf goto-last-point
   :ensure t
   :bind (("C-c ," . goto-last-point))
   :config
   (goto-last-point-mode t))
 
-;; (use-package backward-forward
+;; (leaf backward-forward
 ;;   :ensure t
 ;;   :bind
 ;;   ("C-," . backward-forward-previous-location)
@@ -75,7 +75,7 @@
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>
 
-(use-package winner
+(leaf winner
   :bind (("<XF86Back>" . winner-undo)
          ("<XF86Forward>" . winner-redo)
          ("s-u" . winner-undo))
@@ -84,7 +84,7 @@
 
 ;;;; Помнить места
 
-(use-package saveplace
+(leaf saveplace
   :ensure t
   :after (no-littering)
   ;;:custom (save-place-file "~/.emacs.d/places")
@@ -93,10 +93,10 @@
 
 ;;;; Помнить недавние файлы
 
-(use-package recentf
+(leaf recentf
   :after (no-littering)
-  :custom ((recentf-max-saved-items 512)   ;; всего
-           (recentf-max-menu-items 100)    ;; меню
+  :custom ((recentf-max-saved-items . 512)   ;; всего
+           (recentf-max-menu-items . 100)    ;; меню
 
            ;; ...исключая некоторые:
 

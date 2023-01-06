@@ -70,20 +70,19 @@
 
 ;; Минибуфер во фрейме поверх окна
 
-(use-package mini-frame
-  :custom
-  (mini-frame-show-parameters '((child-frame-border-width . 0)
-                                (internal-border-width . 0)
-                                (top . 0.3)
-                                (width . 0.8)
-                                (height . 0.3)
-                                (left . 0.5)))  
-  (mini-frame-standalone t)
-  (mini-frame-resize nil)
-  (mini-frame-color-shift-step 7)
-  (mini-frame-internal-border-color "#333333")
-  :config   
-  :init
+(leaf mini-frame
+  :ensure t
+  :custom ((mini-frame-show-parameters . '((child-frame-border-width . 0)
+                                           (internal-border-width . 0)
+                                           (top . 0.3)
+                                           (width . 0.8)
+                                           (height . 0.3)
+                                           (left . 0.5)))
+           (mini-frame-standalone . t)
+           (mini-frame-resize . nil)
+           (mini-frame-color-shift-step . 7)
+           (mini-frame-internal-border-color . "#333333"))
+  :config  
   (mini-frame-mode t))
 
 ;; Отключаем рекурсивные минибуферы
@@ -95,11 +94,10 @@
 
 (global-set-key (kbd "s-<f1>") (lambda () (interactive) (print (current-time-string))))
 
-
 ;;;; Иконки
 
-(use-package all-the-icons
-  :if window-system
+(leaf all-the-icons
+  :if (window-system)
   :ensure t
   )
 
@@ -128,10 +126,10 @@
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
 
-(use-package cursor-chg
-  :ensure t
-  :straight '(cursor-chg :host github :repo "emacsmirror/cursor-chg")
+(leaf cursor-chg
+  :el-get emacsmirror/cursor-chg;
   :config
+  (require 'cursor-chg)
   (change-cursor-mode t)
   (setq curchg-input-method-cursor-color "violet"
         curchg-default-cursor-type 'bar
@@ -144,11 +142,11 @@
 
 ;;;; Изображения
 
-(use-package image+
+(leaf image+
   :ensure t
   :after 'image-mode
   :hook (image-mode . image+)
-  :bind ((:map image-mode-map
+  :bind ((:image-mode-map
                ("0" . imagex-sticky-restore-original)
                ("+" . imagex-sticky-maximize)
                ("=" . imagex-sticky-zoom-in)
@@ -172,7 +170,7 @@
 
 ;; Сохранение расположения
 
-(use-package eyebrowse
+(leaf eyebrowse
   :ensure t
   :config (eyebrowse-mode))
 
@@ -182,10 +180,8 @@
 ;; Меню для текущего файла, в Org-mode например, показывает список заголовков
 ;; как своего рода директории
 
-(use-package imenu
-  :defer t
-  :custom ((imenu-auto-rescan t))
-  )
+(leaf imenu
+  :custom ((imenu-auto-rescan . t)))
 
 ;;;; Окна
 ;;;;; Перемещение по окнам
@@ -197,9 +193,8 @@
 
 ;;;;; Перемещение окон
 
-(use-package buffer-move
+(leaf buffer-move
   :ensure t
-  :defer t
   :bind (("s-K" . buf-move-up)
          ("s-J" . buf-move-down)
          ("s-H" . buf-move-left)
@@ -210,9 +205,8 @@
 
 ;; Даёт больше места текущему окну:
 
-(use-package golden-ratio
+(leaf golden-ratio
   :ensure t
-  :defer t
   :bind(("C-x +" . golden-ratio)
         ("C-x =" . balance-windows)
         ("C-x _" . maximize-window)
@@ -224,11 +218,11 @@
 
 ;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
 
-(use-package buffer-expose
+(leaf buffer-expose
   :ensure t
   ;; :load-path "emacs-lisp/buffer-expose"
   :bind (("<s-iso-lefttab>" . buffer-expose)
-         :map buffer-expose-grid-map
+         (:buffer-expose-grid-map
          ("d" . buffer-expose-kill-buffer)
          ("h" . buffer-expose-left-window)
          ("j" . buffer-expose-down-window)
@@ -238,15 +232,14 @@
          ("RET" . buffer-expose-choose)
          ("SPC" . buffer-expose-choose)
          ("s-SPC" . buffer-expose-choose)
-         ("s-<tab>" . buffer-expose-reset)
+         ("s-<tab>" . buffer-expose-reset))
          )
   :init)
 
 ;;;;; Popwin - предсказуемые попапы
 
-(use-package popwin
+(leaf popwin
   :ensure t
-  :defer t
   :bind (
          ("C-c b" . popwin:popup-buffer)
          ("C-c ." . popwin:stick-popup-window)
@@ -308,28 +301,27 @@
         (ignore-errors (delete-window (get-buffer-window buf t)))
       (popwin:pop-to-buffer buf t))))
 
-;; (use-package scratch-pop
+;; (leaf scratch-pop
 ;;   :ensure t
-;;   :defer t
 ;;   :bind (("C-`" . scratch-pop)))
 
 ;; Минибуфер - модлайн
 
-(use-package taoline
-  :straight '(taoline :host github :repo "11111000000/taoline")
+(leaf taoline  
+  :el-get 11111000000/taoline
   :if window-system
   :custom
-  (taoline-show-time t)
-  (taoline-show-input t)
-  (taoline-show-git-branch t)
-  (taoline-show-dir t)
-  (taoline-show-previous-buffer  nil)
+  ((taoline-show-time . t)
+  (taoline-show-input . t)
+  (taoline-show-git-branch . t)
+  (taoline-show-dir . t)
+  (taoline-show-previous-buffer . nil))
   :config
   (taoline-mode 1))
 
 ;;;;; Переключение окон
 
-(use-package ace-window
+(leaf ace-window
   :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
               aw-char-position 'left
@@ -341,14 +333,15 @@
 
 ;;;; Мини-карта
 
-(use-package minimap
+(leaf minimap
   :ensure t
+  
+  :custom
+  ((minimap-window-location . 'right))
   :config
   (custom-set-faces
    '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
-  :custom
-  (minimap-window-location 'right)
-
+  
   (defun my/toggle-minimap ()
     "Toggle minimap for current buffer."
     (interactive)

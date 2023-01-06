@@ -5,38 +5,35 @@
 
 (load-library "find-lisp")
 
-(use-package org
-  :ensure nil
-  :straight nil
+(leaf org  
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
-         :map org-mode-map
-         ("C-c o" . org-agenda-open-link))
-  :custom ((org-log-done nil)
-           (org-agenda-files (find-lisp-find-files "~/Организация" "\.org$"))
-           (org-todo-keywords '((sequence "TODO" "ACTIVE" "DONE"))))
+         (:org-mode-map
+         ("C-c o" . org-agenda-open-link)))
+  ;; :custom ((org-log-done . nil)
+  ;;          (org-agenda-files . (find-lisp-find-files "~/Организация" "\.org$"))
+  ;;          (org-todo-keywords . '((sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
   :init)
 
 ;;;; Красивые заголовки
 
-(use-package org-bullets
+(leaf org-bullets
   :if window-system
-  :ensure t
-  :defer t
+  :ensure t  
   :after (org)
   :hook ((org-mode . org-bullets-mode))
 
-  :custom ((org-bullets-bullet-list '("‣" "‣" ))
-           (org-hide-emphasis-markers nil)
-           (org-startup-indented t)
-           (org-hide-leading-stars nil)
+  :custom ((org-bullets-bullet-list . '("‣" "‣" ))
+           (org-hide-emphasis-markers . nil)
+           (org-startup-indented . t)
+           (org-hide-leading-stars . nil)
            ))
 
 ;;;; Иконки приоритетов
 
-(use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
+(leaf org-fancy-priorities :ensure t :hook ((org-mode . org-fancy-priorities-mode)))
 
 ;;;; Иконка свёртки
 
@@ -119,10 +116,10 @@
 
 ;; Перемещение по заголовкам, со скрытием остальных
 
-(use-package org
-  :bind (:map org-mode-map
+(leaf org
+  :bind ((:org-mode-map
               (("M-n" . my/org-show-next-heading-tidily)
-               ("M-p" . my/org-show-previous-heading-tidily)))
+               ("M-p" . my/org-show-previous-heading-tidily))))
   :init)
 
 ;; Перемещение по заголовкам, когда раскрыт только текущий
@@ -165,15 +162,15 @@
 
 ;; Простой таймер для учёта рабочего времени и перерывов:
 
-(use-package pomodoro :ensure t :defer t)
+(leaf pomodoro :ensure t)
 
-(use-package org-pomodoro
-  :ensure t :defer t
+(leaf org-pomodoro
+  :ensure t 
   :custom (
-           (org-pomodoro-length 15)
-  	       (org-pomodoro-short-break-length 5)
-  	       (org-pomodoro-long-break-length 15)
-  	       (org-pomodoro-play-sounds 1)))
+           (org-pomodoro-length . 15)
+  	       (org-pomodoro-short-break-length . 5)
+  	       (org-pomodoro-long-break-length . 15)
+  	       (org-pomodoro-play-sounds . 1)))
 
 
 ;;;; TODO Поли-моды
@@ -183,39 +180,34 @@
 ;;;; TODO Таблицы
 ;;;; Заметки
 
-(use-package org-noter
+(leaf org-noter
   :ensure t
-  :bind(  
-        :map doc-view-mode-map
+  :bind(:doc-view-mode-map
         ("i" . org-noter-insert-note)))
 
 ;;;; Цветные тэги
 
-;; (use-package org-rainbow-tags  
+;; (leaf org-rainbow-tags  
 ;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"
 ;;   :hook ((org-mode . org-rainbow-tags-mode))
 ;;   :init)
 
 ;;;; Организация кода
 
-(use-package outshine
+(leaf outshine
   :ensure t
-  :custom ((outshine-startup-folded-p nil))
+  :custom ((outshine-startup-folded-p . nil))
   :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
          (outline-minor-mode . outshine-mode)
          (outline-minor-mode . iimage-mode))
-  :bind (:map outshine-mode-map
+  :bind ((:outshine-mode-map
               ("C-<return>" . outshine-insert-heading)
-              ("C-<tab>" . outshine-cycle)))
+              ("C-<tab>" . outshine-cycle))))
 
-(use-package outshine-bullets
-  :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets") 
+(leaf outshine-bullets
+  :el-get 11111000000/outshine-bullets
   :hook ((outshine-mode . outshine-bullets-mode))
-  :custom (
-           
-	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))
-	   )
-  )
+  :custom ((outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))))
 
 (provide 'организация)
 ;;; организация.el ends here

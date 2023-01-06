@@ -1,6 +1,6 @@
 ;;; Языковой Сервер (LSP)
 
-(use-package lsp-mode 
+(leaf lsp-mode 
   :ensure t 
   :after tree-sitter 
   :commands (lsp lsp-deferred)
@@ -65,7 +65,7 @@
 
 ;;;;; LSP UI
 
-(use-package lsp-ui 
+(leaf lsp-ui 
   :ensure t 
   :bind (:map lsp-ui-mode-map
               ("M-m" . lsp-ui-imenu)) 
@@ -126,7 +126,7 @@
 
 ;;;;; LSP Treemacs
 
-(use-package lsp-treemacs 
+(leaf lsp-treemacs 
   :ensure t 
   :bind (:map lsp-mode-map
               ("M-M" . lsp-treemacs-symbols)) 
@@ -135,7 +135,7 @@
 
 ;;; Sonar lint
 
-(use-package lsp-sonarlint 
+(leaf lsp-sonarlint 
   :ensure t 
   :custom ((lsp-sonarlint-typescript-enabled t) 
            (lsp-sonarlint-javascript-enabled t)) 
@@ -144,7 +144,7 @@
 
 ;;; LSP Docker
 
-(use-package lsp-docker 
+(leaf lsp-docker 
   :ensure t)
 
 

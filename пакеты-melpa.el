@@ -11,15 +11,15 @@
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa") 
   (package-refresh-contents))
 
-;;;; Макрос Use-package
+;;;; Макрос leaf
 
-(unless (package-installed-p 'use-package) 
+(unless (package-installed-p 'leaf) 
   (package-refresh-contents) 
-  (package-install 'use-package))
+  (package-install 'leaf))
 
 (eval-when-compile (progn 
-                     (require 'use-package) 
-                     (setq-default use-package-verbose t)))
+                     (require 'leaf) 
+                     (setq-default leaf-verbose t)))
 
 ;;; Настройки customize
 ;; (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))

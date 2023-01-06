@@ -4,7 +4,7 @@
 ;;; Code:
 ;;;; Xelb
 
-(use-package xelb
+(leaf xelb
   :ensure t
   :if window-system
   ;; :load-path "emacs-lisp/xelb/"
@@ -34,15 +34,15 @@
 
 ;; (exwm-input-set-simulation-keys az/default-simulation-keys)
 
-(use-package exwm
+(leaf exwm
   :ensure t
   :if window-system 
-  :custom ((exwm-workspace-number 5) 
-           (exwm-workspace-show-all-buffers t) 
-           (exwm-layout-show-all-buffers t) 
-           (exwm-manage-force-tiling nil) 
-           (exwm-systemtray-height 16)
-           (exwm-input-simulation-keys az/default-simulation-keys))
+  :custom ((exwm-workspace-number . 5) 
+           (exwm-workspace-show-all-buffers . t) 
+           (exwm-layout-show-all-buffers . t) 
+           (exwm-manage-force-tiling . nil) 
+           (exwm-systemtray-height . 16)
+           (exwm-input-simulation-keys . az/default-simulation-keys))
   
   :config
   (add-hook 'exwm-update-class-hook 
@@ -267,7 +267,7 @@
 ;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
-(use-package exim 
+(leaf exim 
   :after (exwm) 
   :if window-system 
   ;; :load-path "emacs-lisp/exim/exim" 
@@ -278,7 +278,7 @@
 
 ;;;; Редактирование любых полей ввода через EMACS
 
-(use-package exwm-edit 
+(leaf exwm-edit 
   :if window-system 
   :ensure t 
   :config
@@ -288,7 +288,7 @@
   ;; (add-hook 'exwm-edit-compose-hook 'ag-exwm/on-exwm-edit-compose)
   )
 
-(use-package exwm-mff 
+(leaf exwm-mff 
   :if window-system 
   :ensure t
   :init

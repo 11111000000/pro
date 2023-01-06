@@ -3,42 +3,39 @@
 ;;; Code:
 ;;;; Javascript
 
-(use-package eslint-rc
+(leaf eslint-rc
   :ensure t
-  :custom ((eslint-rc-use-package-json t)
-           (eslint-rc-use-eslintignore t)
-           (eslint-rc-use-node-modules-bin t))
+  :custom ((eslint-rc-leaf-json . t)
+           (eslint-rc-use-eslintignore . t)
+           (eslint-rc-use-node-modules-bin . t))
   :hook ((typescript-mode . eslint-rc-mode)
          (typescriptreact-mode . eslint-rc-mode)
          (js-mode . eslint-rc-mode)
          (web-mode . eslint-rc-mode)))
 
-(use-package add-node-modules-path :ensure t)
+(leaf add-node-modules-path :ensure t)
 
-(use-package nvm :ensure t)
+(leaf nvm :ensure t)
 
-(use-package js-doc
-  :ensure t
-  :defer t
-  :bind
-  (:map js2-mode-map
-        ("C-c jD" . js-doc-insert-file-doc)
-        ("C-c jd" . js-doc-insert-function-doc))
+(leaf js-doc
+  :ensure t  
+  :bind ((:js2-mode-map
+          ("C-c jD" . js-doc-insert-file-doc)
+          ("C-c jd" . js-doc-insert-function-doc)))
   :config)
 
-(use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
+(leaf react-snippets :ensure t :init (require 'react-snippets))
 
-(use-package json-mode
-  :ensure t
-  :defer t)
+(leaf json-mode
+  :ensure t)
 
 ;; (defun skewer-location-reload () (interactive) (skewer-eval "window.location.reload()"))
 
-;; (use-package skewer-mode
+;; (leaf skewer-mode
 ;;   :ensure t
 ;;   :bind (("C-c r" . skewer-location-reload)))
 
-;; (use-package prettier-js
+;; (leaf prettier-js
 ;;   :ensure t  
 ;;   :hook ((js-mode . prettier-js-mode)
 ;;          (web-mode . prettier-js-mode)
@@ -60,7 +57,7 @@
 
 ;;;; Typescript
 
-(use-package typescript-mode
+(leaf typescript-mode
   :ensure t
   :after tree-sitter  
   :config  
@@ -70,7 +67,7 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))    
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx)))
 
-;; (use-package tsi
+;; (leaf tsi
 ;;   :ensure t
 ;;   :after tree-sitter
 ;;   ;;:quelpa (tsi :fetcher github :repo "orzechowskid/tsi.el")
@@ -82,15 +79,15 @@
 ;;   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
 ;;   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
-(use-package ts-comint 
+(leaf ts-comint 
   :ensure t
-  :bind (:map typescript-mode-map
-              ( "C-x C-e" . ts-send-last-sexp)
+  :bind ((:typescript-mode-map
+          ( "C-x C-e" . ts-send-last-sexp)
                                         ;( "C-M-x" . ts-send-last-sexp-and-go)
-              ( "C-c C-c" . ts-send-buffer)
+          ( "C-c C-c" . ts-send-buffer)
                                         ;( "C-c C-b" . ts-send-buffer-and-go)
                                         ;( "C-c l" . ts-load-file-and-go)
-              ))
+          )))
 
 (provide 'программирование-на-javascript)
 ;;; программирование-на-javascript.el ends here.
