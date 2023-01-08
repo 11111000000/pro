@@ -88,9 +88,10 @@
 
 ;;;; HTTP-запросы
 
-(use-package plz
-  ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
-  )
+;; (use-package plz
+;;   :init (slot/vc-install :repo "alphapapa/plz")
+;;   ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
+;;   )
 
 ;; (use-package ement
 ;;   :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))

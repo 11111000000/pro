@@ -11,6 +11,7 @@
 ;;; Geiser Guile
 
 (use-package geiser-guile
+  :ensure t
   :config
 ;; (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
   (add-to-list 'geiser-guile-load-path "~/System/channels/chan"))

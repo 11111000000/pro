@@ -36,7 +36,7 @@
 
 (use-package exwm
   :ensure t
-  :if window-system 
+  :if window-system
   :custom ((exwm-workspace-number 5) 
            (exwm-workspace-show-all-buffers t) 
            (exwm-layout-show-all-buffers t) 
@@ -267,12 +267,13 @@
 ;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
-(use-package exim 
+(use-package exim
+  :init (slot/vc-install :repo "ch11ng/exim")  
   :after (exwm) 
   :if window-system 
   ;; :load-path "emacs-lisp/exim/exim" 
   :hook ((exwm-init . exim-start)) 
-  :init (push ?\C-\\ exwm-input-prefix-keys))
+  :config (push ?\C-\\ exwm-input-prefix-keys))
 
 ;; Кстати, этот модуль предварительно надо скачать (по какой-то причине его нет в поставке ExWM)
 

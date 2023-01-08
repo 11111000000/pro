@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 ;;;; Вертикальные списки
-
+(print "vertico")
 (use-package vertico
   :ensure t
   :custom
@@ -13,20 +13,44 @@
   :bind (:map vertico-map
          ("s-<tab>" . vertico-next)
          ("s-<iso-lefttab>" . vertico-previous))
+  :init
+  (require 'vertico)
   :config
+  (print "vertico loaded")
+  (vertico-mode t)
   ;; (setq completion-in-region-function
 	;;       (lambda (&rest args)
 	;;         (apply (if vertico-mode
 	;; 	                 #'consult-completion-in-region
 	;; 	               #'completion--in-region)
 	;; 	             args)))
-  :init (vertico-mode t))
+  
+  )
+
+;;;; Минибуфер во фрейме поверх окна
+
+(use-package mini-frame
+  :ensure t
+  :custom
+  (mini-frame-show-parameters '((child-frame-border-width . 0)
+                                (internal-border-width . 0)
+                                (top . 0.3)
+                                (width . 0.8)
+                                (height . 0.3)
+                                (left . 0.5)))
+  (mini-frame-standalone t)
+  (mini-frame-resize nil)
+  (mini-frame-color-shift-step 7)
+  (mini-frame-internal-border-color "#333333")
+  :config   
+  (mini-frame-mode t))
+
 
 ;;;; Сортировка
 
 (use-package orderless
   :ensure t
-  :init (setq completion-styles '(orderless basic) completion-category-defaults nil completion-category-overrides
+  :config (setq completion-styles '(orderless basic) completion-category-defaults nil completion-category-overrides
               '((file
                  (styles partial-completion)))))
 
@@ -35,7 +59,7 @@
 (use-package marginalia
   :ensure t
   :custom (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init (marginalia-mode))
+  :config (marginalia-mode))
 
 ;;;; Функции на базе автодополения
 
@@ -58,7 +82,6 @@
   (setq consult-project-root-function #'projectile-project-root
         xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-  :init
 
   ;; (setq register-preview-delay 0.1
 	;;   register-preview-function #'consult-register-format)

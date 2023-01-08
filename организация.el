@@ -7,7 +7,7 @@
 
 (use-package org
   :ensure nil
-  :straight nil
+  
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          :map org-mode-map
@@ -209,7 +209,7 @@
               ("C-<tab>" . outshine-cycle)))
 
 (use-package outshine-bullets
-  :straight '(outshine-bullets :host github :repo "11111000000/outshine-bullets") 
+  :init (slot/vc-install :fetcher "github" :repo "11111000000/outshine-bullets") 
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
            

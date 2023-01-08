@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq straight-use-package-by-default t) ;; have use-package use straight.el by default.
+(setq straight-use-package-by-default nil) ;; have use-package use straight.el by default.
 
 (defvar bootstrap-version)
 (let ((bootstrap-file

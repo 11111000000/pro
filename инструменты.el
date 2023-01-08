@@ -17,12 +17,12 @@
 
 ;;;; Запускалка приложений из системного меню
 
-(use-package app-launcher  
-  :straight '(app-launcher :host github :repo "SebastienWae/app-launcher")
+(use-package app-launcher
+  :init (slot/vc-install :repo "SebastienWae/app-launcher")
   :bind (("s-x" . app-launcher-run-app))
   )
 
-;; (use-package bon-app-launcher  
+;; (use-package bon-app-launcher
 ;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)
 ;;   )
 

@@ -68,24 +68,6 @@
 ;;     (with-current-buffer buf
 ;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
 
-;; Минибуфер во фрейме поверх окна
-
-(use-package mini-frame
-  :custom
-  (mini-frame-show-parameters '((child-frame-border-width . 0)
-                                (internal-border-width . 0)
-                                (top . 0.3)
-                                (width . 0.8)
-                                (height . 0.3)
-                                (left . 0.5)))  
-  (mini-frame-standalone t)
-  (mini-frame-resize nil)
-  (mini-frame-color-shift-step 7)
-  (mini-frame-internal-border-color "#333333")
-  :config   
-  :init
-  (mini-frame-mode t))
-
 ;; Отключаем рекурсивные минибуферы
 ;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/
 
@@ -129,9 +111,9 @@
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
 
 (use-package cursor-chg
-  :ensure t
-  :straight '(cursor-chg :host github :repo "emacsmirror/cursor-chg")
+  :init (slot/vc-install :fetcher "github" :repo "emacsmirror/cursor-chg")
   :config
+  (require 'cursor-chg)
   (change-cursor-mode t)
   (setq curchg-input-method-cursor-color "violet"
         curchg-default-cursor-type 'bar
@@ -315,9 +297,9 @@
 
 ;; Минибуфер - модлайн
 
-(use-package taoline
-  :straight '(taoline :host github :repo "11111000000/taoline")
+(use-package taoline  
   :if window-system
+  :init (slot/vc-install :fetcher "github" :repo "11111000000/taoline")
   :custom
   (taoline-show-time t)
   (taoline-show-input t)

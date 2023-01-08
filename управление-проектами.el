@@ -94,7 +94,7 @@
 
 ;;;; Поддержка Github
 
-(use-package github)
+;;(use-package github :ensure t)
 
 (provide 'управление-проектами)
 ;;; управление-проектами.el ends here

@@ -4,6 +4,7 @@
 ;;; Code:
 
 (use-package go-translate
+  :ensure t
   :custom (
       (gts-translate-list '(("en" "ru"))))
   :config

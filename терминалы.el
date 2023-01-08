@@ -110,7 +110,7 @@
 
 ;; (use-package aweshell
 ;;   :ensure t
-;;   :straight '(aweshell :host github :repo "manateelazycat/aweshell")
+;;   :init (slot/vc-install :repo "manateelazycat/aweshell")
 ;;   :config
 ;;   )
 

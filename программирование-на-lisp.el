@@ -4,7 +4,6 @@
 ;;;; Emacs Lisp
 
 (use-package emacs-lisp
-  :straight (:type built-in)
   :bind (:map emacs-lisp-mode-map
               ("C-c C-c" . перевыполнить-буфер)))
 
@@ -21,7 +20,7 @@
                     (eval-defun nil))))
 
 (use-package flymake-elisp-config
-  :straight '(flymake-elisp-config  :host github :repo "ROCKTAKEY/flymake-elisp-config")
+  :init (slot/vc-install :repo "ROCKTAKEY/flymake-elisp-config")
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))

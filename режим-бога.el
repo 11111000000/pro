@@ -17,7 +17,6 @@
 (use-package god-mode
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
   :ensure t
-  :defer t
   :diminish " ☯"
   :hook (((god-mode-disabled god-mode-enabled) . обновить-курсор)
          ;;(god-mode-enabled . restore-input-method)
@@ -78,7 +77,7 @@
      lsp-ui-imenu-mode vterm-mode dashboard-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
-  :init
+  :config
 
   (global-set-key (kbd "C-<f1>") help-map)
   (global-set-key (kbd "C-h") help-map)

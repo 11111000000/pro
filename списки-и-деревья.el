@@ -5,7 +5,6 @@
 ;;;; Файлы и каталоги
 
 (use-package dired
-  :straight (:type built-in)
   :bind (("C-x d" . dired-jump)
          ("C-x C-d" . dired-jump)
          :map dired-mode-map

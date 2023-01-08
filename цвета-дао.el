@@ -12,15 +12,14 @@
   (tao-theme-yang-palette))
 
 (use-package tao-theme
-  :straight '(tao-theme :host github :repo "11111000000/tao-theme-emacs")
+  :init (slot/vc-install :repo "11111000000/tao-theme-emacs")  
   :if window-system
   :custom ((tao-theme-use-height t)
            (tao-theme-use-boxes t) 
            (tao-theme-use-sepia nil)
-           (tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259)))
-           )
-  :init
-  ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-lisp/tao-theme-emacs")
+           (tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259))))
+  
+  :config
   (load-theme 'tao-yang 't)
   (загрузить 'face-remap))
 

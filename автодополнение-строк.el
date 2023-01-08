@@ -12,13 +12,7 @@
     (setq-local corfu-auto nil)
     (corfu-mode 1)))
 
-
-  
-  
-
 (use-package corfu
-  :straight (corfu :files (:defaults "extensions/*")
-                   :includes (corfu-info corfu-history))
   :bind (:map corfu-map
               ("<escape>". corfu-quit)
               ("<return>" . corfu-insert)

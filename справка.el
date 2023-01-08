@@ -1,11 +1,6 @@
 ;;; справка.el --- Справка и подсказки
 ;;; Commentary:
 ;;; Code:
-;;;; Справка
-
-(use-package help
-  :straight (:type built-in)
-  )
 
 ;;;; Info
 

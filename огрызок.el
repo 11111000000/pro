@@ -9,7 +9,6 @@
   :init
   (exec-path-from-shell-initialize))
 
-
 (use-package smooth-scroll
   :ensure t
   :config
