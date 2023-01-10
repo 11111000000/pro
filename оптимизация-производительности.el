@@ -21,16 +21,16 @@
 
 ;;;; Оптимизируем использование памяти в минибуфере
 
-(defun dobro/defer-garbage-collection-h ()
+(defun задержать-сборку-мусора ()
   (setq gc-cons-threshold most-positive-fixnum))
 
-(defun dobro/restore-garbage-collection-h ()
-  (run-at-time 1 nil 
-               (lambda () 
+(defun восстановить-сборку-мусора ()
+  (run-at-time 1 nil
+               (lambda ()
                  (setq gc-cons-threshold dobro/gc-cons-threshold))))
 
-(add-hook 'minibuffer-setup-hook #'dobro/defer-garbage-collection-h)
-(add-hook 'minibuffer-exit-hook #'dobro/restore-garbage-collection-h)
+(add-hook 'minibuffer-setup-hook #'задержать-сборку-мусора)
+(add-hook 'minibuffer-exit-hook #'восстановить-сборку-мусора)
 
 ;;;; Показывать сообщение о сборке мусора
 
@@ -40,8 +40,8 @@
 
 (defvar dobro/file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
-(add-hook 'emacs-startup-hook 
-          (lambda () 
+(add-hook 'emacs-startup-hook
+          (lambda ()
             (setq file-name-handler-alist dobro/file-name-handler-alist)))
 
 ;;;; Выключим файл site-run
@@ -54,7 +54,7 @@
 
 ;;;; Ускорим ввод-вывод
 
-(when (boundp 'read-process-output-max) 
+(when (boundp 'read-process-output-max)
   (setq read-process-output-max (* 1024 1024)))
 
 ;;;; Файл со внешними настройками
@@ -63,7 +63,7 @@
 
 ;;;; Но не загружаем его
 
-;;(ignore-errors (load custom-file)) 
+;;(ignore-errors (load custom-file))
 
 
 (provide 'оптимизация-производительности)

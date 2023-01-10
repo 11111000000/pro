@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 ;;;; Вертикальные списки
-(print "vertico")
+
 (use-package vertico
   :ensure t
   :custom
@@ -16,7 +16,6 @@
   :init
   (require 'vertico)
   :config
-  (print "vertico loaded")
   (vertico-mode t)
   ;; (setq completion-in-region-function
 	;;       (lambda (&rest args)

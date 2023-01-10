@@ -141,8 +141,10 @@ ARG - backward"
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 
-(use-package flymake-popon
-  :init (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git")
+(use-package emacs-flymake-popon
+  :init
+  (unless (package-installed-p 'emacs-flymake-popon)
+   (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
   :custom ((flymake-popon-delay .8)
            (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
   :hook ((flymake-mode) . flymake-popon-mode))
