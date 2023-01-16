@@ -5,7 +5,9 @@
 
 (use-package emacs-lisp
   :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . перевыполнить-буфер)))
+              ("C-c C-c" . перевыполнить-буфер)
+              ("C-x M-e" . eval-print-last-sexp)
+              ))
 
 ;;;;; Функция для реального перевыполнения форм в буфере
 
@@ -20,11 +22,10 @@
                     (eval-defun nil))))
 
 (use-package flymake-elisp-config
-  :init (slot/vc-install :repo "ROCKTAKEY/flymake-elisp-config")
+  :init (установить-из-репы :repo "ROCKTAKEY/flymake-elisp-config")
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
-
 
 ;;;;; Статический анализатор для Elisp
 
@@ -44,7 +45,6 @@
   :ensure t
   :defer t)
 
-
 ;;;;; Форматирование ELISP
 
 (use-package elisp-format
@@ -61,7 +61,6 @@
 ;;   :load-path "emacs-lisp/emacs-lisp-autofmt/"
 ;;   :commands (elisp-autofmt-mode)
 ;;   :hook (emacs-lisp-mode . elisp-autofmt-mode))
-
 
 ;;;; REPL к разным LISP-ам
 

@@ -12,9 +12,7 @@
         (gts-translator
          :picker (gts-prompt-picker)
          :engines (list (gts-bing-engine) (gts-google-engine))
-         :render (gts-buffer-render)))
-  
-  )
+         :render (gts-buffer-render))))
 
 (provide 'словари-и-перевод)
 ;;; словари-и-перевод.el ends here

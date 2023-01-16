@@ -74,11 +74,12 @@
 
 ;; Авто-обновление картинок при выполнении кода
 
-(defun my-fix-inline-images ()
+(defun поправить-встроеные-изображения ()
+  "Перерисовать изображения."
   (when org-inline-image-overlays
     (org-redisplay-inline-images)))
 
-(add-hook 'org-babel-after-execute-hook 'my-fix-inline-images)
+(add-hook 'org-babel-after-execute-hook 'поправить-встроеные-изображения)
 
 ;; Открытие блока в окне
 
@@ -209,7 +210,7 @@
               ("C-<tab>" . outshine-cycle)))
 
 (use-package outshine-bullets
-  :init (slot/vc-install :fetcher "github" :repo "11111000000/outshine-bullets") 
+  :init (установить-из-репы :repo "11111000000/outshine-bullets") 
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
            

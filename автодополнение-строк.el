@@ -46,7 +46,7 @@
 
   :init
 
-  (global-corfu-mode)  
+  (global-corfu-mode)
   (corfu-popupinfo-mode)
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
 

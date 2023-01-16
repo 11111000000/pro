@@ -16,9 +16,7 @@
 
 ;; Прыгать между парными скобками
 
-(defun forward-or-backward-sexp
-    (&optional
-     arg)
+(defun forward-or-backward-sexp (&optional arg)
   "Go to the matching parenthesis character if one is adjacent to point.
 ARG - backward"
   (interactive "^p")
@@ -36,7 +34,6 @@ ARG - backward"
 
 (use-package smartparens
   :ensure t
-  :diminish "()"
   :bind  (("C-^" . sp-unwrap-sexp)
           ("M-j" . sp-next-sexp)
           ("M-k" . sp-backward-sexp)
@@ -80,11 +77,8 @@ ARG - backward"
 (use-package color-identifiers-mode
   :if  window-system
   :ensure t
-  :diminish (color-identifiers-mode . "≡ ")
-
   :bind (("C-c hi" . color-identifiers-mode))
-  :hook (
-         (js-mode . color-identifiers-mode)
+  :hook ((js-mode . color-identifiers-mode)
          ;;(typescript-mode . color-identifiers-mode)
          )
   :custom ((color-identifiers-coloring-method
@@ -136,8 +130,7 @@ ARG - backward"
 
   :bind (:map flymake-mode-map
               ("M-n" . flymake-goto-next-error)
-              ("M-p" . flymake-goto-prev-error))
-  )
+              ("M-p" . flymake-goto-prev-error)))
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 
@@ -194,7 +187,6 @@ ARG - backward"
 (use-package yasnippet-snippets
   :ensure t
   :init)
-
 
 ;;;; Дерево синтаксиса
 

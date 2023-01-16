@@ -10,16 +10,18 @@
 (require 'package)
 (package-initialize)
 
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (custom-set-variables
  '(use-package-enable-imenu-support t))
 
 (eval-when-compile (require 'use-package))
 
-(cl-defun slot/vc-install (&key (fetcher "github") repo name rev backend)
+(require 'package-vc)
+
+(cl-defun установить-из-репы (&key (fetcher "github") repo name rev backend)
   "Install a package from a remote if it's not already installed.
 This is a thin wrapper around `package-vc-install' in order to
 make non-interactive usage more ergonomic.  Takes the following

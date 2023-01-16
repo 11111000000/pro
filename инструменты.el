@@ -18,7 +18,7 @@
 ;;;; Запускалка приложений из системного меню
 
 (use-package app-launcher
-  :init (slot/vc-install :repo "SebastienWae/app-launcher")
+  :init (установить-из-репы :repo "SebastienWae/app-launcher")
   :bind (("s-x" . app-launcher-run-app))
   )
 

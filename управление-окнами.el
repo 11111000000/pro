@@ -27,10 +27,10 @@
 (use-package golden-ratio
   :ensure t
   :defer t
-  :bind(("C-x +" . golden-ratio)
-        ("C-x =" . balance-windows)
-        ("C-x _" . maximize-window)
-        ("C-x -" . minimize-window))
+  :bind (("C-x +" . golden-ratio)
+         ("C-x =" . balance-windows)
+         ("C-x _" . maximize-window)
+         ("C-x -" . minimize-window))
   :config
   (golden-ratio-mode -1))
 
@@ -61,10 +61,8 @@
 (use-package popwin
   :ensure t
   :defer t
-  :bind (
-         ("C-c b" . popwin:popup-buffer)
-         ("C-c ." . popwin:stick-popup-window)
-         )
+  :bind (("C-c b" . popwin:popup-buffer)
+         ("C-c ." . popwin:stick-popup-window))
   :config
 
   (setq popwin:special-display-config
@@ -115,7 +113,7 @@
 
 ;; Функция для переключения окна в попапе по имени буфера
 
-(defun om/popwin-toggle-name (name)
+(defun показать-окно-в-попапе (name)
   "Toggle popup window by NAME."
   (let ((buf (get-buffer name)))
     (if (get-buffer-window buf t)

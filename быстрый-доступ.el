@@ -41,9 +41,8 @@
   (mini-frame-resize nil)
   (mini-frame-color-shift-step 7)
   (mini-frame-internal-border-color "#333333")
-  :config   
+  :config
   (mini-frame-mode t))
-
 
 ;;;; Сортировка
 
@@ -78,6 +77,7 @@
          )
   :config
   (autoload 'projectile-project-root "projectile")
+  (require 'consult-xref)
   (setq consult-project-root-function #'projectile-project-root
         xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
@@ -106,7 +106,7 @@
 
 ;;;; Поиск файлов
 
-(defun dobro/consult-ag-from-current-path ()
+(defun искать-по-файлам-отсюда ()
   "Поиск по файлам от текущего пути."
   (interactive)
   (consult-ag default-directory))
@@ -114,7 +114,7 @@
 (use-package consult-ag
   :ensure t
   :bind (:map dired-mode-map
-              ("s" . dobro/consult-ag-from-current-path)))
+              ("s" . искать-по-файлам-отсюда)))
 
 ;;;; Поиск по языковым серверам
 

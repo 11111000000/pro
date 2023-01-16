@@ -4,7 +4,7 @@
 
 ;;;; Info
 
-(use-package info   
+(use-package info
   :bind (:map Info-mode-map
          ("DEL" . Info-history-back)
          ("B" . Info-history-back)
@@ -16,11 +16,10 @@
          ("<XF86Back>" . nil)
          ("<XF86Forward>" . nil)))
 
-
 ;;;; Дополнительная справка
 
-(use-package helpful 
-  :ensure t 
+(use-package helpful
+  :ensure t
   :defer t
   :bind (("C-h f" . helpful-callable)
          ("C-h v" . helpful-variable)
@@ -31,8 +30,8 @@
 
 ;;;; Изучение API Elisp
 
-(use-package elisp-demos 
-  :ensure t 
+(use-package elisp-demos
+  :ensure t
   :config)
 
 ;;;; Подсказка комбинаций кавиш
@@ -68,8 +67,8 @@
 (use-package eldoc-box
   :ensure t
   :custom
-  (eldoc-idle-delay 1)  
-  
+  (eldoc-idle-delay 1)
+
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)

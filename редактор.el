@@ -48,13 +48,13 @@
 
 ;; При перемещении в начало строки *<C-a>*, сперва прыгать к  идентации, затем - к началу строки
 
-(defun back-to-indentation-or-beginning ()
+(defun к-идентации-или-началу-строки ()
   "вернуться к идентации или началу строки."
   (interactive)
   (if (= (point) (progn (back-to-indentation) (point)))
       (beginning-of-line)))
 
-(global-set-key (kbd "C-a") 'back-to-indentation-or-beginning)
+(global-set-key (kbd "C-a") 'к-идентации-или-началу-строки)
 
 ;; Подсвечивать курсор при мгновенном перемещении, чтобы он не потерялся
 
@@ -241,13 +241,13 @@
 
 ;;;; Редактировать как Root
 
-(defun edit-current-file-as-root ()
-  "Edit as root the file associated with the current buffer"
+(defun редактировать-текущий-файл-как-root ()
+  "Редактировать как root файл, связанный с текущим буфером."
   (interactive)
   (if (buffer-file-name)
       (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
         (find-file file))
-    (message "Buffer is not associated to a file.")))
+    (message "Буфер не связан с файлом.")))
 
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 
@@ -256,7 +256,7 @@
   ;;:load-path "emacs-lisp/string-inflection"
   )
 
-;; Подсветка идентации
+;;;; Подсветка идентации
 
 (use-package highlight-indent-guides
    :ensure t
@@ -265,14 +265,13 @@
    :custom
    (highlight-indent-guides-method 'character)
    (highlight-indent-guides-responsive 'top)
-   (highlight-indent-guides-auto-character-face-perc 5)
-   )
+   (highlight-indent-guides-auto-character-face-perc 5))
 
-;; Поддержка очень длинных файлов
+;;;; Поддержка очень длинных файлов
 
 (global-so-long-mode t)
 
-;; Проверка орфографии
+;;;; Проверка орфографии
 
 (use-package flymake-aspell
   :ensure t
@@ -291,6 +290,10 @@
 ;;;; Вставить имя файла
 
 (global-set-key (kbd "C-c f") (lambda () (interactive) (insert (buffer-name))))
+
+;;;; Ёфикация
+
+;; https://github.com/pok49/yomacs
 
 (provide 'редактор)
 ;;; редактор.el ends here

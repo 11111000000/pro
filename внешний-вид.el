@@ -68,10 +68,9 @@
 ;;     (with-current-buffer buf
 ;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
 
-;; Отключаем рекурсивные минибуферы
-;; Чтобы избежать путаницы, иногда случайно открывая /Минибуфер/ внутри /Минибуфера/, выключаем /Рекурсивные/ /Минибуферы/
+;; Включаем рекурсивные минибуферы
 
-(setq-default enable-recursive-minibuffers nil)
+(setq-default enable-recursive-minibuffers t)
 
 ;; Показать текущее время win+F1
 
@@ -82,8 +81,7 @@
 
 (use-package all-the-icons
   :if window-system
-  :ensure t
-  )
+  :ensure t)
 
 ;;;; Цветовые темы
 
@@ -111,7 +109,7 @@
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
 
 (use-package cursor-chg
-  :init (slot/vc-install :fetcher "github" :repo "emacsmirror/cursor-chg")
+  :init (установить-из-репы :repo "emacsmirror/cursor-chg")
   :config
   (require 'cursor-chg)
   (change-cursor-mode t)
@@ -283,7 +281,7 @@
 
 ;; Функция для переключения окна в попапе по имени буфера
 
-(defun om/popwin-toggle-name (name)
+(defun показать-окно-в-попапе (name)
   "Toggle popup window by NAME."
   (let ((buf (get-buffer name)))
     (if (get-buffer-window buf t)
@@ -297,9 +295,9 @@
 
 ;; Минибуфер - модлайн
 
-(use-package taoline  
+(use-package taoline
   :if window-system
-  :init (slot/vc-install :fetcher "github" :repo "11111000000/taoline")
+  :init (установить-из-репы :repo "11111000000/taoline")
   :custom
   (taoline-show-time t)
   (taoline-show-input t)
@@ -329,6 +327,8 @@
   (custom-set-faces
    '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
   :custom
+  (minimap-minimum-width 15)
+  (minimap-width-fraction 0.08)
   (minimap-window-location 'right)
 
   (defun my/toggle-minimap ()

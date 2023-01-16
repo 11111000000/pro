@@ -17,11 +17,11 @@
          ("M-±" . multi-term-dedicated-toggle)
          ("C-c to" . multi-term-dedicated-toggle)
          :map term-mode-map
-         ("C-c C-j" . az/term-toggle-mode)
-         ("C-c C-k" . az/term-toggle-mode)
+         ("C-c C-j" . переключить-режим-ввода-терминала)
+         ("C-c C-k" . переключить-режим-ввода-терминала)
          :map term-raw-map
-         ("C-c C-j" . az/term-toggle-mode)
-         ("C-c C-k" . az/term-toggle-mode))
+         ("C-c C-j" . переключить-режим-ввода-терминала)
+         ("C-c C-k" . переключить-режим-ввода-терминала))
   :custom ((term-buffer-maximum-size 0)
            (show-trailing-whitespace nil))
   :config
@@ -34,7 +34,7 @@
 
 ;; Функция для переключение режима перемещения по терминалу
 
-(defun az/term-toggle-mode ()
+(defun переключить-режим-ввода-терминала ()
   "Toggle term between line mode and char mode."
   (interactive)
   (if (term-in-line-mode)
@@ -110,7 +110,7 @@
 
 ;; (use-package aweshell
 ;;   :ensure t
-;;   :init (slot/vc-install :repo "manateelazycat/aweshell")
+;;   :init (установить-из-репы :repo "manateelazycat/aweshell")
 ;;   :config
 ;;   )
 
