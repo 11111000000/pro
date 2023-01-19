@@ -158,7 +158,7 @@
     (org-reveal t)
     (org-show-entry)
     (recenter-top-bottom)
-    (show-children) 
+    (show-children)
     (recenter-top-bottom)))
 
 ;;;; TODO Учёт времени
@@ -176,7 +176,6 @@
   	       (org-pomodoro-long-break-length 15)
   	       (org-pomodoro-play-sounds 1)))
 
-
 ;;;; TODO Поли-моды
 
 ;; https://polymode.github.io/usage/
@@ -186,13 +185,13 @@
 
 (use-package org-noter
   :ensure t
-  :bind(  
+  :bind (
         :map doc-view-mode-map
         ("i" . org-noter-insert-note)))
 
 ;;;; Цветные тэги
 
-;; (use-package org-rainbow-tags  
+;; (use-package org-rainbow-tags
 ;;   ;; :load-path "emacs-lisp/org-rainbow-tags/"
 ;;   :hook ((org-mode . org-rainbow-tags-mode))
 ;;   :init)
@@ -210,10 +209,9 @@
               ("C-<tab>" . outshine-cycle)))
 
 (use-package outshine-bullets
-  :init (установить-из-репы :repo "11111000000/outshine-bullets") 
+  :init (установить-из-репы :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-           
 	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))
 	   )
   )

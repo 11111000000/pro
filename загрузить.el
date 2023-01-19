@@ -13,6 +13,5 @@
               (error-message-string err))
      nil)))
 
-
 (provide 'загрузить)
 ;;; загрузить.el ends here

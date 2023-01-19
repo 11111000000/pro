@@ -92,7 +92,6 @@ ARG - backward"
   :if window-system
   :ensure t
   :defer t
-  :diminish (rainbow-identifiers-mode . "≡ ")
   :hook ((typescript-mode . rainbow-identifiers-mode)
          (emacs-lisp-mode . rainbow-identifiers-mode))
   :bind (("C-c hl" . rainbow-identifiers-mode)))

@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defun center-windows ()
-  "visually center all text in buffers by add proportional margins."
+  "визуально центрирует весь текст в буферах, добавляя пропорциональные поля."
   (interactive)
   (mapc
    (lambda (win)

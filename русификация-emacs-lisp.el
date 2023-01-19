@@ -23,6 +23,7 @@
                                   ("buffer-file-name" "имя-файла-в-буфере")
                                   ("find-file" "найти-файл")
                                   ("message" "сообщение")
+                                  ("print" "печать")
                                   ("add-to-list" "добавить-в-список")
                                   ("if" "если")
                                   ("and" "и")
@@ -49,6 +50,7 @@
                                   ("sort" "сортировать")
                                   ("max" "максимум")
                                   ("boundp" "это-определено")
+                                  ("fboundp" "функция-определена")
                                   ("bound-and-true-p" "это-определено-и-истинно")
                                   ("numberp" "это-число")
                                   ("unless" "если-не")
@@ -63,6 +65,7 @@
                                   ("apply" "применить")
                                   ("eval" "вычислить")
                                   ("eval-and-compile" "вычислить-и-скомпилить")
+                                  ("eval-after-load" "вычислить-после-загрузки")
                                   (":name" ":имя")
                                   (":class-decl" ":класс")
                                   (":prototype" ":прототип")
@@ -113,7 +116,7 @@
                                   (":requires" ":требует")
                                   (":require" ":требует")
                                   (":global" ":глобально")
-
+                                  ("current-time-string" "текущее-время-строкой")
                                   ("set-language-environment" "установить-языковое-окружение")
                                   ("prefer-coding-system" "предпочитать-кодировку")
                                   ("set-default-coding-systems" "установить-кодировки-по-умолчанию")
@@ -140,6 +143,6 @@
 
 
 (add-hook 'emacs-lisp-mode-hook 'русификация-emacs-lisp)
-
+(provide 'русификация-emacs-lisp)
 ;;; русификация-emacs-lisp.el ends here
 

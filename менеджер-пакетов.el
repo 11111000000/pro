@@ -22,19 +22,14 @@
 (require 'package-vc)
 
 (cl-defun установить-из-репы (&key (fetcher "github") repo name rev backend)
-  "Install a package from a remote if it's not already installed.
-This is a thin wrapper around `package-vc-install' in order to
-make non-interactive usage more ergonomic.  Takes the following
-named arguments:
+  "Установите пакет с удаленного компьютера, если он еще не установлен. Это тонкая оболочка над package-vc-install, чтобы сделать неинтерактивное использование более эргономичным. Принимает следующее именованные аргументы:
 
-- FETCHER the remote where to get the package (e.g., \"gitlab\").
-  If omitted, this defaults to \"github\".
+- FETCHER источник пакета (например, \"gitlab\").
+  Если не указан, то \"github\".
 
-- REPO should be the name of the repository (e.g.,
-  \"slotThe/arXiv-citation\".
+- REPO должно быть имененем репозитария (например, \"slotThe/arXiv-citation\".
 
-- NAME, REV, and BACKEND are as in `package-vc-install' (which
-  see)."
+- NAME, REV, и BACKEND все как в `package-vc-install'"
   (let* ((url (format "https://www.%s.com/%s" fetcher repo))
          (iname (when name (intern name)))
          (pac-name (or iname (intern (file-name-base repo)))))

@@ -6,7 +6,7 @@
 ;; GNU Privacy Guard (GnuPG, GPG) — свободная программа для шифрования информации и создания электронных цифровых подписей. Разработана как альтернатива PGP и выпущена под свободной лицензией.
 ;; (setq epg-gpg-program "gpg2")
 
-;;(custom-set-variables '(epg-gpg-program  "/run/current-system/profile/bin/gpg")) 
+;;(custom-set-variables '(epg-gpg-program  "/run/current-system/profile/bin/gpg"))
 
 ;; или /home/az/.guix-profile/bin/gpg
 
@@ -28,8 +28,6 @@
 ;;;;; Прозрачное шифрование файлов
 
 (require 'epa-file)
-
-;; (epa-file-enable)
 
 (provide 'пароли-и-шифрование)
 ;;; пароли-и-шифрование.el ends here

@@ -50,8 +50,8 @@
 
 ;;;; Меню
 
-;; (when (bound-and-true-p menu-bar-mode)
-;;   (menu-bar-mode -1))
+(when (bound-and-true-p menu-bar-mode)
+  (menu-bar-mode t))
 
 ;;;; Минибуфер
 
@@ -59,23 +59,14 @@
 
 (global-set-key (kbd "C-c m") 'popwin:messages)
 
-;; Размер шрифта в минибуфере
-
-;; TODO конфликт с taoline ?
-;; (dolist
-;;     (buf (list " *Minibuf-0*" " *Minibuf-1*" " *Echo Area 0*" " *Echo Area 1*" "*Quail Completions*"))
-;;   (when (get-buffer buf)
-;;     (with-current-buffer buf
-;;       (setq-local face-remapping-alist '((default (:height 1.5)))))))
-
 ;; Включаем рекурсивные минибуферы
 
 (setq-default enable-recursive-minibuffers t)
 
 ;; Показать текущее время win+F1
 
-(global-set-key (kbd "s-<f1>") (lambda () (interactive) (print (current-time-string))))
-
+(global-set-key (kbd "s-<f1>") (lambda () (interactive)
+                               (print (current-time-string))))
 
 ;;;; Иконки
 
@@ -113,7 +104,7 @@
   :config
   (require 'cursor-chg)
   (change-cursor-mode t)
-  (setq curchg-input-method-cursor-color "violet"
+  (setq curchg-input-method-cursor-color "pale green"
         curchg-default-cursor-type 'bar
         curchg-default-cursor-color (face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
@@ -231,53 +222,50 @@
          ("C-c b" . popwin:popup-buffer)
          ("C-c ." . popwin:stick-popup-window)
          )
+  :custom
+  ((popwin:special-display-config '(("*Miniedit Help*" :noselect t)
+                                    help-mode
+                                    lsp-ui-imenu-mode
+                                    treemacs-mode
+                                    special-mode
+                                    telega-chat-mode
+                                    (completion-list-mode :noselect t)
+                                    (compilation-mode :noselect t)
+                                    (grep-mode :noselect t)
+                                    (occur-mode :noselect t)
+                                    (Man-mode :noselect nil :position top)
+                                    ("*Pp Macroexpand Output*" :noselect t)
+                                    "*Shell Command Output*"
+                                    "*Backtrace*"
+                                    "*vc-diff*"
+                                    "*vc-change-log*"
+                                    (" *undo-tree*" :width 60 :position right)
+                                    ("^.*Developer.*$" :regexp t :width .5 :position right)
+                                    ("^\\*anything.*\\*$" :regexp t)
+                                    "*slime-apropos*"
+                                    "*slime-macroexpansion*"
+                                    "*slime-description*"
+                                    ("*slime-compilation*" :noselect t)
+                                    "*slime-xref*"
+                                    "*Calendar*"
+                                    ("*Messages*" :noselect t :position bottom :stick t)
+                                    ("*Racket Describe*" :noselect t :position top :stick t)
+                                    ("*Racket REPL*" :noselect t :position bottom :stick t)
+                                    ("*prettier errors*" :noselect t :position top :stick nil)
+                                    ("Run.rkt" :noselect t :position right :width .5 :stick t)
+                                    ("chrome dev" :noselect nil :position bottom :stick t :height .5)
+                                    ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
+                                    ("chrome dev2" :noselect t :position top :height 15 :stick t)
+                                    ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
+                                    ("chrome app" :noselect nil :position right :stick t :width .5)
+                                    ("ff dev" :noselect nil :position bottom :height .5 :stick t)
+                                    ("ff" :noselect nil :position right :width .5 :stick t)
+
+                                    (sldb-mode :stick t)
+                                    ;;(shell-mode :stick nil :position bottom )
+                                    )))
   :config
-
-  (setq popwin:special-display-config
-        '(("*Miniedit Help*" :noselect t)
-          help-mode
-          lsp-ui-imenu-mode
-          treemacs-mode
-          special-mode
-          telega-chat-mode
-          (completion-list-mode :noselect t)
-          (compilation-mode :noselect t)
-          (grep-mode :noselect t)
-          (occur-mode :noselect t)
-          (Man-mode :noselect nil :position top)
-          ("*Pp Macroexpand Output*" :noselect t)
-          "*Shell Command Output*"
-          "*Backtrace*"
-          "*vc-diff*"
-          "*vc-change-log*"
-          (" *undo-tree*" :width 60 :position right)
-          ("^.*Developer.*$" :regexp t :width .5 :position right)
-          ("^\\*anything.*\\*$" :regexp t)
-          "*slime-apropos*"
-          "*slime-macroexpansion*"
-          "*slime-description*"
-          ("*slime-compilation*" :noselect t)
-          "*slime-xref*"
-          "*Calendar*"
-          ("*Messages*" :noselect t :position bottom :stick t)
-          ("*Racket Describe*" :noselect t :position top :stick t)
-          ("*Racket REPL*" :noselect t :position bottom :stick t)
-          ("*prettier errors*" :noselect t :position top :stick nil)
-          ("Run.rkt" :noselect t :position right :width .5 :stick t)
-          ("chrome dev" :noselect nil :position bottom :stick t :height .5)
-          ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
-          ("chrome dev2" :noselect t :position top :height 15 :stick t)
-          ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
-          ("chrome app" :noselect nil :position right :stick t :width .5)
-          ("ff dev" :noselect nil :position bottom :height .5 :stick t)
-          ("ff" :noselect nil :position right :width .5 :stick t)
-
-          (sldb-mode :stick t)
-          ;;(shell-mode :stick nil :position bottom )
-          ))
-  (popwin-mode 1)
-  ;; (push '(:regexp :position top) popwin:special-display-config)
-  )
+  (popwin-mode 1))
 
 ;; Функция для переключения окна в попапе по имени буфера
 

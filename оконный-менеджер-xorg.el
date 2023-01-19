@@ -7,7 +7,6 @@
 (use-package xelb
   :ensure t
   :if window-system
-  ;; :load-path "emacs-lisp/xelb/"
   )
 
 ;;;; ExWM
@@ -32,10 +31,25 @@
     ;; search
     ([?\C-s] . ?\C-f)))
 
+(defun скриншот-области ()
+  "Получить скриншот области."
+  (interactive)
+  (sit-for 1)
+  (async-shell-command
+   "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -s -e 'xclip -selection clipboard -target image/png -i $f' &" nil nil))
+
+(defun скриншот ()
+  "Получить скриншот."
+  (interactive)
+  (sit-for 1)
+  (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
+
+
 (use-package exwm
   :ensure t
   :if window-system
-  :custom ((exwm-workspace-number 5)
+  :custom (
+           (exwm-workspace-number 5)
            (exwm-workspace-show-all-buffers t)
            (exwm-layout-show-all-buffers t)
            (exwm-manage-force-tiling nil)
@@ -43,15 +57,15 @@
            (exwm-input-simulation-keys сочетания-для-эмуляции))
 
   :config
+  
   (add-hook 'exwm-update-class-hook
             (lambda ()
               (exwm-workspace-rename-buffer exwm-class-name)))
 
-
   ;; Глобальные клавиши над всеми приложениями
+  
   (dotimes (i 10)
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive)
-                           (exwm-workspace-switch-create ,i))))
+    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
   (exwm-input-set-key (kbd "s-q") #'exwm-reset)
   (exwm-input-set-key (kbd "s-\\") #'toggle-input-method)
   (exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
@@ -69,64 +83,31 @@
   (exwm-input-set-key (kbd "s-L") 'buf-move-right)
   (exwm-input-set-key (kbd "s-x") 'app-launcher-run-app)
   (exwm-input-set-key (kbd "s-M-h") 'split-window-horizontally)
-  (exwm-input-set-key (kbd "s-M-j") '(lambda () (interactive)
-                                         (split-window-vertically)
-                                         (windmove-down)))
+  (exwm-input-set-key (kbd "s-M-j") '(lambda () (interactive) (split-window-vertically) (windmove-down)))
   (exwm-input-set-key (kbd "s-M-k") 'split-window-vertically)
-  (exwm-input-set-key (kbd "s-M-l") '(lambda () (interactive)
-                                         (split-window-horizontally)
-                                         (windmove-right)))
+  (exwm-input-set-key (kbd "s-M-l") '(lambda () (interactive) (split-window-horizontally) (windmove-right)))
   (exwm-input-set-key (kbd "<XF86Back>") 'winner-undo)
   (exwm-input-set-key (kbd "<XF86Forward>") 'winner-redo)
-  (exwm-input-set-key (kbd "<XF86AudioMicMute>") (lambda () (interactive)
-                                                     (async-shell-command "pamixer --default-source 1 -t" nil nil)))
-  (exwm-input-set-key (kbd "<XF86AudioMute>") (lambda () (interactive)
-                                                  (async-shell-command "pamixer -t" nil nil)))
-  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive)
-                                                         (async-shell-command "pamixer -i 10" nil nil)))
-  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive)
-                                                         (async-shell-command "pamixer -d 10" nil nil)))
-  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>") (lambda () (interactive)
-                                                        (async-shell-command "echo ok" nil nil)))
-  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive)
-                                                          (async-shell-command "echo ok" nil nil)))
-  (exwm-input-set-key (kbd "<XF86TouchpadToggle>") (lambda () (interactive)
-                                                       (async-shell-command "xinput toggle 13" nil nil)))
-
-  (defun скриншот-области ()
-    "Получить скриншот области."
-    (interactive)
-    (sit-for 1)
-    (async-shell-command
-     "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -s -e 'xclip -selection clipboard -target image/png -i $f' &"
-     nil nil))
-
-  (defun скриншот ()
-    "Получить скриншот."
-    (interactive)
-    (sit-for 1)
-    (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
+  (exwm-input-set-key (kbd "<XF86AudioMicMute>") (lambda () (interactive) (async-shell-command "pamixer --default-source 1 -t" nil nil)))
+  (exwm-input-set-key (kbd "<XF86AudioMute>") (lambda () (interactive) (async-shell-command "pamixer -t" nil nil)))
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (async-shell-command "pamixer -i 10" nil nil)))
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (async-shell-command "pamixer -d 10" nil nil)))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>") (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
+  (exwm-input-set-key (kbd "<XF86TouchpadToggle>") (lambda () (interactive) (async-shell-command "xinput toggle 13" nil nil)))
 
   (exwm-input-set-key (kbd "<print>") 'скриншот-области)
   (exwm-input-set-key (kbd "s-s") 'скриншот-области)
   (exwm-input-set-key (kbd "s-<print>") 'скриншот)
   (exwm-input-set-key (kbd "s-S-s") 'скриншот)
-  (exwm-input-set-key (kbd "s-!") (lambda () (interactive)
-                        (exwm-workspace-move-window 1)))
-  (exwm-input-set-key (kbd "s-@") (lambda () (interactive)
-                        (exwm-workspace-move-window 2)))
-  (exwm-input-set-key (kbd "s-#") (lambda () (interactive)
-                        (exwm-workspace-move-window 3)))
-  (exwm-input-set-key (kbd "s-$") (lambda () (interactive)
-                        (exwm-workspace-move-window 4)))
-  (exwm-input-set-key (kbd "s-%") (lambda () (interactive)
-                        (exwm-workspace-move-window 5)))
-  (exwm-input-set-key (kbd "s-^") (lambda () (interactive)
-                        (exwm-workspace-move-window 6)))
-  (exwm-input-set-key (kbd "s-&") (lambda () (interactive)
-                        (exwm-workspace-move-window 7)))
-  (exwm-input-set-key (kbd "s-)") (lambda () (interactive)
-                        (exwm-workspace-move-window 0)))
+  (exwm-input-set-key (kbd "s-!") (lambda () (interactive) (exwm-workspace-move-window 1)))
+  (exwm-input-set-key (kbd "s-@") (lambda () (interactive) (exwm-workspace-move-window 2)))
+  (exwm-input-set-key (kbd "s-#") (lambda () (interactive) (exwm-workspace-move-window 3)))
+  (exwm-input-set-key (kbd "s-$") (lambda () (interactive) (exwm-workspace-move-window 4)))
+  (exwm-input-set-key (kbd "s-%") (lambda () (interactive) (exwm-workspace-move-window 5)))
+  (exwm-input-set-key (kbd "s-^") (lambda () (interactive) (exwm-workspace-move-window 6)))
+  (exwm-input-set-key (kbd "s-&") (lambda () (interactive) (exwm-workspace-move-window 7)))
+  (exwm-input-set-key (kbd "s-)") (lambda () (interactive) (exwm-workspace-move-window 0)))
   (exwm-input-set-key (kbd "s-<left>") 'shrink-window-horizontally)
   (exwm-input-set-key (kbd "s-<right>") 'enlarge-window-horizontally)
   (exwm-input-set-key (kbd "s-<down>") 'shrink-window)
@@ -143,33 +124,9 @@
   (exwm-input-set-key (kbd "s-a") 'buffer-expose)
   (exwm-input-set-key (kbd "s-SPC") 'buffer-expose)
   (exwm-input-set-key (kbd "s-*") 'buffer-expose-stars)
-  ;;(exwm-input-set-key (kbd "s-v") 'rotate-layout)
-
-  ;;(exwm-input-set-key (kbd "s-o") '(lambda () (interactive)
-  ;;                                    (показать-окно-в-попапе "ff")))
-
-  ;; (exwm-input-set-key (kbd "s-i") '(lambda () (interactive)
-  ;;                                    (показать-окно-в-попапе "ff dev")))
-
-  (exwm-input-set-key (kbd "s-o") '(lambda () (interactive)
-                                       (показать-окно-в-попапе "chrome app")))
+  (exwm-input-set-key (kbd "s-o") '(lambda () (interactive) (показать-окно-в-попапе "chrome app")))
+  (exwm-input-set-key (kbd "s-O") '(lambda () (interactive) (показать-окно-в-попапе "chrome dev")))
   
-  (exwm-input-set-key (kbd "s-O") '(lambda () (interactive)
-                                       (показать-окно-в-попапе "chrome dev")))
-  ;; (exwm-input-set-key (kbd "s-I") '(lambda () (interactive)
-  ;;                                    (показать-окно-в-попапе "chrome dev2")))
-  ;; (exwm-input-set-key (kbd "s-c 1") '(lambda () (interactive)
-  ;;                                      (показать-окно-в-попапе "1")))
-  ;; (exwm-input-set-key (kbd "s-c 2") '(lambda () (interactive)
-  ;;                                      (показать-окно-в-попапе "2")))
-  ;; (exwm-input-set-key (kbd "s-c 3") '(lambda () (interactive)
-  ;;                                      (показать-окно-в-попапе "3")))
-  ;; (exwm-input-set-key (kbd "s-c 4") '(lambda () (interactive)
-  ;;                                      (показать-окно-в-попапе "4")))
-  ;; (exwm-input-set-key (kbd "s-c 5") '(lambda () (interactive)
-  ;;                                      (показать-окно-в-попапе "5")))
-  ;; (setq exwm-manage-configurations
-  ;;       '())
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
                                      ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
                                       height 175 x 30 y 30 managed t)))

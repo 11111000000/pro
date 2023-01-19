@@ -163,5 +163,5 @@
 
 (use-package ag :ensure t)
 
-(provide 'файлы-и-папки
+(provide 'файлы-и-папки)
 ;;; файлы-и-папки.el ends here

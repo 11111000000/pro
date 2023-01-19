@@ -1,8 +1,7 @@
-;;; интернет-общение.el --- общение в интернет 
+;;; интернет-общение.el --- общение в интернет
 ;;; Commentary:
 ;; Конфигурация мессенджеров
 ;;; Code:
-
 
 ;;;; Telegram
 
@@ -16,7 +15,6 @@
          (telega-load-hook . global-telega-url-shorten-mode)
          (telega-root-mode . hl-line-mode))
   :config)
-
 
 (provide 'интернет-общение)
 ;;; интернет-общение.el ends here

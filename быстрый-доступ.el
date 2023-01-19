@@ -113,6 +113,7 @@
 
 (use-package consult-ag
   :ensure t
+  :after dired
   :bind (:map dired-mode-map
               ("s" . искать-по-файлам-отсюда)))
 
