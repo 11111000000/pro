@@ -2,10 +2,6 @@
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
-;;;; Сокращение диалогов до y/n
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 ;;;; Буферы
 
 ;; Уникальные имена для буферов
@@ -39,6 +35,10 @@
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
 
+;; Буфер с ошибками только при ошибках
+
+(setq warning-minimum-level :error)
+
 ;; Скроллбар
 
 (if window-system (scroll-bar-mode -1))
@@ -67,6 +67,20 @@
 
 (global-set-key (kbd "s-<f1>") (lambda () (interactive)
                                (print (current-time-string))))
+
+;; Минибуфер - модлайн
+
+(use-package taoline
+  :if window-system
+  :init (установить-из-репы :repo "11111000000/taoline")
+  :custom
+  (taoline-show-time t)
+  (taoline-show-input t)
+  (taoline-show-git-branch t)
+  (taoline-show-dir t)
+  (taoline-show-previous-buffer  nil)
+  :config
+  (taoline-mode 1))
 
 ;;;; Иконки
 
@@ -147,7 +161,6 @@
   :ensure t
   :config (eyebrowse-mode))
 
-
 ;;;; Меню режима
 
 ;; Меню для текущего файла, в Org-mode например, показывает список заголовков
@@ -157,155 +170,6 @@
   :defer t
   :custom ((imenu-auto-rescan t))
   )
-
-;;;; Окна
-;;;;; Перемещение по окнам
-
-(global-set-key (kbd "s-h") 'windmove-left)
-(global-set-key (kbd "s-j") 'windmove-down)
-(global-set-key (kbd "s-k") 'windmove-up)
-(global-set-key (kbd "s-l") 'windmove-right)
-
-;;;;; Перемещение окон
-
-(use-package buffer-move
-  :ensure t
-  :defer t
-  :bind (("s-K" . buf-move-up)
-         ("s-J" . buf-move-down)
-         ("s-H" . buf-move-left)
-         ("s-L" . buf-move-right))
-  :config)
-
-;;;;; Золотое сечение
-
-;; Даёт больше места текущему окну:
-
-(use-package golden-ratio
-  :ensure t
-  :defer t
-  :bind(("C-x +" . golden-ratio)
-        ("C-x =" . balance-windows)
-        ("C-x _" . maximize-window)
-        ("C-x -" . minimize-window))
-  :config
-  (golden-ratio-mode -1))
-
-;;;;; Обзор
-
-;; Позволяет наблюдать на экране все буферы одновременно в уменьшеном виде:
-
-(use-package buffer-expose
-  :ensure t
-  ;; :load-path "emacs-lisp/buffer-expose"
-  :bind (("<s-iso-lefttab>" . buffer-expose)
-         :map buffer-expose-grid-map
-         ("d" . buffer-expose-kill-buffer)
-         ("h" . buffer-expose-left-window)
-         ("j" . buffer-expose-down-window)
-         ("k" . buffer-expose-up-window)
-         ("l" . buffer-expose-right-window)
-         ("z" . buffer-expose-ace-window)
-         ("RET" . buffer-expose-choose)
-         ("SPC" . buffer-expose-choose)
-         ("s-SPC" . buffer-expose-choose)
-         ("s-<tab>" . buffer-expose-reset)
-         )
-  :init)
-
-;;;;; Popwin - предсказуемые попапы
-
-(use-package popwin
-  :ensure t
-  :defer t
-  :bind (
-         ("C-c b" . popwin:popup-buffer)
-         ("C-c ." . popwin:stick-popup-window)
-         )
-  :custom
-  ((popwin:special-display-config '(("*Miniedit Help*" :noselect t)
-                                    help-mode
-                                    lsp-ui-imenu-mode
-                                    treemacs-mode
-                                    special-mode
-                                    telega-chat-mode
-                                    (completion-list-mode :noselect t)
-                                    (compilation-mode :noselect t)
-                                    (grep-mode :noselect t)
-                                    (occur-mode :noselect t)
-                                    (Man-mode :noselect nil :position top)
-                                    ("*Pp Macroexpand Output*" :noselect t)
-                                    "*Shell Command Output*"
-                                    "*Backtrace*"
-                                    "*vc-diff*"
-                                    "*vc-change-log*"
-                                    (" *undo-tree*" :width 60 :position right)
-                                    ("^.*Developer.*$" :regexp t :width .5 :position right)
-                                    ("^\\*anything.*\\*$" :regexp t)
-                                    "*slime-apropos*"
-                                    "*slime-macroexpansion*"
-                                    "*slime-description*"
-                                    ("*slime-compilation*" :noselect t)
-                                    "*slime-xref*"
-                                    "*Calendar*"
-                                    ("*Messages*" :noselect t :position bottom :stick t)
-                                    ("*Racket Describe*" :noselect t :position top :stick t)
-                                    ("*Racket REPL*" :noselect t :position bottom :stick t)
-                                    ("*prettier errors*" :noselect t :position top :stick nil)
-                                    ("Run.rkt" :noselect t :position right :width .5 :stick t)
-                                    ("chrome dev" :noselect nil :position bottom :stick t :height .5)
-                                    ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
-                                    ("chrome dev2" :noselect t :position top :height 15 :stick t)
-                                    ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
-                                    ("chrome app" :noselect nil :position right :stick t :width .5)
-                                    ("ff dev" :noselect nil :position bottom :height .5 :stick t)
-                                    ("ff" :noselect nil :position right :width .5 :stick t)
-
-                                    (sldb-mode :stick t)
-                                    ;;(shell-mode :stick nil :position bottom )
-                                    )))
-  :config
-  (popwin-mode 1))
-
-;; Функция для переключения окна в попапе по имени буфера
-
-(defun показать-окно-в-попапе (name)
-  "Toggle popup window by NAME."
-  (let ((buf (get-buffer name)))
-    (if (get-buffer-window buf t)
-        (ignore-errors (delete-window (get-buffer-window buf t)))
-      (popwin:pop-to-buffer buf t))))
-
-;; (use-package scratch-pop
-;;   :ensure t
-;;   :defer t
-;;   :bind (("C-`" . scratch-pop)))
-
-;; Минибуфер - модлайн
-
-(use-package taoline
-  :if window-system
-  :init (установить-из-репы :repo "11111000000/taoline")
-  :custom
-  (taoline-show-time t)
-  (taoline-show-input t)
-  (taoline-show-git-branch t)
-  (taoline-show-dir t)
-  (taoline-show-previous-buffer  nil)
-  :config
-  (taoline-mode 1))
-
-;;;;; Переключение окон
-
-(use-package ace-window
-  :ensure t
-  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-              aw-char-position 'left
-              aw-ignore-current nil
-              aw-leading-char-style 'char
-              aw-scope 'frame)
-  :bind (("s-f" . ace-window)
-         ("s-F" . ace-swap-window)))
 
 ;;;; Мини-карта
 
@@ -326,11 +190,12 @@
         (minimap-create)
       (minimap-kill))))
 
+
+;;;; Сокращение диалогов до y/n
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;;;; TODO Путь в заголовке
-
-;;; Показывать буфер с ошибками только при ошибках
-
-(setq warning-minimum-level :error)
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here

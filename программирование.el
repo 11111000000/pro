@@ -192,7 +192,6 @@ ARG - backward"
 ;; Генератор инкрементальных парсеров
 
 (use-package tree-sitter
-  :ensure t
   :config (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
@@ -225,12 +224,6 @@ ARG - backward"
 
 (use-package dap-mode
   :ensure t
-  ;; :hook (
-  ;;        (js-mode . dap-mode)
-  ;;        ;; (js-mode . dap-ui-mode)
-  ;;        ;; (typescript-mode . dap-mode)
-  ;;        ;; (typescript-mode . dap-ui-mode)
-  ;;        )
   :bind (:map dap-mode-map
               ("C-c bb" . dap-ui-breakpoints)
               ("C-c bl" . dap-ui-locals)

@@ -19,14 +19,7 @@
 
 (use-package app-launcher
   :init (установить-из-репы :repo "SebastienWae/app-launcher")
-  :bind (("s-x" . app-launcher-run-app))
-  )
-
-;; (use-package bon-app-launcher
-;;   :commands (bon-app-launcher bon-app-launcher-usr-bin)
-;;   )
-
-
+  :bind (("s-x" . app-launcher-run-app)))
 
 (provide 'инструменты)
 ;;; инструменты.el ends here

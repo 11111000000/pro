@@ -16,15 +16,7 @@
   :init
   (require 'vertico)
   :config
-  (vertico-mode t)
-  ;; (setq completion-in-region-function
-	;;       (lambda (&rest args)
-	;;         (apply (if vertico-mode
-	;; 	                 #'consult-completion-in-region
-	;; 	               #'completion--in-region)
-	;; 	             args)))
-  
-  )
+  (vertico-mode t))
 
 ;;;; Минибуфер во фрейме поверх окна
 
@@ -33,9 +25,9 @@
   :custom
   (mini-frame-show-parameters '((child-frame-border-width . 0)
                                 (internal-border-width . 0)
-                                (top . 0.3)
+                                (top . 0.4)
                                 (width . 0.8)
-                                (height . 0.3)
+                                (height . 0.35)
                                 (left . 0.5)))
   (mini-frame-standalone t)
   (mini-frame-resize nil)
@@ -80,15 +72,7 @@
   (require 'consult-xref)
   (setq consult-project-root-function #'projectile-project-root
         xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
-
-  ;; (setq register-preview-delay 0.1
-	;;   register-preview-function #'consult-register-format)
-  ;; (setq xref-show-xrefs-function #'consult-xref
-	;;   xref-show-definitions-function #'consult-xref)
-  ;; (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --smart-case --no-heading --line-number . -e ARG OPTS")
-  ;; (setq consult-ripgrep-args "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
-  )
+        xref-show-definitions-function #'consult-xref))
 
 ;;;; Дополнение сниппетов
 

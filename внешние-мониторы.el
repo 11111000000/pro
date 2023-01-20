@@ -28,10 +28,7 @@
      (exwm-randr-enable)
 
      (add-hook 'exwm-randr-screen-change-hook
-               'monitor-on-right)
-
-     )
-  )
+               'monitor-on-right)))
 
 (provide 'внешние-мониторы)
 ;;; внешние-мониторы.el ends here

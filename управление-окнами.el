@@ -14,7 +14,8 @@
 (use-package buffer-move
   :ensure t
   :defer t
-  :bind (("s-K" . buf-move-up)
+  :bind (
+         ("s-K" . buf-move-up)
          ("s-J" . buf-move-down)
          ("s-H" . buf-move-left)
          ("s-L" . buf-move-right))
@@ -71,7 +72,7 @@
           lsp-ui-imenu-mode
           treemacs-mode
           special-mode
-          telega-chat-mode          
+          telega-chat-mode
           (completion-list-mode :noselect t)
           (compilation-mode :noselect t)
           (grep-mode :noselect t)
@@ -120,11 +121,6 @@
         (ignore-errors (delete-window (get-buffer-window buf t)))
       (popwin:pop-to-buffer buf t))))
 
-;; (use-package scratch-pop
-;;   :ensure t
-;;   :defer t
-;;   :bind (("C-`" . scratch-pop)))
-
 ;;;; Переключение окон
 
 (use-package ace-window
@@ -136,10 +132,6 @@
               aw-scope 'frame)
   :bind (("s-f" . ace-window)
          ("s-F" . ace-swap-window)))
-
-;;;; Показывать буфер с ошибками только при ошибках
-
-(setq warning-minimum-level :error)
 
 (provide 'управление-окнами)
 ;;; управление-окнами.el ends here

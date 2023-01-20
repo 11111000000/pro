@@ -39,7 +39,7 @@
 ;;   :bind (("C-c r" . skewer-location-reload)))
 
 ;; (use-package prettier-js
-;;   :ensure t  
+;;   :ensure t
 ;;   :hook ((js-mode . prettier-js-mode)
 ;;          (web-mode . prettier-js-mode)
 ;;          (css-mode . prettier-js-mode)
@@ -62,12 +62,12 @@
 
 (use-package typescript-mode
   :ensure t
-  :after tree-sitter  
-  :config  
+  :after tree-sitter
+  :config
   (define-derived-mode typescript-react-mode typescript-mode
     "Typescript JSX")
 
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))    
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx)))
 
 ;; (use-package tsi
@@ -82,7 +82,7 @@
 ;;   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
 ;;   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
-(use-package ts-comint 
+(use-package ts-comint
   :ensure t
   :bind (:map typescript-mode-map
               ( "C-x C-e" . ts-send-last-sexp)

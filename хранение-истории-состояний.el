@@ -60,17 +60,6 @@
   :config
   (goto-last-point-mode t))
 
-;; (use-package backward-forward
-;;   :ensure t
-;;   :bind
-;;   ("C-," . backward-forward-previous-location)
-;;   ("C-." . backward-forward-next-location)
-;;   :custom
-;;   (mark-ring-max 60)
-;;   (set-mark-command-repeat-pop t)
-;;   :config
-;;   (backward-forward-mode t))
-
 ;;;; Путешествие по истории окон
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>
@@ -87,7 +76,6 @@
 (use-package saveplace
   :ensure t
   :after (no-littering)
-  ;;:custom (save-place-file "~/.emacs.d/places")
   :init
   (save-place-mode t))
 

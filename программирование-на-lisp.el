@@ -81,16 +81,5 @@
 	      '("guile"
           "guix")))
 
-;;  Geiser Guile
-                                        ;
-                                        ;(use-package geiser-guile
-                                        ;  :config
-                                        ;  (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
-                                        ;  (add-to-list 'geiser-guile-load-path "~/System/channels/chan"))
-
-                                        ;(with-eval-after-load 'yasnippet
-                                        ;  (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
-
-
 (provide 'программирование-на-lisp)
 ;;; программирование-на-lisp.el ends here

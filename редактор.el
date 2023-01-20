@@ -118,15 +118,17 @@
 
 (defun delete-to-begin ()
   "Удалить до начала строки."
-  (interactive) (kill-line 0))
+  (interactive)
+  (kill-line 0))
 
 ;;;; Поиск и замена
 
-(global-set-key (kbd "M-r") 'replace-string)
-(global-set-key (kbd "M-R") 'replace-regexp)
-(global-set-key (kbd "C-c C-r") 'replace-string)
-(global-set-key (kbd "C-c r") 'replace-regexp)
-(global-set-key (kbd "C-c M-r") 'replace-regexp)
+(bind-keys*
+ ("M-r" . replace-string)
+ ("M-R" . replace-regexp)
+ ("C-c C-r" . replace-string)
+ ("C-c r" . replace-regexp)
+ ("C-c M-r" . replace-regexp))
 
 ;;;; Перемещение блоков
 
@@ -151,33 +153,6 @@
 (use-package bookmark
   :config
   (setq bookmark-save-flag t))
-
-;;;; Режим чтения
-
-;; (use-package view
-;;   :bind (
-;;          ("M-i" . read-only-mode)
-;;          ("<escape>" . read-only-mode)
-;;          ("C-h" . backward-char)
-;;          ("C-j" . next-line)
-;;          ("C-k" . previous-line)
-;;          ("C-l" . forward-char)
-;;          :map view-mode-map
-;;          ("i" . read-only-mode)
-;;          ("<backspace>" . nil)
-;;          ("DEL" . nil)
-;;          ("SPC" . nil)
-;;          ("j" . next-line)
-;;          ("k" . previous-line)
-;;          ("n" . next-line)
-;;          ("p" . previous-line)
-;;          ("h" . backward-char)
-;;          ("l" . forward-char)
-;;          )
-;;   :custom ((view-read-only -1))
-;;   :hook (((text-mode prog-mode emacs-lisp-mode) . read-only-mode))
-;;   :init
-;;   )
 
 ;;;; Красивые типографские символы
 

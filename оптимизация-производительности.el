@@ -22,9 +22,11 @@
 ;;;; Оптимизируем использование памяти в минибуфере
 
 (defun задержать-сборку-мусора ()
+  "Задержать сборку мусора."
   (setq gc-cons-threshold most-positive-fixnum))
 
 (defun восстановить-сборку-мусора ()
+  "Восстановить сборку мусора."
   (run-at-time 1 nil
                (lambda ()
                  (setq gc-cons-threshold dobro/gc-cons-threshold))))

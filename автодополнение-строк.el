@@ -4,7 +4,6 @@
 ;;; Code:
 ;;;; Инициализация Corfu
 
-;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
 (defun в-минибуфере-включать-corfu ()
   "Включать Corfu в минибуфере если Vertico/Mct не активны."
   (unless (or (bound-and-true-p mct--active)
@@ -71,40 +70,7 @@
          ("C-c o &" . cape-sgml)
          ("C-c o r" . cape-rfc1345))
   :init
-  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  ;; (add-to-list 'completion-at-point-functions #'cape-file)
-  ;; (add-to-list 'completion-at-point-functions #'cape-history)
-  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;; (add-to-list 'completion-at-point-functions #'cape-tex)
-  ;; (add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;; (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
-  ;; (add-to-list 'completion-at-point-functions #'cape-dict)
-  ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;; (add-to-list 'completion-at-point-functions #'cape-line)
 )
-
-;;;; Документация для автодополнения
-
-;; (use-package corfu-doc
-;;   :ensure t
-;;   :after corfu
-;;   :hook (corfu-mode . corfu-doc-mode)
-;;   :bind (:map corfu-map
-;;               ("M-?" . #'corfu-doc-toggle)
-;;               ("C-v" . #'corfu-doc-scroll-up)
-;;               ("M-v" . #'corfu-doc-scroll-down))
-;;   :custom
-
-;;   (corfu-doc-delay .8)
-;;   (corfu-doc-max-width 70)
-;;   (corfu-doc-max-height 20)
-
-;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
-;;   (corfu-echo-documentation nil))
 
 ;;;; Автодополнение для терминала
 
@@ -126,17 +92,6 @@
   (add-hook 'kb/themes-hooks #'(lambda ()
                (interactive)
                (kind-icon-reset-cache))))
-
-;;;; История автодополнения
-
-;; (use-package corfu-history
-;;   :after corfu
-;;   :config
-;;   (with-eval-after-load 'safehist
-;;     (cl-pushnew 'corfu-history savehist-additional-variables))
-;;   (corfu-history-mode))
-
-
 
 (provide 'автодополнение-строк)
 ;;; автодополнение-строк.el ends here

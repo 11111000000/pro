@@ -16,13 +16,7 @@
                       :family "Iosevka" 
                       :weight 'light 
                       :italic t 
-                      :height 0.9)
-  ;; (set-face-attribute 'default nil :family "Monaco" :weight 'regular :height 120)
-  ;; (set-face-attribute 'fixed-pitch nil :family "Monaco" :weight 'regular :height 120)
-  ;; (set-face-attribute 'font-lock-comment-face nil :family "Menlo" :weight 'light :italic t)
-  ;; (set-face-attribute 'org-level-1 nil :family "Liberation Serif" :height 180)
-  ;; (set-face-attribute 'outshine-level-1 nil :family "Liberation Serif" :height 180)
-  )
+                      :height 0.9))
 
 (add-hook 'after-load-theme-hook 
           (lambda () 

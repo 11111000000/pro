@@ -64,8 +64,8 @@
              (propertize (car (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
              (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
              (unless (string= git-branch "")
-               (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))             
-             (propertize "$" 'face `(:foreground "#ff79c6"))             
+               (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
+             (propertize "$" 'face `(:foreground "#ff79c6"))
              )))
 
 (use-package eshell
@@ -79,12 +79,12 @@
   (eshell-ask-to-save-history (quote always))
   (eshell-prompt-regexp "❯❯❯ ")
   (eshell-visual-commands '("htop" "zsh" "vim"))
-  
+
   :init
   (add-hook 'eshell-mode-hook
             (lambda ()
               (progn
-                (define-key eshell-mode-map "\C-a" 'eshell-bol)                
+                (define-key eshell-mode-map "\C-a" 'eshell-bol)
                 (define-key eshell-mode-map [up] 'previous-line)
                 (define-key eshell-mode-map [down] 'next-line)
                 ))))
@@ -108,13 +108,6 @@
   ("M-`" . eshell-toggle)
   ("M-§" . eshell-toggle))
 
-;; (use-package aweshell
-;;   :ensure t
-;;   :init (установить-из-репы :repo "manateelazycat/aweshell")
-;;   :config
-;;   )
-
-
 ;;;; Другие терминалы
 
 (global-set-key (kbd "C-c tr")
@@ -124,7 +117,6 @@
 (global-set-key (kbd "C-c tc")
                 (lambda () (interactive)
                   (start-process-shell-command "Retro Term" nil "cool-retro-term")))
-
 
 (use-package vterm
   :ensure t
@@ -142,7 +134,7 @@
   :bind (("C-c tv" . #'vterm-toggle)
          :map vterm-mode-map
          ("C-\\" . #'popper-cycle)
-         ("s-t" . #'vterm) 
+         ("s-t" . #'vterm)
          ("s-v" . #'vterm-yank)
          ))
 
