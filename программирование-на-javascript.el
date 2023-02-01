@@ -22,8 +22,8 @@
   :defer t
   :bind
   (:map js2-mode-map
-        ("C-c jD" . js-doc-insert-file-doc)
-        ("C-c jd" . js-doc-insert-function-doc))
+          ("C-c jD" . js-doc-insert-file-doc)
+          ("C-c jd" . js-doc-insert-function-doc))
   :config)
 
 (use-package react-snippets :ensure t :defer t :init (require 'react-snippets))

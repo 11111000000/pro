@@ -14,7 +14,7 @@
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
            (org-agenda-files (find-lisp-find-files "~/Организация" "\.org$"))
-           (org-todo-keywords '((sequence "TODO" "ACTIVE" "DONE"))))
+           (org-todo-keywords '((sequence "НАДО" "СЕЙЧАС" "ЕСТЬ") (sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
   :init)

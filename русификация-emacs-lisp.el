@@ -6,6 +6,10 @@
 (use-package prettify-utils
   :init (установить-из-репы :repo "Ilazki/prettify-utils.el"))
 
+(defun добавить-текущий-символ-в-перевод ()
+  "Добавить текущий символ в перевод."
+  (interactive "P"))
+
 (defun русификация-emacs-lisp ()
   "Русификация Emacs LISP."
   (interactive)
@@ -18,6 +22,7 @@
                                   ("setq-default" "по-умолчанию")
                                   ("let" "для")
                                   ("let*" "для*")
+                                  ("autoload" "автозагрузка")
                                   ("symbol" "символ")
                                   ("concat" "соединить")
                                   ("buffer-file-name" "имя-файла-в-буфере")
@@ -123,6 +128,7 @@
                                   ("set-terminal-coding-system" "установить-кодировку-терминала")
                                   ("set-keyboard-coding-system" "установить-кодировку-клавиатуры")
                                   ("set-window-margins" "установить-поля-окна")
+                                  ("global-unset-key" "глобально-сбросить-клавишу")
                                   ("window-width" "ширина-окна")
                                   ("window-list" "список-окон")
                                   ("minibuffer-window" "окно-минибуфера")
@@ -138,6 +144,13 @@
                                   ("tool-bar-mode" "режим-панели-инструментов")
                                   ("menu-bar-mode" "режим-панели-меню")
                                   ("enable-recursive-minibuffers" "включить-рекурсивные-минибуферы")
+                                  ("global-auto-revert-mode" "глобальный-режим-обновления")
+                                  ("global-auto-revert-non-file-buffers" "глобально-обновлять-не-файловые-буферы")
+                                  ("auto-revert-verbose" "авто-обновлять-молча")
+                                  ("display-buffer-alist" "список-отображения-буферов")
+                                  ("async-shell-command-buffer" "асинхронный-буфер-команд-оболочки")
+                                  ("rename-buffer" "переименовать-буфер")
+                                  ("scroll-conservatively" "сколлить-консервативно")
                                   ))
   (prettify-symbols-mode 1))
 

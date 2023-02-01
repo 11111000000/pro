@@ -6,13 +6,12 @@
 (use-package emacs-lisp
   :bind (:map emacs-lisp-mode-map
               ("C-c C-c" . перевыполнить-буфер)
-              ("C-x M-e" . eval-print-last-sexp)
-              ))
+              ("C-x M-e" . eval-print-last-sexp)))
 
 ;;;;; Функция для реального перевыполнения форм в буфере
 
 (defun перевыполнить-буфер ()
-  "Вызвать выполнения кода в текущем буфере.
+  "Вызвать выполнение кода в текущем буфере.
 Верхне-уровневые формы выполняются `eval-defun', таким
 образом `defvar' и `defcustom' устанавливаются заново."
   (interactive)
@@ -21,31 +20,31 @@
                     (forward-sexp)
                     (eval-defun nil))))
 
+;;;; Конфигурация проверки синтаксиа для Elisp
+
+(use-package elsa
+  :ensure t
+  :defer t)
+
+;; (use-package flycheck-elsa
+;;   :ensure t
+;;   :after flycheck
+;;   :config (flycheck-elsa-setup))
+
 (use-package flymake-elisp-config
   :init (установить-из-репы :repo "ROCKTAKEY/flymake-elisp-config")
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
 
-;;;;; Статический анализатор для Elisp
-
-(use-package elsa
-  :ensure t
-  :defer t)
-
-(use-package flycheck-elsa
-  :ensure t
-  :after flycheck
-  :config (flycheck-elsa-setup))
-
-;;;;; Автоматическое тестирование и отладка конфига Emacs
+;;;; Автоматическое тестирование и отладка конфига Emacs
 
 (use-package bug-hunter
   :disabled t
   :ensure t
   :defer t)
 
-;;;;; Форматирование ELISP
+;;;; Форматирование ELISP
 
 (use-package elisp-format
   :ensure t

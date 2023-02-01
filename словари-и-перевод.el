@@ -5,8 +5,10 @@
 
 (use-package go-translate
   :ensure t
+  :bind (
+         ("C-c v" . gts-do-translate))
   :custom (
-      (gts-translate-list '(("en" "ru"))))
+      (gts-translate-list '(("en" "ru") ("ru" "en"))))
   :config
   (setq gts-default-translator
         (gts-translator

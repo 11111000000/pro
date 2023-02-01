@@ -168,8 +168,7 @@
 
 (use-package imenu
   :defer t
-  :custom ((imenu-auto-rescan t))
-  )
+  :custom ((imenu-auto-rescan t)))
 
 ;;;; Мини-карта
 
@@ -183,8 +182,8 @@
   (minimap-width-fraction 0.08)
   (minimap-window-location 'right)
 
-  (defun my/toggle-minimap ()
-    "Toggle minimap for current buffer."
+  (defun переключить-миникарту ()
+    "Переключает миникарту для текущего буфера."
     (interactive)
     (if (null minimap-bufname)
         (minimap-create)

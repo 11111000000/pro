@@ -69,8 +69,7 @@
          ("C-c o ^" . cape-tex)
          ("C-c o &" . cape-sgml)
          ("C-c o r" . cape-rfc1345))
-  :init
-)
+  :init)
 
 ;;;; Автодополнение для терминала
 

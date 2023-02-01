@@ -1,4 +1,4 @@
-;;; хранение-истории-состояний.el --- История
+;;; история.el --- История
 ;;; Commentary:
 ;; Функции для работы с историей, хранением и
 ;; восстановлением состояний
@@ -21,7 +21,7 @@
            (vc-make-backup-files t)
            (version-control t))
   :config
-  (savehist-mode t)  
+  (savehist-mode t)
   (setq
    auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
@@ -67,7 +67,8 @@
 (use-package winner
   :bind (("<XF86Back>" . winner-undo)
          ("<XF86Forward>" . winner-redo)
-         ("s-u" . winner-undo))
+         ("s-u" . winner-undo)
+         ("s-S-u" . winner-redo))
   :init
   (winner-mode 1))
 
@@ -104,5 +105,5 @@
 (setq-default kill-ring-max 300
               save-interprogram-paste-before-kill t)
 
-(provide 'хранение-истории-состояний)
-;;; хранение-истории-состояний.el ends here
+(provide 'история)
+;;; история.el ends here

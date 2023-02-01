@@ -32,7 +32,9 @@
   (mini-frame-standalone t)
   (mini-frame-resize nil)
   (mini-frame-color-shift-step 7)
+  (mini-frame-detach-on-hide nil)
   (mini-frame-internal-border-color "#333333")
+  (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
   :config
   (mini-frame-mode t))
 

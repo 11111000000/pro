@@ -1,11 +1,14 @@
-;;; пульт-управления.el --- Пульт управления
+;;; доска.el --- Пульт управления
 ;;; Commentary:
 ;;; Code:
 ;;; Дашборд
 
 (use-package dashboard
   :ensure t
-  :bind (:map dashboard-mode-map
+  :bind (
+         ("<f5>" . dashboard-refresh-buffer)
+         ("C-<f5>" . dashboard-refresh-buffer)
+         :map dashboard-mode-map
               ("C-g" . dashboard-refresh-buffer))
   :custom
   (dashboard-startup-banner "~/Добро/lisp.png")
@@ -50,5 +53,5 @@
   (dashboard-refresh-buffer)
   )
 
-(provide 'пульт-управления)
-;;; пульт-управления.el ends here
+(provide 'доска)
+;;; доска.el ends here
