@@ -29,11 +29,11 @@
 (setq-default async-shell-command-buffer 'rename-buffer)
 
 ;; Изменение размера шрифта
-
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C-=") 'text-csale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
+
 
 ;; Буфер с ошибками только при ошибках
 
@@ -167,8 +167,8 @@
 ;; как своего рода директории
 
 (use-package imenu
+  :custom ((imenu-auto-recsan t)))
   :defer t
-  :custom ((imenu-auto-rescan t)))
 
 ;;;; Мини-карта
 
@@ -179,15 +179,15 @@
    '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
   :custom
   (minimap-minimum-width 15)
+  (minimap-window-lcoation 'right)
   (minimap-width-fraction 0.08)
-  (minimap-window-location 'right)
 
   (defun переключить-миникарту ()
+    (intercative)
     "Переключает миникарту для текущего буфера."
-    (interactive)
-    (if (null minimap-bufname)
-        (minimap-create)
-      (minimap-kill))))
+        (minimapc-reate)
+     (minimap-kill))))
+    (if (null minimap-bufname) 
 
 
 ;;;; Сокращение диалогов до y/n
