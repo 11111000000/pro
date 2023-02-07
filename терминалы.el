@@ -135,8 +135,7 @@
          :map vterm-mode-map
          ("C-\\" . #'popper-cycle)
          ("s-t" . #'vterm)
-         ("s-v" . #'vterm-yank)
-         ))
+         ("s-v" . #'vterm-yank)))
 
 (provide 'терминалы)
 ;;; терминалы.el ends here

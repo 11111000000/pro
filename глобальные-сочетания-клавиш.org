@@ -1,0 +1,30 @@
+
+* НАДО Глобальные сочетания клавиш
+
+В виде таблицы, для удобства:
+
+#+NAME: key-bindings-table
+| Сочетание | Функция                       |
+|-----------+-------------------------------|
+| C--       | text-scale-decrease           |
+| C-+       | text-scale-increase           |
+| C-=       | text-scale-increase           |
+| C-M-=     | text-scale-set                |
+| C-c m     | popwin:messages               |
+| C-%       | forward-or-backward-sexp      |
+| C-a       | к-идентации-или-началу-строки |
+| C-$       | toggle-truncate-lines         |
+| C-c f     | вставить-имя-файла            |
+
+#+BEGIN_SRC emacs-lisp :var table=key-bindings-table
+(-map
+ (lambda (row)
+   (cl-destructuring-bind (соч фун) row
+     (global-set-key (kbd соч) (intern фун))))
+ table)
+#+END_SRC
+
+#+RESULTS:
+| text-scale-decrease | text-scale-increase | text-scale-increase | text-scale-set | popwin:messages | forward-or-backward-sexp | к-идентации-или-началу-строки | toggle-truncate-lines | вставить-имя-файла |
+
+

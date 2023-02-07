@@ -14,10 +14,12 @@
 (setq-default global-auto-revert-non-file-buffers t)
 (setq-default auto-revert-verbose nil)
 
-;; Клавиша для принудительного обновления
+;; Функция для принудительного обновления
 
-(global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer t t)))
-(global-set-key (kbd "s-r") (lambda () (interactive) (revert-buffer t t)))
+(defun обновить-буфер-немедленно ()
+  "ничего не спрашивая, обновить буфер."
+  (interactive)
+  (revert-buffer t t))
 
 ;; Асинхронные буферы скрыты
 
@@ -33,7 +35,6 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-=") 'text-csale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
-
 
 ;; Буфер с ошибками только при ошибках
 
@@ -55,18 +56,9 @@
 
 ;;;; Минибуфер
 
-;; Сообщения
-
-(global-set-key (kbd "C-c m") 'popwin:messages)
-
 ;; Включаем рекурсивные минибуферы
 
 (setq-default enable-recursive-minibuffers t)
-
-;; Показать текущее время win+F1
-
-(global-set-key (kbd "s-<f1>") (lambda () (interactive)
-                               (print (current-time-string))))
 
 ;; Минибуфер - модлайн
 
@@ -180,14 +172,7 @@
   :custom
   (minimap-minimum-width 15)
   (minimap-window-lcoation 'right)
-  (minimap-width-fraction 0.08)
-
-  (defun переключить-миникарту ()
-    (intercative)
-    "Переключает миникарту для текущего буфера."
-        (minimapc-reate)
-     (minimap-kill))))
-    (if (null minimap-bufname) 
+  (minimap-width-fraction 0.08))
 
 
 ;;;; Сокращение диалогов до y/n

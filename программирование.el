@@ -26,8 +26,6 @@ ARG - backward"
    ((looking-at "\\s)") (forward-char) (backward-sexp arg))
    ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 
-(global-set-key (kbd "C-%") 'forward-or-backward-sexp)
-
 ;;;;; Умные скобки
 
 ;; TODO: заменить пакетом, основанным на tree-sitter ?

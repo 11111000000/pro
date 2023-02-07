@@ -177,7 +177,6 @@
 
 (toggle-truncate-lines t)
 (visual-line-mode t)
-(global-set-key (kbd "C-$") 'toggle-truncate-lines)
 
 ;;;; Конфигурация отступов
 
@@ -257,14 +256,16 @@
   (setq ispell-program-name "aspell")
   (setq ispell-silently-savep t))
 
-
 ;;;; Поддержка языка  разметки Markdown
 
 (use-package markdown-mode :ensure t)
 
 ;;;; Вставить имя файла
 
-(global-set-key (kbd "C-c f") (lambda () (interactive) (insert (buffer-name))))
+(defun вставить-имя-файла ()
+  "Вставить имя файла."
+  (interactive)
+  (insert (buffer-name)))
 
 ;;;; Ёфикация
 
