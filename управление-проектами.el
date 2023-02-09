@@ -31,10 +31,10 @@
          ("C-c pt" . org-projectile-project-todo-completing-read)
          ("C-c c" . org-projectile-capture-for-current-project))
   :config
-    
+
   (setq org-projectile-per-project-filepath "ЧТОДЕЛ.org")
   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-  
+
   ;; (progn
   ;;   (setq org-projectile-projects-file
   ;;         "/Projects/projects.org")
@@ -51,12 +51,8 @@
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
            (magit-after-save-refresh-buffers t))
   :init
-  (require 'magit-git)
-  (require 'magit-process)
   (add-hook 'magit-process-find-password-functions
             'magit-process-password-auth-source))
-
-(use-package magit-todos :ensure t)
 
 ;;;; Автоматизация проекта
 

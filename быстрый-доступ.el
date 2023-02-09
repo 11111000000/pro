@@ -100,6 +100,24 @@
 (use-package consult-ag
   :ensure t
   :after dired
+  :config
+
+  ; Эту функцию нужно добавить, т.к. она пропала в новых версиях consult
+  
+  (defun consult--position-marker (buffer line column)
+    "Get marker in BUFFER from LINE and COLUMN."
+    (when (buffer-live-p buffer)
+      (with-current-buffer buffer
+        (save-restriction
+          (save-excursion
+            (widen)
+            (goto-char (point-min))
+            ;; Location data might be invalid by now!
+            (ignore-errors
+              (forward-line (- line 1))
+              (forward-char column))
+            (point-marker))))))
+
   :bind (:map dired-mode-map
               ("s" . искать-по-файлам-отсюда)))
 

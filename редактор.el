@@ -33,9 +33,10 @@
 (use-package avy
   :ensure t
   :defer t
-  :bind   (("C-z" . avy-goto-char)
-           ("s-z" . avy-goto-char)
-           ("M-z" . avy-goto-char))
+  :bind (
+  ("C-z" . avy-goto-char)
+  ("s-z" . avy-goto-char)
+  ("M-z" . avy-goto-char))
   :custom ((avy-background nil)))
 
 ;; Мульти-курсор
@@ -72,10 +73,10 @@
 
 (use-package expand-region
   :ensure t
-  :bind
-  ("M-SPC" . er/expand-region)
-  ("M-S-SPC" . er/contract-region)
-  ("S-SPC" . mark-current-line)
+  :bind (
+         ("M-SPC" . er/expand-region)
+         ("M-S-SPC" . er/contract-region)
+         ("S-SPC" . mark-current-line))
   :config
   (setq expand-region-contract-fast-key "M-S-SPC"
         expand-region-reset-fast-key    "<ESC><ESC>"))

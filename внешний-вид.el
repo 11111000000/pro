@@ -33,7 +33,7 @@
 ;; Изменение размера шрифта
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-=") 'text-csale-increase)
+(global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C-M-=") 'text-scale-set)
 
 ;; Буфер с ошибками только при ошибках
@@ -52,7 +52,7 @@
 ;;;; Меню
 
 (when (bound-and-true-p menu-bar-mode)
-  (menu-bar-mode t))
+  (menu-bar-mode -1))
 
 ;;;; Минибуфер
 
@@ -147,7 +147,7 @@
 (when (fboundp 'pixel-scroll-mode)
   (pixel-scroll-mode t))
 
-;; Сохранение расположения
+;; Сохранение положения
 
 (use-package eyebrowse
   :ensure t

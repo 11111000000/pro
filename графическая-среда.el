@@ -133,7 +133,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
    ("s-u " winner-undo)
    ("s-S-u" winner-redo)
    ("s-<f3>" battery)
-   ("s-`" eshell-toggle) ;; TODO urxvt-toggle
+   ("s-`" vterm-toggle) ;; TODO urxvt-toggle
    ("C-`" scratch-pop)
    ("s-a" buffer-expose)
    ("s-SPC" buffer-expose)

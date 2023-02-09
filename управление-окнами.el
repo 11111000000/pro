@@ -53,8 +53,7 @@
          ("RET" . buffer-expose-choose)
          ("SPC" . buffer-expose-choose)
          ("s-SPC" . buffer-expose-choose)
-         ("s-<tab>" . buffer-expose-reset)
-         )
+         ("s-<tab>" . buffer-expose-reset))
   :init)
 
 ;;;; Popwin - предсказуемые попапы
@@ -65,7 +64,6 @@
   :bind (("C-c b" . popwin:popup-buffer)
          ("C-c ." . popwin:stick-popup-window))
   :config
-
   (setq popwin:special-display-config
         '(("*Miniedit Help*" :noselect t)
           help-mode

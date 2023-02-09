@@ -1,7 +1,7 @@
 ;;; программирование-на-javascript.el --- Поддержка Javascript, Typescript
 ;;; Commentary:
 ;;; Code:
-;;;; Javascript
+;;;; Подхватывать настройки проверки кода Javascript
 
 (use-package eslint-rc
   :ensure t
@@ -13,20 +13,29 @@
          (js-mode . eslint-rc-mode)
          (web-mode . eslint-rc-mode)))
 
+;;;; Добавить путь для модулей
+
 (use-package add-node-modules-path :ensure t)
 
+;;;; Переключение версий ноды
+
 (use-package nvm :ensure t)
+
+;;;; Документация в комментариях
 
 (use-package js-doc
   :ensure t
   :defer t
-  :bind
-  (:map js2-mode-map
-          ("C-c jD" . js-doc-insert-file-doc)
-          ("C-c jd" . js-doc-insert-function-doc))
+  :bind (:map js2-mode-map
+              ("C-c jD" . js-doc-insert-file-doc)
+              ("C-c jd" . js-doc-insert-function-doc))
   :config)
 
+;;;; Сниппеты React
+
 (use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
+
+;;;; Поддержка JSON
 
 (use-package json-mode
   :ensure t

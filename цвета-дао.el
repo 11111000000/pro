@@ -14,7 +14,7 @@
 (use-package tao-theme
   :init (установить-из-репы :repo "11111000000/tao-theme-emacs")
   :if window-system
-  :custom ((tao-theme-use-height t)
+  :custom ((tao-theme-use-height nil)
            (tao-theme-use-boxes t)
            (tao-theme-use-sepia nil)
            (tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259))))

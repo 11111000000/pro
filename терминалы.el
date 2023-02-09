@@ -132,6 +132,7 @@
   (vterm-toggle-fullscreen-p nil "Open a vterm in another window.")
   (vterm-toggle-scope 'project)
   :bind (("C-c tv" . #'vterm-toggle)
+         ("s-`" . #'vterm-toggle)
          :map vterm-mode-map
          ("C-\\" . #'popper-cycle)
          ("s-t" . #'vterm)

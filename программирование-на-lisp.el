@@ -73,6 +73,7 @@
   (setq geiser-mode-start-repl-p nil))
 
 (use-package geiser-guile
+  :ensure t
   :requires geiser
   :config
   ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")

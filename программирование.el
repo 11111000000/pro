@@ -164,22 +164,14 @@ ARG - backward"
   :ensure t
   :hook
   (prog-mode . yas-minor-mode)
-  :bind (
-         ("C-c y v" . yas-visit-snippet-file)
+  :bind (("C-c y v" . yas-visit-snippet-file)
          ("C-c y i" . yas-insert-snippet)
          ("C-c y y" . yas-insert-snippet)
-         ("C-c y n" . dobro/yas-new-snippet-with-example)
-         )
+         ("C-c y n" . dobro/yas-new-snippet-with-example))
   :config
   (yas-reload-all)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"))
-
-  )
-
-;; (use-package yasnippet
-;;   :ensure t
-;;   :init (yas-global-mode 1))
+        '("~/.emacs.d/snippets")))
 
 (use-package yasnippet-snippets
   :ensure t

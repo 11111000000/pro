@@ -19,9 +19,7 @@
               browse-url-new-window-flag t
               browse-url-generic-program "chromium")
 
-
 ;;;; EWW - Браузер на ELISP
-
 ;;;;; Нумерация ссылков
 
 (use-package eww-lnum
