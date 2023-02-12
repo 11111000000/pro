@@ -64,11 +64,11 @@ KEY-BINDINGS - список пар (клавиша функция)"
            (exwm-input-simulation-keys сочетания-для-эмуляции))
 
   :config
-  
+
   (add-hook 'exwm-update-class-hook
             (lambda ()
               (exwm-workspace-rename-buffer exwm-class-name)))
-  
+
   ;; (defun exwm-update-title-hook ()
   ;;   (exwm-workspace-rename-buffer exwm-title))
 
@@ -76,32 +76,13 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 
   ;; Глобальные клавиши над всеми приложениями
-  
+
   (dotimes (i 10)
     (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
+
   (exwm-input-set-keys
-   ("s-q" exwm-reset)
-   ("s-\\" toggle-input-method)
-   ("s-w" exwm-workspace-switch)
-   ("s-e" buffer-expose)
-   ("s-t" exwm-floating-toggle-floating)
-   ("s-r" rename-buffer)
-   ("s-d" delete-window)
-   ("s-h" windmove-left)
-   ("s-j" windmove-down)
-   ("s-k" windmove-up)
-   ("s-l" windmove-right)
-   ("s-H" buf-move-left)
-   ("s-J" buf-move-down)
-   ("s-K" buf-move-up)
-   ("s-L" buf-move-right)
-   ("s-x" app-launcher-run-app)
-   ("s-M-h" split-window-horizontally)
    ("s-M-j" (lambda () (interactive) (split-window-vertically) (windmove-down)))
-   ("s-M-k" split-window-vertically)
    ("s-M-l" (lambda () (interactive) (split-window-horizontally) (windmove-right)))
-   ("<XF86Back>" winner-undo)
-   ("<XF86Forward>" winner-redo)
    ("<XF86AudioMicMute>" (lambda () (interactive) (async-shell-command "pamixer --default-source 1 -t" nil nil)))
    ("<XF86AudioMute>" (lambda () (interactive) (async-shell-command "pamixer -t" nil nil)))
    ("<XF86AudioRaiseVolume>" (lambda () (interactive) (async-shell-command "pamixer -i 10" nil nil)))
@@ -109,10 +90,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
    ("<XF86MonBrightnessUp>" (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
    ("<XF86MonBrightnessDown>" (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
    ("<XF86TouchpadToggle>" (lambda () (interactive) (async-shell-command "xinput toggle 13" nil nil)))
-   ("<print>" скриншот-области)
-   ("s-s" скриншот-области)
-   ("s-<print>" скриншот)
-   ("s-S-s" скриншот)
    ("s-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
    ("s-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
    ("s-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
@@ -121,26 +98,9 @@ KEY-BINDINGS - список пар (клавиша функция)"
    ("s-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
    ("s-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
    ("s-)" (lambda () (interactive) (exwm-workspace-move-window 0)))
-   ("s-<left>" shrink-window-horizontally)
-   ("s-<right>" enlarge-window-horizontally)
-   ("s-<down>" shrink-window)
-   ("s-<up>" enlarge-window)
-   ("s-<tab>" consult-buffer)
-   ("s-f" ace-window)
-   ("s-z" avy-goto-char)
-   ("s-_ " winner-undo)
-   ("s-M-_" winner-redo)
-   ("s-u " winner-undo)
-   ("s-S-u" winner-redo)
-   ("s-<f3>" battery)
-   ("s-`" vterm-toggle) ;; TODO urxvt-toggle
-   ("C-`" scratch-pop)
-   ("s-a" buffer-expose)
-   ("s-SPC" buffer-expose)
-   ("s-*" buffer-expose-stars)
    ("s-o" (lambda () (interactive) (показать-окно-в-попапе "chrome app")))
    ("s-O" (lambda () (interactive) (показать-окно-в-попапе "chrome dev"))))
-  
+
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
                                      ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
                                       height 175 x 30 y 30 managed t)))
@@ -153,16 +113,17 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;; Запуск программ в трее
 
   (require 'exwm-systemtray)
-  
+
   (exwm-systemtray-enable)
-  
-  (eval-after-load 'exwm-systemtray
+
+  (add-hook 'exwm-init-hook (lambda ()
     (progn
-      (start-process-shell-command "pasystray" nil "dbus-launch pasystray")
       (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t")
       (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
       (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
-      (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc"))))
+      (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
+      (start-process-shell-command "pasystray" nil "dbus-launch pasystray")
+      )))
 
 ;;;; Режимы ввода EMACS в приложениях
 

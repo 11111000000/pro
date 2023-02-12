@@ -66,17 +66,19 @@
 
 (use-package eldoc-box
   :ensure t
+  :bind ("C-c i" . eldoc-doc-buffer)
   :custom
-  (eldoc-idle-delay 0)
+  ((eldoc-idle-delay 0.01))
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
          (eldoc-box-frame-hook . (lambda ()
+                                   (toggle-truncate-lines t)
                                    (setq cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
   (setq-default cursor-in-non-selected-windows nil)
-  (setq-default eldoc-documentation-strategy #'eldoc-documentation-compose)
+  (setq-default eldoc-documentation-strategy #'eldoc-documentation-enthusiast)
   (setq-default eldoc-documentation-function #'eldoc-documentation-compose)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
   (set-face-attribute 'eldoc-box-body nil :family "Fira Code" :weight 'normal :italic nil :height 0.8))

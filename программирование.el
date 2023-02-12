@@ -131,13 +131,13 @@ ARG - backward"
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 
-(use-package emacs-flymake-popon
-  :init
-  (unless (package-installed-p 'emacs-flymake-popon)
-   (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
-  :custom ((flymake-popon-delay .8)
-           (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
-  :hook ((flymake-mode) . flymake-popon-mode))
+;; (use-package emacs-flymake-popon
+;;   :init
+;;   (unless (package-installed-p 'emacs-flymake-popon)
+;;    (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
+;;   :custom ((flymake-popon-delay .8)
+;;            (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
+;;   :hook ((flymake-mode) . flymake-popon-mode))
 
 ;; (use-package flymake-posframe
 ;;   :load-path "emacs-lisp/flymake-posframe"
@@ -198,6 +198,8 @@ ARG - backward"
   :hook ((go-mode . eglot-ensure)
          (haskell-mode . eglot-ensure)
          (typescript-mode . eglot-ensure)
+         (rust-mode . eglot-ensure)
+         (haskell-mode . eglot-ensure)
          (js-mode . eglot-ensure)
          (rust-mode . eglot-ensure))
   :bind (:map eglot-mode-map

@@ -70,7 +70,6 @@
           lsp-ui-imenu-mode
           treemacs-mode
           special-mode
-          telega-chat-mode
           (completion-list-mode :noselect t)
           (compilation-mode :noselect t)
           (grep-mode :noselect t)
