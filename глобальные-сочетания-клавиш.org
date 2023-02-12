@@ -46,7 +46,7 @@
 | s-SPC         | buffer-expose                 |
 | s-*           | buffer-expose-stars           |
 
-** Клавиши текстового режима
+** Глобальные клавиши в буферах Emacs
 
 #+NAME: key-bindings-table
 | Сочетание | Функция                       |
