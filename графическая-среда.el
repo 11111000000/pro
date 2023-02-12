@@ -123,7 +123,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
       (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
       (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
       (start-process-shell-command "pasystray" nil "dbus-launch pasystray")
-      )))
+      ))))
 
 ;;;; Режимы ввода EMACS в приложениях
 

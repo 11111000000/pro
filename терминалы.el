@@ -65,7 +65,7 @@
              (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
              (unless (string= git-branch "")
                (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
-             (propertize "$" 'face `(:foreground "#ff79c6"))
+             (propertize "❯❯❯" 'face `(:foreground "#ff79c6"))
              )))
 
 (use-package eshell
@@ -78,16 +78,15 @@
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   (eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("htop" "zsh" "vim"))
+  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm"))
 
   :init
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (progn
-                (define-key eshell-mode-map "\C-a" 'eshell-bol)
-                (define-key eshell-mode-map [up] 'previous-line)
-                (define-key eshell-mode-map [down] 'next-line)
-                ))))
+  (add-hook 'eshell-mode-hook (lambda ()
+                                (progn
+                                  (define-key eshell-mode-map "\C-a" 'eshell-bol)
+                                  (define-key eshell-mode-map [up] 'previous-line)
+                                  (define-key eshell-mode-map [down] 'next-line)
+                                  ))))
 
 ;; (use-package eshell-did-you-mean
 ;;   :init
@@ -118,8 +117,11 @@
                 (lambda () (interactive)
                   (start-process-shell-command "Retro Term" nil "cool-retro-term")))
 
+
+
 (use-package vterm
   :ensure t
+  :custom ((vterm-shell  "fish"))
   :config
   (defun turn-off-chrome ()
     (hl-line-mode -1)
@@ -129,14 +131,21 @@
 (use-package vterm-toggle
   :ensure t
   :custom
-  (vterm-toggle-fullscreen-p nil "Open a vterm in another window.")
+  (vterm-toggle-fullscreen-p nil)
   (vterm-toggle-scope 'project)
   :bind (("C-c tv" . #'vterm-toggle)
          ("s-`" . #'vterm-toggle)
          :map vterm-mode-map
          ("C-\\" . #'popper-cycle)
-         ("s-t" . #'vterm)
-         ("s-v" . #'vterm-yank)))
+         ("s-v" . #'vterm-yank)
+         
+         ))
+
+(use-package eshell-vterm
+  ;;:hook ((eshell-mode . eshell-vterm-mode))
+  :ensure t
+  :init
+  )
 
 (provide 'терминалы)
 ;;; терминалы.el ends here
