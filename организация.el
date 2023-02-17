@@ -13,7 +13,7 @@
          :map org-mode-map
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
-           (org-agenda-files (find-lisp-find-files "~/Организация" "\.org$"))
+                                        ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
            (org-todo-keywords '((sequence "НАДО" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
