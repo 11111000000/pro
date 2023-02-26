@@ -24,7 +24,7 @@
 
 (use-package elsa
   :ensure t
-  :defer t)
+  )
 
 ;; (use-package flycheck-elsa
 ;;   :ensure t

@@ -78,28 +78,31 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;; Глобальные клавиши над всеми приложениями
 
   (dotimes (i 10)
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
+    (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
+
+  (dotimes (i 10)
+    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
   (exwm-input-set-keys
    ("s-M-j" (lambda () (interactive) (split-window-vertically) (windmove-down)))
    ("s-M-l" (lambda () (interactive) (split-window-horizontally) (windmove-right)))
-   ("<XF86AudioMicMute>" (lambda () (interactive) (async-shell-command "pamixer --default-source 1 -t" nil nil)))
+   ("<XF86AudioMicMute>" (lambda () (interactive) (async-shell-command "amixer set Capture toggle" nil nil)))
    ("<XF86AudioMute>" (lambda () (interactive) (async-shell-command "pamixer -t" nil nil)))
    ("<XF86AudioRaiseVolume>" (lambda () (interactive) (async-shell-command "pamixer -i 10" nil nil)))
    ("<XF86AudioLowerVolume>" (lambda () (interactive) (async-shell-command "pamixer -d 10" nil nil)))
    ("<XF86MonBrightnessUp>" (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
    ("<XF86MonBrightnessDown>" (lambda () (interactive) (async-shell-command "echo ok" nil nil)))
    ("<XF86TouchpadToggle>" (lambda () (interactive) (async-shell-command "xinput toggle 13" nil nil)))
-   ("s-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
-   ("s-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
-   ("s-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
-   ("s-$" (lambda () (interactive) (exwm-workspace-move-window 4)))
-   ("s-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
-   ("s-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
-   ("s-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
-   ("s-)" (lambda () (interactive) (exwm-workspace-move-window 0)))
-   ("s-o" (lambda () (interactive) (показать-окно-в-попапе "chrome app")))
-   ("s-O" (lambda () (interactive) (показать-окно-в-попапе "chrome dev"))))
+   ("s-M-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
+   ("s-M-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
+   ("s-M-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
+   ("s-M-$" (lambda () (interactive) (exwm-workspace-move-window 4)))
+   ("s-M-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
+   ("s-M-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
+   ("s-M-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
+   ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0)))
+   ("s-M-o" (lambda () (interactive) (показать-окно-в-попапе "chrome app")))
+   ("s-M-O" (lambda () (interactive) (показать-окно-в-попапе "chrome dev"))))
 
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
                                      ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280

@@ -30,12 +30,6 @@
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
-;; Изменение размера шрифта
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C-M-=") 'text-scale-set)
-
 ;; Буфер с ошибками только при ошибках
 
 (setq warning-minimum-level :error)
@@ -181,8 +175,75 @@
 
 ;;;; TODO Путь в заголовке
 
+;;;;  Вкладки
+
+;;;;;  Верхний уровень вкладок
+
+(use-package tab-bar
+  :ensure t
+  :config
+  (tab-bar-mode t)
+  (dotimes (i 10)
+    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+  )
+
+;;;;;  Вкладки уровня окна
+
+(use-package tabbar
+  :ensure t
+  :hook ((eldoc-box-frame-hook . tabbar-local-mode))
+  :custom (tabbar-buffer-groups-function 'dobro/buffer-groups)
+  :config
+  ;; ЧТОДЕЛ: Функция для переключение этих вкладок по номеру нужна
+  ;; (dotimes (i 10)
+  ;;   (global-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (tabbar-select-tab ,i))))
+
+  (defun сгруппировано-по-проекту ()
+    (list
+     (cond
+      (
+       (memq major-mode '(mu4e-view-mode mu4e-main-mode mu4e-headers-mode mu4e-view-raw-mode
+                                         twittering-mode weibo-timeline-mode telega-mode telega-chat-mode telega-root-mode
+                                         jabber-roster-mode jabber-chat-mode erc-mode douban-music-mode))
+       "Activity"
+       )
+      ((memq major-mode '(term-mode vterm-mode shell-mode))
+       "Terminals"
+       )
+      ((string-equal "*" (substring (buffer-name) 0 1))
+       "Emacs"
+       )
+      ((memq major-mode '(fundamental-mode))
+       "Emacs"
+       )
+      (
+       ;; (memq (current-buffer)
+       ;;       (condition-case nil
+       ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
+       ;;         (error nil)))
+       (and (projectile-project-p) (buffer-file-name (current-buffer)) (projectile-project-buffer-p (current-buffer) (projectile-project-p)))
+       (projectile-project-name)
+       )
+      ;; ((memq major-mode '(org-mode org-agenda-mode diary-mode))
+      ;;  "OrgMode"
+      ;;  )
+      (t
+       "Common"
+       ))))
+
+  (setq tabbar-buffer-groups-function 'сгруппировано-по-проект)
+
+  (tabbar-mode 1))
+
+;; (use-package project-tab-groups
+;;   :ensure
+;;   :config
+;;   (project-tab-groups-mode 1))
+
+;;;; Не мигать
+(setq visible-bell nil)
+
+
 (provide 'внешний-вид)
-;;;; Не пищать
-;; а мигать
-(setq visible-bell 1)
+
 ;;; внешний-вид.el ends here

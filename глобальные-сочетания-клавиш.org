@@ -9,8 +9,8 @@
 | s-\           | toggle-input-method           |
 | s-e           | buffer-expose                 |
 | s-t           | exwm-floating-toggle-floating |
-| s-r           | rename-buffer                 |
-| s-d           | delete-window                 |
+| C-s-r         | rename-buffer                 |
+| C-s-d         | delete-window                 |
 | s-h           | windmove-left                 |
 | s-j           | windmove-down                 |
 | s-k           | windmove-up                   |
@@ -19,6 +19,14 @@
 | s-J           | buf-move-down                 |
 | s-K           | buf-move-up                   |
 | s-L           | buf-move-right                |
+| s-t           | tab-bar-new-tab               |
+| s-r           | tab-bar-rename-tab            |
+| s-n           | tab-bar-switch-to-next-tab    |
+| s-p           | tab-bar-switch-to-prev-tab    |
+| s-d           | delete-window                 |
+| s-D           | tab-bar-close-tab             |
+| C-s-n         | tabbar-forward                |
+| C-s-p         | tabbar-backward               |
 | s-x           | app-launcher-run-app          |
 | s-M-h         | split-window-horizontally     |
 | s-M-k         | split-window-vertically       |
@@ -38,9 +46,9 @@
 | s-_           | winner-undo                   |
 | s-M-_         | winner-redo                   |
 | s-u           | winner-undo                   |
-| s-S-u         | winner-redo                   |
+| s-U           | winner-redo                   |
 | s-<f3>        | battery                       |
-| s-`           | vterm-toggle                  |
+| s-`           | vterm-toggle-cd               |
 | C-`           | scratch-pop                   |
 | s-a           | buffer-expose                 |
 | s-SPC         | buffer-expose                 |
@@ -61,33 +69,34 @@
 | C-$       | toggle-truncate-lines         |
 | C-c f     | вставить-имя-файла            |
 
+
 ** Применение 
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
+(-map
+ (lambda (row)
+   (cl-destructuring-bind (соч фун) row
+     (global-set-key (kbd соч) (intern фун))))
+ keys-table)
 
-  (-map
-   (lambda (row)
-     (cl-destructuring-bind (соч фун) row
-       (global-set-key (kbd соч) (intern фун))))
-   keys-table)
+(-map
+ (lambda (row)
+   (cl-destructuring-bind (соч фун) row
+     (global-set-key (kbd соч) (intern фун))))
+ exwm-keys-table)
 
-  (if (and window-system (functionp 'exwm-input-set-key))
-      (progn
-	(require 'exwm)
-	(-map
-	 (lambda (row)
-	   (cl-destructuring-bind (соч фун) row
-	     (exwm-input-set-key (kbd соч) (intern фун))))
-	 exwm-keys-table)))
+
+(if (and window-system (functionp 'exwm-input-set-key))
+    (progn
+	    (require 'exwm)
+	    (-map
+	     (lambda (row)
+	       (cl-destructuring-bind (соч фун) row
+	         (exwm-input-set-key (kbd соч) (intern фун))))
+	     exwm-keys-table)))
 
 #+END_SRC
 
 #+RESULTS:
-
-
-
-
-
-
 
 

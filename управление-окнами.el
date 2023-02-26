@@ -89,6 +89,7 @@
           ("*slime-compilation*" :noselect t)
           "*slime-xref*"
           "*Calendar*"
+          (vterm-mode :noselect t :position bottom :stick t)
           ("*Messages*" :noselect t :position bottom :stick t)
           ("*Racket Describe*" :noselect t :position top :stick t)
           ("*Racket REPL*" :noselect t :position bottom :stick t)
@@ -101,7 +102,6 @@
           ("chrome app" :noselect nil :position right :stick t :width .5)
           ("ff dev" :noselect nil :position bottom :height .5 :stick t)
           ("ff" :noselect nil :position right :width .5 :stick t)
-
           (sldb-mode :stick t)
           ;;(shell-mode :stick nil :position bottom )
           ))

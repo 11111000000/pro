@@ -41,8 +41,7 @@
   :defer t
   :diminish " C-?"
   :custom
-  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "s-p"
-                                   "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
+  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
    (guide-key/popup-window-position 'top)
    (guide-key/recursive-key-sequence-flag t)
    (guide-key/idle-delay 1.7)
@@ -67,21 +66,21 @@
 (use-package eldoc-box
   :ensure t
   :bind ("C-c i" . eldoc-doc-buffer)
-  :custom
-  ((eldoc-idle-delay 0.01))
+  :custom ((eldoc-idle-delay 0.01) (eldoc-box-offset '(-50 50 -50)))
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
          (eldoc-box-frame-hook . (lambda ()
                                    (toggle-truncate-lines t)
+                                   (tabbar-local-mode)
                                    (setq cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
   (setq-default cursor-in-non-selected-windows nil)
-  (setq-default eldoc-documentation-strategy #'eldoc-documentation-enthusiast)
-  (setq-default eldoc-documentation-function #'eldoc-documentation-compose)
+  (setq-default eldoc-documentation-strategy #'eldoc-documentation-default)
+  (setq-default eldoc-documentation-function #'eldoc-documentation-default)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :family "Fira Code" :weight 'normal :italic nil :height 0.8))
+  (set-face-attribute 'eldoc-box-body nil :family "Fira Code" :weight 'normal :italic nil :height 1.0))
 
 ;;;; Статистика нажатий
 

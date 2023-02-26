@@ -11,7 +11,7 @@
   :defer t
   :bind (
          ("C-c tt" . multi-term)
-         ("<s-return>" . multi-term)
+         ;; ("<s-return>" . multi-term)
          ("C-c tn" . multi-term-next)
          ("C-c tp" . multi-term-prev)
          ("M-±" . multi-term-dedicated-toggle)
@@ -107,45 +107,61 @@
   ("M-`" . eshell-toggle)
   ("M-§" . eshell-toggle))
 
-;;;; Другие терминалы
-
-(global-set-key (kbd "C-c tr")
-                (lambda () (interactive)
-                  (start-process-shell-command "URxvt" nil "urxvt")))
-
-(global-set-key (kbd "C-c tc")
-                (lambda () (interactive)
-                  (start-process-shell-command "Retro Term" nil "cool-retro-term")))
-
-
-
 (use-package vterm
   :ensure t
   :custom ((vterm-shell  "fish"))
+  :bind (:map vterm-mode-map
+                ("M-v" . scroll-up-command)
+                ("C-\\" . #'toggle-input-method)
+                ("C-q" . #'vterm-send-next-key)
+                ("s-v" . #'vterm-yank))
   :config
+  
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
-  :hook (vterm-mode . turn-off-chrome))
+  (defun set-vterm-font ()
+    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
+    (buffer-face-mode t))
+  (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
+    (if (equal major-mode 'vterm-mode)
+        (let ((inhibit-read-only t)
+             (yank-undo-function (lambda (_start _end) (vterm-undo))))
+          (cl-letf (((symbol-function 'insert-for-yank)
+                     (lambda (str) (vterm-send-string str t))))
+            (apply orig-fun args)))
+      (apply orig-fun args)))
+
+  (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
+  
+  :hook (vterm-mode . turn-off-chrome)
+  (vterm-mode . set-vterm-font)
+  )
 
 (use-package vterm-toggle
   :ensure t
   :custom
   (vterm-toggle-fullscreen-p nil)
   (vterm-toggle-scope 'project)
+  (vterm-toggle-hide-method 'delete-window)
   :bind (("C-c tv" . #'vterm-toggle)
-         ("s-`" . #'vterm-toggle)
-         :map vterm-mode-map
-         ("C-\\" . #'popper-cycle)
-         ("s-v" . #'vterm-yank)
-         
-         ))
+         ("s-`" . #'vterm-toggle-cd)
+         ("<s-return>" . vterm-toggle-insert-cd)
+         )
+  :config
+  (add-to-list 'display-buffer-alist
+     '("\*vterm\*"
+       (display-buffer-in-side-window)
+       (window-height . 0.3)
+       (side . bottom)
+       (slot . 0)))
+  )
+
 
 (use-package eshell-vterm
   ;;:hook ((eshell-mode . eshell-vterm-mode))
   :ensure t
-  :init
-  )
+  :init)
 
 (provide 'терминалы)
 ;;; терминалы.el ends here
