@@ -25,6 +25,12 @@
        (start-process-shell-command
         "xrandr" nil "xrandr --output DP-3 --auto --rotate left --output eDP-1 --auto --left-of DP-3 --primary")
        (exwm-randr-refresh))
+     
+     (defun dp-3-on-right ()
+       "Monitor on top with normal orientation."
+       (start-process-shell-command
+        "xrandr" nil "xrandr --output DP-3 --auto --rotate normal --output eDP-1 --auto --left-of DP-3 --primary")
+       (exwm-randr-refresh))
 
      ;; (defun monitor-on-right-rotate ()
      ;;   "monitor on top with normal orientation"
@@ -35,7 +41,7 @@
      (exwm-randr-enable)
 
      (add-hook 'exwm-randr-screen-change-hook
-               'dp-3-on-right-rotate)))
+               'dp-3-on-right)))
 
 (provide 'внешние-мониторы)
 ;;; внешние-мониторы.el ends here

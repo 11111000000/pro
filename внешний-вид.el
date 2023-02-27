@@ -2,6 +2,10 @@
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
+
+;;;; Не мигать
+(setq visible-bell nil)
+
 ;;;; Буферы
 
 ;; Уникальные имена для буферов
@@ -184,15 +188,16 @@
   :config
   (tab-bar-mode t)
   (dotimes (i 10)
-    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
-  )
+    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))))
 
 ;;;;;  Вкладки уровня окна
 
 (use-package tabbar
   :ensure t
   :hook ((eldoc-box-frame-hook . tabbar-local-mode))
-  :custom (tabbar-buffer-groups-function 'dobro/buffer-groups)
+  :custom
+  (tabbar-buffer-groups-function 'dobro/buffer-groups)
+  (tabbar-cycle-scope 'tabs)
   :config
   ;; ЧТОДЕЛ: Функция для переключение этих вкладок по номеру нужна
   ;; (dotimes (i 10)
@@ -205,23 +210,23 @@
        (memq major-mode '(mu4e-view-mode mu4e-main-mode mu4e-headers-mode mu4e-view-raw-mode
                                          twittering-mode weibo-timeline-mode telega-mode telega-chat-mode telega-root-mode
                                          jabber-roster-mode jabber-chat-mode erc-mode douban-music-mode))
-       "Activity"
-       )
+       "Activity")
+      ((memq major-mode '(eww-mode))
+       "EWW")
+      ((memq major-mode '(exwm-mode))
+       "Xorg")
       ((memq major-mode '(term-mode vterm-mode shell-mode))
-       "Terminals"
-       )
+       "Terminals")
       ((string-equal "*" (substring (buffer-name) 0 1))
-       "Emacs"
-       )
+       "Emacs")
       ((memq major-mode '(fundamental-mode))
-       "Emacs"
-       )
-      (
-       ;; (memq (current-buffer)
-       ;;       (condition-case nil
-       ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
-       ;;         (error nil)))
-       (and (projectile-project-p) (buffer-file-name (current-buffer)) (projectile-project-buffer-p (current-buffer) (projectile-project-p)))
+       "Emacs")
+      ;; (
+      ;;  ;; (memq (current-buffer)
+      ;;  ;;       (condition-case nil
+      ;;  ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
+      ;;  ;;         (error nil)))
+       ((projectile-project-p)
        (projectile-project-name)
        )
       ;; ((memq major-mode '(org-mode org-agenda-mode diary-mode))
@@ -231,8 +236,9 @@
        "Common"
        ))))
 
-  (setq tabbar-buffer-groups-function 'сгруппировано-по-проект)
+  (setq tabbar-buffer-groups-function 'сгруппировано-по-проекту)
 
+  (tabbar-mode -1)
   (tabbar-mode 1))
 
 ;; (use-package project-tab-groups
@@ -240,8 +246,6 @@
 ;;   :config
 ;;   (project-tab-groups-mode 1))
 
-;;;; Не мигать
-(setq visible-bell nil)
 
 
 (provide 'внешний-вид)

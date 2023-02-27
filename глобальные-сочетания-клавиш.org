@@ -1,5 +1,20 @@
 * Глобальные сочетания клавиш
 
+** Клавиши текстового режима
+
+#+NAME: key-bindings-table
+| Сочетание | Функция                       |
+|-----------+-------------------------------|
+| C--       | text-scale-decrease           |
+| C-+       | text-scale-increase           |
+| C-=       | text-scale-increase           |
+| C-M-=     | text-scale-set                |
+| C-c m     | popwin:messages               |
+| C-%       | forward-or-backward-sexp      |
+| C-a       | к-идентации-или-началу-строки |
+| C-$       | toggle-truncate-lines         |
+| C-c f     | вставить-имя-файла            |
+
 ** Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
@@ -8,8 +23,7 @@
 | s-q           | exwm-reset                    |
 | s-\           | toggle-input-method           |
 | s-e           | buffer-expose                 |
-| s-t           | exwm-floating-toggle-floating |
-| C-s-r         | rename-buffer                 |
+| s-T           | exwm-floating-toggle-floating |
 | C-s-d         | delete-window                 |
 | s-h           | windmove-left                 |
 | s-j           | windmove-down                 |
@@ -20,13 +34,16 @@
 | s-K           | buf-move-up                   |
 | s-L           | buf-move-right                |
 | s-t           | tab-bar-new-tab               |
-| s-r           | tab-bar-rename-tab            |
-| s-n           | tab-bar-switch-to-next-tab    |
-| s-p           | tab-bar-switch-to-prev-tab    |
+| s-r           | rename-buffer                 |
+| s-R           | tab-bar-rename-tab            |
+| C-s-n         | tab-bar-switch-to-next-tab    |
+| C-s-p         | tab-bar-switch-to-prev-tab    |
+| s-N           | tab-bar-switch-to-next-tab    |
+| s-P           | tab-bar-switch-to-prev-tab    |
 | s-d           | delete-window                 |
 | s-D           | tab-bar-close-tab             |
-| C-s-n         | tabbar-forward                |
-| C-s-p         | tabbar-backward               |
+| s-n           | tabbar-forward                |
+| s-p           | tabbar-backward               |
 | s-x           | app-launcher-run-app          |
 | s-M-h         | split-window-horizontally     |
 | s-M-k         | split-window-vertically       |
@@ -54,23 +71,22 @@
 | s-SPC         | buffer-expose                 |
 | s-*           | buffer-expose-stars           |
 
-** Клавиши текстового режима
+** НАДО Клавиши для модов
 
-#+NAME: key-bindings-table
-| Сочетание | Функция                       |
-|-----------+-------------------------------|
-| C--       | text-scale-decrease           |
-| C-+       | text-scale-increase           |
-| C-=       | text-scale-increase           |
-| C-M-=     | text-scale-set                |
-| C-c m     | popwin:messages               |
-| C-%       | forward-or-backward-sexp      |
-| C-a       | к-идентации-или-началу-строки |
-| C-$       | toggle-truncate-lines         |
-| C-c f     | вставить-имя-файла            |
+#+NAME: modes-key-bindings-table
+| Мод            | Сочетание | Функция                        |
+|----------------+-----------+--------------------------------|
+| image-mode-map | 0         | imagex-sticky-restore-original |
+|                | +         | imagex-sticky-maximize         |
+|                | =         | imagex-sticky-zoom-in          |
+|                | -         | imagex-sticky-zoom-out         |
+|----------------+-----------+--------------------------------|
+|                |           |                                |
+|                |           |                                |
+|                |           |                                |
 
 
-** Применение 
+** Применение сочетаний
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
 (-map
@@ -98,5 +114,10 @@
 #+END_SRC
 
 #+RESULTS:
+
+
+
+
+
 
 

@@ -9,11 +9,11 @@
            ;(projectile-project-search-path '("~/Проекты/"))
            (projectile-switch-project-action #'projectile-dired))
   :bind (
-         ("s-P" . projectile-add-known-project)
+         ("C-c pa" . projectile-add-known-project)
          ("C-c p C-p" . projectile-add-known-project)
          ("C-c pp" . projectile-switch-project)
          ("C-c ps s" . consult-ag)
-         :map projectile-command-map
+         :map projectile-command-map         
          ("ss" . consult-ag)
          )
   :config
