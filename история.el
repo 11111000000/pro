@@ -107,7 +107,7 @@
 
 ;;;; Сохранение сессии
 
-(desktop-save-mode t)
+;; (desktop-save-mode t)
 
 (provide 'история)
 ;;; история.el ends here

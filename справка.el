@@ -71,8 +71,7 @@
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
          (eldoc-box-frame-hook . (lambda ()
-                                   (toggle-truncate-lines t)
-                                   (tabbar-local-mode)
+                                   (toggle-truncate-lines t)                                   
                                    (setq cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)

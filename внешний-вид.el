@@ -187,59 +187,70 @@
   :ensure t
   :config
   (tab-bar-mode t)
+
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))))
 
+
 ;;;;;  Вкладки уровня окна
 
-(use-package tabbar
-  :ensure t
-  :hook ((eldoc-box-frame-hook . tabbar-local-mode))
-  :custom
-  (tabbar-buffer-groups-function 'dobro/buffer-groups)
-  (tabbar-cycle-scope 'tabs)
-  :config
-  ;; ЧТОДЕЛ: Функция для переключение этих вкладок по номеру нужна
-  ;; (dotimes (i 10)
-  ;;   (global-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (tabbar-select-tab ,i))))
+;; (use-package tabbar
+;;   :ensure t
+;;   :hook ((eldoc-box-frame-hook . tabbar-local-mode))
+;;   :custom
+;;   (tabbar-buffer-groups-function 'dobro/buffer-groups)
+;;   (tabbar-cycle-scope 'tabs)
+;;   :config
+;;   ;; ЧТОДЕЛ: Функция для переключение этих вкладок по номеру нужна
+;;   ;; (dotimes (i 10)
+;;   ;;   (global-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (tabbar-select-tab ,i))))i
+  
+;;   (require 'memoize)
+  
+;;   ;; (defmemoize сгруппировано-по-проекту1 ()
+;;   ;;   (list
+;;   ;;    (cond
+;;   ;;     (
+;;   ;;      (memq major-mode '(mu4e-view-mode mu4e-main-mode mu4e-headers-mode mu4e-view-raw-mode
+;;   ;;                                        twittering-mode weibo-timeline-mode telega-mode telega-chat-mode telega-root-mode
+;;   ;;                                        jabber-roster-mode jabber-chat-mode erc-mode douban-music-mode))
+;;   ;;      "Activity")
+;;   ;;     ((memq major-mode '(eww-mode))
+;;   ;;      "EWW")
+;;   ;;     ((memq major-mode '(exwm-mode))
+;;   ;;      "Xorg")
+;;   ;;     ((memq major-mode '(term-mode vterm-mode shell-mode))
+;;   ;;      "Terminals")
+;;   ;;     ((string-equal "*" (substring (buffer-name) 0 1))
+;;   ;;      "Emacs")
+;;   ;;     ((memq major-mode '(fundamental-mode))
+;;   ;;      "Emacs")
+;;   ;;     ;; (
+;;   ;;     ;;  ;; (memq (current-buffer)
+;;   ;;     ;;  ;;       (condition-case nil
+;;   ;;     ;;  ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
+;;   ;;     ;;  ;;         (error nil)))
+;;   ;;     ;; ((memq major-mode '(org-mode org-agenda-mode diary-mode))
+;;   ;;     ;;  "OrgMode"
+;;   ;;     ;;  )
+;;   ;;     (t
+;;   ;;      (or (projectile-project-name) "Common")
+;;   ;;      ))))
 
-  (defun сгруппировано-по-проекту ()
-    (list
-     (cond
-      (
-       (memq major-mode '(mu4e-view-mode mu4e-main-mode mu4e-headers-mode mu4e-view-raw-mode
-                                         twittering-mode weibo-timeline-mode telega-mode telega-chat-mode telega-root-mode
-                                         jabber-roster-mode jabber-chat-mode erc-mode douban-music-mode))
-       "Activity")
-      ((memq major-mode '(eww-mode))
-       "EWW")
-      ((memq major-mode '(exwm-mode))
-       "Xorg")
-      ((memq major-mode '(term-mode vterm-mode shell-mode))
-       "Terminals")
-      ((string-equal "*" (substring (buffer-name) 0 1))
-       "Emacs")
-      ((memq major-mode '(fundamental-mode))
-       "Emacs")
-      ;; (
-      ;;  ;; (memq (current-buffer)
-      ;;  ;;       (condition-case nil
-      ;;  ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
-      ;;  ;;         (error nil)))
-       ((projectile-project-p)
-       (projectile-project-name)
-       )
-      ;; ((memq major-mode '(org-mode org-agenda-mode diary-mode))
-      ;;  "OrgMode"
-      ;;  )
-      (t
-       "Common"
-       ))))
+;;   ;; (defun my-make-throttler ()
+;;   ;;   (let ((last-time (float-time))
+;;   ;;        (last-res ()))
+;;   ;;     (lambda (&rest args)
+;;   ;;       (if (< 1 (- (float-time) last-time))
+;;   ;;           last-res
+;;   ;;         (setq last-time (float-time))
+;;   ;;         (setq last-res (apply args))))))
+;;   ;;(advice-add 'сгруппировано-по-проекту :override (my-make-throttler))
 
-  (setq tabbar-buffer-groups-function 'сгруппировано-по-проекту)
+;;   (setq tabbar-buffer-groups-function 'сгруппировано-по-проекту1)
 
-  (tabbar-mode -1)
-  (tabbar-mode 1))
+;;   (tabbar-mode -1)
+;;   (tabbar-mode 1))
 
 ;; (use-package project-tab-groups
 ;;   :ensure

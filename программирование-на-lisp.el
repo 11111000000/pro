@@ -5,7 +5,7 @@
 
 (use-package emacs-lisp
   :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . перевыполнить-буфер)
+              ("C-c C-c" . eval-buffer)
               ("C-x M-e" . eval-print-last-sexp)))
 
 ;;;;; Функция для реального перевыполнения форм в буфере
@@ -22,9 +22,9 @@
 
 ;;;; Конфигурация проверки синтаксиа для Elisp
 
-(use-package elsa
-  :ensure t
-  )
+;; (use-package elsa
+;;   :ensure t
+;;   )
 
 ;; (use-package flycheck-elsa
 ;;   :ensure t

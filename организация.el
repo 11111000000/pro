@@ -108,15 +108,9 @@
 
 (setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
 
-;;;; Клавиши
-
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
 (setq org-support-shift-select nil)
-
-;; Поиск по заголовкам
-
-(define-key org-mode-map (kbd "C-c sh") 'helm-org-in-buffer-headings)
 
 ;; Перемещение по заголовкам, со скрытием остальных
 

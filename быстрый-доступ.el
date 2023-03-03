@@ -57,18 +57,7 @@
 
 (use-package consult
   :ensure t
-  :custom (
-           (consult-preview-key "M-."))
-  :bind (("C-x b" . consult-buffer)
-         ("C-x C-b" . consult-buffer-other-window)
-         ("s-b" . consult-buffer)
-         ("s-<tab>" . consult-buffer)
-         ("M-s s" . consult-line)
-         ("M-s M-s" . consult-line-multi)
-         ("C-x y" . consult-yank-from-kill-ring)
-         ("<help> a" . consult-apropos)
-         ("s-m" . consult-imenu-multi)
-         )
+  :custom ((consult-preview-key "M-."))
   :config
   (autoload 'projectile-project-root "projectile")
   (require 'consult-xref)

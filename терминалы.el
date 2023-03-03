@@ -30,7 +30,18 @@
               (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
               (add-to-list 'term-bind-key-alist '("C-v" . scroll-up-command))
               (add-to-list 'term-bind-key-alist '("M-v" . scroll-down-command))
-              )))
+              ))
+  (defun term-counsel-yank-pop-action (orig-fun &rest args)
+    (if (equal major-mode 'term-mode)
+        (let ((inhibit-read-only t)
+             )
+          (cl-letf (((symbol-function 'insert-for-yank)
+                     (lambda (str) (term-send-string str t))))
+            (apply orig-fun args)))
+      (apply orig-fun args)))
+
+  (advice-add 'consult-yank-from-kill-ring :around #'term-counsel-yank-pop-action)
+  )
 
 ;; Функция для переключение режима перемещения по терминалу
 
@@ -104,14 +115,16 @@
   ;; :quelpa
   ;; (eshell-toggle :repo "4DA/eshell-toggle" :fetcher github :version original)
   :bind
-  ("M-`" . eshell-toggle)
-  ("M-§" . eshell-toggle))
+  ("s-~" . eshell-toggle))
 
 (use-package vterm
   :ensure t
-  :custom ((vterm-shell  "fish"))
+  :custom (
+          (vterm-shell  "bash")
+          (vterm-kill-buffer-on-exit t)
+          (vterm-disable-bold-font t))
   :bind (:map vterm-mode-map
-                ("M-v" . scroll-up-command)
+                ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank))
@@ -120,9 +133,11 @@
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
+  
   (defun set-vterm-font ()
     (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
     (buffer-face-mode t))
+  
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
     (if (equal major-mode 'vterm-mode)
         (let ((inhibit-read-only t)
@@ -132,11 +147,11 @@
             (apply orig-fun args)))
       (apply orig-fun args)))
 
-  (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
+  (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
   
-  :hook (vterm-mode . turn-off-chrome)
-  (vterm-mode . set-vterm-font)
-  )
+  :hook
+  (vterm-mode . turn-off-chrome)
+  (vterm-mode . set-vterm-font))
 
 (use-package vterm-toggle
   :ensure t
@@ -144,18 +159,13 @@
   (vterm-toggle-fullscreen-p nil)
   (vterm-toggle-scope 'project)
   (vterm-toggle-hide-method 'delete-window)
-  :bind (("C-c tv" . #'vterm-toggle)
-         ("s-`" . #'vterm-toggle-cd)
-         ("<s-return>" . vterm-toggle-insert-cd)
-         )
   :config
   (add-to-list 'display-buffer-alist
      '("\*vterm\*"
        (display-buffer-in-side-window)
-       (window-height . 0.3)
+       (window-height . 0.38)
        (side . bottom)
-       (slot . 0)))
-  )
+       (slot . 0))))
 
 
 (use-package eshell-vterm

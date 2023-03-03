@@ -65,24 +65,26 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   :config
 
-  (add-hook 'exwm-update-class-hook
-            (lambda ()
-              (exwm-workspace-rename-buffer exwm-class-name)))
+  ;; (add-hook 'exwm-update-class-hook
+  ;;           (lambda ()
+  ;;             (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
 
-  ;; (defun exwm-update-title-hook ()
-  ;;   (exwm-workspace-rename-buffer exwm-title))
+  (defun exwm-update-title-hook ()
+    (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
 
-  ;; (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+  (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
 
 
   ;; Глобальные клавиши над всеми приложениями
 
   (dotimes (i 10)
-    (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
-
-  (dotimes (i 10)
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
-
+    (if (> i 0) (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
+    (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+    (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
+    )
+  (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+  
   (exwm-input-set-keys
    ("s-M-j" (lambda () (interactive) (split-window-vertically) (windmove-down)))
    ("s-M-l" (lambda () (interactive) (split-window-horizontally) (windmove-right)))
@@ -158,6 +160,10 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :ensure t
   :init
   (exwm-mff-mode -1))
+
+;; (use-package exwm-firefox
+;;   :if window-system
+;;   :ensure t)
 
 (provide 'графическая-среда)
 ;;; графическая-среда.el ends here
