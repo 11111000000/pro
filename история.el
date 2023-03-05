@@ -60,6 +60,12 @@
   :config
   (goto-last-point-mode t))
 
+;; Сохранение положения
+
+(use-package eyebrowse
+  :ensure t
+  :config (eyebrowse-mode))
+
 ;;;; Путешествие по истории окон
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>

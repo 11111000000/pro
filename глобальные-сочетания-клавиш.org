@@ -5,6 +5,7 @@
 #+NAME: key-bindings-table
 | Сочетание | Функция                       |
 |-----------+-------------------------------|
+| C-a       | к-идентации-или-началу-строки |
 | C--       | text-scale-decrease           |
 | C-+       | text-scale-increase           |
 | C-=       | text-scale-increase           |
@@ -44,11 +45,11 @@
 | s-J           | buf-move-down                 |
 | s-K           | buf-move-up                   |
 | s-L           | buf-move-right                |
-| s-r           | rename-buffer                 |
+| s-R           | rename-buffer                 |
 | s-d           | delete-window                 |
 | s-t           | tab-bar-new-tab               |
 | s-T           | tab-bar-undo-close-tab        |
-| s-R           | tab-bar-rename-tab            |
+| s-r           | tab-bar-rename-tab            |
 | s-N           | tab-bar-move-tab              |
 | s-P           | tab-bar-move-tab-backward     |
 | s-n           | tab-bar-switch-to-next-tab    |
@@ -75,12 +76,14 @@
 | s-u           | winner-undo                   |
 | s-U           | winner-redo                   |
 | C-<f3>        | battery                       |
-| s-`           | vterm-toggle                  |
+| s-`           | vterm-toggle-cd               |
 | s-~           | eshell-toggle                 |
 | C-c s         | scratch-pop                   |
 | s-a           | buffer-expose                 |
 | s-SPC         | buffer-expose                 |
 | s-*           | buffer-expose-stars           |
+| C-c l         | org-store-link                |
+| C-c a         | org-agenda                    |
 
 ** НАДО Клавиши для модов
 
@@ -125,6 +128,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 

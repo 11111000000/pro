@@ -6,14 +6,14 @@
   "Настройки шрифтов."
   (interactive)
   (set-face-attribute 'default nil
-                      :family "Iosevka"
+                      :family "Fira Code"
                       :weight 'normal
-                      :height 120)
+                      :height 160)
   (set-face-attribute 'fixed-pitch nil
-                      :family "Iosevka"
+                      :family "Fira Code"
                       :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-                      :family "Iosevka Aile"
+                      :family "DejaVu Sans"
                       :weight 'normal))
 
 (set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend)

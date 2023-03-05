@@ -8,8 +8,7 @@
 (use-package org
   :ensure nil
   
-  :bind (("C-c l" . org-store-link)
-         ("C-c a" . org-agenda)
+  :bind (
          :map org-mode-map
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)

@@ -41,11 +41,11 @@
 
 ;; Мульти-курсор
 
-(use-package multiple-cursors
-  :ensure t
-  :bind (("C-c SPC" . mc/mark-all-like-this)
-         ("C-c C-SPC" . mc/unmark-all-like-this)
-         ("C-c <mouse-1>" . mc/add-cursor-on-click)))
+;; (use-package multiple-cursors
+;;   :ensure t
+;;   :bind (("C-c SPC" . mc/mark-all-like-this)
+;;          ("C-c C-SPC" . mc/unmark-all-like-this)
+;;          ("C-c <mouse-1>" . mc/add-cursor-on-click)))
 
 ;; При перемещении в начало строки *<C-a>*, сперва прыгать к  идентации, затем - к началу строки
 
@@ -54,8 +54,6 @@
   (interactive)
   (if (= (point) (progn (back-to-indentation) (point)))
       (beginning-of-line)))
-
-(global-set-key (kbd "C-a") 'к-идентации-или-началу-строки)
 
 ;; Подсвечивать курсор при мгновенном перемещении, чтобы он не потерялся
 

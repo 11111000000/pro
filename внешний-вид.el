@@ -18,7 +18,7 @@
 (setq-default global-auto-revert-non-file-buffers t)
 (setq-default auto-revert-verbose nil)
 
-;; Функция для принудительного обновления
+;; Обновление буфера без вопросов
 
 (defun обновить-буфер-немедленно ()
   "ничего не спрашивая, обновить буфер."
@@ -97,8 +97,8 @@
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
 
-(setq cursor-type 'box)
-(blink-cursor-mode t)
+(blink-cursor-mode 1)
+(setq cursor-type '(bar . 3) )
 (setq x-stretch-cursor t)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
@@ -108,7 +108,7 @@
   :config
   (require 'cursor-chg)
   (change-cursor-mode t)
-  (setq curchg-input-method-cursor-color "pale green"
+  (setq curchg-input-method-cursor-color "orange"
         curchg-default-cursor-type 'bar
         curchg-default-cursor-color (face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
@@ -143,13 +143,8 @@
 ;; Плавная прокрутка
 
 (when (fboundp 'pixel-scroll-mode)
-  (pixel-scroll-mode t))
+  (pixel-scroll-mode -1))
 
-;; Сохранение положения
-
-(use-package eyebrowse
-  :ensure t
-  :config (eyebrowse-mode))
 
 ;;;; Меню режима
 
