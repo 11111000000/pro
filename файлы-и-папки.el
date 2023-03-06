@@ -4,6 +4,8 @@
 ;;; Code:
 ;;;; Файлы и каталоги
 
+(defun директорию-вверх () (interactive) (find-alternate-file ".."))
+
 (use-package dired
   :bind (("C-x d" . dired-jump)
          ("C-x C-d" . dired-jump)
@@ -13,21 +15,28 @@
          ("l" . dired-find-file)
          ("f" . dired-find-file)
          ("o" . dired-find-file)
-         ("h" . dired-up-directory)
-         ("b" . dired-up-directory)
-         ("u" . dired-up-directory))
+         ("RET" . dired-find-file)
+         ("h" . директорию-вверх)
+         ("b" . директорию-вверх)
+         ("u" . директорию-вверх)
+         ("^" . директорию-вверх))
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode)
          ;;(dired-mode . hl-line-mode)
          )
-  :custom 
+  :custom
   ;; (dired-listing-switches "-aBhlv --group-directories-first")
   (ls-lisp-dirs-first t)
   (ls-lisp-use-insert-directory-program nil)
 	(dired-dwim-target t)
   (dired-auto-revert-buffer t)
   (global-auto-revert-non-file-buffers t)
-  (dired-hide-details-hide-symlink-targets nil))
+  (dired-hide-details-hide-symlink-targets nil)
+
+  ;;dired открывает в том же окне при использовании RET или ^
+  ;; (put 'dired-find-alternate-file 'disabled nil)
+
+  )
 
 ;;;; Редактор каталогов WDired
 

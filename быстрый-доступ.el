@@ -20,23 +20,23 @@
 
 ;;;; Минибуфер во фрейме поверх окна
 
-(use-package mini-frame
-  :ensure t
-  :custom
-  (mini-frame-show-parameters '((child-frame-border-width . 0)
-                                (internal-border-width . 0)
-                                (top . 0.4)
-                                (width . 0.8)
-                                (height . 0.35)
-                                (left . 0.5)))
-  (mini-frame-standalone t)
-  (mini-frame-resize nil)
-  (mini-frame-color-shift-step 7)
-  (mini-frame-detach-on-hide nil)
-  (mini-frame-internal-border-color "#333333")
-  (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
-  :config
-  (mini-frame-mode t))
+;; (use-package mini-frame
+;;   :ensure t
+;;   :custom
+;;   (mini-frame-show-parameters '((child-frame-border-width . 0)
+;;                                 (internal-border-width . 0)
+;;                                 (top . 0.4)
+;;                                 (width . 0.8)
+;;                                 (height . 0.35)
+;;                                 (left . 0.5)))
+;;   (mini-frame-standalone t)
+;;   (mini-frame-resize nil)
+;;   (mini-frame-color-shift-step 7)
+;;   (mini-frame-detach-on-hide nil)
+;;   (mini-frame-internal-border-color "#333333")
+;;   (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
+;;   :config
+;;   (mini-frame-mode -1))
 
 ;;;; Сортировка
 
@@ -57,18 +57,7 @@
 
 (use-package consult
   :ensure t
-  :custom (
-           (consult-preview-key "M-."))
-  :bind (("C-x b" . consult-buffer)
-         ("C-x C-b" . consult-buffer-other-window)
-         ("s-b" . consult-buffer)
-         ("s-<tab>" . consult-buffer)
-         ("M-s s" . consult-line)
-         ("M-s M-s" . consult-line-multi)
-         ("C-x y" . consult-yank-from-kill-ring)
-         ("<help> a" . consult-apropos)
-         ("s-m" . consult-imenu-multi)
-         )
+  :custom ((consult-preview-key "M-."))
   :config
   (autoload 'projectile-project-root "projectile")
   (require 'consult-xref)

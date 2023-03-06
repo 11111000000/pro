@@ -8,12 +8,11 @@
 (use-package org
   :ensure nil
   
-  :bind (("C-c l" . org-store-link)
-         ("C-c a" . org-agenda)
+  :bind (
          :map org-mode-map
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
-           (org-agenda-files (find-lisp-find-files "~/Организация" "\.org$"))
+                                        ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
            (org-todo-keywords '((sequence "НАДО" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
@@ -108,15 +107,9 @@
 
 (setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
 
-;;;; Клавиши
-
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
 (setq org-support-shift-select nil)
-
-;; Поиск по заголовкам
-
-(define-key org-mode-map (kbd "C-c sh") 'helm-org-in-buffer-headings)
 
 ;; Перемещение по заголовкам, со скрытием остальных
 

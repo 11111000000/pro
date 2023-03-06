@@ -30,18 +30,19 @@
   (completion-cycle-threshold nil)
   (corfu-auto t)
   (corfu-auto-prefix 3)
-  (corfu-auto-delay 1)
+  (corfu-auto-delay 0.25)
   (corfu-popupinfo-delay 0)
-  ;; (corfu-min-width 80)
-  ;; (corfu-max-width corfu-min-width)
-  (corfu-count 5)
-  (corfu-scroll-margin 2)
+  (corfu-min-width 5)
+  (corfu-max-width 30)
+  (corfu-count 14)
+  (corfu-scroll-margin 4)
   (corfu-cycle t)
   (corfu-echo-documentation nil)
   (corfu-separator ?\s)
   (corfu-quit-no-match 'separator)
   (corfu-preview-current 'insert)
   (corfu-preselect-first t)
+
 
   :init
 
@@ -84,13 +85,41 @@
   :custom
   (kind-icon-use-icons t)
   (kind-icon-default-face 'corfu-default)
-  (kind-icon-blend-background nil)
-  (kind-icon-blend-frac 0.08)
+  ;; (kind-icon-blend-background nil)
+  ;; (kind-icon-blend-frac 0.08)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (add-hook 'kb/themes-hooks #'(lambda ()
                (interactive)
                (kind-icon-reset-cache))))
+(defun sorting (list)
+      (interactive)
+      )
+
+(use-package codeium
+  :init
+  (установить-из-репы :repo "Exafunction/codeium.el")
+  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+  :config
+
+  (setq use-dialog-box nil)
+
+  (setq codeium/metadata/api_key "212600da-b787-4d45-91f0-5e9e98b94302")
+
+  ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
+  (setq codeium-api-enabled
+         (lambda (api)
+           (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  )
+
+;; (use-package codeium-diagnose)
+;;   :init
+;;   (установить-из-репы :repo "Exafunction/codeium-diagnose.el")
+;;   :config
+;;   (setq use-dialog-box nil)
+;; do not use popup boxes
+
+
 
 (provide 'автодополнение-строк)
 ;;; автодополнение-строк.el ends here

@@ -214,24 +214,24 @@ ARG - backward"
 
 ;;;; Дебаггер
 
-(use-package dap-mode
-  :ensure t
-  :bind (:map dap-mode-map
-              ("C-c bb" . dap-ui-breakpoints)
-              ("C-c bl" . dap-ui-locals)
-              ("C-c bt" . dap-breakpoint-toggle)
-              ("C-c bd" . dap-breakpoint-delete)
-              ("C-c bi" . dap-step-in)
-              ("C-c bo" . dap-step-out)
-              ("C-c bc" . dap-continue)
-              ("<f5>" . dap-continue)
-              ("<f6>" . dap-step-in)
-              ("<f7>" . dap-step-out))
-  :config
-  (setq dap-auto-configure-features '(locals expression breakpoints))
-  (загрузить 'dap-chrome)
-  (загрузить 'dap-firefox)
-  (загрузить 'dap-node))
+;; (use-package dap-mode
+;;   :ensure t
+;;   :bind (:map dap-mode-map
+;;               ("C-c bb" . dap-ui-breakpoints)
+;;               ("C-c bl" . dap-ui-locals)
+;;               ("C-c bt" . dap-breakpoint-toggle)
+;;               ("C-c bd" . dap-breakpoint-delete)
+;;               ("C-c bi" . dap-step-in)
+;;               ("C-c bo" . dap-step-out)
+;;               ("C-c bc" . dap-continue)
+;;               ("<f5>" . dap-continue)
+;;               ("<f6>" . dap-step-in)
+;;               ("<f7>" . dap-step-out))
+;;   :config
+;;   (setq dap-auto-configure-features '(locals expression breakpoints))
+;;   (загрузить 'dap-chrome)
+;;   (загрузить 'dap-firefox)
+;;   (загрузить 'dap-node))
 
 ;;;; Конструктор регулярных выражений
 

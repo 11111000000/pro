@@ -1,4 +1,4 @@
-;;; режим-бога.el --- Режим бога (Всегда Ctrl)
+;;; режим-бога.el --- Режим бога, постоянный Контрол
 ;;; Commentary:
 ;;; Code:
 
@@ -26,7 +26,7 @@
          ("C-x C-1" . delete-other-windows)
          ("C-x C-2" . split-window-below)
          ("C-x C-3" . split-window-right)
-         ("C-x C-0" . delete-window)
+         ("C-x C-0" . edlete-window)
          ;; ("C-h" . backward-char)
          ("C-j" . next-line)
          ("C-k" . previous-line)

@@ -60,6 +60,12 @@
   :config
   (goto-last-point-mode t))
 
+;; Сохранение положения
+
+(use-package eyebrowse
+  :ensure t
+  :config (eyebrowse-mode))
+
 ;;;; Путешествие по истории окон
 
 ;; Путешествие по истории окон - <C-c Left> / <C-c Right>
@@ -90,7 +96,7 @@
            ;; ...исключая некоторые:
 
            (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
-                              "/\\.emacs\\.d/elpa" ; ELPA                              
+                              "/\\.emacs\\.d/elpa" ; ELPA
                               "-autoloads\\.el\\'"
                               no-littering-var-directory
                               no-littering-etc-directory
@@ -103,7 +109,11 @@
 ;;;; История копирования
 
 (setq-default kill-ring-max 300
-              save-interprogram-paste-before-kill t)
+         save-interprogram-paste-before-kill t)
+
+;;;; Сохранение сессии
+
+;; (desktop-save-mode t)
 
 (provide 'история)
 ;;; история.el ends here

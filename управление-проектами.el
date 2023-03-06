@@ -6,18 +6,18 @@
 (use-package projectile
   :ensure t
   :custom ((projectile-sort-order 'recently-active)
-           (projectile-project-search-path '("~/Проекты/"))
+           ;(projectile-project-search-path '("~/Проекты/"))
            (projectile-switch-project-action #'projectile-dired))
   :bind (
-         ("s-P" . projectile-add-known-project)
+         ("C-c pa" . projectile-add-known-project)
          ("C-c p C-p" . projectile-add-known-project)
          ("C-c pp" . projectile-switch-project)
          ("C-c ps s" . consult-ag)
-         :map projectile-command-map
+         :map projectile-command-map         
          ("ss" . consult-ag)
          )
   :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
   (projectile-mode t))
