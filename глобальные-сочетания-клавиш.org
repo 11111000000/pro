@@ -30,74 +30,72 @@
 ** Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
-| Сочетание     | Функция                       |
-|---------------+-------------------------------|
-| s-q           | exwm-reset                    |
-| s-\           | toggle-input-method           |
-| s-e           | buffer-expose                 |
-| s-T           | exwm-floating-toggle-floating |
-| C-s-d         | delete-window                 |
-| s-h           | windmove-left                 |
-| s-j           | windmove-down                 |
-| s-k           | windmove-up                   |
-| s-l           | windmove-right                |
-| s-H           | buf-move-left                 |
-| s-J           | buf-move-down                 |
-| s-K           | buf-move-up                   |
-| s-L           | buf-move-right                |
-| s-R           | rename-buffer                 |
-| s-d           | delete-window                 |
-| s-t           | tab-bar-new-tab               |
-| s-T           | tab-bar-undo-close-tab        |
-| s-r           | tab-bar-rename-tab            |
-| s-N           | tab-bar-move-tab              |
-| s-P           | tab-bar-move-tab-backward     |
-| s-n           | tab-bar-switch-to-next-tab    |
-| s-p           | tab-bar-switch-to-prev-tab    |
-| s-w           | tab-bar-close-tab             |
-| s-x           | app-launcher-run-app          |
-| s-M-h         | split-window-horizontally     |
-| s-M-k         | split-window-vertically       |
-| <XF86Back>    | winner-undo                   |
-| <XF86Forward> | winner-redo                   |
-| <print>       | скриншот-области              |
-| s-s           | скриншот-области              |
-| s-<print>     | скриншот                      |
-| s-S-s         | скриншот                      |
-| s-<left>      | shrink-window-horizontally    |
-| s-<right>     | enlarge-window-horizontally   |
-| s-<down>      | shrink-window                 |
-| s-<up>        | enlarge-window                |
-| s-<tab>       | consult-buffer                |
-| s-f           | ace-window                    |
-| s-z           | avy-goto-char                 |
-| s-_           | winner-undo                   |
-| s-M-_         | winner-redo                   |
-| s-u           | winner-undo                   |
-| s-U           | winner-redo                   |
-| C-<f3>        | battery                       |
-| s-`           | vterm-toggle-cd               |
-| s-~           | eshell-toggle                 |
-| C-c s         | scratch-pop                   |
-| s-a           | buffer-expose                 |
-| s-SPC         | buffer-expose                 |
-| s-*           | buffer-expose-stars           |
-| C-c l         | org-store-link                |
-| C-c a         | org-agenda                    |
+| Сочетание      | Функция                 |
+|---------------+-------------------------|
+| s-q            | exwm-reset               |
+| s-\             | toggle-input-method        |
+| s-e            | buffer-expose             |
+| s-T            | exwm-floating-toggle-floating |
+| C-s-d          | delete-window             |
+| s-h            | windmove-left             |
+| s-j             | windmove-down           |
+| s-k            | windmove-up              |
+| s-l             | windmove-right            |
+| s-H            | buf-move-left              |
+| s-J             | buf-move-down            |
+| s-K            | buf-move-up              |
+| s-L            | buf-move-right            |
+| s-R            | rename-buffer             |
+| s-d            | delete-window             |
+| s-t            | tab-bar-new-tab           |
+| s-T            | tab-bar-undo-close-tab      |
+| s-r            | tab-bar-rename-tab        |
+| s-N            | tab-bar-move-tab          |
+| s-P            | tab-bar-move-tab-backward  |
+| s-n            | tab-bar-switch-to-next-tab   |
+| s-p            | tab-bar-switch-to-prev-tab   |
+| s-w            | nil                       |
+| s-W           | закрыть-вкладку-и-буфер  |
+| s-x            | app-launcher-run-app       |
+| s-M-h          | split-window-horizontally     |
+| s-M-k          | split-window-vertically       |
+| <XF86Back>    | winner-undo              |
+| <XF86Forward> | winner-redo               |
+| <print>        | скриншот-области         |
+| s-s            | скриншот-области         |
+| s-<print>       | скриншот                |
+| s-S-s           | скриншот                |
+| s-<left>        | shrink-window-horizontally   |
+| s-<right>       | enlarge-window-horizontally  |
+| s-<down>      | shrink-window             |
+| s-<up>        | enlarge-window            |
+| s-<tab>        | consult-buffer             |
+| s-f            | ace-window               |
+| s-z            | avy-goto-char             |
+| s-_            | winner-undo              |
+| s-M-_          | winner-redo               |
+| s-u            | winner-undo              |
+| s-U            | winner-redo               |
+| C-<f3>         | battery                   |
+| s-`            | vterm-toggle-cd            |
+| s-~            | eshell-toggle              |
+| C-c s           | scratch-pop               |
+| s-a            | buffer-expose             |
+| s-SPC          | buffer-expose             |
+| s-*            | buffer-expose-stars         |
+| C-c l           | org-store-link              |
+| C-c a          | org-agenda               |
 
 ** НАДО Клавиши для модов
 
 #+NAME: modes-key-bindings-table
-| Мод            | Сочетание | Функция                        |
-|----------------+-----------+--------------------------------|
-| image-mode-map | 0         | imagex-sticky-restore-original |
-|                | +         | imagex-sticky-maximize         |
-|                | =         | imagex-sticky-zoom-in          |
-|                | -         | imagex-sticky-zoom-out         |
-|----------------+-----------+--------------------------------|
-|                |           |                                |
-|                |           |                                |
-|                |           |                                |
+| Мод            | Сочетание | Функция                 |
+|----------------+----------+-------------------------|
+| image-mode-map | 0        | imagex-sticky-restore-original |
+|                | +        | imagex-sticky-maximize     |
+|                | =        | imagex-sticky-zoom-in      |
+|                | -         | imagex-sticky-zoom-out     |
+
 
 
 ** Применение сочетаний
@@ -128,6 +126,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

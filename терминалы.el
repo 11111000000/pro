@@ -129,6 +129,18 @@
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank))
   :config
+
+  (custom-set-faces  
+   `(vterm-color-default ((t (:foreground "white" :background "black" :inherit default))))  
+   `(vterm-color-black   ((t (:foreground "black" :background "black" ))))  
+   `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))  
+   `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))  
+   `(vterm-color-green   ((t (:foreground "green" :background "black"))))  
+   `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))  
+   `(vterm-color-red     ((t (:foreground "red" :background "black"))))  
+   `(vterm-color-white   ((t (:foreground "white" :background "black"))))  
+   `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))  
+   )
   
   (defun turn-off-chrome ()
     (hl-line-mode -1)
@@ -148,6 +160,8 @@
       (apply orig-fun args)))
 
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
+
+  
   
   :hook
   (vterm-mode . turn-off-chrome)
