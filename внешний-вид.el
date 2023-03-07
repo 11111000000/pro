@@ -182,10 +182,40 @@
   :ensure t
   :config
   (tab-bar-mode t)
-
+  (setq-default tab-bar-close-button nil)
   (dotimes (i 10)
-    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))))
-
+    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+  (defvar ct/circle-numbers-alist
+    '((0 . "⓪")
+      (1 . "①")
+      (2 . "②")
+      (3 . "③")
+      (4 . "④")
+      (5 . "⑤")
+      (6 . "⑥")
+      (7 . "⑦")
+      (8 . "⑧")
+      (9 . "⑨"))
+    "Alist of integers to strings of circled unicode numbers.")
+  
+  (defun ct/tab-bar-tab-name-format-default (tab i)
+    (let ((current-p (eq (car tab) 'current-tab))
+         (tab-num (if (and tab-bar-tab-hints (< i 10))
+                      (alist-get i ct/circle-numbers-alist) "")))
+      (propertize
+       (concat tab-num
+              " "
+              (alist-get 'name tab)
+              (or (and tab-bar-close-button-show
+                     (not (eq tab-bar-close-button-show
+                              (if current-p 'non-selected 'selected)))
+                     tab-bar-close-button)
+                  "")
+              " ")
+       'face (funcall tab-bar-tab-face-function tab))))
+  
+  (setq tab-bar-tab-name-format-function #'ct/tab-bar-tab-name-format-default)
+  (setq tab-bar-tab-hints t))
 
 ;;;;;  Вкладки уровня окна
 
@@ -252,7 +282,12 @@
 ;;   :config
 ;;   (project-tab-groups-mode 1))
 
-
+(defun закрыть-вкладку-и-буфер ()
+  "Закрывает вкладку и буфер в ней."
+  (interactive)
+  (kill-this-buffer)
+  (tab-close)
+  )
 
 (provide 'внешний-вид)
 
