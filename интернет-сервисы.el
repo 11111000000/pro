@@ -20,6 +20,14 @@
               browse-url-generic-program "chromium")
 
 ;;;; EWW - Браузер на ELISP
+
+(use-package eww
+  :bind (:map eww-mode-map
+                ("f"))
+  :config
+  
+  )
+
 ;;;;; Нумерация ссылков
 
 (use-package eww-lnum
@@ -28,7 +36,8 @@
   :after eww
   :bind (
          :map eww-mode-map
-         ("F" . eww-lnum-follow)))
+                ("f" . eww-lnum-follow)
+                ("C-f" . eww-lnum-follow)))
 
 ;;;; W3M - альтернативный текстовый браузер
 

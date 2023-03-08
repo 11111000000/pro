@@ -185,7 +185,7 @@
   (setq-default tab-bar-close-button nil)
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
-  (defvar ct/circle-numbers-alist
+  (defvar список-кружков-с-цифрами
     '((0 . "⓪")
       (1 . "①")
       (2 . "②")
@@ -198,10 +198,10 @@
       (9 . "⑨"))
     "Alist of integers to strings of circled unicode numbers.")
   
-  (defun ct/tab-bar-tab-name-format-default (tab i)
+  (defun формат-имени-вкладки (tab i)
     (let ((current-p (eq (car tab) 'current-tab))
          (tab-num (if (and tab-bar-tab-hints (< i 10))
-                      (alist-get i ct/circle-numbers-alist) "")))
+                      (alist-get i список-кружков-с-цифрами) "")))
       (propertize
        (concat tab-num
               " "
@@ -214,10 +214,43 @@
               " ")
        'face (funcall tab-bar-tab-face-function tab))))
   
-  (setq tab-bar-tab-name-format-function #'ct/tab-bar-tab-name-format-default)
+  (setq tab-bar-tab-name-format-function #'формат-имени-вкладки)
   (setq tab-bar-tab-hints t))
 
 ;;;;;  Вкладки уровня окна
+
+(use-package tab-line
+  :config
+  (global-tab-line-mode t)
+
+  ;;The default tabline is ugly, it also shows the button to create or delete a tab. To disable those button, add the following config:
+
+  (setq tab-line-new-button-show nil)  ;; do not show add-new button
+  (setq tab-line-close-button-show nil)  ;; do not show close button
+
+  ;;To change the separator between tabs, set the variable tab-line-separator:
+
+  (setq tab-line-separator "")  ;; set it to empty
+
+  ;;To further customize the look of tabs, we can employ the powerline package:
+  (require 'powerline)
+  (defvar az/tab-height 22)
+  (defvar az/tab-left (powerline-wave-right 'tab-line nil az/tab-height))
+  (defvar az/tab-right (powerline-wave-left nil 'tab-line az/tab-height))
+
+  (defun az/tab-line-tab-name-buffer (buffer &optional _buffers)
+    (powerline-render (list az/tab-left
+                            (format "%s" (buffer-name buffer))
+                            az/tab-right)))
+  (setq tab-line-tab-name-function #'az/tab-line-tab-name-buffer)
+
+  ;; tab color settings
+  ;; (set-face-attribute 'tab-line nil :height 1.0)
+  ;; (set-face-attribute 'tab-line-tab nil :height 1.0 :inherit 'tab-line)
+  ;; (set-face-attribute 'tab-line-tab-current nil :height 1.0)
+  ;; (set-face-attribute 'tab-line-tab-inactive nil :height 1.0)
+  ;; (set-face-attribute 'tab-line-highlight nil :height 1.0)
+  )
 
 ;; (use-package tabbar
 ;;   :ensure t
