@@ -4,7 +4,7 @@
 ;;; Code:
 ;;;; Файлы и каталоги
 
-(defun директорию-вверх () (interactive) (find-alternate-file ".."))
+(defun директорию-вверх () (interactive) (find-file ".."))
 
 (use-package dired
   :bind (("C-x d" . dired-jump)
@@ -16,10 +16,8 @@
          ("f" . dired-find-file)
          ("o" . dired-find-file)
          ("RET" . dired-find-file)
-         ("h" . директорию-вверх)
-         ("b" . директорию-вверх)
-         ("u" . директорию-вверх)
-         ("^" . директорию-вверх))
+         ("h" . dired-up-directory)
+         ("^" . dired-up-directory))
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode)
          ;;(dired-mode . hl-line-mode)
@@ -45,7 +43,7 @@
 ;; нажав C-c C-c или отменить C-g
 
 (use-package wdired
-  :ensure t  
+  :ensure t
   :after dired
   :bind (
          :map dired-mode-map
@@ -141,14 +139,14 @@
         ("C-x t M-t" . treemacs-find-tag)))
 
 
-;;;; Иконки 
+;;;; Иконки
 
 (use-package treemacs-icons-dired
   :ensure t
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :init
-  (add-hook 'after-load-theme-hook 
-          (lambda () 
+  (add-hook 'after-load-theme-hook
+          (lambda ()
             (treemacs-icons-dired-mode -1)
             (sleep-for 0 100)
             (treemacs-icons-dired-mode 1))))

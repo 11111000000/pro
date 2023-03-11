@@ -73,7 +73,6 @@
      package-menu-mode org-agenda-mode calc-mode comint-mode
      racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
      lsp-ui-imenu-mode vterm-mode dashboard-mode))
-
   (god-exempt-predicates (list #'god-exempt-mode-p))
   :config
 
@@ -81,10 +80,9 @@
   (global-set-key (kbd "C-h") help-map)
 
   (defun обновить-курсор ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar))
-    (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1))
-    )
-
+    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(hbar . 5)))
+    (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
+  
   (god-mode-all)
   (обновить-курсор))
 

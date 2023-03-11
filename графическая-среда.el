@@ -119,16 +119,18 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   (require 'exwm-systemtray)
 
-  (exwm-systemtray-enable)
 
+  (exwm-systemtray-enable)
   (add-hook 'exwm-init-hook (lambda ()
     (progn
-      (start-process-shell-command "nm-applet" nil "dbus-launch nm-applet -t")
-      (start-process-shell-command "blueman-applet" nil "dbus-launch blueman-applet")
-      (start-process-shell-command "udiskie" nil "dbus-launch udiskie -t")
-      (start-process-shell-command "dunst" nil "dbus-launch dunst -conf ~/System/dunstrc")
-      (start-process-shell-command "pasystray" nil "dbus-launch pasystray")
-      ))))
+      (start-process-shell-command "nm-applet" nil "sleep 0.5; dbus-launch nm-applet -t")
+      (start-process-shell-command "blueman-applet" nil "sleep 0.5; dbus-launch blueman-applet")
+      (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
+      (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
+      (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
+      )
+    ))
+  )
 
 ;;;; Режимы ввода EMACS в приложениях
 

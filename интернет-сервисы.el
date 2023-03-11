@@ -36,8 +36,9 @@
   :after eww
   :bind (
          :map eww-mode-map
+                ("C-f" . forward-char)
                 ("f" . eww-lnum-follow)
-                ("C-f" . eww-lnum-follow)))
+                ("F" . eww-lnum-follow)))
 
 ;;;; W3M - альтернативный текстовый браузер
 

@@ -17,13 +17,15 @@
 | C-c f      | вставить-имя-файла           |
 | C-x b     | consult-buffer                 |
 | C-x C-b    | consult-buffer-other-window      |
-| s-b       | consult-project-buffer           |
 | s-<tab>   | consult-buffer                 |
 | M-s s     | consult-line                   |
 | M-s M-s   | consult-line-multi               |
 | C-x y     | consult-yank-from-kill-ring       |
 | <help> a  | consult-apropos                |
 | s-m      | consult-imenu-multi             |
+| M-M     | bookmark-set                 |
+| M-m      | bookmark-jump                |
+
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -33,6 +35,7 @@
 | s-q            | exwm-reset               |
 | s-\             | toggle-input-method        |
 | s-e            | buffer-expose             |
+| s-b            | consult-project-buffer       |
 | s-T            | exwm-floating-toggle-floating |
 | C-s-d          | delete-window             |
 | s-h            | windmove-left             |
@@ -44,16 +47,16 @@
 | s-K            | buf-move-up              |
 | s-L            | buf-move-right            |
 | s-R            | rename-buffer             |
-| s-d            | delete-window             |
-| s-t            | tab-bar-new-tab           |
+| s-t            | открыть-новую-вкладку    |
 | s-T            | tab-bar-undo-close-tab      |
 | s-r            | tab-bar-rename-tab        |
 | s-N            | tab-bar-move-tab          |
 | s-P            | tab-bar-move-tab-backward  |
-| s-n            | tab-line-switch-to-next-tab   |
-| s-p            | tab-line-switch-to-prev-tab   |
+| s-n            | tab-bar-switch-to-next-tab   |
+| s-p            | tab-bar-switch-to-prev-tab   |
 | s-w            | tab-bar-close-tab           |
 | s-W           | закрыть-вкладку-и-буфер  |
+| s-d           | delete-window |
 | s-x            | app-launcher-run-app       |
 | s-M-h          | split-window-horizontally     |
 | s-M-k          | split-window-vertically       |
@@ -83,6 +86,10 @@
 | s-*            | buffer-expose-stars         |
 | C-c l           | org-store-link              |
 | C-c a          | org-agenda               |
+| C-x +          | golden-ratio               |
+| C-x =          | balance-windows           |
+| C-x _           | maximize-window          |
+| C-x -           | minimize-window           |
 
 ** НАДО Клавиши для модов
 
@@ -111,7 +118,6 @@
      (global-set-key (kbd соч) (intern фун))))
  exwm-keys-table)
 
-
 (if (and window-system (functionp 'exwm-input-set-key))
     (progn
 	    (require 'exwm)
@@ -122,4 +128,13 @@
 	     exwm-keys-table)))
 
 #+END_SRC
+
+#+RESULTS:
+
+
+
+
+
+
+
 

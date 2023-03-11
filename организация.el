@@ -114,9 +114,12 @@
 ;; Перемещение по заголовкам, со скрытием остальных
 
 (use-package org
-  :bind (:map org-mode-map
-              (("M-n" . my/org-show-next-heading-tidily)
-               ("M-p" . my/org-show-previous-heading-tidily)))
+  ;; :bind (:map org-mode-map
+  ;;               (
+  ;;                ("M-n" . my/org-show-next-heading-tidily)
+  ;;                ("M-p" . my/org-show-previous-heading-tidily)
+  ;;                )
+  ;;             )
   :init)
 
 ;; Перемещение по заголовкам, когда раскрыт только текущий
