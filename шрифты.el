@@ -2,19 +2,26 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package fixed-pitch
-  :init (установить-из-репы :repo "cstby/fixed-pitch-mode")
-  :config
-  (fixed-pitch-mode))
+;; (use-package fixed-pitch
+;;   :ensure t
+;;   :init (установить-из-репы :repo "cstby/fixed-pitch-mode")
+;;   :config
+;;   (fixed-pitch-mode))
 
-(setq-default default-frame-alist '((font . "DejaVu Sans")))
+(use-package mixed-pitch
+  :ensure t
+  :hook
+  (org-mode . mixed-pitch-mode)
+  )
+
+;(setq-default default-frame-alist '((font . "Fira Code")))
 
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."
   (interactive)
-  (custom-set-faces '(default ((t (:family "DejaVu Sans" :height 120)))))
+  (custom-set-faces '(default ((t (:family "Fira Code" :height 120)))))
   (custom-set-faces '(fixed-pitch ((t (:family "Fira Code" :height 1.0)))))
-  (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.3)))))
+  (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.3)))))
   ;; (let* ((variable-tuple (cond
   ;;                        ;; ((x-list-fonts "OldSlavic")         '(:font "OldSlavic"))
   ;;                        ((x-list-fonts "Golos")         '(:font "Golos"))

@@ -1,4 +1,4 @@
-;;; русификация-emacs-lisp.el --- Русификация Emacs LISP
+;;; код-на-lisp-русификация.el --- Русификация Emacs LISP
 ;;; Commentary:
 ;; То, что поначалу хотел сделать в виде макроса - русификация конфига EMACS
 ;;; Code:
@@ -166,6 +166,6 @@
 
 
 (add-hook 'emacs-lisp-mode-hook 'русификация-emacs-lisp)
-(provide 'русификация-emacs-lisp)
-;;; русификация-emacs-lisp.el ends here
+(provide 'код-на-lisp-русификация)
+;;; код-на-lisp-русификация.el ends here
 

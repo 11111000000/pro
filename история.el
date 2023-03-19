@@ -115,5 +115,14 @@
 
 ;; (desktop-save-mode t)
 
+;;;; Файл со ручными настройками
+
+(setq custom-file "~/.emacs.d/custom.el")
+
+;; Но не загружаем его
+
+;;(ignore-errors (load custom-file))
+
+
 (provide 'история)
 ;;; история.el ends here

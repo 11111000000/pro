@@ -125,7 +125,7 @@ ARG - backward"
 (use-package flymake
   :hook ((prog-mode) . flymake-mode)
 
-  :bind (:map flymake-mode-map                
+  :bind (:map flymake-mode-map
               ("C-c ]" . flymake-goto-next-error)
               ("C-c [" . flymake-goto-prev-error)))
 
@@ -181,9 +181,9 @@ ARG - backward"
 
 ;; Генератор инкрементальных парсеров
 
-(use-package tree-sitter
-  :config (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+;; (use-package tree-sitter
+;;   :config (global-tree-sitter-mode)
+;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
   :ensure t

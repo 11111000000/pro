@@ -1,4 +1,4 @@
-;;; оптимизация-производительности.el --- Оптимизация загрузки и работы EMACS
+;;; оптимизация.el --- Оптимизация загрузки и работы EMACS
 ;;; Commentary:
 ;;; Code:
 ;;;; Отложим компиляцию
@@ -59,14 +59,7 @@
 (when (boundp 'read-process-output-max)
   (setq read-process-output-max (* 1024 1024)))
 
-;;;; Файл со внешними настройками
-
-(setq custom-file "~/.emacs.d/custom.el")
-
-;;;; Но не загружаем его
-
-;;(ignore-errors (load custom-file))
 
 
-(provide 'оптимизация-производительности)
-;;; оптимизация-производительности.el ends here
+(provide 'оптимизация)
+;;; оптимизация.el ends here

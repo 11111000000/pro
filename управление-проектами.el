@@ -13,7 +13,7 @@
          ("C-c p C-p" . projectile-add-known-project)
          ("C-c pp" . projectile-switch-project)
          ("C-c ps s" . consult-ag)
-         :map projectile-command-map         
+         :map projectile-command-map
          ("ss" . consult-ag)
          )
   :config

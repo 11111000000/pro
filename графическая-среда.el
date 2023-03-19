@@ -6,8 +6,7 @@
 
 (use-package xelb
   :ensure t
-  :if window-system
-  )
+  :if window-system)
 
 ;;;; ExWM
 
@@ -44,7 +43,6 @@
   (sit-for 1)
   (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
 
-
 (defmacro exwm-input-set-keys (&rest key-bindings)
   "Макрос для установки клавиш, работающих поверх приложений Xorg.
 KEY-BINDINGS - список пар (клавиша функция)"
@@ -73,7 +71,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
     (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
 
   (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-
 
   ;; Глобальные клавиши над всеми приложениями
 
@@ -161,7 +158,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :if window-system
   :ensure t
   :init
-  (exwm-mff-mode -1))
+  (exwm-mff-mode t))
 
 ;; (use-package exwm-firefox
 ;;   :if window-system

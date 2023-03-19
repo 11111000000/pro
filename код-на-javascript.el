@@ -1,4 +1,4 @@
-;;; программирование-на-javascript.el --- Поддержка Javascript, Typescript
+;;; код-на-javascript.el --- Поддержка Javascript, Typescript
 ;;; Commentary:
 ;;; Code:
 ;;;; Подхватывать настройки проверки кода Javascript
@@ -101,5 +101,5 @@
                                         ;( "C-c l" . ts-load-file-and-go)
               ))
 
-(provide 'программирование-на-javascript)
-;;; программирование-на-javascript.el ends here.
+(provide 'код-на-javascript)
+;;; код-на-javascript.el ends here.

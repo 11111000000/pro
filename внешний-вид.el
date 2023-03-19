@@ -7,42 +7,6 @@
 
 (setq visible-bell nil)
 
-;;;; Буферы
-
-;; Уникальные имена для буферов
-
-(setq uniquify-buffer-name-style 'forward)
-
-;; Включаем автоактуализацию всех буферов
-
-(global-auto-revert-mode t)
-(setq-default global-auto-revert-non-file-buffers t)
-(setq-default auto-revert-verbose nil)
-
-;; Обновление буфера без вопросов
-
-(defun обновить-буфер-немедленно ()
-  "ничего не спрашивая, обновить буфер."
-  (interactive)
-  (revert-buffer t t))
-
-;; Асинхронные буферы скрыты
-
-(add-to-list 'display-buffer-alist
-             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-
-;; Новые асинхронные буферы переименовываются не спрашивая ничего:
-
-(setq-default async-shell-command-buffer 'rename-buffer)
-
-;; Буфер с ошибками только при ошибках
-
-(setq warning-minimum-level :error)
-
-;; Скроллбар
-
-(if window-system (scroll-bar-mode -1))
-
 ;;;; Тулбар
 
 (when (bound-and-true-p tool-bar-mode)
@@ -57,7 +21,7 @@
 
 ;; Включаем рекурсивные минибуферы
 
-(setq-default enable-recursive-minibuffers t)
+(setq-default enable-recursive-minibuffers nil)
 
 ;; Минибуфер - модлайн
 
@@ -99,7 +63,7 @@
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
 
 (blink-cursor-mode 1)
-(setq cursor-type '(hbar . 5) )
+(setq cursor-type '(bar . 2) )
 (setq x-stretch-cursor t)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
@@ -110,7 +74,7 @@
   (require 'cursor-chg)
   (change-cursor-mode t)
   (setq curchg-input-method-cursor-color "orange"
-        curchg-default-cursor-type '(hbar . 5)
+        curchg-default-cursor-type '(bar . 2)
         curchg-default-cursor-color (face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
 
@@ -146,7 +110,6 @@
 (when (fboundp 'pixel-scroll-mode)
   (pixel-scroll-mode -1))
 
-
 ;;;; Меню режима
 
 ;; Меню для текущего файла, в Org-mode например, показывает список заголовков
@@ -173,6 +136,13 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;;;; TODO Путь в заголовке
+
+;;;; Фон для служебных буферов
+
+(use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode t))
 
 (provide 'внешний-вид)
 
