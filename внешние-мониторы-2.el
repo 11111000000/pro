@@ -6,7 +6,7 @@
   '(progn
      (require 'exwm-randr)
 
-     (setq exwm-randr-workspace-output-plist '(0 "eDP-1" 1 "DP-3"))
+     (setq exwm-randr-workspace-output-plist '(0 "LVDS-1" 1 "VGA-1"))
 
      (defun monitor-on-right ()
        "Monitor on top with normal orientation."
@@ -41,7 +41,7 @@
      (exwm-randr-enable)
 
      (add-hook 'exwm-randr-screen-change-hook
-               'dp-3-on-right)))
+               'monitor-on-right)))
 
 
 
