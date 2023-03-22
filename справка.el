@@ -44,14 +44,14 @@
   ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
    (guide-key/popup-window-position 'top)
    (guide-key/recursive-key-sequence-flag t)
-   (guide-key/idle-delay 1.7)
+   (guide-key/idle-delay 3)
    (guide-key/text-scale-amount -1)
    (guide-key/highlight-prefix-regexp "Prefix")
    (guide-key/highlight-command-regexp
     '("rectangle"
       ("buffer" . "sky blue")
       ("org" . "cornflower blue")
-      ("outshine" . "Dark Violet")
+      ("outshine" . "dark violet")
       ("helm" . "lime green")
       ("consult" . "lime green")
       ("popwin" . "hot pink")

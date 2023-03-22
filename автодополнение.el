@@ -1,4 +1,4 @@
-;;; автодополнение-строк.el --- Автодополнение строк
+;;; автодополнение.el --- Автодополнение строк
 ;;; Commentary:
 ;; Автодополнение текста на базе Corfu
 ;;; Code:
@@ -26,24 +26,24 @@
               ("S-TAB" . corfu-previous)
               ([backtab] . corfu-previous))
   :custom
+  
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)
-  (corfu-auto t)
+  (corfu-auto nil)
   (corfu-auto-prefix 3)
   (corfu-auto-delay 0.25)
-  (corfu-popupinfo-delay 0)
+  (corfu-popupinfo-delay 0.7)
   (corfu-min-width 5)
   (corfu-max-width 30)
   (corfu-count 14)
-  (corfu-scroll-margin 4)
+  (corfu-scroll-margin 3)
   (corfu-cycle t)
   (corfu-echo-documentation nil)
   (corfu-separator ?\s)
   (corfu-quit-no-match 'separator)
   (corfu-preview-current 'insert)
-  (corfu-preselect-first t)
-
-
+  (corfu-preselect 'first)
+  
   :init
 
   (global-corfu-mode)
@@ -92,25 +92,25 @@
   (add-hook 'kb/themes-hooks #'(lambda ()
                (interactive)
                (kind-icon-reset-cache))))
-(defun sorting (list)
-      (interactive)
-      )
+;; (defun sorting (list)
+;;       (interactive)
+;;       )
 
-(use-package codeium
-  :init
-  (установить-из-репы :repo "Exafunction/codeium.el")
-  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-  :config
+;; (use-package codeium
+;;   :init
+;;   (установить-из-репы :repo "Exafunction/codeium.el")
+;;   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+;;   :config
+  
+;;   (setq use-dialog-box nil)
 
-  (setq use-dialog-box nil)
+;;   (setq codeium/metadata/api_key "212600da-b787-4d45-91f0-5e9e98b94302")
 
-  (setq codeium/metadata/api_key "212600da-b787-4d45-91f0-5e9e98b94302")
-
-  ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
-  (setq codeium-api-enabled
-         (lambda (api)
-           (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-  )
+;;   ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
+;;   (setq codeium-api-enabled
+;;          (lambda (api)
+;;            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+;;   )
 
 ;; (use-package codeium-diagnose)
 ;;   :init
@@ -121,5 +121,5 @@
 
 
 
-(provide 'автодополнение-строк)
-;;; автодополнение-строк.el ends here
+(provide 'автодополнение)
+;;; автодополнение.el ends here

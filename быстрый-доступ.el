@@ -27,7 +27,7 @@
 ;;                                 (internal-border-width . 0)
 ;;                                 (top . 0.4)
 ;;                                 (width . 0.8)
-;;                                 (height . 0.35)
+;;                                 (height . 0.20)
 ;;                                 (left . 0.5)))
 ;;   (mini-frame-standalone t)
 ;;   (mini-frame-resize nil)
@@ -36,7 +36,7 @@
 ;;   (mini-frame-internal-border-color "#333333")
 ;;   (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
 ;;   :config
-;;   (mini-frame-mode -1))
+;;   (mini-frame-mode t))
 
 ;;;; Сортировка
 

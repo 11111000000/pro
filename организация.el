@@ -20,18 +20,18 @@
 
 ;;;; Красивые заголовки
 
-(use-package org-bullets
-  :if window-system
-  :ensure t
-  :defer t
-  :after (org)
-  :hook ((org-mode . org-bullets-mode))
+;; (use-package org-bullets
+;;   :if window-system
+;;   :ensure t
+;;   :defer t
+;;   :after (org)
+;;   :hook ((org-mode . org-bullets-mode))
 
-  :custom ((org-bullets-bullet-list '("‣" "‣" ))
-           (org-hide-emphasis-markers nil)
-           (org-startup-indented t)
-           (org-hide-leading-stars nil)
-           ))
+;;   :custom ((org-bullets-bullet-list '("‣" "‣" ))
+;;            (org-hide-emphasis-markers nil)
+;;            (org-startup-indented t)
+;;            (org-hide-leading-stars nil)
+;;            ))
 
 ;;;; Иконки приоритетов
 
@@ -122,41 +122,6 @@
   ;;             )
   :init)
 
-;; Перемещение по заголовкам, когда раскрыт только текущий
-
-(defun my/org-show-next-heading-tidily ()
-  "Show next entry, keeping other entries closed."
-  (interactive)
-  (if (save-excursion (end-of-line) (outline-invisible-p))
-      (progn (org-show-entry) (show-children))
-    (outline-next-heading)
-    (unless (and (bolp) (org-on-heading-p))
-      (org-up-heading-safe)
-      (hide-subtree)
-      (error "Boundary reached"))
-    (org-overview)
-    (org-reveal t)
-    (org-show-entry)
-    (recenter-top-bottom)
-    (show-children)
-    (recenter-top-bottom)))
-
-(defun my/org-show-previous-heading-tidily ()
-  "Show previous entry, keeping other entries closed."
-  (interactive)
-  (let ((pos (point)))
-    (outline-previous-heading)
-    (unless (and (< (point) pos) (bolp) (org-on-heading-p))
-      (goto-char pos)
-      (hide-subtree)
-      (error "Boundary reached"))
-    (org-overview)
-    (org-reveal t)
-    (org-show-entry)
-    (recenter-top-bottom)
-    (show-children)
-    (recenter-top-bottom)))
-
 ;;;; TODO Учёт времени
 ;;;; Помодоро
 
@@ -176,7 +141,12 @@
 
 ;; https://polymode.github.io/usage/
 
-;;;; TODO Таблицы
+;;;; Таблицы
+
+;; Моноширный шрифт для таблиц
+
+(set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+
 ;;;; Заметки
 
 (use-package org-noter
@@ -191,6 +161,12 @@
   :ensure t
   :hook ((org-mode . org-rainbow-tags-mode))
   :init)
+
+;;;;  Org modern
+
+(use-package org-modern
+  :ensure t
+  :hook ((org-mode . org-modern-mode)))
 
 ;;;; Организация кода
 

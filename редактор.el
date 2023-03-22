@@ -28,6 +28,14 @@
   (add-to-list 'reverse-im-input-methods "russian-computer")
   (reverse-im-mode t))
 
+;; Удалять выделенное при печати нового
+
+(delete-selection-mode +1)
+
+;; Средняя кнопка мыши вставляет в позицию курсора
+
+(setq mouse-yank-at-point t)
+
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 
 (use-package avy

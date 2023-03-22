@@ -6,42 +6,42 @@
 ;;; Code:
 ;;;; Мульти-терминалы
 
-(use-package multi-term
-  :ensure t
-  :defer t
-  :bind (
-         ("C-c tt" . multi-term)
-         ;; ("<s-return>" . multi-term)
-         ("C-c tn" . multi-term-next)
-         ("C-c tp" . multi-term-prev)
-         ("M-±" . multi-term-dedicated-toggle)
-         ("C-c to" . multi-term-dedicated-toggle)
-         :map term-mode-map
-         ("C-c C-j" . переключить-режим-ввода-терминала)
-         ("C-c C-k" . переключить-режим-ввода-терминала)
-         :map term-raw-map
-         ("C-c C-j" . переключить-режим-ввода-терминала)
-         ("C-c C-k" . переключить-режим-ввода-терминала))
-  :custom ((term-buffer-maximum-size 0)
-           (show-trailing-whitespace nil))
-  :config
-  (add-hook 'term-mode-hook
-            (lambda ()
-              (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
-              (add-to-list 'term-bind-key-alist '("C-v" . scroll-up-command))
-              (add-to-list 'term-bind-key-alist '("M-v" . scroll-down-command))
-              ))
-  (defun term-counsel-yank-pop-action (orig-fun &rest args)
-    (if (equal major-mode 'term-mode)
-        (let ((inhibit-read-only t)
-             )
-          (cl-letf (((symbol-function 'insert-for-yank)
-                     (lambda (str) (term-send-string str t))))
-            (apply orig-fun args)))
-      (apply orig-fun args)))
+;; (use-package multi-term
+;;   :ensure t
+;;   :defer t
+;;   :bind (
+;;          ("C-c tt" . multi-term)
+;;          ;; ("<s-return>" . multi-term)
+;;          ("C-c tn" . multi-term-next)
+;;          ("C-c tp" . multi-term-prev)
+;;          ("M-±" . multi-term-dedicated-toggle)
+;;          ("C-c to" . multi-term-dedicated-toggle)
+;;          :map term-mode-map
+;;          ("C-c C-j" . переключить-режим-ввода-терминала)
+;;          ("C-c C-k" . переключить-режим-ввода-терминала)
+;;          :map term-raw-map
+;;          ("C-c C-j" . переключить-режим-ввода-терминала)
+;;          ("C-c C-k" . переключить-режим-ввода-терминала))
+;;   :custom ((term-buffer-maximum-size 0)
+;;            (show-trailing-whitespace nil))
+;;   :config
+;;   (add-hook 'term-mode-hook
+;;             (lambda ()
+;;               (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
+;;               (add-to-list 'term-bind-key-alist '("C-v" . scroll-up-command))
+;;               (add-to-list 'term-bind-key-alist '("M-v" . scroll-down-command))
+;;               ))
+;;   (defun term-counsel-yank-pop-action (orig-fun &rest args)
+;;     (if (equal major-mode 'term-mode)
+;;         (let ((inhibit-read-only t)
+;;              )
+;;           (cl-letf (((symbol-function 'insert-for-yank)
+;;                      (lambda (str) (term-send-string str t))))
+;;             (apply orig-fun args)))
+;;       (apply orig-fun args)))
 
-  (advice-add 'consult-yank-from-kill-ring :around #'term-counsel-yank-pop-action)
-  )
+;;   (advice-add 'consult-yank-from-kill-ring :around #'term-counsel-yank-pop-action)
+;;   )
 
 ;; Функция для переключение режима перемещения по терминалу
 
@@ -130,26 +130,26 @@
                 ("s-v" . #'vterm-yank))
   :config
 
-  (custom-set-faces  
-   `(vterm-color-default ((t (:foreground "white" :background "black" :inherit default))))  
-   `(vterm-color-black   ((t (:foreground "black" :background "black" ))))  
-   `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))  
-   `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))  
-   `(vterm-color-green   ((t (:foreground "green" :background "black"))))  
-   `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))  
-   `(vterm-color-red     ((t (:foreground "red" :background "black"))))  
-   `(vterm-color-white   ((t (:foreground "white" :background "black"))))  
-   `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))  
+  (custom-set-faces
+   `(vterm-color-default ((t (:foreground "white" :background "black"))))
+   `(vterm-color-black   ((t (:foreground "black" :background "black" ))))
+   `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))
+   `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))
+   `(vterm-color-green   ((t (:foreground "green" :background "black"))))
+   `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))
+   `(vterm-color-red     ((t (:foreground "red" :background "black"))))
+   `(vterm-color-white   ((t (:foreground "white" :background "black"))))
+   `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))
    )
-  
+
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
-  
+
   (defun set-vterm-font ()
     (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
     (buffer-face-mode t))
-  
+
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
     (if (equal major-mode 'vterm-mode)
         (let ((inhibit-read-only t)
@@ -161,31 +161,34 @@
 
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
 
-  
-  
   :hook
   (vterm-mode . turn-off-chrome)
   (vterm-mode . set-vterm-font))
 
-(use-package vterm-toggle
+;; (use-package vterm-toggle
+;;   :ensure t
+;;   :custom
+;;   (vterm-toggle-fullscreen-p nil)
+;;   (vterm-toggle-scope 'project)
+;;   (vterm-toggle-hide-method 'delete-window)
+;;   :config
+;;   (add-to-list 'display-buffer-alist
+;;      '("\*vterm\*"
+;;        (display-buffer-in-side-window)
+;;        (window-height . 0.38)
+;;        (side . bottom)
+;;        (slot . 0))))
+
+
+;; (use-package eshell-vterm
+;;   ;;:hook ((eshell-mode . eshell-vterm-mode))
+;;   :ensure t
+;;   :init)
+
+(use-package multi-vterm
   :ensure t
-  :custom
-  (vterm-toggle-fullscreen-p nil)
-  (vterm-toggle-scope 'project)
-  (vterm-toggle-hide-method 'delete-window)
   :config
-  (add-to-list 'display-buffer-alist
-     '("\*vterm\*"
-       (display-buffer-in-side-window)
-       (window-height . 0.38)
-       (side . bottom)
-       (slot . 0))))
-
-
-(use-package eshell-vterm
-  ;;:hook ((eshell-mode . eshell-vterm-mode))
-  :ensure t
-  :init)
+  )
 
 (provide 'терминалы)
 ;;; терминалы.el ends here

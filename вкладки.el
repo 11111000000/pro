@@ -4,6 +4,9 @@
 ;;; Code:
 ;;;;  Верхний уровень вкладок
 
+(use-package powerline
+  :ensure t)
+
 (require 'powerline)
 (defvar добрая-высота-вкладки 22)
 (defvar добрая-вкладка-слева (powerline-wave-right 'tab-bar nil добрая-высота-вкладки))
@@ -73,10 +76,16 @@
   (tab-line-close-button-show nil)
   (tab-line-separator "")
   (tab-line-switch-cycling t)
-  (tab-line-tabs-function 'tab-line-tabs-buffer-groups)
+  (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
+  :hook ((vterm-mode . tab-line-mode))
+  :bind (("M-s-n" . #'tab-line-switch-to-next-tab)
+            ("M-s-p" . #'tab-line-switch-to-prev-tab))
   :config
+  
   (global-tab-line-mode -1)
+  
   (require 'powerline)
+  
   (defvar az/tab-height 22)
   (defvar az/tab-left (powerline-wave-right 'tab-line nil az/tab-height))
   (defvar az/tab-right (powerline-wave-left nil 'tab-line az/tab-height))
@@ -85,72 +94,7 @@
     (powerline-render (list az/tab-left
                             (format "%s" (buffer-name buffer))
                             az/tab-right)))
-  (setq tab-line-tab-name-function #'az/tab-line-tab-name-buffer)
-
-  ;; (set-face-attribute 'tab-line nil :height 1.0)
-  ;; (set-face-attribute 'tab-line-tab nil :height 1.0 :inherit 'tab-line)
-  ;; (set-face-attribute 'tab-line-tab-current nil :height 1.0)
-  ;; (set-face-attribute 'tab-line-tab-inactive nil :height 1.0)
-  ;; (set-face-attribute 'tab-line-highlight nil :height 1.0)
-  )
-
-;; (use-package tabbar
-;;   :ensure t
-;;   :hook ((eldoc-box-frame-hook . tabbar-local-mode))
-;;   :custom
-;;   (tabbar-buffer-groups-function 'dobro/buffer-groups)
-;;   (tabbar-cycle-scope 'tabs)
-;;   :config
-;;   ;; ЧТОДЕЛ: Функция для переключение этих вкладок по номеру нужна
-;;   ;; (dotimes (i 10)
-;;   ;;   (global-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (tabbar-select-tab ,i))))i
-
-;;   (require 'memoize)
-
-;;   ;; (defmemoize сгруппировано-по-проекту1 ()
-;;   ;;   (list
-;;   ;;    (cond
-;;   ;;     (
-;;   ;;      (memq major-mode '(mu4e-view-mode mu4e-main-mode mu4e-headers-mode mu4e-view-raw-mode
-;;   ;;                                        twittering-mode weibo-timeline-mode telega-mode telega-chat-mode telega-root-mode
-;;   ;;                                        jabber-roster-mode jabber-chat-mode erc-mode douban-music-mode))
-;;   ;;      "Activity")
-;;   ;;     ((memq major-mode '(eww-mode))
-;;   ;;      "EWW")
-;;   ;;     ((memq major-mode '(exwm-mode))
-;;   ;;      "Xorg")
-;;   ;;     ((memq major-mode '(term-mode vterm-mode shell-mode))
-;;   ;;      "Terminals")
-;;   ;;     ((string-equal "*" (substring (buffer-name) 0 1))
-;;   ;;      "Emacs")
-;;   ;;     ((memq major-mode '(fundamental-mode))
-;;   ;;      "Emacs")
-;;   ;;     ;; (
-;;   ;;     ;;  ;; (memq (current-buffer)
-;;   ;;     ;;  ;;       (condition-case nil
-;;   ;;     ;;  ;;           (projectile-buffers-with-file-or-process (projectile-project-buffers))
-;;   ;;     ;;  ;;         (error nil)))
-;;   ;;     ;; ((memq major-mode '(org-mode org-agenda-mode diary-mode))
-;;   ;;     ;;  "OrgMode"
-;;   ;;     ;;  )
-;;   ;;     (t
-;;   ;;      (or (projectile-project-name) "Common")
-;;   ;;      ))))
-
-;;   ;; (defun my-make-throttler ()
-;;   ;;   (let ((last-time (float-time))
-;;   ;;        (last-res ()))
-;;   ;;     (lambda (&rest args)
-;;   ;;       (if (< 1 (- (float-time) last-time))
-;;   ;;           last-res
-;;   ;;         (setq last-time (float-time))
-;;   ;;         (setq last-res (apply args))))))
-;;   ;;(advice-add 'сгруппировано-по-проекту :override (my-make-throttler))
-
-;;   (setq tabbar-buffer-groups-function 'сгруппировано-по-проекту1)
-
-;;   (tabbar-mode -1)
-;;   (tabbar-mode 1))
+  (setq tab-line-tab-name-function #'az/tab-line-tab-name-buffer))
 
 ;; (use-package project-tab-groups
 ;;   :ensure

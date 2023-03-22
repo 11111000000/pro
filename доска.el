@@ -9,7 +9,8 @@
          ("<f5>" . dashboard-refresh-buffer)
          ("C-<f5>" . dashboard-refresh-buffer)
          :map dashboard-mode-map
-              ("C-g" . dashboard-refresh-buffer))
+         ("C-g" . dashboard-refresh-buffer))
+  :hook ((dashboard-mode-hook . variable-pitch-mode))
   :custom
   (dashboard-startup-banner "~/Добро/lisp.png")
   (dashboard-banner-logo-title "Добро пожаловать в свободную систему!")

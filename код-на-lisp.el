@@ -1,4 +1,4 @@
-;;; программирование-на-lisp.el --- LISP
+;;; код-на-lisp.el --- LISP
 ;;; Commentary:
 ;;; Code:
 ;;;; Emacs Lisp
@@ -81,5 +81,5 @@
 	      '("guile"
           "guix")))
 
-(provide 'программирование-на-lisp)
-;;; программирование-на-lisp.el ends here
+(provide 'код-на-lisp)
+;;; код-на-lisp.el ends here

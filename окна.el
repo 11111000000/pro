@@ -1,4 +1,4 @@
-;;; управление-окнами.el --- Управление окнами
+;;; окна.el --- Управление окнами
 ;; Управление окнами
 ;;; Commentary:
 ;;; Code:
@@ -60,6 +60,9 @@
 
 (use-package popper
   :ensure t ; or :straight t
+  :custom (
+          popper-window-height 20
+          )
   ;; :bind (
   ;;        ("C-`"   . popper-toggle-latest)
   ;;        ("M-`"   . popper-cycle)
@@ -72,6 +75,7 @@
            "\\*Async Shell Command\\*"
            help-mode
            compilation-mode
+           calendar-mode
            "^\\*eshell.*\\*$" eshell-mode ;eshell as a popup
            "^\\*shell.*\\*$"  shell-mode  ;shell as a popup
            "^\\*term.*\\*$"   term-mode   ;term as a popup
@@ -80,9 +84,9 @@
   (popper-mode +1)
   (popper-echo-mode +1))
 
+
 ;; (use-package popwin
 ;;   :ensure t
-;;   :defer t
 ;;   :bind (("C-c b" . popwin:popup-buffer)
 ;;          ("C-c ." . popwin:stick-popup-window))
 ;;   :config
@@ -152,5 +156,5 @@
   :bind (("s-f" . ace-window)
          ("s-F" . ace-swap-window)))
 
-(provide 'управление-окнами)
-;;; управление-окнами.el ends here
+(provide 'окна)
+;;; окна.el ends here
