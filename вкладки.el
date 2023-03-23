@@ -77,7 +77,8 @@
   (tab-line-separator "")
   (tab-line-switch-cycling t)
   (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
-  :hook ((vterm-mode . tab-line-mode))
+  :hook ((vterm-mode . tab-line-mode)
+         (telega-mode . tab-line-mode))
   :bind (("M-s-n" . #'tab-line-switch-to-next-tab)
             ("M-s-p" . #'tab-line-switch-to-prev-tab))
   :config

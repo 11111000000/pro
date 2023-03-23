@@ -20,24 +20,11 @@
          ;;(god-mode-enabled . restore-input-method)
          (god-mode-enabled . toggle-off-input-method))
 
-  :bind (("M-i" . god-local-mode)
-         ("s-i" . god-local-mode)
-         ("<escape>" . god-local-mode)
-         ("C-x C-1" . delete-other-windows)
-         ("C-x C-2" . split-window-below)
-         ("C-x C-3" . split-window-right)
-         ("C-x C-0" . edlete-window)
-         ;; ("C-h" . backward-char)
-         ("C-j" . next-line)
-         ("C-k" . previous-line)
-         ;; ("C-l" . forward-char)
-         ;; ("C-S-p" . scroll-down-command)
-         ;; ("C-S-n" . scroll-up-command)
+  :bind (
          :map god-local-mode-map
          ("C-\\" . nil)
          ("i" . god-local-mode)
          ("RET" . (lambda () (interactive)))
-         ;; ("h" . backward-char)
          ("j" . next-line)
          ("k" . previous-line)
          ("l" . forward-char)
@@ -45,18 +32,10 @@
          ("C-j" . next-line)
          ("C-k" . previous-line)
          ("q" . kill-current-buffer)
-         ;; ("C-l" . forward-char)
-         ;; ("TAB" . forward-word)
-         ;; ("H" . (lambda () (interactive) (progn (backward-char 5) (scroll-right 5))))
-         ;; ("J" . (lambda () (interactive) (progn (next-line 5) (scroll-up 5))))
-         ;; ("K" . (lambda () (interactive) (progn (previous-line 5) (scroll-down 5))))
-         ;; ("L" . (lambda () (interactive) (progn (forward-char 5) (scroll-left 5))))
-         ;; :map org-mode-map
-         ;; ("C-j". next-line)
-         ;; ("C-k" . previous-line)
          )
 
   :custom
+
   (god-exempt-major-modes
    '(dired-mode wdired-mode image-mode help-mode grep-mode exwm-mode
      xref--xref-buffer-mode minibuffer-mode help-mode
@@ -74,7 +53,9 @@
      package-menu-mode org-agenda-mode calc-mode comint-mode
      racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
      lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode))
+
   (god-exempt-predicates (list #'god-exempt-mode-p))
+  
   :config
 
   (global-set-key (kbd "C-<f1>") help-map)
