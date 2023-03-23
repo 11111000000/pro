@@ -25,7 +25,10 @@
 | s-m       | consult-imenu-multi           |
 | M-M       | bookmark-set                  |
 | M-m       | bookmark-jump                 |
-
+| M-i       | god-local-mode                |
+| <escape>  | god-local-mode                |
+| C-j       | next-line                     |
+| C-k       | previous-line                 |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -94,6 +97,15 @@
 | C-x =         | balance-windows               |
 | C-x _         | maximize-window               |
 | C-x -         | minimize-window               |
+| C-c pa        | projectile-add-known-project  |
+| C-c p C-p     | projectile-add-known-project  |
+| C-c pp        | projectile-switch-project     |
+| C-c ps s      | consult-ag                    |
+| C-x C-1       | delete-other-windows          |
+| C-x C-2       | split-window-below            |
+| C-x C-3       | split-window-right            |
+| C-x C-0       | delete-window                 |
+
 
 ** НАДО Клавиши для модов
 
@@ -133,6 +145,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 
