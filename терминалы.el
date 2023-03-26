@@ -129,26 +129,46 @@
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank))
   :config
-
-  (custom-set-faces
-   `(vterm-color-default ((t (:foreground "white" :background "black"))))
-   `(vterm-color-black   ((t (:foreground "black" :background "black" ))))
-   `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))
-   `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))
-   `(vterm-color-green   ((t (:foreground "green" :background "black"))))
-   `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))
-   `(vterm-color-red     ((t (:foreground "red" :background "black"))))
-   `(vterm-color-white   ((t (:foreground "white" :background "black"))))
-   `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))
+  
+  (custom-set-faces'
+   '(vterm-color-default ((t (:foreground "#ff0000" :background "#00ff00"))))
+   '(vterm-color-black ((t (:foreground "#3F3F3F" :background "#2B2B2B"))))
+   '(vterm-color-red ((t (:foreground "#AC7373" :background "#8C5353"))))
+   '(vterm-color-green ((t (:foreground "#7F9F7F" :background "#9FC59F"))))
+   '(vterm-color-yellow ((t (:foreground "#DFAF8F" :background "#9FC59F"))))
+   '(vterm-color-blue ((t (:foreground "#7CB8BB" :background "#4C7073"))))
+   '(vterm-color-magenta ((t (:foreground "#DC8CC3" :background "#CC9393"))))
+   '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
+   '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555"))))
    )
+  
+   ;; '(term-default-fg-color ((t (:inherit term-color-white))))
+   ;; '(term-default-bg-color ((t (:inherit term-color-black))))
+
+   ;; `(vterm-color-default ((t (:foreground "white" :background "black"))))
+   ;; `(vterm-color-black   ((t (:foreground "black" :background "black" ))))
+   ;; `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))
+   ;; `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))
+   ;; `(vterm-color-green   ((t (:foreground "green" :background "black"))))
+   ;; `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))
+   ;; `(vterm-color-red     ((t (:foreground "red" :background "black"))))
+   ;; `(vterm-color-white   ((t (:foreground "white" :background "black"))))
+   ;; `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))
+
+   (defface terminal-face
+      '((((background light)) (:background "#000000" :family "Terminus (TTF)"))
+        (((background dark)) (:background "#000000" :family "Terminus (TTF)")))
+      "Terminal face")
 
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
 
   (defun set-vterm-font ()
-    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
-    (buffer-face-mode t))
+    (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
+    (buffer-face-mode t)
+    (face-remap-add-relative 'default '(:foreground "#dddddd" :background "#000"))
+    )
 
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
     (if (equal major-mode 'vterm-mode)

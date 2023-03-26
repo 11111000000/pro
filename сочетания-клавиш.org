@@ -105,7 +105,14 @@
 | C-x C-2       | split-window-below            |
 | C-x C-3       | split-window-right            |
 | C-x C-0       | delete-window                 |
-
+| s-h           | windmove-left                 |
+| s-j           | windmove-down                 |
+| s-k           | windmove-up                   |
+| s-l           | windmove-right                |
+| s-K           | buf-move-up                   |
+| s-J           | buf-move-down                 |
+| s-H           | buf-move-left                 |
+| s-L           | buf-move-right                |
 
 ** НАДО Клавиши для модов
 

@@ -2,12 +2,6 @@
 ;; Управление окнами
 ;;; Commentary:
 ;;; Code:
-;;;; Перемещение по окнам
-
-(global-set-key (kbd "s-h") 'windmove-left)
-(global-set-key (kbd "s-j") 'windmove-down)
-(global-set-key (kbd "s-k") 'windmove-up)
-(global-set-key (kbd "s-l") 'windmove-right)
 
 ;;;; Перемещение окон
 
@@ -15,10 +9,7 @@
   :ensure t
   :defer t
   :bind (
-         ("s-K" . buf-move-up)
-         ("s-J" . buf-move-down)
-         ("s-H" . buf-move-left)
-         ("s-L" . buf-move-right))
+         )
   :config)
 
 ;;;; Золотое сечение
@@ -91,8 +82,7 @@
          ("C-c ." . popwin:stick-popup-window))
   :config
   (setq popwin:special-display-config
-        '(("*Miniedit Help*" :noselect t)
-          help-mode
+        '(("*Miniedit Help*" :noselect t)          
           lsp-ui-imenu-mode
           special-mode
           (completion-list-mode :noselect t)

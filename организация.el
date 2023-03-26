@@ -1,192 +1,60 @@
-;;; организация.el --- Конфигурация Org-mode и Outline/Outshine
-;;; Commentary:
-;;; Code:
-;;;; Базовые настройки
+(Type <PageDown> or <PageUp> to scroll, C-s to search, or q to exit.)
 
-(load-library "find-lisp")
+Commands, Keys and Functions
 
-(use-package org
-  :ensure nil
-  
-  :bind (
-         :map org-mode-map
-         ("C-c o" . org-agenda-open-link))
-  :custom ((org-log-done nil)
-                                        ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-           (org-todo-keywords '((sequence "НАДО" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
-  :config
-  (require 'org-compat)
-  :init)
+   m 	Show help for current major and minor modes and their commands
+   b 	Show all key bindings
+   M-x describe-key 	Show help for key
+   c 	Show help for key briefly
+   w 	Show which key runs a specific command
 
-;;;; Красивые заголовки
+   M-x apropos-command 	Search for commands (see also M-x apropos)
+   d 	Search documentation of functions, variables, and other items
+   x 	Show help for command
+   M-x describe-function 	Show help for function
+   M-x describe-variable 	Show help for variable
+   o 	Show help for function or variable
 
-;; (use-package org-bullets
-;;   :if window-system
-;;   :ensure t
-;;   :defer t
-;;   :after (org)
-;;   :hook ((org-mode . org-bullets-mode))
+Manuals
 
-;;   :custom ((org-bullets-bullet-list '("‣" "‣" ))
-;;            (org-hide-emphasis-markers nil)
-;;            (org-startup-indented t)
-;;            (org-hide-leading-stars nil)
-;;            ))
+   r 	Show Emacs manual
+   M-x Info-goto-emacs-command-node 	Show Emacs manual section for command
+   K 	Show Emacs manual section for a key sequence
+   i 	Show all installed manuals
+   R 	Show a specific manual
+   S 	Show description of symbol in pertinent manual
 
-;;;; Иконки приоритетов
+Other Help Commands
 
-(use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
+   C-e 	Extending Emacs with external packages
+   p 	Search for Emacs packages (see also M-x list-packages)
+   P 	Describe a specific Emacs package
 
-;;;; Иконка свёртки
+   t 	Start the Emacs tutorial
+   C-q 	Display the quick help buffer.
+   e 	Show recent messages (from echo area)
+   l 	Show last 300 input keystrokes (lossage)
+   M-x display-local-help 	Show local help at point
 
-(setq-default org-ellipsis "…")
+Miscellaneous
 
-;;;; Картинки
+   C-a 	About Emacs
+   C-f 	Emacs FAQ
+   C-n 	News of recent changes
+   C-p 	Known problems
+   C-d 	Debugging Emacs
 
-;; По-умолчанию изображения в Org-файлах показаны:
+   g 	About the GNU project
+   C-c 	Emacs copying permission (GNU General Public License)
+   C-o 	Emacs ordering and distribution information
+   C-m 	Order printed manuals
+   C-t 	Emacs TODO
+   C-w 	Information on absence of warranty
 
-(setq-default org-startup-with-inline-images nil)
+Internationalization and Coding Systems
 
-;; Для определения размера отображения, сперва ищем атрибут вида {{
-
-(setq-default org-image-actual-width nil)
-
-;;;; Блоки кода
-
-;; Скрываем блоки кода при открытии документа
-
-(setq-default org-hide-block-startup nil)
-
-;; Включаем соответствующую подстветку
-
-(setq-default org-src-fontify-natively t)
-
-;;  *<Tab>* внутри блоков работает как в режиме блока
-
-(setq-default org-src-tab-acts-natively t)
-
-;; Перед кодом никаких автоотступов
-
-
-(setq-default org-src-preserve-indentation t
-              org-edit-src-content-indentation 0)
-
-;; Авто-обновление картинок при выполнении кода
-
-(defun поправить-встроеные-изображения ()
-  "Перерисовать изображения."
-  (when org-inline-image-overlays
-    (org-redisplay-inline-images)))
-
-(add-hook 'org-babel-after-execute-hook 'поправить-встроеные-изображения)
-
-;; Открытие блока в окне
-
-(setq-default org-src-window-setup 'current-window)
-
-;; Нет нужды подтверждать выполнение блока (<C-c C-c>)
-
-(setq-default org-confirm-babel-evaluate nil)
-
-;; Активные языки
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((dot . t)
-   (ditaa . t)
-   (emacs-lisp . t)
-   (plantuml . t)
-   (css . t)
-   (js . t)
-   (R . t)
-   ;;(http . t)
-   (shell . t)
-   ))
-
-;; PlantUML jar Path
-
-(setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
-
-;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
-
-(setq org-support-shift-select nil)
-
-;; Перемещение по заголовкам, со скрытием остальных
-
-(use-package org
-  ;; :bind (:map org-mode-map
-  ;;               (
-  ;;                ("M-n" . my/org-show-next-heading-tidily)
-  ;;                ("M-p" . my/org-show-previous-heading-tidily)
-  ;;                )
-  ;;             )
-  :init)
-
-;;;; TODO Учёт времени
-;;;; Помодоро
-
-;; Простой таймер для учёта рабочего времени и перерывов:
-
-(use-package pomodoro :ensure t :defer t)
-
-(use-package org-pomodoro
-  :ensure t :defer t
-  :custom (
-           (org-pomodoro-length 15)
-  	       (org-pomodoro-short-break-length 5)
-  	       (org-pomodoro-long-break-length 15)
-  	       (org-pomodoro-play-sounds 1)))
-
-;;;; TODO Поли-моды
-
-;; https://polymode.github.io/usage/
-
-;;;; Таблицы
-
-;; Моноширный шрифт для таблиц
-
-(set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-
-;;;; Заметки
-
-(use-package org-noter
-  :ensure t
-  :bind (
-        :map doc-view-mode-map
-        ("i" . org-noter-insert-note)))
-
-;;;; Цветные тэги
-
-(use-package org-rainbow-tags
-  :ensure t
-  :hook ((org-mode . org-rainbow-tags-mode))
-  :init)
-
-;;;;  Org modern
-
-(use-package org-modern
-  :ensure t
-  :hook ((org-mode . org-modern-mode)))
-
-;;;; Организация кода
-
-(use-package outshine
-  :ensure t
-  :custom ((outshine-startup-folded-p nil))
-  :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
-         (outline-minor-mode . outshine-mode)
-         (outline-minor-mode . iimage-mode))
-  :bind (:map outshine-mode-map
-              ("C-<return>" . outshine-insert-heading)
-              ("C-<tab>" . outshine-cycle)))
-
-(use-package outshine-bullets
-  :init (установить-из-репы :repo "11111000000/outshine-bullets")
-  :hook ((outshine-mode . outshine-bullets-mode))
-  :custom (
-	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))
-	   )
-  )
-
-(provide 'организация)
-;;; организация.el ends here
+   I 	Describe input method
+   M-x describe-coding-system 	Describe coding system
+   L 	Describe language environment
+   s 	Show current syntax table
+   h 	Display the HELLO file illustrating various scripts

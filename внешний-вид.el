@@ -142,7 +142,8 @@
 (use-package solaire-mode
   :ensure t
   :config
-  (solaire-global-mode t))
+  (solaire-global-mode t)
+  )
 
 (provide 'внешний-вид)
 
