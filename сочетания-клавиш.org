@@ -81,7 +81,7 @@
 | s-u           | winner-undo                   |
 | s-U           | winner-redo                   |
 | C-<f3>        | battery                       |
-| s-`           | multi-vterm-project           |
+| s-`           | открыть-терминал-проекта      |
 | C-c tt        | multi-vterm                   |
 | C-c tn        | multi-vterm-next              |
 | C-c tp        | multi-vterm-prev              |
@@ -152,17 +152,6 @@
 #+END_SRC
 
 #+RESULTS:
-
-
-
-
-
-
-
-
-
-
-
 
 
 

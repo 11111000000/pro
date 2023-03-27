@@ -12,6 +12,7 @@
   :ensure t
   :hook
   (org-mode . mixed-pitch-mode)
+  (help-mode . mixed-pitch-mode)
   )
 
 ;(setq-default default-frame-alist '((font . "Fira Code")))
