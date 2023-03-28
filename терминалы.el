@@ -141,12 +141,10 @@
    '(vterm-color-blue ((t (:foreground "#7CB8BB" :background "#4C7073"))))
    '(vterm-color-magenta ((t (:foreground "#DC8CC3" :background "#CC9393"))))
    '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
-   '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555"))))
-   )
+   '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
   
    ;; '(term-default-fg-color ((t (:inherit term-color-white))))
    ;; '(term-default-bg-color ((t (:inherit term-color-black))))
-
    ;; `(vterm-color-default ((t (:foreground "white" :background "black"))))
    ;; `(vterm-color-black   ((t (:foreground "black" :background "black" ))))
    ;; `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))
@@ -200,7 +198,6 @@
        (side . bottom)
        (slot . 0))))
 
-
 ;; (use-package eshell-vterm
 ;;   ;;:hook ((eshell-mode . eshell-vterm-mode))
 ;;   :ensure t
@@ -214,10 +211,18 @@
 (defun открыть-терминал-проекта ()
   "Открыть терминал проекта или директории."
   (interactive)
-  (if (projectile-project-p)
-      (multi-vterm-project)
-    (vterm-toggle)
-    ))
+  (if (eq major-mode 'vterm-mode)
+      (quit-window)
+      (let ((окно-терминала (cl-find-if
+                            (lambda (window)
+                              (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
+                            (window-list))))
+        (if окно-терминала
+            (select-window окно-терминала)
+          (if (projectile-project-p)
+              (multi-vterm-project)
+            (multi-vterm-dedicated-toggle)))
+        )))
 
 (provide 'терминалы)
 ;;; терминалы.el ends here
