@@ -7,8 +7,7 @@
 (defun директорию-вверх () (interactive) (find-file ".."))
 
 (use-package dired
-  :bind (("C-x d" . dired-jump)
-         ("C-x C-d" . dired-jump)
+  :bind (
          :map dired-mode-map
          ("j" . dired-next-line)
          ("k" . dired-previous-line)
@@ -126,17 +125,7 @@
       (`(t . _)
        (treemacs-git-mode 'simple)))
 
-    (treemacs-hide-gitignored-files-mode nil))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("M-t" . treemacs)
-        ("C-x t d"   . treemacs-select-directory)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
+    (treemacs-hide-gitignored-files-mode nil)))
 
 
 ;;;; Иконки

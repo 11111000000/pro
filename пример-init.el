@@ -50,8 +50,6 @@
 (org-babel-load-file "/home/az/Добро/сочетания-клавиш.org")
 (delete-file "/home/az/Добро/сочетания-клавиш.el")
 
-
-
 (provide 'пример-init)
 
 ;;; пример-init.el ends here

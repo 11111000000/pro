@@ -50,7 +50,7 @@
 | s-K           | buf-move-up                   |
 | s-L           | buf-move-right                |
 | s-R           | rename-buffer                 |
-| s-t           | открыть-новую-вкладку         |
+| s-o           | открыть-новую-вкладку         |
 | s-T           | tab-bar-undo-close-tab        |
 | s-r           | tab-bar-rename-tab            |
 | s-N           | tab-bar-move-tab              |
@@ -63,6 +63,8 @@
 | s-x           | app-launcher-run-app          |
 | s-M-h         | split-window-horizontally     |
 | s-M-k         | split-window-vertically       |
+| C-x d         | dired-jump                    |
+| C-x C-d       | dired-jump                    |
 | <XF86Back>    | winner-undo                   |
 | <XF86Forward> | winner-redo                   |
 | <print>       | скриншот-области              |
@@ -113,6 +115,7 @@
 | s-J           | buf-move-down                 |
 | s-H           | buf-move-left                 |
 | s-L           | buf-move-right                |
+| s-t           | treemacs                      |
 
 ** НАДО Клавиши для модов
 
@@ -152,6 +155,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

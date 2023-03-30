@@ -41,7 +41,7 @@
      (exwm-randr-enable)
 
      (add-hook 'exwm-randr-screen-change-hook
-              'dp-3-on-right)
+              'dp-3-on-right-rotate)
      )
   )
 
