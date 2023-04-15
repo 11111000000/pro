@@ -34,7 +34,7 @@
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
           (буфер-вкладки (alist-get 'name tab))
-          (иконка-режима (all-the-icons-icon-for-mode (with-current-buffer буфер-вкладки major-mode)))
+          (иконка-режима (all-the-icons-icon-for-mode (with-current-buffer буфер-вкладки major-mode) :height 0.8))
           (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive ))
           (имя-буфера (substring-no-properties (alist-get 'name tab)))
           (имя-вкладки (format "%s" (if (> (length имя-буфера) 21)
