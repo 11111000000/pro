@@ -1,5 +1,4 @@
 * Глобальные сочетания клавиш
-
 ** Клавиши текстового режима
 
 #+NAME: key-bindings-table
@@ -29,6 +28,7 @@
 | <escape>  | god-local-mode                |
 | C-j       | next-line                     |
 | C-k       | previous-line                 |
+| M-t       | nil                           |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -50,7 +50,7 @@
 | s-K           | buf-move-up                   |
 | s-L           | buf-move-right                |
 | s-R           | rename-buffer                 |
-| s-o           | открыть-новую-вкладку         |
+| s-t           | открыть-новую-вкладку         |
 | s-T           | tab-bar-undo-close-tab        |
 | s-r           | tab-bar-rename-tab            |
 | s-N           | tab-bar-move-tab              |
@@ -115,7 +115,7 @@
 | s-J           | buf-move-down                 |
 | s-H           | buf-move-left                 |
 | s-L           | buf-move-right                |
-| s-t           | treemacs                      |
+| s-g           | treemacs                      |
 
 ** НАДО Клавиши для модов
 
@@ -126,7 +126,6 @@
 |                | +         | imagex-sticky-maximize         |
 |                | =         | imagex-sticky-zoom-in          |
 |                | -         | imagex-sticky-zoom-out         |
-
 
 ** Применение сочетаний
 
@@ -155,6 +154,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

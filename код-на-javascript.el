@@ -101,5 +101,11 @@
                                         ;( "C-c l" . ts-load-file-and-go)
               ))
 
+(use-package graphql-mode
+  :ensure t)
+
+(use-package request
+  :ensure t)
+
 (provide 'код-на-javascript)
 ;;; код-на-javascript.el ends here.

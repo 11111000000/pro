@@ -7,43 +7,6 @@
 (use-package powerline
   :ensure t)
 
-(require 'powerline)
-(defvar добрая-высота-вкладки 22)
-(defvar добрая-вкладка-слева (powerline-wave-right 'tab-bar nil добрая-высота-вкладки))
-(defvar добрая-вкладка-справа (powerline-wave-left nil 'tab-bar добрая-высота-вкладки))
-
-(defvar список-кружков-с-цифрами
-    '((0 . "⓪")
-      (1 . "①")
-      (2 . "②")
-      (3 . "③")
-      (4 . "④")
-      (5 . "⑤")
-      (6 . "⑥")
-      (7 . "⑦")
-      (8 . "⑧")
-      (9 . "⑨"))
-    "Alist of integers to strings of circled unicode numbers.")
-
-(defun добрый-формат-имени-вкладки (tab i)
-  (let ((current-p (eq (car tab) 'current-tab))
-       (tab-num (if (and tab-bar-tab-hints (< i 10))
-                    (alist-get i список-кружков-с-цифрами) "")))
-    ;; (propertize
-    ;;  (powerline-render (list добрая-вкладка-слева
-    ;;                          (format "%s" (alist-get 'name tab))
-    ;;                          добрая-вкладка-справа
-    ;;                          ))
-    ;;  'face (funcall tab-bar-tab-face-function tab))
-    (propertize
-     (concat
-      " "
-      tab-num
-      " "
-      (alist-get 'name tab)
-      " ")
-     'face (funcall tab-bar-tab-face-function tab))
-    ))
 
 (use-package tab-bar
   :ensure t
@@ -51,16 +14,46 @@
   (tab-bar-new-button-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
+  (tab-bar-auto-width-min '(1 2))
+  (tab-bar-auto-width-min '(30 10))
+  (tab-bar-auto-width nil(tab-bar-auto-width-min '(1 2))
+  (tab-bar-auto-width-min '(30 10))
+  (tab-bar-auto-width t))
   :config
-  (tab-bar-mode t)
-  (setq-default tab-bar-close-button nil)
 
-  (setq tab-bar-tab-name-function #'tab-bar-tab-name-current-with-count)
-  (setq tab-bar-tab-name-format-function #'добрый-формат-имени-вкладки)
-  (setq tab-bar-tab-hints t)
+  (defvar высота-вкладки 22)
 
   (dotimes (i 10)
-    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))))
+    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+  
+  (require 'powerline)
+  
+  (defvar левая-часть-вкладки (powerline-wave-right 'tab-bar nil высота-вкладки))
+  (defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))
+  
+  (defun формат-вкладки-tab-bar (tab i)
+    (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
+          (буфер-вкладки (alist-get 'name tab))
+          (иконка-режима (all-the-icons-icon-for-mode (with-current-buffer буфер-вкладки major-mode)))
+          (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive ))
+          (имя-буфера (alist-get 'name tab))
+          (имя-вкладки (format "%s" (if (> (length имя-буфера) 21)
+                                        (concat
+                                         (substring имя-буфера 0 21) "…")
+                                      имя-буфера)))
+          (текст-вкладки (concat
+                          " "
+                          (if (symbolp иконка-режима) "?" иконка-режима)
+                          " "
+                          имя-вкладки
+                          " ")))
+      (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)      
+      текст-вкладки))
+  
+  (setq tab-bar-tab-name-format-function #'формат-вкладки-tab-bar)
+  (setq tab-bar-tab-name-function #'tab-bar-tab-name-current); #'имя-вкладки-tab-bar)
+
+  (tab-bar-mode t))
 
 (defun открыть-новую-вкладку ()
   "Открыть новую вкладку с дашбордом."
@@ -80,22 +73,23 @@
   :hook ((vterm-mode . tab-line-mode)
          (telega-mode . tab-line-mode))
   :bind (("M-s-n" . #'tab-line-switch-to-next-tab)
-            ("M-s-p" . #'tab-line-switch-to-prev-tab))
+         ("M-s-p" . #'tab-line-switch-to-prev-tab)
+         ("M-S-n" . #'tab-line-switch-to-next-tab)
+         ("M-S-p" . #'tab-line-switch-to-prev-tab))
   :config
-  
-  (global-tab-line-mode -1)
-  
-  (require 'powerline)
-  
-  (defvar az/tab-height 22)
-  (defvar az/tab-left (powerline-wave-right 'tab-line nil az/tab-height))
-  (defvar az/tab-right (powerline-wave-left nil 'tab-line az/tab-height))
 
-  (defun az/tab-line-tab-name-buffer (buffer &optional _buffers)
-    (powerline-render (list az/tab-left
+  (defvar высота-tab-line 22)
+;;;;; 
+  (require 'powerline)
+
+  (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
+    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
                             (format "%s" (buffer-name buffer))
-                            az/tab-right)))
-  (setq tab-line-tab-name-function #'az/tab-line-tab-name-buffer))
+                            (powerline-wave-left nil 'tab-line высота-tab-line))))
+  
+  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line)
+
+  (global-tab-line-mode -1))
 
 ;; (use-package project-tab-groups
 ;;   :ensure

@@ -3,9 +3,10 @@
 ;;; Commentary:
 ;;; Code:
 
-;;;; Не мигать
+;;;; Не мигать и не пищать :-)
 
 (setq visible-bell nil)
+(setq ring-bell-function 'ignore)
 
 ;;;; Тулбар
 
@@ -21,19 +22,36 @@
 
 ;; Включаем рекурсивные минибуферы
 
-(setq-default enable-recursive-minibuffers nil)
+(setq-default enable-recursive-minibuffers t)
+
+;; Максимальная высота минибуфера
+
+(setq-default max-mini-window-height nil)
+(setq resize-mini-windows nil)
+;(window-resize (minibuffer-window) 0.1)
+;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
+
+;; Обрезать длинные сообщения
+
+(setq message-truncate-lines t)
+
+;; Шрифт минибуфера
+
+;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
+;; (defun my-minibuffer-setup ()
+;;        (set (make-local-variable 'face-remapping-alist)
+;;             '((default :height 1.2))))
+
+;; (dolist (buf '(" *Echo Area 0*" " *Echo Area 1*"))
+;;   (with-current-buffer (get-buffer buf)
+;;     (make-local-variable 'face-remapping-alist)
+;;     (add-to-list 'face-remapping-alist '(default (:background "white" :height 1.3)))))
 
 ;; Минибуфер - модлайн
 
 (use-package taoline
   :if window-system
   :init (установить-из-репы :repo "11111000000/taoline")
-  :custom
-  (taoline-show-time t)
-  (taoline-show-input t)
-  (taoline-show-git-branch t)
-  (taoline-show-dir t)
-  (taoline-show-previous-buffer  nil)
   :config
   (taoline-mode 1))
 
@@ -42,6 +60,27 @@
 (use-package all-the-icons
   :if window-system
   :ensure t)
+
+;; (use-package mode-icons
+;;   :ensure t
+;;   :custom (
+;;           (mode-icons-desaturate-active t))
+;;   :config
+;;   ;; В новых версиях Emacs есть два режима ELisp\d и ELisp\l - для динамической и лексической области видимости соотв.
+;;   (add-to-list 'mode-icons  '(".*ELisp.*" "emacs" xpm))
+;;   (add-to-list 'mode-icons  '(".*EXWM.*" #xf1b2 FontAwesome))
+;;   (add-to-list 'mode-icons  '(".*Dired.*" #xf07c FontAwesome))
+;;   (add-to-list 'mode-icons  '(".*TypeScript.*" #xeb1b FontAwesome))
+;;   (add-to-list 'mode-icons  '(".*HTML.*" "html" xpm))
+;;   (add-to-list 'mode-icons  '(".*Less.*" #xf1c9 FontAwesome))
+;;   (mode-icons-mode t))
+
+(use-package all-the-icons-completion
+  :ensure
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
 
 ;;;; Цветовые темы
 
@@ -116,8 +155,8 @@
 ;; как своего рода директории
 
 (use-package imenu
-  :custom ((imenu-auto-recsan t)))
-  :defer t
+  :custom ((imenu-auto-recsan t))
+  :defer t)
 
 ;;;; Мини-карта
 
@@ -137,13 +176,12 @@
 
 ;;;; TODO Путь в заголовке
 
-;;;; Фон для служебных буферов
+;;;;  Фон для служебных буферов
 
-(use-package solaire-mode
-  :ensure t
-  :config
-  (solaire-global-mode t)
-  )
+;; (use-package solaire-mode
+;;   :ensure t
+;;   :config
+;;   (solaire-global-mode t))
 
 (provide 'внешний-вид)
 
