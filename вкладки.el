@@ -36,7 +36,7 @@
           (буфер-вкладки (alist-get 'name tab))
           (иконка-режима (all-the-icons-icon-for-mode (with-current-buffer буфер-вкладки major-mode)))
           (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive ))
-          (имя-буфера (alist-get 'name tab))
+          (имя-буфера (substring-no-properties (alist-get 'name tab)))
           (имя-вкладки (format "%s" (if (> (length имя-буфера) 21)
                                         (concat
                                          (substring имя-буфера 0 21) "…")
@@ -47,7 +47,7 @@
                           " "
                           имя-вкладки
                           " ")))
-      (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)      
+      (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)
       текст-вкладки))
   
   (setq tab-bar-tab-name-format-function #'формат-вкладки-tab-bar)
