@@ -109,7 +109,7 @@
           treemacs-wide-toggle-width               70
           treemacs-width                           30
           treemacs-width-increment                 1
-          treemacs-width-is-initially-locked       nil
+          treemacs-width-is-initially-locked       t
           treemacs-workspace-switch-cleanup        nil)
 
     ;;(treemacs-resize-icons 44)

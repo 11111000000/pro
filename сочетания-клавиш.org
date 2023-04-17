@@ -15,7 +15,8 @@
 | C-$       | toggle-truncate-lines         |
 | C-c f     | вставить-имя-файла            |
 | C-x b     | consult-buffer                |
-| C-x C-b   | consult-buffer-other-window   |
+| C-x C-b   | consult-buffer                |
+| C-x M-b   | consult-buffer-other-window   |
 | s-<tab>   | consult-buffer                |
 | M-s s     | consult-line                  |
 | M-s M-s   | consult-line-multi            |
@@ -152,12 +153,3 @@
 	     exwm-keys-table)))
 
 #+END_SRC
-
-#+RESULTS:
-
-
-
-
-
-
-

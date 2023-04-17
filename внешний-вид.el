@@ -59,6 +59,9 @@
 
 (use-package all-the-icons
   :if window-system
+  :custom
+  (all-the-icons-scale-factor 1)
+  (all-the-icons-default-adjust 0)
   :ensure t)
 
 ;; (use-package mode-icons
