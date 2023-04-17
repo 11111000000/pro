@@ -212,7 +212,7 @@
   "Открыть терминал проекта или директории."
   (interactive)
   (if (eq major-mode 'vterm-mode)
-      (quit-window)
+      (delete-window)
       (let ((окно-терминала (cl-find-if
                             (lambda (window)
                               (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))

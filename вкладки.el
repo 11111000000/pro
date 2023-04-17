@@ -26,7 +26,7 @@
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
-  :hooks
+  :hook
   ((tab-bar-mode . tab-bar-history-mode))
   :config
   (setq высота-вкладки 18)
@@ -88,6 +88,7 @@
 
 ;;;;;  Вкладки уровня окна
 
+
 (use-package tab-line
   :custom
   (tab-line-new-button-show nil)
@@ -96,15 +97,23 @@
   (tab-line-switch-cycling t)
   (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
   :hook ((vterm-mode . tab-line-mode)
-         (telega-mode . tab-line-mode))
-  :bind (("M-s-n" . #'tab-line-switch-to-next-tab)
-         ("M-s-p" . #'tab-line-switch-to-prev-tab)
-         ("M-S-n" . #'tab-line-switch-to-next-tab)
-         ("M-S-p" . #'tab-line-switch-to-prev-tab))
+       (telega-mode . tab-line-mode))
+  :bind (("M-s-n" . следующая-вкладочка)
+         ("M-s-p" . предыдущая-вкладочка))
   :config
 
+  (defun следующая-вкладочка ()
+    (interactive)
+    "Следующая."
+    (if tab-line-mode (tab-line-switch-to-next-tab)))
+
+  (defun предыдущая-вкладочка ()
+    (interactive)
+    "Предыдущая."
+    (if tab-line-mode (tab-line-switch-to-prev-tab)))
+  
   (defvar высота-tab-line 22)
-;;;;;
+
   (require 'powerline)
 
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
@@ -112,9 +121,7 @@
                             (format "%s" (buffer-name buffer))
                             (powerline-wave-left nil 'tab-line высота-tab-line))))
 
-  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line)
-
-  (global-tab-line-mode -1))
+  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 
 ;; (use-package project-tab-groups
 ;;   :ensure
