@@ -66,18 +66,6 @@
   :ensure t
   :config (eyebrowse-mode))
 
-;;;; Путешествие по истории окон
-
-;; Путешествие по истории окон - <C-c Left> / <C-c Right>
-
-(use-package winner
-  :bind (("<XF86Back>" . winner-undo)
-         ("<XF86Forward>" . winner-redo)
-         ("s-u" . winner-undo)
-         ("s-S-u" . winner-redo))
-  :init
-  (winner-mode 1))
-
 ;;;; Помнить места
 
 (use-package saveplace

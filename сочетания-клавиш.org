@@ -81,8 +81,8 @@
 | s-z           | avy-goto-char                 |
 | s-_           | winner-undo                   |
 | s-M-_         | winner-redo                   |
-| s-u           | winner-undo                   |
-| s-U           | winner-redo                   |
+| s-u           | tab-bar-history-back          |
+| s-U           | tab-bar-history-forward       |
 | C-<f3>        | battery                       |
 | s-`           | открыть-терминал-проекта      |
 | C-c tt        | multi-vterm                   |
@@ -153,3 +153,6 @@
 	     exwm-keys-table)))
 
 #+END_SRC
+
+#+RESULTS:
+

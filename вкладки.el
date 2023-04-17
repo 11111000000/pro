@@ -7,6 +7,17 @@
 (use-package powerline
   :ensure t)
 
+(defun заменить-строки (пары-для-замены строка)
+  "заменяет набор паттернов в строке.
+принимает ПАРЫ-ДЛЯ-ЗАМЕНЫ и СТРОКА"
+  (seq-reduce
+   (lambda (строка пара)
+     (string-replace
+      (car пара)
+      (cdr пара)
+      строка))
+   пары-для-замены
+   строка))
 
 (use-package tab-bar
   :ensure t
@@ -15,13 +26,15 @@
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
+  :hooks
+  ((tab-bar-mode . tab-bar-history-mode))
   :config
+  (setq высота-вкладки 18)
+  (setq длинна-имени-вкладки 25)
   (setq иконка-по-умолчанию (all-the-icons-octicon "browser" :height 1  :v-adjust 0.1))
   (setq иконка-firefox (all-the-icons-faicon "firefox" :height 1  :v-adjust 0))
   (setq иконка-chrome (all-the-icons-faicon "chrome" :height 1  :v-adjust 0))
   (setq иконка-telegram (all-the-icons-faicon "comment" :height 1  :v-adjust 0))
-  (setq высота-вкладки 18)
-  (setq длинна-имени-вкладки 25)
    (setq замены-имён-вкладки `(("Firefox-esr" . ,иконка-firefox)
                                    ("Google-chrome" . ,иконка-chrome)))
 
@@ -29,24 +42,11 @@
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
   ;(defvar левая-часть-вкладки (all-the-icons-alltheicon "wave-right"))
-                                        ;(defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))
-
-
-  (defun заменить-строки (пары-для-замены строка)
-    (seq-reduce
-     (lambda (строка пара)
-       (string-replace
-        (car пара)
-        (cdr пара)
-        строка))
-     пары-для-замены
-     строка))
+  ;(defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))  
 
    (defun find-buffer-element (list)
      (loop for element in list
-           (pp element)
-           ))
-
+           (pp element)))
 
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
