@@ -15,8 +15,6 @@
 | C-M-d     | whole-line-or-region-kill-region    |
 | M-r       | replace-string                      |
 | M-R       | replace-regexp                      |
-| C-c C-r   | replace-string                      |
-| C-c r     | replace-regexp                      |
 | C-a       | к-идентации-или-началу-строки       |
 | C-S-M-p   | shift-text-up                       |
 | C-S-M-n   | shift-text-down                     |
@@ -144,6 +142,14 @@
 | s-H           | buf-move-left                 |
 | s-L           | buf-move-right                |
 | s-g           | treemacs                      |
+| C-x +         | golden-ratio                  |
+| C-x =         | balance-windows               |
+| C-x _         | maximize-window               |
+| C-x -         | minimize-window               |
+| C-c b         | popwin:popup-buffer           |
+| C-c .         | popwin:stick-popup-window     |
+| s-f           | ace-window                    |
+| s-F           | ace-swap-window               |
 
 ** НАДО Клавиши для модов
 
@@ -182,6 +188,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 

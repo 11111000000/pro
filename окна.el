@@ -8,8 +8,6 @@
 (use-package buffer-move
   :ensure t
   :defer t
-  :bind (
-         )
   :config)
 
 ;;;; Золотое сечение
@@ -19,10 +17,6 @@
 (use-package golden-ratio
   :ensure t
   :defer t
-  :bind (("C-x +" . golden-ratio)
-         ("C-x =" . balance-windows)
-         ("C-x _" . maximize-window)
-         ("C-x -" . minimize-window))
   :config
   (golden-ratio-mode -1))
 
@@ -78,11 +72,9 @@
 
 (use-package popwin
   :ensure t
-  :bind (("C-c b" . popwin:popup-buffer)
-         ("C-c ." . popwin:stick-popup-window))
   :config
   (setq popwin:special-display-config
-        '(("*Miniedit Help*" :noselect t)          
+        '(("*Miniedit Help*" :noselect t)
           lsp-ui-imenu-mode
           special-mode
           (completion-list-mode :noselect t)
@@ -142,9 +134,7 @@
               aw-char-position 'left
               aw-ignore-current nil
               aw-leading-char-style 'char
-              aw-scope 'frame)
-  :bind (("s-f" . ace-window)
-         ("s-F" . ace-swap-window)))
+              aw-scope 'frame))
 
 (provide 'окна)
 ;;; окна.el ends here
