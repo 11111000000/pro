@@ -1,4 +1,4 @@
-;;; программирование.el --- Конфигурация среды программирования
+;;; код.el --- Конфигурация среды программирования
 ;;; Commentary:
 ;;; Code:
 ;;;; Скобки
@@ -151,7 +151,7 @@ ARG - backward"
 
 ;;;; Сниппеты
 
-(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "программирование")) "etc/yasnippet.template.txt"))
+(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "код")) "etc/yasnippet.template.txt"))
 
 (defun dobro/yas-new-snippet-with-example ()
   "Создать новый сниппет со шпаргалкой."
@@ -244,5 +244,5 @@ ARG - backward"
 (setq reb-re-syntax 'read)
 
 
-(provide 'программирование)
-;;; программирование.el ends here
+(provide 'код)
+;;; код.el ends here

@@ -161,6 +161,7 @@
                                   ("assoc" "среди")
                                   ("with-temp-buffer" "во-временном-буфере")
                                   ("string-match" "начало-подстроки")
+                                  ("start-process-shell-command" "запустить-процесс-в-оболочке")
                                   ))
   (prettify-symbols-mode 1))
 

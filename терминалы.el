@@ -191,12 +191,13 @@
   (vterm-toggle-scope 'project)
   (vterm-toggle-hide-method 'delete-window)
   :config
-  (add-to-list 'display-buffer-alist
-     '("\*vterm\*"
-       (display-buffer-in-side-window)
-       (window-height . 0.38)
-       (side . bottom)
-       (slot . 0))))
+  ;; (add-to-list 'display-buffer-alist
+  ;;    '("\*vterm\*"
+  ;;      (display-buffer-in-side-window)
+  ;;      (window-height . 0.38)
+  ;;      (side . bottom)
+  ;;      (slot . 0)))
+  )
 
 ;; (use-package eshell-vterm
 ;;   ;;:hook ((eshell-mode . eshell-vterm-mode))
@@ -205,8 +206,7 @@
 
 (use-package multi-vterm
   :ensure t
-  :config
-  )
+  :config)
 
 (defun открыть-терминал-проекта ()
   "Открыть терминал проекта или директории."
@@ -221,8 +221,7 @@
             (select-window окно-терминала)
           (if (projectile-project-p)
               (multi-vterm-project)
-            (multi-vterm-dedicated-toggle)))
-        )))
+            (vterm-toggle))))))
 
 (provide 'терминалы)
 ;;; терминалы.el ends here

@@ -42,7 +42,7 @@
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
   ;(defvar левая-часть-вкладки (all-the-icons-alltheicon "wave-right"))
-  ;(defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))  
+  ;(defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))
 
    (defun find-buffer-element (list)
      (loop for element in list
@@ -112,7 +112,7 @@
     (interactive)
     "Предыдущая."
     (if tab-line-mode (tab-line-switch-to-prev-tab)))
-  
+
   (defvar высота-tab-line 22)
 
   (require 'powerline)
