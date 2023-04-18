@@ -89,37 +89,19 @@
 
 ;; Выключены *C-d* и *C-w*, весьма деструктивные.
 
-(global-unset-key (kbd "C-d"))
-(global-unset-key (kbd "C-w"))
-(global-unset-key (kbd "s-x"))
-(global-unset-key (kbd "M-c"))
 
-;; Операции удаления (Vim-стиль)
+;; Удалить до конца строки, но не CR
 
-(bind-keys*
- ("C-d C-f" . delete-forward-char)
- ("C-d C-b" . backward-dnelete-char-untabify)
- ("C-d C-e" . kill-line)
- ("C-d C-w" . delete-trailing-whitespace)
- ("C-d C-a" . delete-to-begin))
-
-;; Добавление линии над и под
-
-(bind-keys*
- ("M-o" . vi-open-line)
- ("C-M-o" . vi-open-line)
- ("M-O" . vi-open-line-above)
- ("C-M-O" . vi-open-line-above))
+(defun удалить-до-конца-строки ()
+  "Удалить до конца строки."
+  (interactive)
+  (delete-region (point) (line-end-position)))
 
 ;; Операция над выделением или текущей линией
 
 (use-package whole-line-or-region
   :ensure t
-  :bind (("M-y" . whole-line-or-region-kill-ring-save) ;; TODO Пофиксить в org
-         ("s-y" . whole-line-or-region-kill-ring-save) ;; TODO Пофиксить в org
-         ;;("C-y" . whole-line-or-region-yank)
-         ("C-d C-d" . whole-line-or-region-kill-region)
-         ("C-M-d" . whole-line-or-region-kill-region)))
+  :init)
 
 ;; Функция delete-to-begin, для вырезания от курсора до начала строки:
 
@@ -128,25 +110,11 @@
   (interactive)
   (kill-line 0))
 
-;;;; Поиск и замена
-
-(bind-keys*
- ;; ("M-r" . replace-string)
- ("M-R" . replace-regexp)
- ("C-c C-r" . replace-string)
- ("C-c r" . replace-regexp)
- ("C-c M-r" . replace-regexp))
-
 ;;;; Перемещение блоков
 
 (use-package shift-text
   :ensure t
-  :defer t
-  :bind
-  ("C-S-M-p" . shift-text-up)
-  ("C-S-M-n" . shift-text-down)
-  ("C-S-M-f" . shift-text-right)
-  ("C-S-M-b" . shift-text-left))
+  :defer t)
 
 ;;;; Отображения текста по центру ("режим чтения")
 

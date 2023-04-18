@@ -2,34 +2,61 @@
 ** Клавиши текстового режима
 
 #+NAME: key-bindings-table
-| Сочетание | Функция                       |
-|-----------+-------------------------------|
-| C-a       | к-идентации-или-началу-строки |
-| C--       | text-scale-decrease           |
-| C-+       | text-scale-increase           |
-| C-=       | text-scale-increase           |
-| C-M-=     | text-scale-set                |
-| C-c m     | popwin:messages               |
-| C-%       | forward-or-backward-sexp      |
-| C-a       | к-идентации-или-началу-строки |
-| C-$       | toggle-truncate-lines         |
-| C-c f     | вставить-имя-файла            |
-| C-x b     | consult-buffer                |
-| C-x C-b   | consult-buffer                |
-| C-x M-b   | consult-buffer-other-window   |
-| s-<tab>   | consult-buffer                |
-| M-s s     | consult-line                  |
-| M-s M-s   | consult-line-multi            |
-| C-x y     | consult-yank-from-kill-ring   |
-| <help> a  | consult-apropos               |
-| s-m       | consult-imenu-multi           |
-| M-M       | bookmark-set                  |
-| M-m       | bookmark-jump                 |
-| M-i       | god-local-mode                |
-| <escape>  | god-local-mode                |
-| C-j       | next-line                     |
-| C-k       | previous-line                 |
-| M-t       | nil                           |
+| Сочетание | Функция                             |
+|-----------+-------------------------------------|
+| C-d       | nil                                 |
+| C-w       | nil                                 |
+| s-x       | nil                                 |
+| M-c       | nil                                 |
+| M-y       | whole-line-or-region-kill-ring-save |
+| s-y       | whole-line-or-region-kill-ring-save |
+| C-y       | yank                                |
+| C-d C-d   | whole-line-or-region-kill-region    |
+| C-M-d     | whole-line-or-region-kill-region    |
+| M-r       | replace-string                      |
+| M-R       | replace-regexp                      |
+| C-c C-r   | replace-string                      |
+| C-c r     | replace-regexp                      |
+| C-a       | к-идентации-или-началу-строки       |
+| C-S-M-p   | shift-text-up                       |
+| C-S-M-n   | shift-text-down                     |
+| C-S-M-f   | shift-text-right                    |
+| C-S-M-b   | shift-text-left                     |
+| C--       | text-scale-decrease                 |
+| C-+       | text-scale-increase                 |
+| C-=       | text-scale-increase                 |
+| C-M-=     | text-scale-set                      |
+| C-c m     | popwin:messages                     |
+| C-%       | forward-or-backward-sexp            |
+| C-a       | к-идентации-или-началу-строки       |
+| C-$       | toggle-truncate-lines               |
+| C-c f     | вставить-имя-файла                  |
+| C-x b     | consult-buffer                      |
+| C-x C-b   | consult-buffer                      |
+| C-x M-b   | consult-buffer-other-window         |
+| s-<tab>   | consult-buffer                      |
+| M-s s     | consult-line                        |
+| M-s M-s   | consult-line-multi                  |
+| C-x y     | consult-yank-from-kill-ring         |
+| <help> a  | consult-apropos                     |
+| s-m       | consult-imenu-multi                 |
+| M-M       | bookmark-set                        |
+| M-m       | bookmark-jump                       |
+| M-i       | god-local-mode                      |
+| <escape>  | god-local-mode                      |
+| C-j       | next-line                           |
+| C-k       | previous-line                       |
+| M-t       | nil                                 |
+| M-o       | vi-open-line                        |
+| C-M-o     | vi-open-line                        |
+| M-O       | vi-open-line-above                  |
+| C-M-O     | vi-open-line-above                  |
+| C-d C-f   | delete-forward-char                 |
+| C-d C-b   | backward-dnelete-char-untabify      |
+| C-d C-e   | удалить-до-конца-строки             |
+| C-d C-w   | delete-trailing-whitespace          |
+| C-d C-a   | delete-to-begin                     |
+
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -155,4 +182,10 @@
 #+END_SRC
 
 #+RESULTS:
+
+
+
+
+
+
 

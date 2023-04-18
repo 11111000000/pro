@@ -26,8 +26,8 @@
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
-  :hook
-  ((tab-bar-mode . tab-bar-history-mode))
+  ;;:hook
+  ;; ((tab-bar-mode . tab-bar-history-mode))
   :config
   (setq высота-вкладки 18)
   (setq длинна-имени-вкладки 25)
@@ -78,7 +78,8 @@
   (setq tab-bar-tab-name-format-function  #'формат-вкладки-tab-bar)
   (setq tab-bar-tab-name-function #'tab-bar-tab-name-current)
 
-  (tab-bar-mode t))
+  (tab-bar-mode t)
+  (tab-bar-history-mode t))
 
 (defun открыть-новую-вкладку ()
   "Открыть новую вкладку с дашбордом."
