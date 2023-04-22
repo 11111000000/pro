@@ -96,7 +96,7 @@
           ("*slime-compilation*" :noselect t)
           "*slime-xref*"
           "*Calendar*"
-          ;(vterm-mode :noselect t :position bottom :stick t)
+          (vterm-mode :noselect t :position bottom :stick t)
           ("*Messages*" :noselect t :position bottom :stick t)
           ("*Racket Describe*" :noselect t :position top :stick t)
           ("*Racket REPL*" :noselect t :position bottom :stick t)
