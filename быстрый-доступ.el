@@ -120,7 +120,7 @@
 (use-package consult-eglot
   :after (eglot)
   :ensure t
-  :bind (:map eglot-mode-map ("s-t" . #'consult-eglot-symbols)))
+  :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols)))
 
 (provide 'быстрый-доступ)
 ;;; быстрый-доступ.el ends here

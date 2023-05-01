@@ -9,7 +9,6 @@
 | s-x       | nil                                 |
 | M-c       | nil                                 |
 | M-y       | whole-line-or-region-kill-ring-save |
-| s-y       | whole-line-or-region-kill-ring-save |
 | C-y       | yank                                |
 | C-d C-d   | whole-line-or-region-kill-region    |
 | C-M-d     | whole-line-or-region-kill-region    |
@@ -54,7 +53,26 @@
 | C-d C-e   | удалить-до-конца-строки             |
 | C-d C-w   | delete-trailing-whitespace          |
 | C-d C-a   | delete-to-begin                     |
-
+| C-M-s     | isearch-backward                    |
+| C-c o p   | completion-at-point                 |
+| C-c o t   | complete-tag                        |
+| C-c o d   | cape-dabbrev                        |
+| C-c o h   | cape-history                        |
+| C-c o f   | cape-file                           |
+| C-c o k   | cape-keyword                        |
+| C-c o s   | cape-symbol                         |
+| C-c o a   | cape-abbrev                         |
+| C-c o i   | cape-ispell                         |
+| C-c o l   | cape-line                           |
+| C-c o w   | cape-dict                           |
+| C-c o \\  | cape-tex                            |
+| C-c o _   | cape-tex                            |
+| C-c o ^   | cape-tex                            |
+| C-c o &   | cape-sgml                           |
+| C-c o r   | cape-rfc1345                        |
+| C-c g     | magit-status                        |
+| C-c C-p   | prodigy                             |
+| C-c d     | docker                              |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -188,6 +206,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

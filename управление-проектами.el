@@ -8,10 +8,8 @@
   :custom ((projectile-sort-order 'recently-active)
            ;(projectile-project-search-path '("~/Проекты/"))
            (projectile-switch-project-action #'projectile-dired))
-  :bind (
-         :map projectile-command-map
-         ("ss" . consult-ag)
-         )
+  :bind (:map projectile-command-map
+              ("ss" . consult-ag))
   :config
   ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -43,7 +41,7 @@
 
 (use-package magit
   :ensure t
-  :bind (("C-c g" . magit-status))
+  
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
            (magit-after-save-refresh-buffers t))
   :init
@@ -53,13 +51,11 @@
 ;;;; Автоматизация проекта
 
 (use-package prodigy
-  :ensure t
-  :bind (("C-c C-p" . prodigy)))
+  :ensure t)
 
 ;;;; Контейнеры
 
-(use-package docker
-  :bind (("C-c d" . docker))
+(use-package docker  
   :ensure t
   :init
   :config)

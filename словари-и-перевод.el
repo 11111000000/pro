@@ -7,8 +7,8 @@
   :ensure t
   :bind (
          ("C-c v" . gts-do-translate))
-  :custom (
-      (gts-translate-list '(("en" "ru") ("ru" "en"))))
+  :custom ((gts-translate-list '(("en" "ru")
+                                ("ru" "en"))))
   :config
   (setq gts-default-translator
         (gts-translator

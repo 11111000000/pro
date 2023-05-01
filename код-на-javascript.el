@@ -8,6 +8,7 @@
   :custom ((eslint-rc-use-package-json t)
            (eslint-rc-use-eslintignore t)
            (eslint-rc-use-node-modules-bin t))
+
   :hook ((typescript-mode . eslint-rc-mode)
          (typescriptreact-mode . eslint-rc-mode)
          (js-mode . eslint-rc-mode)
@@ -95,11 +96,7 @@
   :ensure t
   :bind (:map typescript-mode-map
               ( "C-x C-e" . ts-send-last-sexp)
-                                        ;( "C-M-x" . ts-send-last-sexp-and-go)
-              ( "C-c C-c" . ts-send-buffer)
-                                        ;( "C-c C-b" . ts-send-buffer-and-go)
-                                        ;( "C-c l" . ts-load-file-and-go)
-              ))
+              ( "C-c C-c" . ts-send-buffer)))
 
 (use-package graphql-mode
   :ensure t)

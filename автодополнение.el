@@ -53,23 +53,7 @@
 ;;;; Расширения для автодополнения
 
 (use-package cape
-  :ensure t
-  :bind (("C-c o p" . completion-at-point) ;; capf
-         ("C-c o t" . complete-tag)        ;; etags
-         ("C-c o d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c o h" . cape-history)
-         ("C-c o f" . cape-file)
-         ("C-c o k" . cape-keyword)
-         ("C-c o s" . cape-symbol)
-         ("C-c o a" . cape-abbrev)
-         ("C-c o i" . cape-ispell)
-         ("C-c o l" . cape-line)
-         ("C-c o w" . cape-dict)
-         ("C-c o \\" . cape-tex)
-         ("C-c o _" . cape-tex)
-         ("C-c o ^" . cape-tex)
-         ("C-c o &" . cape-sgml)
-         ("C-c o r" . cape-rfc1345))
+  :ensure t  
   :init)
 
 ;;;; Автодополнение для терминала
@@ -92,9 +76,9 @@
   (add-hook 'kb/themes-hooks #'(lambda ()
                (interactive)
                (kind-icon-reset-cache))))
+
 ;; (defun sorting (list)
-;;       (interactive)
-;;       )
+;;       (interactive))
 
 ;; (use-package codeium
 ;;   :init
@@ -117,8 +101,6 @@
 ;;   (установить-из-репы :repo "Exafunction/codeium-diagnose.el")
 ;;   :config
 ;;   (setq use-dialog-box nil)
-;; do not use popup boxes
-
 
 
 (provide 'автодополнение)

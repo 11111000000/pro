@@ -22,7 +22,7 @@
   (interactive)
   (custom-set-faces '(default ((t (:family "Fira Code" :height 120)))))
   (custom-set-faces '(fixed-pitch ((t (:family "Fira Code" :height 1.0)))))
-  (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.3)))))
+  (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.0)))))
   ;; (let* ((variable-tuple (cond
   ;;                        ;; ((x-list-fonts "OldSlavic")         '(:font "OldSlavic"))
   ;;                        ((x-list-fonts "Golos")         '(:font "Golos"))

@@ -31,17 +31,16 @@
     ([?\C-s] . ?\C-f)))
 
 (defun скриншот-области ()
-  "Получить скриншот области."
+  "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
   (interactive)
-  (sit-for 1)
   (async-shell-command
-   "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -s -e 'xclip -selection clipboard -target image/png -i $f' &" nil nil))
+   "scrot -s '$HOME/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
 
 (defun скриншот ()
   "Получить скриншот."
   (interactive)
   (sit-for 1)
-  (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png'" nil nil))
+  (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
 
 (defmacro exwm-input-set-keys (&rest key-bindings)
   "Макрос для установки клавиш, работающих поверх приложений Xorg.
@@ -116,8 +115,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   (require 'exwm-systemtray)
 
-
   (exwm-systemtray-enable)
+  
   (add-hook 'exwm-init-hook (lambda ()
     (progn
       (start-process-shell-command "nm-applet" nil "sleep 0.5; dbus-launch nm-applet -t")
@@ -125,6 +124,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
       (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
       (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
       (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
+      (start-process-shell-command "copyq" nil "sleep 0.5; copyq")
       )
     ))
   )

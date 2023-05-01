@@ -159,5 +159,7 @@
 
 (use-package ag :ensure t)
 
+(use-package dired-toggle-sudo :ensure t)
+
 (provide 'файлы-и-папки)
 ;;; файлы-и-папки.el ends here

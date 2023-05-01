@@ -7,13 +7,13 @@
 
 (use-package org
   :ensure nil
-  
+
   :bind (
          :map org-mode-map
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-           (org-todo-keywords '((sequence "НАДО" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
+           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
   :config
   (require 'org-compat)
   :init)
@@ -184,9 +184,7 @@
   :init (установить-из-репы :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))
-	   )
-  )
+	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))))
 
 (provide 'организация)
 ;;; организация.el ends here
