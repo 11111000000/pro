@@ -113,9 +113,7 @@
           (sldb-mode :stick t)
           ;;(shell-mode :stick nil :position bottom )
           ))
-  (popwin-mode 1)
-  ;; (push '(:regexp :position top) popwin:special-display-config)
-  )
+  (popwin-mode 1))
 
 ;; Функция для переключения окна в попапе по имени буфера
 

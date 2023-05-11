@@ -8,7 +8,7 @@
               ("C-c C-c" . выполнить-регион-или-буфер)
               ("C-x M-e" . eval-print-last-sexp)))
 
-;;;;  Выполнить регион или буфер
+;;;; Выполнить регион или буфер
 
 (defun выполнить-регион-или-буфер ()
   "выполнить регион или буфер."
@@ -19,7 +19,7 @@
         (deactivate-mark))
     (перевыполнить-буфер)))
 
-;;;;;  Функция для выполнения форм в буфере, включая определения переменных
+;;;; Функция для выполнения форм в буфере, включая определения переменных
 
 (defun перевыполнить-буфер ()
   "Вызвать выполнение кода в текущем буфере.
@@ -43,7 +43,7 @@
 ;;   :config (flycheck-elsa-setup))
 
 (use-package flymake-elisp-config
-  :init (установить-из-репы :repo "ROCKTAKEY/flymake-elisp-config")
+  :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))

@@ -26,7 +26,6 @@
               ("S-TAB" . corfu-previous)
               ([backtab] . corfu-previous))
   :custom
-  
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)
   (corfu-auto nil)
@@ -43,7 +42,7 @@
   (corfu-quit-no-match 'separator)
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
-  
+
   :init
 
   (global-corfu-mode)
@@ -53,7 +52,7 @@
 ;;;; Расширения для автодополнения
 
 (use-package cape
-  :ensure t  
+  :ensure t
   :init)
 
 ;;;; Автодополнение для терминала
@@ -82,10 +81,10 @@
 
 ;; (use-package codeium
 ;;   :init
-;;   (установить-из-репы :repo "Exafunction/codeium.el")
+;;   (установить-из :repo "Exafunction/codeium.el")
 ;;   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
 ;;   :config
-  
+
 ;;   (setq use-dialog-box nil)
 
 ;;   (setq codeium/metadata/api_key "212600da-b787-4d45-91f0-5e9e98b94302")
@@ -98,7 +97,7 @@
 
 ;; (use-package codeium-diagnose)
 ;;   :init
-;;   (установить-из-репы :repo "Exafunction/codeium-diagnose.el")
+;;   (установить-из :repo "Exafunction/codeium-diagnose.el")
 ;;   :config
 ;;   (setq use-dialog-box nil)
 

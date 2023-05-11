@@ -24,9 +24,7 @@
 (use-package eww
   :bind (:map eww-mode-map
                 ("f"))
-  :config
-  
-  )
+  :config)
 
 ;;;;; Нумерация ссылков
 
@@ -82,7 +80,7 @@
 ;;;; HTTP-запросы
 
 ;; (use-package plz
-;;   :init (установить-из-репы :repo "alphapapa/plz")
+;;   :init (установить-из :repo "alphapapa/plz")
 ;;   ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
 ;;   )
 

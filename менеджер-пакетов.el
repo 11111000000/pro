@@ -8,6 +8,7 @@
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (require 'package)
+
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -21,8 +22,10 @@
 
 (require 'package-vc)
 
-(cl-defun установить-из-репы (&key (fetcher "github") repo name rev backend)
-  "Установите пакет с удаленного компьютера, если он еще не установлен. Это тонкая оболочка над package-vc-install, чтобы сделать неинтерактивное использование более эргономичным. Принимает следующее именованные аргументы:
+(cl-defun установить-из (&key (fetcher "github") repo name rev backend)
+  "Установить пакет с удаленного компьютера, если он еще не установлен.
+Это тонкая оболочка над `package-vc-install`, чтобы сделать неинтерактивное
+использование более эргономичным. Принимает следующее именованные аргументы:
 
 - FETCHER источник пакета (например, \"gitlab\").
   Если не указан, то \"github\".

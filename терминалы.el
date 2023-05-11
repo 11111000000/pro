@@ -4,44 +4,6 @@
 ;; Конфигурация терминалов
 
 ;;; Code:
-;;;; Мульти-терминалы
-
-;; (use-package multi-term
-;;   :ensure t
-;;   :defer t
-;;   :bind (
-;;          ("C-c tt" . multi-term)
-;;          ;; ("<s-return>" . multi-term)
-;;          ("C-c tn" . multi-term-next)
-;;          ("C-c tp" . multi-term-prev)
-;;          ("M-±" . multi-term-dedicated-toggle)
-;;          ("C-c to" . multi-term-dedicated-toggle)
-;;          :map term-mode-map
-;;          ("C-c C-j" . переключить-режим-ввода-терминала)
-;;          ("C-c C-k" . переключить-режим-ввода-терминала)
-;;          :map term-raw-map
-;;          ("C-c C-j" . переключить-режим-ввода-терминала)
-;;          ("C-c C-k" . переключить-режим-ввода-терминала))
-;;   :custom ((term-buffer-maximum-size 0)
-;;            (show-trailing-whitespace nil))
-;;   :config
-;;   (add-hook 'term-mode-hook
-;;             (lambda ()
-;;               (add-to-list 'term-bind-key-alist '("C-c C-e" . term-send-esc))
-;;               (add-to-list 'term-bind-key-alist '("C-v" . scroll-up-command))
-;;               (add-to-list 'term-bind-key-alist '("M-v" . scroll-down-command))
-;;               ))
-;;   (defun term-counsel-yank-pop-action (orig-fun &rest args)
-;;     (if (equal major-mode 'term-mode)
-;;         (let ((inhibit-read-only t)
-;;              )
-;;           (cl-letf (((symbol-function 'insert-for-yank)
-;;                      (lambda (str) (term-send-string str t))))
-;;             (apply orig-fun args)))
-;;       (apply orig-fun args)))
-
-;;   (advice-add 'consult-yank-from-kill-ring :around #'term-counsel-yank-pop-action)
-;;   )
 
 ;; Функция для переключение режима перемещения по терминалу
 
@@ -52,15 +14,15 @@
       (term-char-mode)
     (term-line-mode)))
 
-;;;; Выпадающий терминал Eshell
+;;;; Сокращалка путей
 
 (use-package shrink-path
   :ensure t
   :demand t)
 
-;;;;; Настройка приглашения Eshell
+;;;; Приглашения Eshell
 
-(defun custom-eshell-prompt ()
+(defun приглашение-eshell ()
   "Настройка приглашения оболочки EShell."
   (let* (
          (git-branch-unparsed
@@ -76,13 +38,14 @@
              (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
              (unless (string= git-branch "")
                (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
-             (propertize "❯❯❯" 'face `(:foreground "#ff79c6"))
-             )))
+             (propertize "❯❯❯" 'face `(:foreground "#ff79c6")))))
+
+;;;;  Терминал Emacs Shell
 
 (use-package eshell
   :ensure t
   :custom
-  (eshell-prompt-function 'custom-eshell-prompt)
+  (eshell-prompt-function 'приглашение-eshell)
   (eshell-highlight-prompt nil)
   (eshell-hist-ignoredups t)
   (eshell-cmpl-cycle-completions nil)
@@ -96,13 +59,14 @@
                                 (progn
                                   (define-key eshell-mode-map "\C-a" 'eshell-bol)
                                   (define-key eshell-mode-map [up] 'previous-line)
-                                  (define-key eshell-mode-map [down] 'next-line)
-                                  ))))
+                                  (define-key eshell-mode-map [down] 'next-line)))))
 
 ;; (use-package eshell-did-you-mean
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
 ;;   :ensure t)
+
+;;;;  Переключение Emacs Shell
 
 (use-package eshell-toggle
   :ensure t
@@ -111,18 +75,11 @@
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-default-directory "~")
   (eshell-toggle-run-command nil)
-  (eshell-toggle-init-function #'eshell-toggle-init-eshell)
-  ;; :quelpa
-  ;; (eshell-toggle :repo "4DA/eshell-toggle" :fetcher github :version original)
-  :bind
-  ("s-~" . eshell-toggle))
-
-
+  (eshell-toggle-init-function #'eshell-toggle-init-eshell))
 
 (use-package vterm
   :ensure t
-  :custom (
-          (vterm-shell  "bash")
+  :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t))
   :bind (:map vterm-mode-map
@@ -143,18 +100,6 @@
    '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
    '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
   
-   ;; '(term-default-fg-color ((t (:inherit term-color-white))))
-   ;; '(term-default-bg-color ((t (:inherit term-color-black))))
-   ;; `(vterm-color-default ((t (:foreground "white" :background "black"))))
-   ;; `(vterm-color-black   ((t (:foreground "black" :background "black" ))))
-   ;; `(vterm-color-blue    ((t (:foreground "blue" :background "black"))))
-   ;; `(vterm-color-cyan    ((t (:foreground "cyan" :background "black"))))
-   ;; `(vterm-color-green   ((t (:foreground "green" :background "black"))))
-   ;; `(vterm-color-magenta ((t (:foreground "magenta" :background "black"))))
-   ;; `(vterm-color-red     ((t (:foreground "red" :background "black"))))
-   ;; `(vterm-color-white   ((t (:foreground "white" :background "black"))))
-   ;; `(vterm-color-yellow  ((t (:foreground "yellow" :background "black"))))
-
    (defface terminal-face
       '((((background light)) (:background "#000000" :family "Terminus (TTF)"))
         (((background dark)) (:background "#000000" :family "Terminus (TTF)")))
@@ -177,9 +122,7 @@
                      (lambda (str) (vterm-send-string str t))))
             (apply orig-fun args)))
       (apply orig-fun args)))
-
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
-
   :hook
   (vterm-mode . turn-off-chrome)
   (vterm-mode . set-vterm-font))
@@ -190,19 +133,7 @@
   (vterm-toggle-fullscreen-p nil)
   (vterm-toggle-scope 'project)
   (vterm-toggle-hide-method 'delete-window)
-  :config
-  ;; (add-to-list 'display-buffer-alist
-  ;;    '("\*vterm\*"
-  ;;      (display-buffer-in-side-window)
-  ;;      (window-height . 0.38)
-  ;;      (side . bottom)
-  ;;      (slot . 0)))
-  )
-
-;; (use-package eshell-vterm
-;;   ;;:hook ((eshell-mode . eshell-vterm-mode))
-;;   :ensure t
-;;   :init)
+  :config)
 
 (use-package multi-vterm
   :ensure t

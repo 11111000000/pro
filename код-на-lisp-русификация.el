@@ -4,7 +4,7 @@
 ;;; Code:
 
 (use-package prettify-utils
-  :init (установить-из-репы :repo "Ilazki/prettify-utils.el"))
+  :init (установить-из :repo "Ilazki/prettify-utils.el"))
 
 (defun добавить-текущий-символ-в-перевод ()
   "Добавить текущий символ в перевод."
@@ -162,6 +162,23 @@
                                   ("with-temp-buffer" "во-временном-буфере")
                                   ("string-match" "начало-подстроки")
                                   ("start-process-shell-command" "запустить-процесс-в-оболочке")
+                                  ("file-name-directory" "директория-файла")
+                                  ("locate-library" "найти-библиотеку")
+                                  ("funcall-interactively" "запустить-интераткивно")
+                                  ("erase-buffer" "очистить-буфер")
+                                  ("insert-file" "вставить-файл")
+                                  ("symbolp" "это-символ")
+                                  ("length" "длина")
+                                  ("text-properties-at" "текстовые-свойства-в")
+                                  ("replace-regexp-in-string" "заменить-регулярку-в-строке")
+                                  ("face" "фасад")
+                                  ("quote" "кавычка")
+                                  ("remove-hook" "удалить-хук")
+                                  ("run-with-timer" "запустить-с-таймером")
+                                  ("cancel-timer" "выключить-таймер")
+                                  ("current-column" "текущий-столбец")
+                                  ("insert" "вставить")
+                                  ("current-message" "текущее-сообщение")
                                   ))
   (prettify-symbols-mode 1))
 

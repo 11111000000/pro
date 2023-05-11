@@ -4,7 +4,7 @@
 
 ;; (use-package fixed-pitch
 ;;   :ensure t
-;;   :init (установить-из-репы :repo "cstby/fixed-pitch-mode")
+;;   :init (установить-из :repo "cstby/fixed-pitch-mode")
 ;;   :config
 ;;   (fixed-pitch-mode))
 
@@ -12,8 +12,7 @@
   :ensure t
   :hook
   (org-mode . mixed-pitch-mode)
-  (help-mode . mixed-pitch-mode)
-  )
+  (help-mode . mixed-pitch-mode))
 
 ;(setq-default default-frame-alist '((font . "Fira Code")))
 
@@ -21,7 +20,7 @@
   "Настройки шрифтов."
   (interactive)
   (custom-set-faces '(default ((t (:family "Fira Code" :height 120)))))
-  (custom-set-faces '(fixed-pitch ((t (:family "Fira Code" :height 1.0)))))
+  (custom-set-faces '(fixed-pitch ((t (:family "Fira Code" :height 0.8)))))
   (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.0)))))
   ;; (let* ((variable-tuple (cond
   ;;                        ;; ((x-list-fonts "OldSlavic")         '(:font "OldSlavic"))

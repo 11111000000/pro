@@ -2,18 +2,15 @@
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
-
 ;;;; Не мигать и не пищать :-)
 
 (setq visible-bell nil)
 (setq ring-bell-function 'ignore)
 
-;;;; Тулбар
+;;;; Убираем лишнее
 
 (when (bound-and-true-p tool-bar-mode)
   (tool-bar-mode -1))
-
-;;;; Меню
 
 (when (bound-and-true-p menu-bar-mode)
   (menu-bar-mode -1))
@@ -51,7 +48,7 @@
 
 (use-package taoline
   :if window-system
-  :init (установить-из-репы :repo "11111000000/taoline")
+  :init (установить-из :repo "11111000000/taoline")
   :config
   (taoline-mode 1))
 
@@ -85,13 +82,7 @@
   :init
   (all-the-icons-completion-mode))
 
-;;;; Цветовые темы
-
-;; Цветовые темы не должны накладываться друг на друга
-
-(setq-default color-theme-is-cumulative -1)
-
-;; Хук, срабатывающий после установки темы:
+;;;;; Хук, срабатывающий после установки темы:
 
 (defvar after-load-theme-hook nil
   "Hook run after a color theme is loaded using `load-theme'.")
@@ -111,30 +102,18 @@
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид
 
 (use-package cursor-chg
-  :init (установить-из-репы :repo "emacsmirror/cursor-chg")
+  :init (установить-из :repo "emacsmirror/cursor-chg")
   :config
   (require 'cursor-chg)
   (change-cursor-mode t)
   (setq curchg-input-method-cursor-color "orange"
         curchg-default-cursor-type '(bar . 2)
-        curchg-default-cursor-color (face-attribute 'default :foreground)
+        curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
 
   (add-hook 'after-load-theme-hook
           (lambda ()
             (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
-
-;;;; Изображения
-
-(use-package image+
-  :ensure t
-  :after 'image-mode
-  :hook (image-mode . image+)
-  :bind ((:map image-mode-map
-               ("0" . imagex-sticky-restore-original)
-               ("+" . imagex-sticky-maximize)
-               ("=" . imagex-sticky-zoom-in)
-               ("-" . imagex-sticky-zoom-out))))
 
 ;;;; Прокрутка
 
@@ -177,9 +156,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;;;; TODO Путь в заголовке
-
-;;;;  Фон для служебных буферов
+;;;; Фон для служебных буферов
 
 ;; (use-package solaire-mode
 ;;   :ensure t
@@ -187,5 +164,17 @@
 ;;   (solaire-global-mode t))
 
 (provide 'внешний-вид)
+
+;;;; Изображения
+
+(use-package image+
+  :ensure t
+  :after 'image-mode
+  :hook (image-mode . image+)
+  :bind ((:map image-mode-map
+               ("0" . imagex-sticky-restore-original)
+               ("+" . imagex-sticky-maximize)
+               ("=" . imagex-sticky-zoom-in)
+               ("-" . imagex-sticky-zoom-out))))
 
 ;;; внешний-вид.el ends here

@@ -41,7 +41,7 @@
 
 (use-package magit
   :ensure t
-  
+
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
            (magit-after-save-refresh-buffers t))
   :init
@@ -55,7 +55,7 @@
 
 ;;;; Контейнеры
 
-(use-package docker  
+(use-package docker
   :ensure t
   :init
   :config)

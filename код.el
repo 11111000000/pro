@@ -67,18 +67,17 @@ ARG - backward"
             (lambda ()
               (global-highlight-parentheses-mode -1)
               (sleep-for 0 100)
-              (global-highlight-parentheses-mode t)
-              )))
+              (global-highlight-parentheses-mode t))))
+
 
 ;;;; Идентификаторы
+
+;; Удобно подсветить разные идентификаторы разными цветами
 
 (use-package color-identifiers-mode
   :if  window-system
   :ensure t
-  :bind (("C-c hi" . color-identifiers-mode))
-  :hook ((js-mode . color-identifiers-mode)
-         ;;(typescript-mode . color-identifiers-mode)
-         )
+  :hook ((js-mode . color-identifiers-mode))
   :custom ((color-identifiers-coloring-method
             'hash)
            (color-identifiers:num-colors 16)
@@ -86,13 +85,14 @@ ARG - backward"
            (color-identifiers:min-color-saturation 0.2)
            (color-identifiers:max-color-saturation 0.7)))
 
+;; Альтернативный алгоритм подсветки идентификаторов
+
 (use-package rainbow-identifiers
   :if window-system
   :ensure t
   :defer t
   :hook ((typescript-mode . rainbow-identifiers-mode)
-         (emacs-lisp-mode . rainbow-identifiers-mode))
-  :bind (("C-c hl" . rainbow-identifiers-mode)))
+         (emacs-lisp-mode . rainbow-identifiers-mode)))
 
 ;;;; Форматирование
 
@@ -151,23 +151,24 @@ ARG - backward"
 
 ;;;; Сниппеты
 
-(defvar dobro/yas-new-snippet-prompt-file (concat (file-name-directory (locate-library "код")) "etc/yasnippet.template.txt"))
+;; Быстрые шаблоны - сниппеты можно создавать на лету со шпаргалкой
 
-(defun dobro/yas-new-snippet-with-example ()
+(defvar шаблон-для-сниппета (concat
+                             (file-name-directory
+                              (locate-library "код"))
+                             "etc/yasnippet.template.txt"))
+
+(defun создать-новый-сниппет-со-шпаргалкой ()
   "Создать новый сниппет со шпаргалкой."
   (interactive)
   (funcall-interactively 'yas-new-snippet)
   (erase-buffer)
-  (insert-file dobro/yas-new-snippet-prompt-file))
+  (insert-file шаблон-для-сниппета))
 
 (use-package yasnippet
   :ensure t
   :hook
   (prog-mode . yas-minor-mode)
-  :bind (("C-c y v" . yas-visit-snippet-file)
-         ("C-c y i" . yas-insert-snippet)
-         ("C-c y y" . yas-insert-snippet)
-         ("C-c y n" . dobro/yas-new-snippet-with-example))
   :config
   (yas-reload-all)
   (setq yas-snippet-dirs

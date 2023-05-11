@@ -32,9 +32,10 @@
               ("C-c jd" . js-doc-insert-function-doc))
   :config)
 
-;;;; Сниппеты React
+;;;; HTTP Запросы
 
-(use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
+(use-package request
+  :ensure t)
 
 ;;;; Поддержка JSON
 
@@ -98,11 +99,15 @@
               ( "C-x C-e" . ts-send-last-sexp)
               ( "C-c C-c" . ts-send-buffer)))
 
+;;;; GraphQL
+
 (use-package graphql-mode
   :ensure t)
 
-(use-package request
-  :ensure t)
+;;;; Сниппеты React
+
+(use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
+
 
 (provide 'код-на-javascript)
 ;;; код-на-javascript.el ends here.

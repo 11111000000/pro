@@ -34,7 +34,7 @@
   "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
   (interactive)
   (async-shell-command
-   "scrot -s '$HOME/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
+   "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
 
 (defun скриншот ()
   "Получить скриншот."
@@ -135,7 +135,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
 (use-package exim
-  :init (установить-из-репы :repo "ch11ng/exim")
+  :init (установить-из :repo "ch11ng/exim")
   :after (exwm)
   :if window-system
   ;; :load-path "emacs-lisp/exim/exim"

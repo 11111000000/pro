@@ -41,10 +41,6 @@
 (use-package avy
   :ensure t
   :defer t
-  :bind (
-  ("C-z" . avy-goto-char)
-  ("s-z" . avy-goto-char)
-  ("M-z" . avy-goto-char))
   :custom ((avy-background nil)))
 
 ;; Мульти-курсор
@@ -79,16 +75,9 @@
 
 (use-package expand-region
   :ensure t
-  :bind (
-         ("M-SPC" . er/expand-region)
-         ("M-S-SPC" . er/contract-region)
-         ("S-SPC" . mark-current-line))
   :config
   (setq expand-region-contract-fast-key "M-S-SPC"
         expand-region-reset-fast-key    "<ESC><ESC>"))
-
-;; Выключены *C-d* и *C-w*, весьма деструктивные.
-
 
 ;; Удалить до конца строки, но не CR
 
@@ -157,10 +146,10 @@
 
 ;; По умолчанию отступы в 2 пробела
 
-(setq-default  indent-tabs-mode nil
-               tab-width 2
-               indent-line-function 'indent-relative
-               default-tabs-width 2)
+(setq-default indent-tabs-mode nil
+              tab-width 2
+              indent-line-function 'indent-relative
+              default-tabs-width 2)
 
 ;; Автоматически выравнивать при переводе строки
 
@@ -171,8 +160,7 @@
 (use-package dtrt-indent
   :ensure t
   :init
-  (dtrt-indent-global-mode t)
-  )
+  (dtrt-indent-global-mode t))
 
 ;; Настройка отступов берётся из файла .editorconfig
 
@@ -201,9 +189,7 @@
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 
 (use-package string-inflection
-  :ensure t
-  ;;:load-path "emacs-lisp/string-inflection"
-  )
+  :ensure t)
 
 ;;;; Подсветка идентации
 

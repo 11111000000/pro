@@ -13,7 +13,7 @@
          ("C-c o" . org-agenda-open-link))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ГОТОВО") (sequence "TODO" "ACTIVE" "DONE"))))
+           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ВОПРОС" "ГОТОВО") (sequence "TODO" "ACTIVE" "QUESTION" "DONE"))))
   :config
   (require 'org-compat)
   :init)
@@ -162,9 +162,13 @@
   :hook ((org-mode . org-rainbow-tags-mode))
   :init)
 
-;;;;  Org modern
+;;;; Org modern
+
+;; Современный вид для заголовков и таблиц
 
 (use-package org-modern
+  :custom ((org-modern-star '("" "" "" ""))
+          (org-modern-hide-stars " "))
   :ensure t
   :hook ((org-mode . org-modern-mode)))
 
@@ -180,11 +184,13 @@
               ("C-<return>" . outshine-insert-heading)
               ("C-<tab>" . outshine-cycle)))
 
+;; Вместо символов комментария показывать пустоту и уровень вложенности
+
 (use-package outshine-bullets
-  :init (установить-из-репы :repo "11111000000/outshine-bullets")
+  :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	   (outshine-bullets-bullet-list '("•" "▸" "•" "‣" "•"))))
+	   (outshine-bullets-bullet-list '("" "" "" ""))))
 
 (provide 'организация)
 ;;; организация.el ends here
