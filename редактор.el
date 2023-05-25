@@ -107,7 +107,8 @@
 (use-package olivetti
   :ensure t
   :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
-  :custom ((olivetti-minimum-body-width 120)))
+  :custom ((olivetti-minimum-body-width 80)
+          (olivetti-body-width 80)))
 
 ;;;; Закладки
 
