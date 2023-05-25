@@ -26,8 +26,8 @@
          ("C-c c" . org-projectile-capture-for-current-project))
   :config
 
-  (setq org-projectile-per-project-filepath "ЧТОДЕЛ.org")
-  (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+  (setq org-projectile-per-project-filepath "TODO.org")
+  ;(setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
 
   ;; (progn
   ;;   (setq org-projectile-projects-file

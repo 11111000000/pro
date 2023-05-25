@@ -168,6 +168,7 @@
                                   ("erase-buffer" "очистить-буфер")
                                   ("insert-file" "вставить-файл")
                                   ("symbolp" "это-символ")
+                                  ("functionp" "это-функция")
                                   ("length" "длина")
                                   ("text-properties-at" "текстовые-свойства-в")
                                   ("replace-regexp-in-string" "заменить-регулярку-в-строке")

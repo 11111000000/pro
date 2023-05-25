@@ -2,88 +2,91 @@
 ** Клавиши текстового режима
 
 #+NAME: key-bindings-table
-| Сочетание | Функция                             |
-|-----------+-------------------------------------|
-| C-d       | nil                                 |
-| C-w       | nil                                 |
-| s-x       | nil                                 |
-| M-c       | nil                                 |
-| M-t       | nil                                 |
-| M-y       | whole-line-or-region-kill-ring-save |
-| C-y       | yank                                |
-| C-d C-d   | whole-line-or-region-kill-region    |
-| C-M-d     | whole-line-or-region-kill-region    |
-| M-r       | replace-string                      |
-| M-R       | replace-regexp                      |
-| C-a       | к-идентации-или-началу-строки       |
-| C-S-M-p   | shift-text-up                       |
-| C-S-M-n   | shift-text-down                     |
-| C-S-M-f   | shift-text-right                    |
-| C-S-M-b   | shift-text-left                     |
-| C--       | text-scale-decrease                 |
-| C-+       | text-scale-increase                 |
-| C-=       | text-scale-increase                 |
-| C-M-=     | text-scale-set                      |
-| C-c m     | popwin:messages                     |
-| C-%       | forward-or-backward-sexp            |
-| C-a       | к-идентации-или-началу-строки       |
-| C-$       | toggle-truncate-lines               |
-| C-c f     | вставить-имя-файла                  |
-| C-x b     | consult-buffer                      |
-| C-x C-b   | consult-buffer                      |
-| C-x M-b   | consult-buffer-other-window         |
-| s-<tab>   | consult-buffer                      |
-| M-s s     | consult-line                        |
-| M-s M-s   | consult-line-multi                  |
-| M-s d     | consult-dash                        |
-| C-x y     | consult-yank-from-kill-ring         |
-| <help> a  | consult-apropos                     |
-| s-m       | consult-imenu-multi                 |
-| M-M       | bookmark-set                        |
-| M-m       | bookmark-jump                       |
-| M-i       | god-local-mode                      |
-| <escape>  | god-local-mode                      |
-| C-j       | next-line                           |
-| C-k       | previous-line                       |
-| M-o       | vi-open-line                        |
-| C-M-o     | vi-open-line                        |
-| M-O       | vi-open-line-above                  |
-| C-M-O     | vi-open-line-above                  |
-| C-d C-f   | delete-forward-char                 |
-| C-d C-b   | backward-dnelete-char-untabify      |
-| C-d C-e   | удалить-до-конца-строки             |
-| C-d C-w   | delete-trailing-whitespace          |
-| C-d C-a   | delete-to-begin                     |
-| C-M-s     | isearch-backward                    |
-| C-c o p   | completion-at-point                 |
-| C-c o t   | complete-tag                        |
-| C-c o d   | cape-dabbrev                        |
-| C-c o h   | cape-history                        |
-| C-c o f   | cape-file                           |
-| C-c o k   | cape-keyword                        |
-| C-c o s   | cape-symbol                         |
-| C-c o a   | cape-abbrev                         |
-| C-c o i   | cape-ispell                         |
-| C-c o l   | cape-line                           |
-| C-c o w   | cape-dict                           |
-| C-c o \\  | cape-tex                            |
-| C-c o _   | cape-tex                            |
-| C-c o ^   | cape-tex                            |
-| C-c o &   | cape-sgml                           |
-| C-c o r   | cape-rfc1345                        |
-| C-c g     | magit-status                        |
-| C-c p y   | prodigy                             |
-| C-c d     | docker                              |
-| C-c y y   | consult-yasnippet                   |
-| C-c y n   | создать-новый-сниппет-со-шпаргалкой |
-| C-c hl    | rainbow-identifiers-mode            |
-| C-c hi    | color-identifiers-mode              |
-| C-z       | avy-goto-char                       |
-| s-z       | avy-goto-char                       |
-| M-z       | avy-goto-char                       |
-| M-SPC     | er/expand-region                    |
-| M-S-SPC   | er/contract-region                  |
-| S-SPC     | mark-current-line                   |
+| Сочетание     | Функция                             |
+|---------------+-------------------------------------|
+| C-d           | nil                                 |
+| C-w           | nil                                 |
+| s-x           | nil                                 |
+| M-c           | nil                                 |
+| M-t           | nil                                 |
+| M-y           | whole-line-or-region-kill-ring-save |
+| C-y           | yank                                |
+| C-d C-d       | whole-line-or-region-kill-region    |
+| C-M-d         | whole-line-or-region-kill-region    |
+| M-r           | replace-string                      |
+| M-R           | replace-regexp                      |
+| C-a           | к-идентации-или-началу-строки       |
+| C-S-M-p       | shift-text-up                       |
+| C-S-M-n       | shift-text-down                     |
+| C-S-M-f       | shift-text-right                    |
+| C-S-M-b       | shift-text-left                     |
+| C--           | text-scale-decrease                 |
+| C-+           | text-scale-increase                 |
+| C-=           | text-scale-increase                 |
+| C-M-=         | text-scale-set                      |
+| C-c m         | popwin:messages                     |
+| C-%           | forward-or-backward-sexp            |
+| C-a           | к-идентации-или-началу-строки       |
+| C-$           | toggle-truncate-lines               |
+| C-c f         | вставить-имя-файла                  |
+| C-x b         | consult-buffer                      |
+| C-x C-b       | consult-buffer                      |
+| C-x M-b       | consult-buffer-other-window         |
+| s-<tab>       | consult-buffer                      |
+| M-s s         | consult-line                        |
+| M-s M-s       | consult-line-multi                  |
+| M-s d         | consult-dash                        |
+| C-x y         | consult-yank-from-kill-ring         |
+| <help> a      | consult-apropos                     |
+| s-m           | consult-imenu-multi                 |
+| M-M           | bookmark-set                        |
+| M-m           | bookmark-jump                       |
+| M-i           | god-local-mode                      |
+| <escape>      | god-local-mode                      |
+| C-j           | next-line                           |
+| C-k           | previous-line                       |
+| M-o           | vi-open-line                        |
+| C-M-o         | vi-open-line                        |
+| M-O           | vi-open-line-above                  |
+| C-M-O         | vi-open-line-above                  |
+| C-d C-f       | delete-forward-char                 |
+| C-d C-b       | backward-dnelete-char-untabify      |
+| C-d C-e       | удалить-до-конца-строки             |
+| C-d C-w       | delete-trailing-whitespace          |
+| C-d C-a       | delete-to-begin                     |
+| C-M-s         | isearch-backward                    |
+| C-c o p       | completion-at-point                 |
+| C-c o t       | complete-tag                        |
+| C-c o d       | cape-dabbrev                        |
+| C-c o h       | cape-history                        |
+| C-c o f       | cape-file                           |
+| C-c o k       | cape-keyword                        |
+| C-c o s       | cape-symbol                         |
+| C-c o a       | cape-abbrev                         |
+| C-c o i       | cape-ispell                         |
+| C-c o l       | cape-line                           |
+| C-c o w       | cape-dict                           |
+| C-c o \\      | cape-tex                            |
+| C-c o _       | cape-tex                            |
+| C-c o ^       | cape-tex                            |
+| C-c o &       | cape-sgml                           |
+| C-c o r       | cape-rfc1345                        |
+| C-c g         | magit-status                        |
+| C-c p y       | prodigy                             |
+| C-c d         | docker                              |
+| C-c y y       | consult-yasnippet                   |
+| C-c y n       | создать-новый-сниппет-со-шпаргалкой |
+| C-c hl        | rainbow-identifiers-mode            |
+| C-c hi        | color-identifiers-mode              |
+| C-z           | avy-goto-char                       |
+| s-z           | avy-goto-char                       |
+| M-z           | avy-goto-char                       |
+| M-SPC         | er/expand-region                    |
+| M-S-SPC       | er/contract-region                  |
+| S-SPC         | mark-current-line                   |
+| C-c SPC       | mc/mark-all-like-this               |
+| C-c C-SPC     | mc/unmark-all-like-this             |
+| C-c <mouse-1> | mc/add-cursor-on-click              |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -226,6 +229,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

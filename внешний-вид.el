@@ -146,10 +146,10 @@
   :ensure t
   :config
   (custom-set-faces
-   '(minimap-active-region-background ((t :background "#222" :foreground "#aaa"))))
+   '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
   :custom
-  (minimap-minimum-width 15)
-  (minimap-window-lcoation 'right)
+  (minimap-minimum-width 14)
+  (minimap-window-location 'right)
   (minimap-width-fraction 0.08))
 
 ;;;; Сокращение диалогов до y/n
@@ -158,12 +158,10 @@
 
 ;;;; Фон для служебных буферов
 
-;; (use-package solaire-mode
-;;   :ensure t
-;;   :config
-;;   (solaire-global-mode t))
-
-(provide 'внешний-вид)
+(use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode t))
 
 ;;;; Изображения
 
@@ -177,4 +175,5 @@
                ("=" . imagex-sticky-zoom-in)
                ("-" . imagex-sticky-zoom-out))))
 
+(provide 'внешний-вид)
 ;;; внешний-вид.el ends here

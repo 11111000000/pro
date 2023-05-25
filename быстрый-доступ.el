@@ -20,23 +20,23 @@
 
 ;;;; Минибуфер во фрейме поверх окна
 
-(use-package mini-frame
-  :ensure t
-  :custom
-  (mini-frame-show-parameters '((child-frame-border-width . 0)
-                                (internal-border-width . 0)
-                                (top . nil)
-                                (width . 0.8)
-                                (height . 0.22)
-                                (left . 0.5)))
-  (mini-frame-standalone t)
-  (mini-frame-resize nil)
-  (mini-frame-color-shift-step -7)
-  (mini-frame-detach-on-hide nil)
-  (mini-frame-internal-border-color "#333333")
-  (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
-  :config
-  (mini-frame-mode t))
+;; (use-package mini-frame
+;;   :ensure t
+;;   :custom
+;;   (mini-frame-show-parameters '((child-frame-border-width . 0)
+;;                                 (internal-border-width . 0)
+;;                                 (top . nil)
+;;                                 (width . 0.8)
+;;                                 (height . 0.22)
+;;                                 (left . 0.5)))
+;;   (mini-frame-standalone t)
+;;   (mini-frame-resize nil)
+;;   (mini-frame-color-shift-step -7)
+;;   (mini-frame-detach-on-hide nil)
+;;   (mini-frame-internal-border-color "#333333")
+;;   (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
+;;   :config
+;;   (mini-frame-mode t))
 
 ;;;; Сортировка
 

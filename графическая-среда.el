@@ -98,9 +98,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
    ("s-M-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
    ("s-M-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
    ("s-M-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
-   ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0)))
-   ("s-M-o" (lambda () (interactive) (показать-окно-в-попапе "chrome app")))
-   ("s-M-O" (lambda () (interactive) (показать-окно-в-попапе "chrome dev"))))
+   ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0))))
 
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
                                      ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
@@ -124,10 +122,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
       (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
       (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
       (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
-      (start-process-shell-command "copyq" nil "sleep 0.5; copyq")
-      )
-    ))
-  )
+      (start-process-shell-command "copyq" nil "sleep 0.5; copyq")))))
 
 ;;;; Режимы ввода EMACS в приложениях
 

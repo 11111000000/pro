@@ -7,31 +7,16 @@
 
 (use-package org
   :ensure nil
-
   :bind (
          :map org-mode-map
-         ("C-c o" . org-agenda-open-link))
+                ("C-c o" . org-agenda-open-link)
+                ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
            (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ВОПРОС" "ГОТОВО") (sequence "TODO" "ACTIVE" "QUESTION" "DONE"))))
   :config
   (require 'org-compat)
   :init)
-
-;;;; Красивые заголовки
-
-;; (use-package org-bullets
-;;   :if window-system
-;;   :ensure t
-;;   :defer t
-;;   :after (org)
-;;   :hook ((org-mode . org-bullets-mode))
-
-;;   :custom ((org-bullets-bullet-list '("‣" "‣" ))
-;;            (org-hide-emphasis-markers nil)
-;;            (org-startup-indented t)
-;;            (org-hide-leading-stars nil)
-;;            ))
 
 ;;;; Иконки приоритетов
 
@@ -103,9 +88,6 @@
    (shell . t)
    ))
 
-;; PlantUML jar Path
-
-(setq org-plantuml-jar-path (expand-file-name "/nix/store/slmi57xig7mbif52sf757arx5sbj2bni-plantuml-1.2020.15/lib/plantuml.jar"))
 
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
@@ -167,7 +149,7 @@
 ;; Современный вид для заголовков и таблиц
 
 (use-package org-modern
-  :custom ((org-modern-star '("" "" "" ""))
+  :custom ((org-modern-star '("•" "" "" "" ""))
           (org-modern-hide-stars " "))
   :ensure t
   :hook ((org-mode . org-modern-mode)))
@@ -190,7 +172,21 @@
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	   (outshine-bullets-bullet-list '("" "" "" ""))))
+	        (outshine-bullets-bullet-list '("•" "" "" "" ""))))
+
+;;;; Поддержка блоков на UML
+
+(use-package plantuml-mode
+  :ensure t
+  :mode "\\.plantuml\\'"
+  :custom
+  ;; (plantuml-jar-path "")
+  (org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
+  (plantuml-executable-path "/usr/bin/plantuml")
+  :config
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((plantuml . t))))
 
 (provide 'организация)
 ;;; организация.el ends here

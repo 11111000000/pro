@@ -4,44 +4,7 @@
 ;; Конфигурация терминалов
 
 ;;; Code:
-
-;; Функция для переключение режима перемещения по терминалу
-
-(defun переключить-режим-ввода-терминала ()
-  "Toggle term between line mode and char mode."
-  (interactive)
-  (if (term-in-line-mode)
-      (term-char-mode)
-    (term-line-mode)))
-
-;;;; Сокращалка путей
-
-(use-package shrink-path
-  :ensure t
-  :demand t)
-
-;;;; Приглашения Eshell
-
-(defun приглашение-eshell ()
-  "Настройка приглашения оболочки EShell."
-  (let* (
-         (git-branch-unparsed
-          (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
-         (git-branch
-          (if (string= git-branch-unparsed "")
-              ""
-            (substring git-branch-unparsed 0 -1)))
-         )
-     (format "%s %s%s %s\n%s "
-             (all-the-icons-octicon "repo")
-             (propertize (car (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
-             (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
-             (unless (string= git-branch "")
-               (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
-             (propertize "❯❯❯" 'face `(:foreground "#ff79c6")))))
-
-;;;;  Терминал Emacs Shell
-
+;;;; Оболочка Emacs Shell
 (use-package eshell
   :ensure t
   :custom
@@ -61,12 +24,36 @@
                                   (define-key eshell-mode-map [up] 'previous-line)
                                   (define-key eshell-mode-map [down] 'next-line)))))
 
+;; Сокращалка путей
+
+(use-package shrink-path
+  :ensure t
+  :demand t)
+
+(defun приглашение-eshell ()
+  "Настройка приглашения оболочки EShell."
+  (let* (
+         (git-branch-unparsed
+          (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
+         (git-branch
+          (if (string= git-branch-unparsed "")
+              ""
+            (substring git-branch-unparsed 0 -1)))
+         )
+     (format "%s %s%s %s\n%s "
+             (all-the-icons-octicon "repo")
+             (propertize (car (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
+             (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
+             (unless (string= git-branch "")
+               (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
+             (propertize "❯❯❯" 'face `(:foreground "#ff79c6")))))
+
 ;; (use-package eshell-did-you-mean
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
 ;;   :ensure t)
 
-;;;;  Переключение Emacs Shell
+
 
 (use-package eshell-toggle
   :ensure t
@@ -76,6 +63,8 @@
   (eshell-toggle-default-directory "~")
   (eshell-toggle-run-command nil)
   (eshell-toggle-init-function #'eshell-toggle-init-eshell))
+
+;;;; Терминал VTerm
 
 (use-package vterm
   :ensure t
@@ -101,8 +90,8 @@
    '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
   
    (defface terminal-face
-      '((((background light)) (:background "#000000" :family "Terminus (TTF)"))
-        (((background dark)) (:background "#000000" :family "Terminus (TTF)")))
+      '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
+        (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
       "Terminal face")
 
   (defun turn-off-chrome ()

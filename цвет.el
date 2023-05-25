@@ -1,4 +1,4 @@
-;;; не-цвет.el --- EMACS и Пустота
+;;; цвет.el --- EMACS и Пустота
 ;;; Commentary:
 
 ;; /AST не имеет ни цвета ни вкуса ни запаха, ни - физических размера или веса, какой-либо формы - только структуру/
@@ -12,7 +12,7 @@
 
 (defun tao-palette ()
   "Палитра."
-  (tao-theme-yin-palette))
+  (tao-theme-yang-palette))
 
 (use-package tao-theme
   :if window-system
@@ -23,9 +23,9 @@
           ;(tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259)))
           )
   :config
-  (require 'tao-yin-theme)
-  (load-theme 'tao-yin t)
+  (require 'tao-yang-theme)
+  (load-theme 'tao-yang t)
   (загрузить 'face-remap))
 
-(provide 'не-цвет)
-;;; не-цвет.el ends here
+(provide 'цвет)
+;;; цвет.el ends here

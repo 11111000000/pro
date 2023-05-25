@@ -45,11 +45,8 @@
 
 ;; Мульти-курсор
 
-;; (use-package multiple-cursors
-;;   :ensure t
-;;   :bind (("C-c SPC" . mc/mark-all-like-this)
-;;          ("C-c C-SPC" . mc/unmark-all-like-this)
-;;          ("C-c <mouse-1>" . mc/add-cursor-on-click)))
+(use-package multiple-cursors
+  :ensure t)
 
 ;; При перемещении в начало строки *<C-a>*, сперва прыгать к  идентации, затем - к началу строки
 
@@ -110,7 +107,7 @@
 (use-package olivetti
   :ensure t
   :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
-  :custom ((olivetti-minimum-body-width 80)))
+  :custom ((olivetti-minimum-body-width 120)))
 
 ;;;; Закладки
 

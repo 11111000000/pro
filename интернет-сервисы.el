@@ -21,9 +21,7 @@
 
 ;;;; EWW - Браузер на ELISP
 
-(use-package eww
-  :bind (:map eww-mode-map
-                ("f"))
+(use-package eww  
   :config)
 
 ;;;;; Нумерация ссылков
