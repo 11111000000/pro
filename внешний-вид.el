@@ -93,24 +93,24 @@
 
 ;;;; Курсор
 
-;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним
+;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
 
 (blink-cursor-mode 1)
 (setq cursor-type '(bar . 2) )
 (setq x-stretch-cursor t)
 
-;; В зависимости от включенного режима ввода, курсор меняет свой вид
+;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 
 (use-package cursor-chg
   :init (установить-из :repo "emacsmirror/cursor-chg")
   :config
   (require 'cursor-chg)
-  (change-cursor-mode t)
   (setq curchg-input-method-cursor-color "orange"
         curchg-default-cursor-type '(bar . 2)
         curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)
 
+  (change-cursor-mode t)
   (add-hook 'after-load-theme-hook
           (lambda ()
             (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
