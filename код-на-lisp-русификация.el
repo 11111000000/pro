@@ -1,6 +1,6 @@
 ;;; код-на-lisp-русификация.el --- Русификация Emacs LISP
 ;;; Commentary:
-;; То, что поначалу хотел сделать в виде макроса - русификация конфига EMACS
+;;  Русификация ЛИСП
 ;;; Code:
 
 (use-package prettify-utils
@@ -180,7 +180,8 @@
                                   ("current-column" "текущий-столбец")
                                   ("insert" "вставить")
                                   ("current-message" "текущее-сообщение")
-                                  ))
+                                  ("string-replace" "заменить-строку")
+                                  ("seq-reduce" "редукция-последовательности")))
   (prettify-symbols-mode 1))
 
 

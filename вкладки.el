@@ -51,7 +51,8 @@
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
           (имя-буфера (substring-no-properties (alist-get 'name tab)))
-          (режим-вкладки (if (bufferp (get-buffer имя-буфера)) (with-current-buffer имя-буфера major-mode) nil))
+          (режим-вкладки (if (bufferp (get-buffer имя-буфера))
+                             (with-current-buffer имя-буфера major-mode) nil))
           (иконка-режима (all-the-icons-icon-for-mode режим-вкладки :height 0.8))
           (иконка-вкладки (if (symbolp иконка-режима) иконка-по-умолчанию иконка-режима))
           (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive))
@@ -87,8 +88,7 @@
   (tab-bar-new-tab-to)
   (dashboard-open))
 
-;;;;;  Вкладки уровня окна
-
+;;;;  Вкладки уровня окна
 
 (use-package tab-line
   :custom
