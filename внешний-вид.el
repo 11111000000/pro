@@ -158,10 +158,10 @@
 
 ;;;; Фон для служебных буферов
 
-(use-package solaire-mode
-  :ensure t
-  :config
-  (solaire-global-mode t))
+;; (use-package solaire-mode
+;;   :ensure t
+;;   :config
+;;   (solaire-global-mode t))
 
 ;;;; Изображения
 

@@ -55,6 +55,10 @@
   :ensure t
   :defer t)
 
+;;;; Инспектор объектов ELISP
+
+(use-package inspector :ensure t)
+
 ;;;; Форматирование ELISP
 
 (use-package elisp-format

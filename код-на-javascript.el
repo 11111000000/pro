@@ -40,8 +40,10 @@
 ;;;; Поддержка JSON
 
 (use-package json-mode
-  :ensure t
-  :defer t)
+  :ensure t)
+
+(use-package json-navigator
+  :ensure t)
 
 ;; (defun skewer-location-reload () (interactive) (skewer-eval "window.location.reload()"))
 

@@ -93,17 +93,6 @@
 
 (setq org-support-shift-select nil)
 
-;; Перемещение по заголовкам, со скрытием остальных
-
-(use-package org
-  ;; :bind (:map org-mode-map
-  ;;               (
-  ;;                ("M-n" . my/org-show-next-heading-tidily)
-  ;;                ("M-p" . my/org-show-previous-heading-tidily)
-  ;;                )
-  ;;             )
-  :init)
-
 ;;;; TODO Учёт времени
 ;;;; Помодоро
 

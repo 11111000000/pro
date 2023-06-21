@@ -14,7 +14,6 @@
            (history-delete-duplicates t)
            (history-length 300)
            (savehist-autosave-interval 300)
-           ;;(savehist-file "~/.emacs.d/history")
            (kept-old-versions 25)
            (delete-old-versions t)
            (create-lockfiles nil)
@@ -24,7 +23,9 @@
   (savehist-mode t)
   (setq
    auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (no-littering-theme-backups))
 
 ;; Сохранять действия в ~~/.emacs.d/history~
 

@@ -202,6 +202,7 @@ ARG - backward"
          (rust-mode . eglot-ensure)
          (haskell-mode . eglot-ensure)
          (js-mode . eglot-ensure)
+         (json-mode . eglot-ensure)
          (rust-mode . eglot-ensure))
   :bind (:map eglot-mode-map
               ("C-c a r" . #'eglot-rename)
