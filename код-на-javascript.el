@@ -40,7 +40,8 @@
 ;;;; Поддержка JSON
 
 (use-package json-mode
-  :ensure t)
+  :ensure t
+  :hook ((json-mode . hs-minor-mode)))
 
 (use-package json-navigator
   :ensure t)

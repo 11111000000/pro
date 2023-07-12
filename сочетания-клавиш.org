@@ -87,6 +87,7 @@
 | C-c SPC       | mc/mark-all-like-this               |
 | C-c C-SPC     | mc/unmark-all-like-this             |
 | C-c <mouse-1> | mc/add-cursor-on-click              |
+| <backtab>     | hs-toggle-hiding                    |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -103,7 +104,7 @@
 | <XF86MonBrightnessDown> | уменьшить-яркость             |
 | <XF86TouchpadToggle>    | переключить-тачпад            |
 | s-e                     | buffer-expose                 |
-| s-b                     | consult-project-buffer        |
+| s-b                     | consult-buffer                |
 | s-.                     | exwm-floating-toggle-floating |
 | C-s-d                   | delete-window                 |
 | s-h                     | windmove-left                 |
@@ -155,9 +156,7 @@
 | C-c to                  | multi-vterm-dedicated-open    |
 | s-~                     | eshell-toggle                 |
 | C-c s                   | scratch-pop                   |
-| s-a                     | buffer-expose                 |
-| s-SPC                   | buffer-expose                 |
-| s-*                     | buffer-expose-stars           |
+| s-o                     | buffer-expose                 |
 | C-c l                   | org-store-link                |
 | C-c a                   | org-agenda                    |
 | C-x +                   | golden-ratio                  |

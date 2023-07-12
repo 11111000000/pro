@@ -124,10 +124,9 @@ ARG - backward"
 
 (use-package flymake
   :hook ((prog-mode) . flymake-mode)
-
   :bind (:map flymake-mode-map
-              ("C-c ]" . flymake-goto-next-error)
-              ("C-c [" . flymake-goto-prev-error)))
+              ("M-]" . flymake-goto-next-error)
+              ("M-[" . flymake-goto-prev-error)))
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 

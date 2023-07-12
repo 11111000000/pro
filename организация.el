@@ -13,7 +13,7 @@
                 ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ВОПРОС" "ГОТОВО") (sequence "TODO" "ACTIVE" "QUESTION" "DONE"))))
+           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ВОПРОС" "ГОТОВО"))))
   :config
   (require 'org-compat)
   :init)
@@ -163,7 +163,7 @@
   :custom (
 	        (outshine-bullets-bullet-list '("•" "" "" "" ""))))
 
-;;;; Поддержка блоков на UML
+;;;; Поддержка диаграмм из блоков на UML
 
 (use-package plantuml-mode
   :ensure t
