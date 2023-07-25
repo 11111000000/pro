@@ -85,11 +85,8 @@
 (use-package gitlab
   :ensure t)
 
-(use-package lab
-  :init (установить-из :repo "isamert/lab.el"))
-
-
-
+;; (use-package lab
+;;   :init (установить-из :repo "isamert/lab.el"))
 
 ;;(use-package github :ensure t)
 
