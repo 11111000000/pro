@@ -12,7 +12,7 @@
          ("C-g" . dashboard-refresh-buffer))
   :hook ((dashboard-mode-hook . variable-pitch-mode))
   :custom
-  (dashboard-startup-banner "~/Добро/lisp.png")
+  (dashboard-startup-banner "~/ПРО/lisp.png")
   (dashboard-banner-logo-title "Добро пожаловать в свободную систему!")
   (dashboard-center-content t)
   (dashboard-items '((recents  . 3)
