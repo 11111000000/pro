@@ -27,7 +27,7 @@
 (use-package buffer-expose
   :ensure t
   ;; :load-path "emacs-lisp/buffer-expose"
-  :bind (("s-o" . buffer-expose)
+  :bind (
          :map buffer-expose-grid-map
          ("d" . buffer-expose-kill-buffer)
          ("h" . buffer-expose-left-window)
