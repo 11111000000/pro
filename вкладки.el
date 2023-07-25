@@ -41,9 +41,6 @@
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
-  ;(defvar левая-часть-вкладки (all-the-icons-alltheicon "wave-right"))
-  ;(defvar правая-часть-вкладки (powerline-wave-left nil 'tab-bar высота-вкладки))
-
    (defun find-buffer-element (list)
      (loop for element in list
            (pp element)))
@@ -63,13 +60,11 @@
                                        (substring укороченое-имя 0 длинна-имени-вкладки) "…")
                                     укороченое-имя)))
           (текст-вкладки (concat
-                          ;(all-the-icons-alltheicon "wave-right" :height 1.3 :v-adjust 0 :face `(face :foreground ,(face-attribute 'tab-bar :background)))
                           " "
                           иконка-вкладки
                           " "
                           имя-вкладки
                           " "
-                          ;(all-the-icons-alltheicon "wave-left" :height 1.3 :v-adjust -0.1 :face `(face :foreground ,(face-attribute 'tab-bar :background)))
                           )))
       ;(pp буфер-вкладки)
       ;(pp иконка-режима)

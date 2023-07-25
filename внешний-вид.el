@@ -24,13 +24,13 @@
 ;; Максимальная высота минибуфера
 
 (setq-default max-mini-window-height nil)
-(setq resize-mini-windows nil)
+(setq resize-mini-windows t)
 ;(window-resize (minibuffer-window) 0.1)
 ;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
 
 ;; Обрезать длинные сообщения
 
-(setq message-truncate-lines t)
+(setq message-truncate-lines nil)
 
 ;; Шрифт минибуфера
 
