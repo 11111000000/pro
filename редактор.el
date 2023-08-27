@@ -230,5 +230,9 @@
 
 ;; https://github.com/pok49/yomacs
 
+;;;; Vim-клавиши
+(setq viper-mode nil)
+(require 'viper)
+
 (provide 'редактор)
 ;;; редактор.el ends here

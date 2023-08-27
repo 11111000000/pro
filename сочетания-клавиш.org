@@ -9,6 +9,8 @@
 | s-x           | nil                                 |
 | M-c           | nil                                 |
 | M-t           | nil                                 |
+| M-f           | viper-forward-word                  |
+| M-b           | viper-backward-word                 |
 | M-y           | whole-line-or-region-kill-ring-save |
 | C-y           | yank                                |
 | C-d C-d       | whole-line-or-region-kill-region    |
@@ -134,7 +136,7 @@
 | <XF86Back>              | winner-undo                   |
 | <XF86Forward>           | winner-redo                   |
 | <print>                 | скриншот-области              |
-| s-s                     | скриншот-области              |
+| s-s                     | consult-ag                    |
 | s-<print>               | скриншот                      |
 | s-S-s                   | скриншот                      |
 | s-<left>                | shrink-window-horizontally    |
@@ -229,6 +231,9 @@
 #+END_SRC
 
 #+RESULTS:
+
+
+
 
 
 

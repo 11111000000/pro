@@ -70,7 +70,8 @@
   :ensure t
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
-          (vterm-disable-bold-font t))
+          (vterm-disable-bold-font t)
+          (vterm-term-environment-variable "eterm-color" ))
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
