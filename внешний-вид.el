@@ -95,9 +95,14 @@
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
 
-(blink-cursor-mode 1)
+(blink-cursor-mode t)
 (setq cursor-type '(bar . 2) )
-(setq x-stretch-cursor t)
+(setq x-stretch-cursor 1)
+(setq blink-cursor-delay 0.5)
+
+;; В невыбраных окнах, курсор прозрачный
+
+(setq-default cursor-in-non-selected-windows 'hollow)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 

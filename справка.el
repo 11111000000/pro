@@ -76,7 +76,7 @@
                                    (setq cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
-  (setq-default cursor-in-non-selected-windows nil)
+  
   (setq-default eldoc-documentation-strategy #'eldoc-documentation-default)
   (setq-default eldoc-documentation-function #'eldoc-documentation-default)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))

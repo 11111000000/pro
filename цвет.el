@@ -12,7 +12,7 @@
 
 (defun tao-palette ()
   "Палитра."
-  (tao-theme-yang-palette))
+  (tao-theme-yin-palette))
 
 (use-package tao-theme
   :if window-system
@@ -23,8 +23,8 @@
           ;(tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259)))
           )
   :config
-  (require 'tao-yang-theme)
-  (load-theme 'tao-yang t)
+  (require 'tao-yin-theme)
+  (load-theme 'tao-yin t)
   (загрузить 'face-remap))
 
 (provide 'цвет)

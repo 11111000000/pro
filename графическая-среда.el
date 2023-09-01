@@ -159,5 +159,12 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;;   :if window-system
 ;;   :ensure t)
 
+(use-package exwm-background
+  :init
+  (установить-из :repo "pestctrl/exwm-background")
+  :config
+  ;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
+  )
+
 (provide 'графическая-среда)
 ;;; графическая-среда.el ends here
