@@ -71,7 +71,7 @@
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t)
-          (vterm-term-environment-variable "eterm-color" ))
+          (vterm-term-environment-variable "xterm-256color" ))
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
@@ -90,10 +90,10 @@
    '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
    '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
   
-   (defface terminal-face
-      '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
-        (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
-      "Terminal face")
+  (defface terminal-face
+    '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
+      (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
+    "Terminal face")
 
   (defun turn-off-chrome ()
     (hl-line-mode -1)
