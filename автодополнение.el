@@ -43,8 +43,8 @@
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
 
-  :init
-
+  :config
+  (require 'corfu)
   (global-corfu-mode)
   (corfu-popupinfo-mode)
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))

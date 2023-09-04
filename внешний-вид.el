@@ -79,7 +79,7 @@
   :ensure
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
+  :init  
   (all-the-icons-completion-mode))
 
 ;;;;; Хук, срабатывающий после установки темы:
