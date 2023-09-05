@@ -26,53 +26,54 @@
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
-  ;;:hook
-  ;; ((tab-bar-mode . tab-bar-history-mode))
   :config
-  (let* ((высота-вкладки 18)
-        (длинна-имени-вкладки 25)
-        (иконка-по-умолчанию (all-the-icons-octicon "browser" :height 1  :v-adjust 0.1))
-        (иконка-firefox (all-the-icons-faicon "firefox" :height 1  :v-adjust 0))
-        (иконка-chrome (all-the-icons-faicon "chrome" :height 1  :v-adjust 0))
-        (иконка-telegram (all-the-icons-faicon "comment" :height 1  :v-adjust 0))
-        (замены-имён-вкладки `(("Firefox-esr" . ,иконка-firefox)
-                               ("firefox-default" . ,иконка-firefox)
-                               ("Google-chrome" . ,иконка-chrome))))
+  (dotimes (i 10)
+    (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
-    (dotimes (i 10)
-      (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))   
+  (defun find-buffer-element (list)
+    (loop for element in list
+          (pp element)))
 
-    (defun формат-вкладки-tab-bar (tab i)
-      (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
-            (имя-буфера (substring-no-properties (alist-get 'name tab)))
-            (режим-вкладки (if (bufferp (get-buffer имя-буфера))
-                               (with-current-buffer имя-буфера major-mode) nil))
-            (иконка-режима (all-the-icons-icon-for-mode режим-вкладки :height 0.8))
-            (иконка-вкладки (if (symbolp иконка-режима) иконка-по-умолчанию иконка-режима))
-            (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive))
-            (укороченое-имя  (заменить-строки замены-имён-вкладки
-                                              имя-буфера))
-            (имя-вкладки (format "%s" (if (> (length укороченое-имя) длинна-имени-вкладки)
-                                        (concat
-                                         (substring укороченое-имя 0 длинна-имени-вкладки) "…")
-                                      укороченое-имя)))
-            (текст-вкладки (concat
-                            " "
-                            иконка-вкладки
-                            " "
-                            имя-вкладки
-                            " "
-                            )))
+  (defun формат-вкладки-tab-bar (tab i)
+    (let* ((высота-вкладки 18)
+          (длинна-имени-вкладки 25)
+          (иконка-по-умолчанию (all-the-icons-octicon "browser" :height 1  :v-adjust 0.1))
+          (иконка-firefox (all-the-icons-faicon "firefox" :height 1  :v-adjust 0))
+          (иконка-chrome (all-the-icons-faicon "chrome" :height 1  :v-adjust 0))
+          (иконка-telegram (all-the-icons-faicon "comment" :height 1  :v-adjust 0))
+          (замены-имён-вкладки `(("Firefox-esr" . ,иконка-firefox)
+                                 ("firefox-default" . ,иконка-firefox)
+                                 ("Google-chrome" . ,иконка-chrome)))
+          (вкладка-текущая? (eq (car tab) 'current-tab))
+          (имя-буфера (substring-no-properties (alist-get 'name tab)))
+          (режим-вкладки (if (bufferp (get-buffer имя-буфера))
+                             (with-current-buffer имя-буфера major-mode) nil))
+          (иконка-режима (all-the-icons-icon-for-mode режим-вкладки :height 0.8))
+          (иконка-вкладки (if (symbolp иконка-режима) иконка-по-умолчанию иконка-режима))
+          (фейс-текущей-вкладки (if вкладка-текущая? 'tab-bar-tab 'tab-bar-tab-inactive))
+          (укороченое-имя  (заменить-строки замены-имён-вкладки
+                                            имя-буфера))
+          (имя-вкладки (format "%s" (if (> (length укороченое-имя) длинна-имени-вкладки)
+                                      (concat
+                                       (substring укороченое-имя 0 длинна-имени-вкладки) "…")
+                                    укороченое-имя)))
+          (текст-вкладки (concat
+                          " "
+                          иконка-вкладки
+                          " "
+                          имя-вкладки
+                          " "
+                          )))
                                         ;(pp буфер-вкладки)
                                         ;(pp иконка-режима)
-        (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)
-        текст-вкладки))
+      (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)
+      текст-вкладки))
 
-    (setq tab-bar-tab-name-format-function  #'формат-вкладки-tab-bar)
-    (setq tab-bar-tab-name-function #'tab-bar-tab-name-current)
+  (setq tab-bar-tab-name-format-function  #'формат-вкладки-tab-bar)
+  (setq tab-bar-tab-name-function #'tab-bar-tab-name-current)
 
-    (tab-bar-mode t)
-    (tab-bar-history-mode t)))
+  (tab-bar-mode t)
+  (tab-bar-history-mode t))
 
 (defun открыть-новую-вкладку ()
   "Открыть новую вкладку с дашбордом."
