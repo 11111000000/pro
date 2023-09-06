@@ -79,7 +79,7 @@
   :ensure
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
+  :init  
   (all-the-icons-completion-mode))
 
 ;;;;; Хук, срабатывающий после установки темы:
@@ -110,7 +110,7 @@
   :init (установить-из :repo "emacsmirror/cursor-chg")
   :config
   (require 'cursor-chg)
-  (setq curchg-input-method-cursor-color "orange"
+  (setq-default curchg-input-method-cursor-color "orange"
         curchg-default-cursor-type '(bar . 2)
         curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
         curchg-change-cursor-on-input-method-flag t)

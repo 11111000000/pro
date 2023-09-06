@@ -26,27 +26,25 @@
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
-  ;;:hook
-  ;; ((tab-bar-mode . tab-bar-history-mode))
   :config
-  (setq высота-вкладки 18)
-  (setq длинна-имени-вкладки 25)
-  (setq иконка-по-умолчанию (all-the-icons-octicon "browser" :height 1  :v-adjust 0.1))
-  (setq иконка-firefox (all-the-icons-faicon "firefox" :height 1  :v-adjust 0))
-  (setq иконка-chrome (all-the-icons-faicon "chrome" :height 1  :v-adjust 0))
-  (setq иконка-telegram (all-the-icons-faicon "comment" :height 1  :v-adjust 0))
-   (setq замены-имён-вкладки `(("Firefox-esr" . ,иконка-firefox)
-                                   ("Google-chrome" . ,иконка-chrome)))
-
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
-   (defun find-buffer-element (list)
-     (loop for element in list
-           (pp element)))
+  (defun find-buffer-element (list)
+    (loop for element in list
+          (pp element)))
 
   (defun формат-вкладки-tab-bar (tab i)
-    (let* ((вкладка-текущая? (eq (car tab) 'current-tab))
+    (let* ((высота-вкладки 18)
+          (длинна-имени-вкладки 25)
+          (иконка-по-умолчанию (all-the-icons-octicon "browser" :height 1  :v-adjust 0.1))
+          (иконка-firefox (all-the-icons-faicon "firefox" :height 1  :v-adjust 0))
+          (иконка-chrome (all-the-icons-faicon "chrome" :height 1  :v-adjust 0))
+          (иконка-telegram (all-the-icons-faicon "comment" :height 1  :v-adjust 0))
+          (замены-имён-вкладки `(("Firefox-esr" . ,иконка-firefox)
+                                 ("firefox-default" . ,иконка-firefox)
+                                 ("Google-chrome" . ,иконка-chrome)))
+          (вкладка-текущая? (eq (car tab) 'current-tab))
           (имя-буфера (substring-no-properties (alist-get 'name tab)))
           (режим-вкладки (if (bufferp (get-buffer имя-буфера))
                              (with-current-buffer имя-буфера major-mode) nil))
@@ -66,8 +64,8 @@
                           имя-вкладки
                           " "
                           )))
-      ;(pp буфер-вкладки)
-      ;(pp иконка-режима)
+                                        ;(pp буфер-вкладки)
+                                        ;(pp иконка-режима)
       (add-face-text-property 0 (length текст-вкладки) фейс-текущей-вкладки t текст-вкладки)
       текст-вкладки))
 
