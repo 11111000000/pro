@@ -102,7 +102,7 @@
 
 ;; В невыбраных окнах, курсор прозрачный
 
-(setq-default cursor-in-non-selected-windows 'hollow)
+(setq-default cursor-in-non-selected-windows nil)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 
