@@ -191,6 +191,13 @@
                                   ("re-search-forward" "регулярка-вперёд")
                                   ("point-min" "точка-мин")
                                   ("insert-file-contents" "вставить-содержимое-файла")
+                                  ("substring" "подстрока")
+                                  ("substring-no-properties" "подстрока-без-свойств")
+                                  ("bufferp" "это-буфер")
+                                  (":height" ":высота")
+                                  ("major-mode" "мажорный-мод")
+                                  ("alist-get" "поле-объекта")
+                                  ("add-face-text-property" "добавить-текстовое-свойство")
                                   ))
   (prettify-symbols-mode 1))
 
