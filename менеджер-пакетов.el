@@ -25,12 +25,12 @@
 (cl-defun установить-из (&key (fetcher "github") repo name rev backend)
   "Установить пакет с удаленного компьютера, если он еще не установлен.
 Это тонкая оболочка над `package-vc-install`, чтобы сделать неинтерактивное
-использование более эргономичным. Принимает следующее именованные аргументы:
+использование более эргономичным. Принимает аргументы:
 
 - FETCHER источник пакета (например, \"gitlab\").
   Если не указан, то \"github\".
 
-- REPO должно быть имененем репозитария (например, \"slotThe/arXiv-citation\".
+- REPO имя репозитария (например, \"slotThe/arXiv-citation\".
 
 - NAME, REV, и BACKEND все как в `package-vc-install'"
   (let* ((url (format "https://www.%s.com/%s" fetcher repo))

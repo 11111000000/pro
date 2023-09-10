@@ -66,7 +66,8 @@
 (use-package eldoc-box
   :ensure t
   :bind ("C-c i" . eldoc-doc-buffer)
-  :custom ((eldoc-idle-delay 1) (eldoc-box-offset '(-50 50 -50)))
+  :custom ((eldoc-idle-delay 0.1)
+          (eldoc-box-offset '(-50 50 -50)))
   :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
          (prog-mode . eldoc-box-hover-mode)
          (eglot-managed-mode-hook . eldoc-box-hover-mode)
@@ -77,7 +78,7 @@
   :config
   (require 'eldoc)
   
-  (setq eldoc-documentation-strategy #'eldoc-documentation-compose)
+  (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
   (set-face-attribute 'eldoc-box-body nil :family "Fira Code" :weight 'normal :italic nil :height 1.0))
 
