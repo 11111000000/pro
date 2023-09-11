@@ -105,7 +105,6 @@
 | <XF86MonBrightnessUp>   | увеличить-яркость             |
 | <XF86MonBrightnessDown> | уменьшить-яркость             |
 | <XF86TouchpadToggle>    | переключить-тачпад            |
-| s-e                     | buffer-expose                 |
 | s-b                     | consult-buffer                |
 | s-.                     | exwm-floating-toggle-floating |
 | C-s-d                   | delete-window                 |
@@ -158,7 +157,6 @@
 | C-c to                  | multi-vterm-dedicated-open    |
 | s-~                     | eshell-toggle                 |
 | C-c s                   | scratch-pop                   |
-| s-o                     | buffer-expose                 |
 | C-c l                   | org-store-link                |
 | C-c a                   | org-agenda                    |
 | C-x +                   | golden-ratio                  |
