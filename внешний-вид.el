@@ -79,7 +79,7 @@
   :ensure
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init  
+  :init
   (all-the-icons-completion-mode))
 
 ;;;;; Хук, срабатывающий после установки темы:
@@ -98,11 +98,11 @@
 (blink-cursor-mode t)
 (setq cursor-type '(bar . 2) )
 (setq x-stretch-cursor 1)
-(setq blink-cursor-delay 0.5)
+(setq blink-cursor-delay 0.3)
 
 ;; В невыбраных окнах, курсор прозрачный
 
-(setq-default cursor-in-non-selected-windows 'hollow)
+(setq-default cursor-in-non-selected-windows nil)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 

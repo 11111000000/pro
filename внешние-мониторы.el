@@ -52,17 +52,18 @@
      (defun применить-расположение-монитора ()
        "Применить расположение монитора из переменной расположение-монитора"
        (let ((xrandr-position (cond
-                            ((eq расположение-монитора 'сверху) "--below")
-                            ((eq расположение-монитора 'справа) "--left-of"))))
-           (start-process-shell-command
-            "xrandr" nil (concat "xrandr --output " имя-внешнего-монитора " --auto --rotate normal --output " имя-внешнего-монитора " --auto " xrandr-position " " имя-внешнего-монитора " --primary"))
-           (exwm-randr-refresh)))
+                              ((eq расположение-монитора 'сверху) "--below")
+                              ((eq расположение-монитора 'справа) "--left-of")
+                              (t "--left-of"))))
+         (start-process-shell-command
+          "xrandr" nil
+          (concat "xrandr --output " имя-внешнего-монитора " --auto --rotate normal --output " имя-встроенного-монитора " --auto " xrandr-position " " имя-внешнего-монитора " --primary"))
+         (exwm-randr-refresh)))
 
      (exwm-randr-enable)
 
      (add-hook 'exwm-randr-screen-change-hook
-              'применить-расположение-монитора))
-  )
+              'применить-расположение-монитора)))
 
 (provide 'внешние-мониторы)
 ;;; внешние-мониторы.el ends here
