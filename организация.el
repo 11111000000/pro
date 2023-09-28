@@ -148,7 +148,7 @@
 (use-package outshine
   :ensure t
   :custom ((outshine-startup-folded-p nil))
-  :hook (((prog-mode emacs-lisp-mode js-mode) . outline-minor-mode)
+  :hook (((emacs-lisp-mode) . outline-minor-mode)
          (outline-minor-mode . outshine-mode)
          (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map

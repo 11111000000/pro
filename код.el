@@ -196,22 +196,21 @@ ARG - backward"
 (use-package eglot
   :ensure t
   :hook ((go-mode . eglot-ensure)
-         (haskell-mode . eglot-ensure)
-         (typescript-mode . eglot-ensure)
-         (rust-mode . eglot-ensure)
-         (haskell-mode . eglot-ensure)
-         (js-mode . eglot-ensure)
-         (json-mode . eglot-ensure)
-         (rust-mode . eglot-ensure))
+       (haskell-mode . eglot-ensure)
+       (typescript-mode . eglot-ensure)
+       (rust-mode . eglot-ensure)
+       (haskell-mode . eglot-ensure)
+       (js-mode . eglot-ensure)
+       (json-mode . eglot-ensure)
+       (rust-mode . eglot-ensure))
   :bind (:map eglot-mode-map
-              ("C-c a r" . #'eglot-rename)
-              ("C-<down-mouse-1>" . #'xref-find-definitions)
-              ("C-S-<down-mouse-1>" . #'xref-find-references)
-              ("C-c C-c" . #'eglot-code-actions))
+                ("C-c a r" . #'eglot-rename)
+                ("C-<down-mouse-1>" . #'xref-find-definitions)
+                ("C-S-<down-mouse-1>" . #'xref-find-references)
+                ("C-c C-c" . #'eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
-  (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
-  (add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio"))))
+  )
 
 ;;;; Дебаггер
 

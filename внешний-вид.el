@@ -2,7 +2,7 @@
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
-;;;; Не мигать и не пищать :-)
+;;;; Не мигать и не пищать
 
 (setq visible-bell nil)
 (setq ring-bell-function 'ignore)

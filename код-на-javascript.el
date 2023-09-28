@@ -24,13 +24,13 @@
 
 ;;;; Документация в комментариях
 
-(use-package js-doc
-  :ensure t
-  :defer t
-  :bind (:map js2-mode-map
-              ("C-c jD" . js-doc-insert-file-doc)
-              ("C-c jd" . js-doc-insert-function-doc))
-  :config)
+;; (use-package js-doc
+;;   :ensure t
+;;   :defer t
+;;   :bind (:map js2-mode-map
+;;               ("C-c jD" . js-doc-insert-file-doc)
+;;               ("C-c jd" . js-doc-insert-function-doc))
+;;   :config)
 
 ;;;; HTTP Запросы
 
@@ -76,13 +76,20 @@
 
 (use-package typescript-mode
   :ensure t
-  :after tree-sitter
-  :config
+  :init
+  (require 'typescript-mode)
+  (require 'tree-sitter)
+  (require 'eglot)
   (define-derived-mode typescript-react-mode typescript-mode
     "Typescript JSX")
 
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx)))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx))
+  (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
+                                        ;(add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs `(typescript-mode . ("/home/az/.nvm/versions/node/v12.22.12/bin/typescript-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) . ("/home/az/.nvm/versions/node/v12.22.12/bin/typescript-language-server" "--stdio")))
+  )
 
 ;; (use-package tsi
 ;;   :ensure t
