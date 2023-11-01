@@ -141,7 +141,10 @@
         (if окно-терминала
             (select-window окно-терминала)
           (if (projectile-project-p)
-              (multi-vterm-project)
+              (progn
+                (split-window-below)
+                (windmove-down)
+                (projectile-run-vterm))
             (vterm-toggle))))))
 
 (provide 'терминалы)

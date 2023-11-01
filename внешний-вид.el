@@ -28,7 +28,7 @@
 ;(window-resize (minibuffer-window) 0.1)
 ;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
 
-;; Обрезать длинные сообщения
+;; Обрезать ли длинные сообщения
 
 (setq message-truncate-lines nil)
 
@@ -85,10 +85,10 @@
 ;;;;; Хук, срабатывающий после установки темы:
 
 (defvar after-load-theme-hook nil
-  "Hook run after a color theme is loaded using `load-theme'.")
+  "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-  "Run `after-load-theme-hook'."
+  "Запускает `after-load-theme-hook'."
   (run-hooks 'after-load-theme-hook))
 
 ;;;; Курсор
@@ -108,6 +108,8 @@
 
 (use-package cursor-chg
   :init (установить-из :repo "emacsmirror/cursor-chg")
+  :functions (change-cursor-mode)
+  :defines (curchg-default-cursor-color)
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
@@ -169,6 +171,8 @@
 ;;   (solaire-global-mode t))
 
 ;;;; Изображения
+
+(require 'image-mode)
 
 (use-package image+
   :ensure t

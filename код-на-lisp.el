@@ -42,6 +42,8 @@
 ;;   :after flycheck
 ;;   :config (flycheck-elsa-setup))
 
+(require 'менеджер-пакетов)
+
 (use-package flymake-elisp-config
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
   :config

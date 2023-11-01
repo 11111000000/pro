@@ -120,6 +120,8 @@
 
 ;;;; Заметки
 
+(require 'doc-view)
+
 (use-package org-noter
   :ensure t
   :bind (
@@ -147,6 +149,7 @@
 
 (use-package outshine
   :ensure t
+  :defines (outshine-mode-map)
   :custom ((outshine-startup-folded-p nil))
   :hook (((emacs-lisp-mode) . outline-minor-mode)
          (outline-minor-mode . outshine-mode)

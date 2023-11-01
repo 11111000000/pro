@@ -33,6 +33,7 @@
   (defun find-buffer-element (list)
     (loop for element in list
           (pp element)))
+  
 
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((высота-вкладки 18)

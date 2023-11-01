@@ -5,6 +5,8 @@
 
 (use-package vertico
   :ensure t
+  :defines (vertico-map)
+  :functions (vertico-mode)
   :custom
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
@@ -50,6 +52,7 @@
 
 (use-package marginalia
   :ensure t
+  :functions (marginalia-mode)
   :custom (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :config (marginalia-mode))
 
@@ -57,6 +60,8 @@
 
 (use-package consult
   :ensure t
+  :defines (consult-project-root-function)
+  :functions (consult-customize)
   :custom ((consult-preview-key "M-."))
   :config
   (autoload 'projectile-project-root "projectile")
@@ -74,23 +79,26 @@
 
 (use-package consult-dash
   :ensure t
+  :defines (consult-dash)
   :config (consult-customize consult-dash
                              :initial (thing-at-point 'symbol)))
 
 ;;;; Поиск файлов
 
-(defun искать-по-файлам-отсюда ()
-  "Поиск по файлам от текущего пути."
-  (interactive)
-  (consult-ag default-directory))
+(require 'dired)
 
 (use-package consult-ag
   :ensure t
   :after dired
+  :functions (consult-ag)
   :config
+  (defun искать-по-файлам-отсюда ()
+    "Поиск по файлам от текущего пути."
+    (interactive)
+    (consult-ag default-directory))
+                                        ; Эту функцию нужно добавить, т.к. она пропала в новых версиях consult
 
-  ; Эту функцию нужно добавить, т.к. она пропала в новых версиях consult
-
+  
   (defun consult--position-marker (buffer line column)
     "Get marker in BUFFER from LINE and COLUMN."
     (when (buffer-live-p buffer)
@@ -117,6 +125,8 @@
 
 (use-package consult-eglot
   :after (eglot)
+  :defines (eglot-mode-map)
+  :functions (consult-eglot-symbols)
   :ensure t
   :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols)))
 

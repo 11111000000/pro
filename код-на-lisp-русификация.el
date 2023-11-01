@@ -206,6 +206,7 @@
                                   ("delete-window" "удалить-окно")
                                   ("switch-to-buffer-other-window" "переключиться-на-буфер-в-другом-окне")
                                   ("set-buffer" "выбрать-буфер")
+                                  ("visible-bell" "визуальная-сигнализация")
                                   ))
   (prettify-symbols-mode 1))
 
