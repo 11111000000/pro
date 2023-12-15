@@ -6,13 +6,13 @@
 (use-package eslint-rc
   :ensure t
   :custom ((eslint-rc-use-package-json t)
-           (eslint-rc-use-eslintignore t)
-           (eslint-rc-use-node-modules-bin t))
+          (eslint-rc-use-eslintignore t)
+          (eslint-rc-use-node-modules-bin t))
 
-  :hook ((typescript-mode . eslint-rc-mode)
-         (typescriptreact-mode . eslint-rc-mode)
-         (js-mode . eslint-rc-mode)
-         (web-mode . eslint-rc-mode)))
+  :hook ((typescript-ts-mode . eslint-rc-mode)
+       (tsx-ts-mode . eslint-rc-mode)
+       (js-mode . eslint-rc-mode)
+       (web-mode . eslint-rc-mode)))
 
 ;;;; Добавить путь для модулей
 
@@ -74,22 +74,20 @@
 
 ;;;; Typescript
 
-(use-package typescript-mode
-  :ensure t
-  :init
-  (require 'typescript-mode)
-  (require 'tree-sitter)
-  (require 'eglot)
-  (define-derived-mode typescript-react-mode typescript-mode
-    "Typescript JSX")
+;; (use-package typescript-mode :disabled t)
 
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-react-mode))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-react-mode . tsx))
-  (put 'typescript-react-mode 'eglot-language-id "typescriptreact")
-                                        ;(add-to-list 'eglot-server-programs `(typescript-react-mode . ("typescript-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs `(typescript-mode . ("/home/az/.nvm/versions/node/v12.22.12/bin/typescript-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) . ("/home/az/.nvm/versions/node/v12.22.12/bin/typescript-language-server" "--stdio")))
-  )
+(use-package typescript-ts-mode
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode))
+  :config
+  (require 'eglot)
+  (add-to-list 'eglot-server-programs
+             `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
+               ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
+                "--stdio"))))
+
+
+
 
 ;; (use-package tsi
 ;;   :ensure t
@@ -103,11 +101,11 @@
 ;;   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
 ;;   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
-(use-package ts-comint
-  :ensure t
-  :bind (:map typescript-mode-map
-              ( "C-x C-e" . ts-send-last-sexp)
-              ( "C-c C-c" . ts-send-buffer)))
+;; (use-package ts-comint
+;;   :ensure t
+;;   :bind (:map typescript-mode-map
+;;               ( "C-x C-e" . ts-send-last-sexp)
+;;               ( "C-c C-c" . ts-send-buffer)))
 
 ;;;; GraphQL
 
@@ -118,6 +116,13 @@
 
 (use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
 
+;;;; Генерация схем
+
+(defun typescript-show-uml ()
+  "показать UML."
+  (interactive)
+  (message (concat "tsuml2 -m --glob \"" (buffer-file-name) "\" -o "
+                (concat (buffer-file-name) ".png"))))
 
 (provide 'код-на-javascript)
 ;;; код-на-javascript.el ends here.

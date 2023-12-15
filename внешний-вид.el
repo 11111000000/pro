@@ -2,33 +2,40 @@
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
-;;;; Не мигать и не пищать
+
+;;;; Общий вид
+
+;; Система не издаёт лишних звуков и не мигает
 
 (setq visible-bell nil)
 (setq ring-bell-function 'ignore)
 
-;;;; Убираем лишнее
+;; Скрыта панель инструментов и меню
 
 (when (bound-and-true-p tool-bar-mode)
-  (tool-bar-mode -1))
+    (tool-bar-mode -1))
 
 (when (bound-and-true-p menu-bar-mode)
-  (menu-bar-mode -1))
+    (menu-bar-mode -1))
+
+;; Скрыты полосы прокрутки
+
+(if window-system (scroll-bar-mode -1))
 
 ;;;; Минибуфер
 
-;; Включаем рекурсивные минибуферы
+;; Минибуферы могут открываться рекурсивно
 
 (setq-default enable-recursive-minibuffers t)
 
-;; Максимальная высота минибуфера
+;; Минибуфер может менять размер
 
 (setq-default max-mini-window-height nil)
 (setq resize-mini-windows t)
-;(window-resize (minibuffer-window) 0.1)
-;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
+                                        ;(window-resize (minibuffer-window) 0.1)
+                                        ;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
 
-;; Обрезать ли длинные сообщения
+;; Длинные сообщения не обрезаются
 
 (setq message-truncate-lines nil)
 
@@ -47,19 +54,19 @@
 ;; Минибуфер - модлайн
 
 (use-package taoline
-  :if window-system
-  :init (установить-из :repo "11111000000/taoline")
-  :config
-  (taoline-mode 1))
+    :if window-system
+    :init (установить-из :repo "11111000000/taoline")
+    :config
+    (taoline-mode 1))
 
 ;;;; Иконки
 
 (use-package all-the-icons
-  :if window-system
-  :custom
-  (all-the-icons-scale-factor 1)
-  (all-the-icons-default-adjust 0)
-  :ensure t)
+    :if window-system
+    :custom
+    (all-the-icons-scale-factor 1)
+    (all-the-icons-default-adjust 0)
+    :ensure t)
 
 ;; (use-package mode-icons
 ;;   :ensure t
@@ -76,20 +83,26 @@
 ;;   (mode-icons-mode t))
 
 (use-package all-the-icons-completion
-  :ensure
-  :after (marginalia all-the-icons)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
-  (all-the-icons-completion-mode))
+    :ensure
+    :after (marginalia all-the-icons)
+    :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+    :init
+    (all-the-icons-completion-mode))
+
+(use-package nerd-icons-completion
+    :ensure t
+    :config
+    (unless (display-graphic-p) (nerd-icons-completion-mode)))
+
 
 ;;;;; Хук, срабатывающий после установки темы:
 
 (defvar after-load-theme-hook nil
-  "Хук, срабатывающий после установки темы `load-theme'.")
+    "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-  "Запускает `after-load-theme-hook'."
-  (run-hooks 'after-load-theme-hook))
+    "Запускает `after-load-theme-hook'."
+    (run-hooks 'after-load-theme-hook))
 
 ;;;; Курсор
 
@@ -107,36 +120,36 @@
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 
 (use-package cursor-chg
-  :init (установить-из :repo "emacsmirror/cursor-chg")
-  :functions (change-cursor-mode)
-  :defines (curchg-default-cursor-color)
-  :config
-  (require 'cursor-chg)
-  (setq-default curchg-input-method-cursor-color "orange"
-        curchg-default-cursor-type '(bar . 2)
-        curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
-        curchg-change-cursor-on-input-method-flag t)
+    :init (установить-из :repo "emacsmirror/cursor-chg")
+    :functions (change-cursor-mode)
+    :defines (curchg-default-cursor-color)
+    :config
+    (require 'cursor-chg)
+    (setq-default curchg-input-method-cursor-color "orange"
+               curchg-default-cursor-type '(bar . 2)
+               curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
+               curchg-change-cursor-on-input-method-flag t)
 
-  (change-cursor-mode t)
-  (add-hook 'after-load-theme-hook
-          (lambda ()
-            (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
+    (change-cursor-mode t)
+    (add-hook 'after-load-theme-hook
+             (lambda ()
+                 (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
 
 ;;;; Прокрутка
 
 ;; Настройки прокрутки
 
 (setq-default scroll-conservatively 101
-              scroll-step 0
-              scroll-margin 5
-              hscroll-step 0
-              auto-window-vscroll nil
-              hscroll-margin 1)
+           scroll-step 0
+           scroll-margin 5
+           hscroll-step 0
+           auto-window-vscroll nil
+           hscroll-margin 1)
 
 ;; Плавная прокрутка
 
 (when (fboundp 'pixel-scroll-mode)
-  (pixel-scroll-mode -1))
+    (pixel-scroll-mode -1))
 
 ;;;; Меню режима
 
@@ -144,20 +157,20 @@
 ;; как своего рода директории
 
 (use-package imenu
-  :custom ((imenu-auto-recsan t))
-  :defer t)
+    :custom ((imenu-auto-recsan t))
+    :defer t)
 
 ;;;; Мини-карта
 
 (use-package minimap
-  :ensure t
-  :config
-  (custom-set-faces
-   '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
-  :custom
-  (minimap-minimum-width 14)
-  (minimap-window-location 'right)
-  (minimap-width-fraction 0.08))
+    :ensure t
+    :config
+    (custom-set-faces
+     '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
+    :custom
+    (minimap-minimum-width 14)
+    (minimap-window-location 'right)
+    (minimap-width-fraction 0.08))
 
 ;;;; Сокращение диалогов до y/n
 
@@ -175,14 +188,14 @@
 (require 'image-mode)
 
 (use-package image+
-  :ensure t
-  :after 'image-mode
-  :hook (image-mode . image+)
-  :bind ((:map image-mode-map
-               ("0" . imagex-sticky-restore-original)
-               ("+" . imagex-sticky-maximize)
-               ("=" . imagex-sticky-zoom-in)
-               ("-" . imagex-sticky-zoom-out))))
+    :ensure t
+    :after 'image-mode
+    :hook (image-mode . image+)
+    :bind ((:map image-mode-map
+                   ("0" . imagex-sticky-restore-original)
+                   ("+" . imagex-sticky-maximize)
+                   ("=" . imagex-sticky-zoom-in)
+                   ("-" . imagex-sticky-zoom-out))))
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here

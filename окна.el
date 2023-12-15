@@ -73,6 +73,7 @@
 (use-package popwin
   :ensure t
   :config
+  (require 'popwin)
   (setq popwin:special-display-config
         '(("*Miniedit Help*" :noselect t)
           lsp-ui-imenu-mode
@@ -98,6 +99,7 @@
           "*Calendar*"
           (vterm-mode :noselect t :position bottom :stick t)
           ("*Messages*" :noselect t :position bottom :stick t)
+          ("*Warnings*" :noselect t :position bottom :stick t)
           ("*Racket Describe*" :noselect t :position top :stick t)
           ("*Racket REPL*" :noselect t :position bottom :stick t)
           ("*ielm*" :noselect t :position bottom :stick t)
@@ -116,6 +118,8 @@
   (popwin-mode 1))
 
 ;; Функция для переключения окна в попапе по имени буфера
+
+(require 'popwin)
 
 (defun показать-окно-в-попапе (name)
   "Toggle popup window by NAME."

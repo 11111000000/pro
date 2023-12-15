@@ -5,39 +5,37 @@
 ;;; Code:
 ;;;; Буферы
 
-;; Уникальные имена для буферов
+;; Каждый буфер называется уникально
 
 (setq uniquify-buffer-name-style 'forward)
 
-;; Включаем автоактуализацию всех буферов
+;; иногда нужно обновить буфер немедленно
+
+(defun обновить-буфер-немедленно ()
+    "ничего не спрашивая, обновить буфер."
+    (interactive)
+    (revert-buffer t t))
+
+;; но восновном буферы актуализируются автоматически
 
 (global-auto-revert-mode t)
 (setq-default global-auto-revert-non-file-buffers t)
 (setq-default auto-revert-verbose nil)
 
-;; Обновление буфера без вопросов
-
-(defun обновить-буфер-немедленно ()
-  "ничего не спрашивая, обновить буфер."
-  (interactive)
-  (revert-buffer t t))
-
-;; Асинхронные буферы скрыты
+;; асинхронные буферы скрыты из списка
 
 (add-to-list 'display-buffer-alist
              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-;; Новые асинхронные буферы переименовываются не спрашивая ничего:
+;; новые асинхронные буферы переименовываются не спрашивая ничего:
 
 (setq-default async-shell-command-buffer 'rename-buffer)
 
-;; Буфер с ошибками только при ошибках
+;; буфер с ошибками показывается только при ошибках
+
+(require 'warnings)
 
 (setq warning-minimum-level :error)
-
-;; Скроллбар
-
-(if window-system (scroll-bar-mode -1))
 
 (provide 'буферы)
 ;;; буферы.el ends here

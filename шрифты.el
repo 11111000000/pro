@@ -9,16 +9,19 @@
 ;;   (fixed-pitch-mode))
 
 (use-package mixed-pitch
-  :ensure t
-  :hook
-  (org-mode . mixed-pitch-mode)
-  (help-mode . mixed-pitch-mode))
+    :ensure t
+    :hook
+    (org-mode . mixed-pitch-mode)
+    (help-mode . mixed-pitch-mode))
 
-;(setq-default default-frame-alist '((font . "Fira Code")))
+                                        ;(setq-default default-frame-alist '((font . "Fira Code")))
 
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."
   (interactive)
+  ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120)))))
+  ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8)))))
+  ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0)))))
   (custom-set-faces '(default ((t (:family "Fira Code" :height 120)))))
   (custom-set-faces '(fixed-pitch ((t (:family "Fira Code" :height 0.8)))))
   (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.0)))))
@@ -37,34 +40,34 @@
   ;;       (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
 
   ;;                     '(variable-pitch ((t (:family "Golos")))))
-    
-    ;; (custom-theme-set-faces
-    ;;  'user
-    ;;  `(org-level-8 ((t (,@headline ,@variable-tuple))))
-    ;;  `(org-level-7 ((t (,@headline ,@variable-tuple))))
-    ;;  `(org-level-6 ((t (,@headline ,@variable-tuple))))
-    ;;  `(org-level-5 ((t (,@headline ,@variable-tuple))))
-    ;;  `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1 :weight normal))))
-    ;;  `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.1 :weight normal))))
-    ;;  `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.2 :weight normal))))
-    ;;  `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.3 :weight normal))))
-    ;;  `(org-document-title ((t (,@headline ,@variable-tuple :height 2.1 :underline nil :weight normal)))))
-    ;;                     :family "DejaVu Sans"
-    ;;                     :weight 'normal
-    ;;                     :height 160)
-    ;; (set-face-attribute 'fixed-pitch nil
-    ;;                     :family "Fira Code"
-    ;;                     :weight 'normal)
-    ;; (set-face-attribute 'variable-pitch nil
-    ;;                     :family "DejaVu Sans"
-    ;;                     :weight 'normal)
-    )
+  
+  ;; (custom-theme-set-faces
+  ;;  'user
+  ;;  `(org-level-8 ((t (,@headline ,@variable-tuple))))
+  ;;  `(org-level-7 ((t (,@headline ,@variable-tuple))))
+  ;;  `(org-level-6 ((t (,@headline ,@variable-tuple))))
+  ;;  `(org-level-5 ((t (,@headline ,@variable-tuple))))
+  ;;  `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1 :weight normal))))
+  ;;  `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.1 :weight normal))))
+  ;;  `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.2 :weight normal))))
+  ;;  `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.3 :weight normal))))
+  ;;  `(org-document-title ((t (,@headline ,@variable-tuple :height 2.1 :underline nil :weight normal)))))
+  ;;                     :family "DejaVu Sans"
+  ;;                     :weight 'normal
+  ;;                     :height 160)
+  ;; (set-face-attribute 'fixed-pitch nil
+  ;;                     :family "Fira Code"
+  ;;                     :weight 'normal)
+  ;; (set-face-attribute 'variable-pitch nil
+  ;;                     :family "DejaVu Sans"
+  ;;                     :weight 'normal)
+  )
 
 (set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend)
 
 (add-hook 'after-load-theme-hook
-         (lambda ()
-           (обновить-настройки-шрифтов)))
+          (lambda ()
+              (обновить-настройки-шрифтов)))
 
 (обновить-настройки-шрифтов)
 

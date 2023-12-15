@@ -1,5 +1,5 @@
   * Глобальные сочетания клавиш
-  ** Клавиши текстового режима
+** Клавиши текстового режима
 
 #+NAME: key-bindings-table
 | Сочетание         | Функция                             |
@@ -48,10 +48,10 @@
 | <escape>          | god-local-mode                      |
 | C-j               | next-line                           |
 | C-k               | previous-line                       |
-| M-o               | vi-open-line                        |
-| C-M-o             | vi-open-line                        |
-| M-O               | vi-open-line-above                  |
-| C-M-O             | vi-open-line-above                  |
+| M-o               | viper-open-line                     |
+| C-M-o             | viper-Open-line                     |
+| M-O               | viper-Open-line                     |
+| C-M-O             | viper-Open-line                     |
 | C-d C-f           | delete-forward-char                 |
 | C-d C-b           | backward-dnelete-char-untabify      |
 | C-d C-e           | удалить-до-конца-строки             |
@@ -193,7 +193,7 @@
 | C-<f6>                  | profiler-start                |
 | C-<f7>                  | profiler-stop                 |
 
-  ** СДЕЛАТЬ Клавиши для модов
+** СДЕЛАТЬ Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |
@@ -204,7 +204,7 @@
   |                | C--       | imagex-sticky-zoom-out         |
   |                | C-=       | imagex-sticky-zoom-in          |
 
-  ** Применение сочетаний
+** Применение сочетаний
 
   #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
   (-map
@@ -229,15 +229,3 @@
 	     exwm-keys-table)))
 
 #+END_SRC
-
-#+RESULTS:
-
-
-
-
-
-
-
-
-
-

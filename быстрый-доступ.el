@@ -4,21 +4,21 @@
 ;;;; Вертикальные списки
 
 (use-package vertico
-  :ensure t
-  :defines (vertico-map)
-  :functions (vertico-mode)
-  :custom
-  (read-file-name-completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
-  (vertico-cycle t)
-  (completion-ignore-case t)
-  :bind (:map vertico-map
-         ("s-<tab>" . vertico-next)
-         ("s-<iso-lefttab>" . vertico-previous))
-  :init
-  (require 'vertico)
-  :config
-  (vertico-mode t))
+    :ensure t
+    :defines (vertico-map)
+    :functions (vertico-mode)
+    :custom
+    (read-file-name-completion-ignore-case t)
+    (read-buffer-completion-ignore-case t)
+    (vertico-cycle t)
+    (completion-ignore-case t)
+    :bind (:map vertico-map
+                ("s-<tab>" . vertico-next)
+                ("s-<iso-lefttab>" . vertico-previous))
+    :init
+    (require 'vertico)
+    :config
+    (vertico-mode t))
 
 ;;;; Минибуфер во фрейме поверх окна
 
@@ -43,92 +43,92 @@
 ;;;; Сортировка
 
 (use-package orderless
-  :ensure t
-  :config (setq completion-styles '(orderless basic) completion-category-defaults nil completion-category-overrides
-              '((file
-                 (styles partial-completion)))))
+    :ensure t
+    :config (setq completion-styles '(orderless basic) completion-category-defaults nil completion-category-overrides
+                  '((file
+                     (styles partial-completion)))))
 
 ;;;; Подписи и дополнительная информация
 
 (use-package marginalia
-  :ensure t
-  :functions (marginalia-mode)
-  :custom (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :config (marginalia-mode))
+    :ensure t
+    :functions (marginalia-mode)
+    :custom (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :config (marginalia-mode))
 
 ;;;; Функции на базе автодополения
 
 (use-package consult
-  :ensure t
-  :defines (consult-project-root-function)
-  :functions (consult-customize)
-  :custom ((consult-preview-key "M-."))
-  :config
-  (autoload 'projectile-project-root "projectile")
-  (require 'consult-xref)
-  (setq consult-project-root-function #'projectile-project-root
-        xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref))
+    :ensure t
+    :defines (consult-project-root-function)
+    :functions (consult-customize)
+    :custom ((consult-preview-key "M-."))
+    :config
+    (autoload 'projectile-project-root "projectile")
+    (require 'consult-xref)
+    (setq consult-project-root-function #'projectile-project-root
+          xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref))
 
 ;;;; Дополнение сниппетов
 
 (use-package consult-yasnippet
-  :ensure t)
+    :ensure t)
 
 ;;;; Поиск по документации (dash)
 
 (use-package consult-dash
-  :ensure t
-  :defines (consult-dash)
-  :config (consult-customize consult-dash
-                             :initial (thing-at-point 'symbol)))
+    :ensure t
+    :defines (consult-dash)
+    :config (consult-customize consult-dash
+                               :initial (thing-at-point 'symbol)))
 
 ;;;; Поиск файлов
 
 (require 'dired)
 
 (use-package consult-ag
-  :ensure t
-  :after dired
-  :functions (consult-ag)
-  :config
-  (defun искать-по-файлам-отсюда ()
-    "Поиск по файлам от текущего пути."
-    (interactive)
-    (consult-ag default-directory))
+    :ensure t
+    :after dired
+    :functions (consult-ag)
+    :config
+    (defun искать-по-файлам-отсюда ()
+        "Поиск по файлам от текущего пути."
+        (interactive)
+        (consult-ag default-directory))
                                         ; Эту функцию нужно добавить, т.к. она пропала в новых версиях consult
 
-  
-  (defun consult--position-marker (buffer line column)
-    "Get marker in BUFFER from LINE and COLUMN."
-    (when (buffer-live-p buffer)
-      (with-current-buffer buffer
-        (save-restriction
-          (save-excursion
-            (widen)
-            (goto-char (point-min))
-            ;; Location data might be invalid by now!
-            (ignore-errors
-              (forward-line (- line 1))
-              (forward-char column))
-            (point-marker))))))
+    
+    (defun consult--position-marker (buffer line column)
+        "Get marker in BUFFER from LINE and COLUMN."
+        (when (buffer-live-p buffer)
+            (with-current-buffer buffer
+                (save-restriction
+                    (save-excursion
+                        (widen)
+                        (goto-char (point-min))
+                        ;; Location data might be invalid by now!
+                        (ignore-errors
+                            (forward-line (- line 1))
+                            (forward-char column))
+                        (point-marker))))))
 
-  :bind (:map dired-mode-map
-              ("s" . искать-по-файлам-отсюда)))
+    :bind (:map dired-mode-map
+                ("s" . искать-по-файлам-отсюда)))
 
 ;;;; Поиск по языковым серверам
 
 (use-package consult-lsp
-  :after (lsp consult)
-  :ensure t
-  :disabled t)
+    :after (lsp consult)
+    :ensure t
+    :disabled t)
 
 (use-package consult-eglot
-  :after (eglot)
-  :defines (eglot-mode-map)
-  :functions (consult-eglot-symbols)
-  :ensure t
-  :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols)))
+    :after (eglot consult)
+    :defines (eglot-mode-map)
+    :functions (consult-eglot-symbols)
+    :ensure t
+    :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols)))
 
 (provide 'быстрый-доступ)
 ;;; быстрый-доступ.el ends here

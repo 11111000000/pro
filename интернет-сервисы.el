@@ -26,6 +26,16 @@
 
 ;;;;; Нумерация ссылков
 
+(use-package ace-link
+  :ensure t
+  :after eww
+  :defer t
+  :commands (eww-back-url eww-forward-url ace-link-eww)
+  :bind (:map eww-mode-map
+                ("<" . eww-back-url)
+                (">" . eww-forward-url)
+                ("C-c f" . ace-link-eww)))
+
 (use-package eww-lnum
   :ensure t
   :demand t

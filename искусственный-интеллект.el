@@ -1,30 +1,9 @@
 ;;; искусственный-интеллект.el --- Искусственный Интеллект -*- lexical-binding: t -*-
-
-;; Author: az
-;; Maintainer: az
-;; Version: version
+;; Автор: Пётр (11111000000@email.com)
+;; Version: 1.0
 ;; Package-Requires: (dependencies)
-;; Homepage: homepage
-;; Keywords: keywords
-
-;; This file is not part of GNU Emacs
-
-;; This program is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
+;; Homepage: https://github.com/11111000000/pro
 ;;; Commentary:
-
 ;; Конфигурация нейросетевых сервисов
 
 ;;; Code:
@@ -33,35 +12,52 @@
 (use-package ellama
   :ensure t
   :init
-  (setopt ellama-language "Russian")
   (require 'llm-ollama)
+  (setopt ellama-language "English")
   (setopt ellama-provider
 		  (make-llm-ollama
 		   :chat-model "codellama" :embedding-model "codellama")))
 
-;;;; Codeium
+(defun запустить-codeium()
+  "Enable codeium."
+  (interactive)
+  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
-;; (use-package codeium
-;;   :init
-;;   (установить-из :repo "Exafunction/codeium.el")
-;;   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-;;   :config
+(use-package codeium
+  :disabled t
+  :ensure t
+  :config
+  (setq codeium/metadata/api_key
+      (replace-regexp-in-string "\n\\'" ""
+                      (shell-command-to-string "pass show services/codeium/iocanel/api-key-emacs")))
 
-;;   (setq use-dialog-box nil)
+  (setq use-dialog-box nil) ;; do not use popup boxes
+  
+  ;; используйте M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
+  (setq codeium-api-enabled
+      (lambda (api)
+        (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  ;; you can also set a config for a single buffer like this:
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local codeium/editor_options/tab_size 4)))
 
-;;   (setq codeium/metadata/api_key "212600da-b787-4d45-91f0-5e9e98b94302")
+  (defun my-codeium/document/text ()
+    (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
 
-;;   ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
-;;   (setq codeium-api-enabled
-;;          (lambda (api)
-;;            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-;;   )
+  (defun my-codeium/document/cursor_offset ()
+    (codeium-utf8-byte-length
+     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
+  
+  (setq codeium/document/text 'my-codeium/document/text)
+  (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
 
 ;; (use-package codeium-diagnose)
 ;;   :init
 ;;   (установить-из :repo "Exafunction/codeium-diagnose.el")
 ;;   :config
 ;;   (setq use-dialog-box nil)
+
 
 (provide 'искусственный-интеллект)
 

@@ -14,11 +14,11 @@
 ;;; Code:
 
 (defun set-calendar-font ()
-  (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
-  (buffer-face-mode t))
+    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
+    (buffer-face-mode t))
 
 (use-package calendar
-  :hook ((calendar-mode . set-calendar-font)))
+    :hook ((calendar-mode . set-calendar-font)))
 
 (provide 'время)
 

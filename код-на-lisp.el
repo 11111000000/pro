@@ -8,6 +8,7 @@
               ("C-c C-c" . выполнить-регион-или-буфер)
               ("C-x M-e" . eval-print-last-sexp)))
 
+
 ;;;; Выполнить регион или буфер
 
 (defun выполнить-регион-или-буфер ()
@@ -97,6 +98,12 @@
   (setq geiser-guile-manual-lookup-nodes
 	      '("guile"
           "guix")))
+
+;;; Рефакторинг Emacs lisp
+
+;; (use-package erefactor 
+;;   :ensure t
+;;   :after (flymake))
 
 (provide 'код-на-lisp)
 ;;; код-на-lisp.el ends here
