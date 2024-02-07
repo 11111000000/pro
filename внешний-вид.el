@@ -32,8 +32,8 @@
 
 (setq-default max-mini-window-height nil)
 (setq resize-mini-windows t)
-                                        ;(window-resize (minibuffer-window) 0.1)
-                                        ;(add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
+;; (window-resize (minibuffer-window) 0.1)
+;; (add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
 
 ;; Длинные сообщения не обрезаются
 
@@ -90,21 +90,22 @@
     (all-the-icons-completion-mode))
 
 (use-package nerd-icons-completion
-    :ensure t
-    :config
-    (unless (display-graphic-p) (nerd-icons-completion-mode)))
-
+  :ensure t
+  :config
+  (unless (display-graphic-p) (nerd-icons-completion-mode)))
 
 ;;;;; Хук, срабатывающий после установки темы:
 
 (defvar after-load-theme-hook nil
-    "Хук, срабатывающий после установки темы `load-theme'.")
+  "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-    "Запускает `after-load-theme-hook'."
-    (run-hooks 'after-load-theme-hook))
+  "Запускает `after-load-theme-hook'."
+  (run-hooks 'after-load-theme-hook))
 
 ;;;; Курсор
+
+;; В 1968 году американский изобретатель Дуглас Карл Энгельбарт, совместно с командой из Стэнфордского исследовательского института, создают первые элементы человеко-машинного интерфейса (UI — англ. user interface). Эти элементы являлись частью революционной разработки NLS (NLS — англ. oN-Line System) системы которая реализовывала одновременную работу нескольких терминалов, над одними и теми же документами. В этом же году 9 декабря, состоялась демонстрация онлайн системы, которая получила название «The Mother of All Demos» дословно «мать всех демонстраций», на которой можно было увидеть работу с гипертекстом и курсор.
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
 

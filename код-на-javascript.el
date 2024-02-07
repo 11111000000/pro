@@ -87,8 +87,6 @@
                 "--stdio"))))
 
 
-
-
 ;; (use-package tsi
 ;;   :ensure t
 ;;   :after tree-sitter

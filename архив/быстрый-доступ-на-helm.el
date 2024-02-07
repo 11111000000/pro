@@ -191,7 +191,7 @@
 (use-package helm-posframe
   :ensure t
   :custom ((helm-posframe-border-width 1) 
-           (helm-posframe-font "Fira Code")
+           (helm-posframe-font "Fira Code Light")
            (helm-posframe-parameters '((parent-frame nil)))
            )
   :init

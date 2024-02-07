@@ -77,13 +77,14 @@ ARG - backward"
 (use-package color-identifiers-mode
   :if  window-system
   :ensure t
-  :hook ((js-mode . color-identifiers-mode))
+  :hook ((js-mode . color-identifiers-mode)
+       (typescript-ts-mode . color-identifiers-mode))
   :custom ((color-identifiers-coloring-method
-            'hash)
-           (color-identifiers:num-colors 16)
-           (color-identifiers:color-luminance 0.4)
-           (color-identifiers:min-color-saturation 0.2)
-           (color-identifiers:max-color-saturation 0.7)))
+           'hash)
+          (color-identifiers:num-colors 32)
+          (color-identifiers:color-luminance 0.6)
+          (color-identifiers:min-color-saturation 0.2)
+          (color-identifiers:max-color-saturation 0.7)))
 
 ;; Альтернативный алгоритм подсветки идентификаторов
 
@@ -91,20 +92,18 @@ ARG - backward"
   :if window-system
   :ensure t
   :defer t
-  :hook (
-       (typescript-ts-mode . rainbow-identifiers-mode)
-         (emacs-lisp-mode . rainbow-identifiers-mode)))
+  :hook ((emacs-lisp-mode . rainbow-identifiers-mode)))
 
 ;;;; Форматирование
 
 (use-package format-all
   :ensure t
   :hook ((ess-r-mode . format-all-mode)
-         (python-mode . format-all-mode)
-         ;; (emacs-lisp-mode . format-all-mode)
-         (format-all-mode-hook . format-all-ensure-formatter))
+       (python-mode . format-all-mode)
+       ;; (emacs-lisp-mode . format-all-mode)
+       (format-all-mode-hook . format-all-ensure-formatter))
   :config (custom-set-variables '(format-all-formatters (quote (("Python" black)
-                                                                ("R" styler))))))
+                                                               ("R" styler))))))
 
 ;; (use-package apheleia
 ;;   :ensure t
@@ -253,7 +252,7 @@ ARG - backward"
                 ("C-c C-c" . #'eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
-   ;; TODO вытащить в переменную путь к серверу
+  ;; TODO вытащить в переменную путь к серверу
   )
 
 ;; (use-package sideline
@@ -282,6 +281,42 @@ ARG - backward"
 ;; (require 'sideline-eldoc))
 
 ;;;; Дебаггер
+
+(use-package dape
+  :ensure t  
+  :init
+  (setq dape-buffer-window-arrangment 'gud)
+  :config
+  ;; Info buffers to the right
+  (setq dape-buffer-window-arrangment 'left)
+
+  ;; To not display info and/or buffers on startup
+  ;; (remove-hook 'dape-on-start-hooks 'dape-info)
+  ;; (remove-hook 'dape-on-start-hooks 'dape-repl)
+
+  ;; To display info and/or repl buffers on stopped
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-info)
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-repl)
+
+  ;; By default dape uses gdb keybinding prefix
+  (setq dape-key-prefix "C-.")
+
+  ;; Kill compile buffer on build success
+  ;; (add-hook 'dape-compile-compile-hooks 'kill-buffer)
+
+  ;; Save buffers on startup, useful for interpreted languages
+  (add-hook 'dape-on-start-hooks
+            (defun dape--save-on-start ()
+              (save-some-buffers t t)))
+
+  
+  ;; Projectile users
+  (setq dape-cwd-fn (lambda (&optional skip-tramp-trim)
+                      (let ((root (projectile-project-root)))
+                        (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
+                            (tramp-file-name-localname (tramp-dissect-file-name root))
+                          root))))
+  )
 
 ;; (use-package dap-mode
 ;;   :ensure t
