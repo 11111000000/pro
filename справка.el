@@ -38,7 +38,6 @@
 
 (use-package guide-key
   :ensure t
-  :defer t
   :diminish " C-?"
   :custom
   ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
@@ -65,16 +64,18 @@
 
 (use-package eldoc-box
   :ensure t
-  :bind ("C-c i" . eldoc-doc-buffer)
+  :bind (("C-c i" . eldoc-doc-buffer)
+         ("M-/" . eldoc-box-help-at-point))
   :custom ((eldoc-idle-delay 0.1)
           (eldoc-box-offset '(-50 50 -50)))
-  :hook ((emacs-lisp-mode . eldoc-box-hover-mode)
-         (prog-mode . eldoc-box-hover-mode)
-         (eglot-managed-mode-hook . eldoc-box-hover-mode)
-         (eldoc-box-frame-hook . (lambda ()
-                                   (toggle-truncate-lines t)
-                                   (tab-bar-mode -1)
-                                   (setq-local cursor-in-non-selected-windows nil))))
+  :hook (
+       ;; (emacs-lisp-mode . eldoc-box-hover-mode)
+       ;; (prog-mode . eldoc-box-hover-mode)
+       (eglot-managed-mode-hook . eldoc-box-hover-mode)
+       (eldoc-box-frame-hook . (lambda ()
+                                 (toggle-truncate-lines t)
+                                 (tab-bar-mode -1)
+                                 (setq-local cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
   

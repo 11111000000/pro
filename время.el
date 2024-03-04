@@ -14,8 +14,9 @@
 ;;; Code:
 
 (defun set-calendar-font ()
-    (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
-    (buffer-face-mode t))
+  "Шрифт для календаря."
+  (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch)
+  (buffer-face-mode t))
 
 (use-package calendar
     :hook ((calendar-mode . set-calendar-font)))

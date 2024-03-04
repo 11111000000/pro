@@ -1,24 +1,39 @@
 ;;; быстрый-доступ.el --- Быстрый поиск имён в вертикальных списках
 ;;; Commentary:
 ;;; Code:
+
+;;;; Поиск по файлу
+
+(use-package
+  ctrlf
+  :defines (ctrlf-minibuffer-bindings ctrlf-default-search-style ctrlf-alternate-search-style)
+  :functions (ctrlf-mode)
+  :config
+  (add-to-list
+   'ctrlf-minibuffer-bindings '("C-r" . ctrlf-backward-default))
+  (setq ctrlf-default-search-style 'fuzzy-regexp)
+  (setq ctrlf-alternate-search-style 'literal)
+                                        ;(setq ctrlf-default-search-style 'literal)
+  (ctrlf-mode t))
+
 ;;;; Вертикальные списки
 
 (use-package vertico
-    :ensure t
-    :defines (vertico-map)
-    :functions (vertico-mode)
-    :custom
-    (read-file-name-completion-ignore-case t)
-    (read-buffer-completion-ignore-case t)
-    (vertico-cycle t)
-    (completion-ignore-case t)
-    :bind (:map vertico-map
+  :ensure t
+  :defines (vertico-map)
+  :functions (vertico-mode)
+  :custom
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (vertico-cycle t)
+  (completion-ignore-case t)
+  :bind (:map vertico-map
                 ("s-<tab>" . vertico-next)
                 ("s-<iso-lefttab>" . vertico-previous))
-    :init
-    (require 'vertico)
-    :config
-    (vertico-mode t))
+  :init
+  (require 'vertico)
+  :config
+  (vertico-mode t))
 
 ;;;; Минибуфер во фрейме поверх окна
 

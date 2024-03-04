@@ -1,6 +1,81 @@
 ;;; код.el --- Конфигурация среды программирования
 ;;; Commentary:
 ;;; Code:
+
+
+(require 'use-package)
+(require 'загрузить)
+
+;;;; Поддержка режимов
+
+(use-package treesit-auto
+  :ensure t
+  :functions (treesit-auto-add-to-auto-mode-alist global-treesit-auto-mode)
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+;;;; Языковой сервер
+
+;; Eglot теперь встроен в EMACS
+
+(use-package eglot
+  :hook ((go-mode . eglot-ensure)
+       (haskell-mode . eglot-ensure)
+       (typescript-mode . eglot-ensure)
+       (rust-mode . eglot-ensure)
+       (typescript-ts-mode . eglot-ensure)
+       (haskell-mode . eglot-ensure)
+       (js-mode . eglot-ensure)
+       (js-ts-mode . eglot-ensure)
+       (json-mode . eglot-ensure)
+       (rust-mode . eglot-ensure))
+  :functions (eglot-rename eglot-code-actions)
+  :bind (:map eglot-mode-map
+                ("C-c r" . #'eglot-rename)
+                ("C-<down-mouse-1>" . #'xref-find-definitions)
+                ("C-S-<down-mouse-1>" . #'xref-find-references)
+                ("C-c C-c" . #'eglot-code-actions))
+  :custom
+  (eglot-autoshutdown t)
+  :config
+  ;; Выключим лог, что увеличивает производительность
+  (require 'jsonrpc)
+  (fset #'jsonrpc--log-event #'ignore)
+  )
+
+;; (use-package sideline
+;;   :ensure t
+;;   :hook ((flycheck-mode . sideline-mode)
+;;        (flymake-mode  . sideline-mode)
+;;        (eldoc . sideline-mode))
+;;   :init
+;;   ;; (setq sideline-backends-left '(sideline-flymake sideline-blame)
+;;   ;;       sideline-backends-right '(sideline-eldoc))
+;;   (setq sideline-backends-left-skip-current-line nil   ; don't display on current line (left)
+;;         sideline-backends-right-skip-current-line nil  ; don't display on current line (right)
+;;         sideline-order-left 'down                    ; or 'up
+;;         sideline-order-right 'up                     ; or 'down
+;;         sideline-format-left "%s   "                 ; format for left aligment
+;;         sideline-format-right "   %s"                ; format for right aligment
+;;         sideline-priority 100                        ; overlays' priority
+;;         sideline-display-backend-name t))
+                                        ; display the backend name
+
+;; (use-package sideline-flymake :ensure t :init (require 'sideline-flymake))
+;; (use-package sideline-blame :ensure t)
+;; (use-package sideline-eldoc
+;; :init
+;; (установить-из :repo "ginqi7/sideline-eldoc")
+;; (require 'sideline-eldoc))
+
+;;;; Оверлеи покрытия
+
+(use-package coverlay :ensure t)
+
+
 ;;;; Скобки
 
 ;; Подсвечивать все скобки
@@ -8,8 +83,9 @@
 (use-package paren-face
   :ensure t
   :if window-system
+  :defines (global-paren-face-mode)
   :custom ((paren-face-regexp
-            "[][(){}]"))
+           "[][(){}]"))
   :config (global-paren-face-mode t))
 
 ;;;;; Парные скобки
@@ -32,12 +108,15 @@ ARG - backward"
 
 (use-package smartparens
   :ensure t
+  :defines (smartparens-global-mode sp-local-pair)
   :bind  (("C-^" . sp-unwrap-sexp)
           ("M-j" . sp-next-sexp)
           ("M-k" . sp-backward-sexp)
           ("M-h" . sp-backward-up-sexp)
           ("M-l" . sp-down-sexp))
-  :init (smartparens-global-mode 1)
+  :config
+
+  (smartparens-global-mode 1)
   (sp-local-pair 'emacs-lisp-mode "'" nil
                  :actions nil)
   (sp-local-pair 'scheme-mode "'" nil
@@ -58,17 +137,27 @@ ARG - backward"
 (use-package highlight-parentheses
   :ensure t
   :custom ((hl-paren-colors
-            `("MediumOrchid2" "MediumAquamarine" "CornflowerBlue" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
-              ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
-           (hl-paren-background-colors  '(nil nil nil nil nil)))
+           `("MediumOrchid2" "MediumAquamarine" "CornflowerBlue" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
+             ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
+          (hl-paren-background-colors  '(nil nil nil nil nil)))
   :config (global-highlight-parentheses-mode t)
   :init
   (add-hook 'after-load-theme-hook
-            (lambda ()
-              (global-highlight-parentheses-mode -1)
-              (sleep-for 0 100)
-              (global-highlight-parentheses-mode t))))
+           (lambda ()
+             (global-highlight-parentheses-mode -1)
+             (sleep-for 0 100)
+             (global-highlight-parentheses-mode t))))
 
+;;;; Подсветка глубины идентации
+
+(use-package highlight-indent-guides
+  :ensure t
+  :custom
+  (highlight-indent-guides-method 'character)
+  :hook
+  (css-base-mode . highlight-indent-guides-mode)
+  (python-mode . highlight-indent-guides-mode)
+  (yaml-ts-mode . highlight-indent-guides-mode))
 
 ;;;; Идентификаторы
 
@@ -105,14 +194,13 @@ ARG - backward"
   :config (custom-set-variables '(format-all-formatters (quote (("Python" black)
                                                                ("R" styler))))))
 
-;; (use-package apheleia
-;;   :ensure t
-;;   :hook ((js-mode . aphelia-mode)
-;;          (typescript-mode . aphelia-mode))
-;;   :config
-;;   ;;(apheleia-global-mode nil)
-;;   )
-
+(use-package apheleia
+  :ensure t
+  :hook ((js-mode . apheleia-mode)
+       (typescript-ts-mode . apheleia-mode))
+  :config
+  ;;(apheleia-global-mode nil)
+  )
 
 ;;;; Подсветка цветов
 
@@ -124,20 +212,38 @@ ARG - backward"
 
 (use-package flymake
   :ensure t
-  :custom ((flymake-gui-warnings-enabled . nil))
-  :hook ((prog-mode) . flymake-mode)
+  :custom ((flymake-no-changes-timeout 0.1))
+  :hook ((emacs-lisp-mode) . flymake-mode)
   :bind (:map flymake-mode-map
-              ("M-]" . flymake-goto-next-error)
-              ("M-[" . flymake-goto-prev-error)))
+                ("M-]" . flymake-goto-next-error)
+                ("M-[" . flymake-goto-prev-error)
+                ("M-\\" . flymake-show-buffer-diagnostics)))
+
+;; (use-package flycheck
+;;   :bind (:map flycheck-mode-map
+;;                 ("M-]" . flycheck-next-error)
+;;                 ("M-[" . flycheck-previous-error)
+;;                 ("M-\\" . flycheck-list-errors))
+;;   :functions (global-flycheck-mode)
+;;   :init
+;;   (global-flycheck-mode t)
+;;   )
+
+;; (use-package flycheck-eglot
+;;   :ensure t
+;;   :after (flycheck eglot)
+;;   :functions (global-flycheck-eglot-mode)
+;;   :config
+;;   (global-flycheck-eglot-mode t))
 
 ;;;; Сообщения статического анализатора во всплывающем окне
 
 ;; (use-package emacs-flymake-popon
 ;;   :init
 ;;   (unless (package-installed-p 'emacs-flymake-popon)
-;;    (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
+;;     (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
 ;;   :custom ((flymake-popon-delay .8)
-;;            (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
+;;           (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
 ;;   :hook ((flymake-mode) . flymake-popon-mode))
 
 ;; (use-package flymake-posframe
@@ -168,12 +274,13 @@ ARG - backward"
 
 (use-package yasnippet
   :ensure t
+  :functions (yas-reload-all)
   :hook
   (prog-mode . yas-minor-mode)
   :config
   (yas-reload-all)
   (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets")))
+      '("~/.emacs.d/snippets")))
 
 (use-package yasnippet-snippets
   :ensure t
@@ -184,18 +291,18 @@ ARG - backward"
 ;; Генератор инкрементальных парсеров
 (use-package treesit
   :when (and (fboundp 'treesit-available-p)
-             (treesit-available-p))
+           (treesit-available-p))
   :custom (major-mode-remap-alist
-           '((c-mode          . c-ts-mode)
-             (c++-mode        . c++-ts-mode)
-             (cmake-mode      . cmake-ts-mode)
-             (conf-toml-mode  . toml-ts-mode)
-             (css-mode        . css-ts-mode)
-             (js-mode         . js-ts-mode)
-             (js-json-mode    . json-ts-mode)
-             (python-mode     . python-ts-mode)
-             (sh-mode         . bash-ts-mode)
-             (typescript-mode . typescript-ts-mode)))
+          '((c-mode          . c-ts-mode)
+            (c++-mode        . c++-ts-mode)
+            (cmake-mode      . cmake-ts-mode)
+            (conf-toml-mode  . toml-ts-mode)
+            (css-mode        . css-ts-mode)
+            (js-mode         . js-ts-mode)
+            (js-json-mode    . json-ts-mode)
+            (python-mode     . python-ts-mode)
+            (sh-mode         . bash-ts-mode)
+            (typescript-mode . typescript-ts-mode)))
   :config
   ;; (setq treesit-language-source-alist
   ;;     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
@@ -230,65 +337,16 @@ ARG - backward"
 ;;   :ensure t
 ;;   :after tree-sitter)
 
-;;;; Языковой сервер
-
-;; Eglot теперь встроен в EMACS
-
-(use-package eglot
-  :ensure t
-  :hook ((go-mode . eglot-ensure)
-       (haskell-mode . eglot-ensure)
-       (typescript-mode . eglot-ensure)
-       (rust-mode . eglot-ensure)
-       (typescript-ts-mode . eglot-ensure)
-       (haskell-mode . eglot-ensure)
-       (js-mode . eglot-ensure)
-       (json-mode . eglot-ensure)
-       (rust-mode . eglot-ensure))
-  :bind (:map eglot-mode-map
-                ("C-c r" . #'eglot-rename)
-                ("C-<down-mouse-1>" . #'xref-find-definitions)
-                ("C-S-<down-mouse-1>" . #'xref-find-references)
-                ("C-c C-c" . #'eglot-code-actions))
-  :custom
-  (eglot-autoshutdown t)
-  ;; TODO вытащить в переменную путь к серверу
-  )
-
-;; (use-package sideline
-;;   :ensure t
-;;   :hook ((flycheck-mode . sideline-mode)
-;;        (flymake-mode  . sideline-mode)
-;;        (eldoc . sideline-mode))
-;;   :init
-;;   ;; (setq sideline-backends-left '(sideline-flymake sideline-blame)
-;;   ;;       sideline-backends-right '(sideline-eldoc))
-;;   (setq sideline-backends-left-skip-current-line nil   ; don't display on current line (left)
-;;         sideline-backends-right-skip-current-line nil  ; don't display on current line (right)
-;;         sideline-order-left 'down                    ; or 'up
-;;         sideline-order-right 'up                     ; or 'down
-;;         sideline-format-left "%s   "                 ; format for left aligment
-;;         sideline-format-right "   %s"                ; format for right aligment
-;;         sideline-priority 100                        ; overlays' priority
-;;         sideline-display-backend-name t))
-                                        ; display the backend name
-
-;; (use-package sideline-flymake :ensure t :init (require 'sideline-flymake))
-;; (use-package sideline-blame :ensure t)
-;; (use-package sideline-eldoc
-;; :init
-;; (установить-из :repo "ginqi7/sideline-eldoc")
-;; (require 'sideline-eldoc))
-
 ;;;; Дебаггер
 
 (use-package dape
-  :ensure t  
+  :ensure t
   :init
-  (setq dape-buffer-window-arrangment 'gud)
+  :defines (dape-buffer-window-arrangment)
   :config
+  (setq dape-buffer-window-arrangement 'gud)
   ;; Info buffers to the right
-  (setq dape-buffer-window-arrangment 'left)
+  ;;(setq dape-buffer-window-arrangement 'left)
 
   ;; To not display info and/or buffers on startup
   ;; (remove-hook 'dape-on-start-hooks 'dape-info)
@@ -306,16 +364,17 @@ ARG - backward"
 
   ;; Save buffers on startup, useful for interpreted languages
   (add-hook 'dape-on-start-hooks
-            (defun dape--save-on-start ()
-              (save-some-buffers t t)))
+           (defun dape--save-on-start ()
+             (save-some-buffers t t)))
 
-  
+
   ;; Projectile users
+  (require 'projectile)
   (setq dape-cwd-fn (lambda (&optional skip-tramp-trim)
-                      (let ((root (projectile-project-root)))
-                        (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
-                            (tramp-file-name-localname (tramp-dissect-file-name root))
-                          root))))
+                    (let ((root (projectile-project-root)))
+                      (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
+                          (tramp-file-name-localname (tramp-dissect-file-name root))
+                        root))))
   )
 
 ;; (use-package dap-mode
@@ -347,6 +406,16 @@ ARG - backward"
 
 (setq reb-re-syntax 'read)
 
+;;;; Свёртка кода
+
+(use-package origami
+  :ensure t
+  :bind
+  (:map origami-mode-map
+          ("C-<tab>" . origami-recursively-toggle-node)
+          ("C-TAB" . origami-recursively-toggle-node)
+          ("C-S-<tab>" . origami-recursively-toggle-node)
+          ("C-M-<tab>" . origami-toggle-all-nodes)))
 
 (provide 'код)
 ;;; код.el ends here

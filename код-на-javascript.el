@@ -18,7 +18,7 @@
 
 (use-package add-node-modules-path :ensure t)
 
-;;;; Переключение версий ноды
+;;;; Поддержка версий ноды
 
 (use-package nvm :ensure t)
 
@@ -74,6 +74,8 @@
 
 ;;;; Typescript
 
+;; В Emacs теперь есть встроеная поддержка typescript-ts-mode
+
 ;; (use-package typescript-mode :disabled t)
 
 (use-package typescript-ts-mode
@@ -81,11 +83,35 @@
          ("\\.tsx\\'" . tsx-ts-mode))
   :config
   (require 'eglot)
+  ;; (setq-default
+  ;;  eglot-server-programs
+  ;;  (cl-substitute-if
+  ;;   (cons
+  ;;    '(js-base-mode typescript-ts-base-mode typescript-ts-mode typescript-mode ts-ts-mode)
+  ;;    '("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio" :initializationOptions
+  ;;      (:preferences
+  ;;       (
+  ;;        :includeInlayEnumMemberValueHints t
+  ;;        :includeInlayFunctionLikeReturnTypeHints t
+  ;;        :includeInlayFunctionParameterTypeHints t
+  ;;        :includeInlayParameterNameHints "all"
+  ;;        :includeInlayParameterNameHintsWhenArgumentMatchesName t
+  ;;        :includeInlayPropertyDeclarationTypeHints t
+  ;;        :includeInlayVariableTypeHints t
+  ;;        :includeInlayVariableTypeHintsWhenTypeMatchesName t))))
+  ;;   (lambda (program)
+  ;;     (if (listp (car program))
+  ;;         (member 'typescript-ts-mode (car program))
+  ;;       (eq 'typescript-ts-mode program)))
+  ;;   eglot-server-programs))
+  
   (add-to-list 'eglot-server-programs
              `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
                ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
-                "--stdio"))))
-
+                "--stdio")))
+  :hook
+  ((typescript-ts-mode . eglot-ensure)
+   (js-ts-mode . eglot-ensure)))
 
 ;; (use-package tsi
 ;;   :ensure t
@@ -105,14 +131,21 @@
 ;;               ( "C-x C-e" . ts-send-last-sexp)
 ;;               ( "C-c C-c" . ts-send-buffer)))
 
+;;;; JTSX
+
+;; Расширеная поодержка JSX: https://github.com/llemaitre19/jtsx
+
 ;;;; GraphQL
 
 (use-package graphql-mode
   :ensure t)
 
+(use-package graphql-ts-mode :ensure t)
+
+
 ;;;; Сниппеты React
 
-(use-package react-snippets :ensure t :defer t :init (require 'react-snippets))
+(use-package react-snippets :ensure t :init (require 'react-snippets))
 
 ;;;; Генерация схем
 
@@ -121,6 +154,12 @@
   (interactive)
   (message (concat "tsuml2 -m --glob \"" (buffer-file-name) "\" -o "
                 (concat (buffer-file-name) ".png"))))
+
+;;;; CSV
+
+(use-package csv-mode :ensure t)
+
+
 
 (provide 'код-на-javascript)
 ;;; код-на-javascript.el ends here.

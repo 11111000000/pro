@@ -5,6 +5,7 @@
 
 (use-package elfeed
   :ensure t
+  :defines (elfeed-feeds)
   :config
   ;; (define-keys elfeed-search-mode-map (list
   ;;                                      (kbd "C-j") 'next-line

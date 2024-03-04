@@ -1,12 +1,8 @@
 ;;; код-на-lisp.el --- LISP
 ;;; Commentary:
 ;;; Code:
-;;;; Emacs Lisp
 
-(use-package emacs-lisp
-  :bind (:map emacs-lisp-mode-map
-              ("C-c C-c" . выполнить-регион-или-буфер)
-              ("C-x M-e" . eval-print-last-sexp)))
+(require 'use-package)
 
 
 ;;;; Выполнить регион или буфер
@@ -19,6 +15,15 @@
         (eval-region (region-beginning) (region-end))
         (deactivate-mark))
     (перевыполнить-буфер)))
+
+;;;; Emacs Lisp
+
+(use-package emacs-lisp
+  :bind (:map emacs-lisp-mode-map
+                ("C-c C-c" . выполнить-регион-или-буфер)
+                ("C-x M-e" . eval-print-last-sexp)))
+
+
 
 ;;;; Функция для выполнения форм в буфере, включая определения переменных
 
@@ -79,10 +84,11 @@
 ;;   :commands (elisp-autofmt-mode)
 ;;   :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
-;;;; REPL к разным LISP-ам
+;;;; REPL к разным LISP-ам Geiser
 
 (use-package geiser
   :ensure t
+  :defines (geiser-mode-start-repl-p)
   :custom
   (geiser-default-implementation 'guile)
   (geiser-active-implementations '(guile))
@@ -90,20 +96,58 @@
   :config
   (setq geiser-mode-start-repl-p nil))
 
+;; Поддержка Geiser специально для Guile Scheme
+
 (use-package geiser-guile
   :ensure t
   :requires geiser
   :config
   ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")
   (setq geiser-guile-manual-lookup-nodes
-	      '("guile"
-          "guix")))
+	  '("guile"
+        "guix")))
 
-;;; Рефакторинг Emacs lisp
+;;;; Рефакторинг Emacs lisp
 
-;; (use-package erefactor 
+;; (use-package erefactor
 ;;   :ensure t
 ;;   :after (flymake))
+
+;;;; Редактирование лиспа
+
+;; (use-package lispy
+;;   :ensure t
+;;   ;; :hook
+;;   ;; (emacs-lisp-mode . lispy-mode)
+;;   )
+
+;;;; Подсветка вызовов функций
+
+;; (use-package highlight-function-calls
+;;   :ensure t
+;;   :hook
+;;   (emacs-lisp-mode . highlight-function-calls-mode))
+
+;;;; Разворачивание макросов
+
+(use-package macrostep
+  :ensure t
+  :custom-face
+  (macrostep-expansion-highlight-face ((t (:inherit default :extend t :background "#222"))))
+  :bind (:map emacs-lisp-mode-map
+                ("C-c e" . macrostep-expand)
+                :map lisp-interaction-mode-map
+                ("C-c e" . macrostep-expand)))
+
+(use-package eros :ensure t :config (eros-mode t))
+
+(use-package elisp-docstring-mode :ensure t)
+
+(use-package format-all :ensure t :hook (elisp-mode . format-all-mode))
+
+(use-package
+  inspector
+  :init (установить-из :repo "mmontone/emacs-inspector"))
 
 (provide 'код-на-lisp)
 ;;; код-на-lisp.el ends here

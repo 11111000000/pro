@@ -2,7 +2,13 @@
 ;;; Commentary:
 ;; Конфигурация сетевых сервисов, браузеров и мессенджеров
 ;;; Code:
+
+(require 'use-package)
+
 ;;;; Ускорение работы SSH
+
+(require 'tramp)
+(require 'tramp-sh)
 
 (setq tramp-ssh-controlmaster-options t)
 (setq tramp-chunksize 500)

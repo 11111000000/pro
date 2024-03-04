@@ -9,6 +9,7 @@
 | s-x               | nil                                 |
 | M-c               | nil                                 |
 | M-t               | nil                                 |
+| M-\               | nil                                 |
 | M-f               | viper-forward-word                  |
 | M-b               | viper-backward-word                 |
 | M-y               | whole-line-or-region-kill-ring-save |
@@ -91,6 +92,7 @@
 | C-c C-SPC         | mc/unmark-all-like-this             |
 | C-c <mouse-1>     | mc/add-cursor-on-click              |
 | <backtab>         | hs-toggle-hiding                    |
+| C-c e             | eglot-reconnect                     |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -206,14 +208,14 @@
 
 ** Применение сочетаний
 
-  #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
-  (-map
+#+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
+(mapcar
   (lambda (row)
    (cl-destructuring-bind (соч фун) row
      (global-set-key (kbd соч) (intern фун))))
  keys-table)
 
- (-map
+(mapcar
  (lambda (row)
    (cl-destructuring-bind (соч фун) row
      (global-set-key (kbd соч) (intern фун))))
@@ -222,10 +224,14 @@
 (if (and window-system (functionp 'exwm-input-set-key))
     (progn
 	    (require 'exwm)
-	    (-map
+	    (mapcar
 	     (lambda (row)
 	       (cl-destructuring-bind (соч фун) row
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 
 #+END_SRC
+
+#+RESULTS:
+
+

@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;; Конфигурация списков файлов и деревьев
 ;;; Code:
+
+(require 'use-package)
+
 ;;;; Файлы и каталоги
 
 (defun директорию-вверх () (interactive) (find-file ".."))
@@ -132,7 +135,7 @@
 
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
+    (treemacs-fringe-indicator-mode 'only-when-focused)
 
     (pcase (cons (not (null (executable-find "git")))
                  (not (null treemacs-python-executable)))
@@ -178,4 +181,7 @@
 (use-package dired-toggle-sudo :ensure t)
 
 (provide 'файлы-и-папки)
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars)
+;; End:
 ;;; файлы-и-папки.el ends here

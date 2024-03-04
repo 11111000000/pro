@@ -140,10 +140,36 @@
 ;; Современный вид для заголовков и таблиц
 
 (use-package org-modern
-  :custom ((org-modern-star '("•" "" "" "" ""))
+  :custom ((org-modern-star '("•" "•" "•" "•" "•"))
           (org-modern-hide-stars " "))
   :ensure t
-  :hook ((org-mode . org-modern-mode)))
+  :hook ((org-mode . org-modern-mode))
+  :init
+  
+  (setq
+   ;; Edit settings
+   org-auto-align-tags nil
+   org-tags-column 0
+   org-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+
+   ;; Org styling, hide markup etc.
+   org-hide-emphasis-markers t
+   org-pretty-entities t
+   org-ellipsis "…"
+
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "◀── now ─────────────────────────────────────────────────")
+
+  )
 
 ;;;; Организация кода
 
@@ -152,11 +178,11 @@
   :defines (outshine-mode-map)
   :custom ((outshine-startup-folded-p nil))
   :hook (((emacs-lisp-mode) . outline-minor-mode)
-         (outline-minor-mode . outshine-mode)
-         (outline-minor-mode . iimage-mode))
+       (outline-minor-mode . outshine-mode)
+       (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
-              ("C-<return>" . outshine-insert-heading)
-              ("C-<tab>" . outshine-cycle)))
+                ("C-<return>" . outshine-insert-heading)
+                ("C-<tab>" . outshine-cycle)))
 
 ;; Вместо символов комментария показывать пустоту и уровень вложенности
 
@@ -164,7 +190,7 @@
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	        (outshine-bullets-bullet-list '("•" "" "" "" ""))))
+	        (outshine-bullets-bullet-list '("•" "•" "•" "•" "•"))))
 
 ;;;; Поддержка диаграмм из блоков на UML
 
@@ -235,7 +261,7 @@
         :success (cl-function
                   (lambda (&key data &allow-other-keys)
                     (when data
-                      (with-temp-buffer 
+                      (with-temp-buffer
                         (set-buffer-file-coding-system 'raw-text)
                         (insert data)
                         (write-region nil nil out-file)))))))))

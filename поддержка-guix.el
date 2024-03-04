@@ -12,8 +12,9 @@
 
 (use-package geiser-guile
   :ensure t
+  :defines (geiser-guile-load-path)
   :config
-;; (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
+  ;; (add-to-list 'geiser-guile-load-path "~/System/channels/nonguix")
   (add-to-list 'geiser-guile-load-path "~/System/channels/chan"))
 
 (with-eval-after-load 'yasnippet

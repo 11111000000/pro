@@ -3,6 +3,8 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'use-package)
+
 ;;;; Общий вид
 
 ;; Система не издаёт лишних звуков и не мигает
@@ -83,14 +85,16 @@
 ;;   (mode-icons-mode t))
 
 (use-package all-the-icons-completion
-    :ensure
-    :after (marginalia all-the-icons)
-    :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-    :init
-    (all-the-icons-completion-mode))
+  :ensure
+  :after (marginalia all-the-icons)
+  :functions (all-the-icons-completion-mode)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
 
 (use-package nerd-icons-completion
   :ensure t
+  :functions (nerd-icons-completion-mode)
   :config
   (unless (display-graphic-p) (nerd-icons-completion-mode)))
 
@@ -109,32 +113,32 @@
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
 
-(blink-cursor-mode t)
-(setq cursor-type '(bar . 2) )
-(setq x-stretch-cursor 1)
-(setq blink-cursor-delay 0.3)
+                                        ;(blink-cursor-mode nil)
+(setq cursor-type '(bar . 2))
+                                        ;(setq x-stretch-cursor 1)
+                                        ;(setq blink-cursor-delay 0.3)
 
 ;; В невыбраных окнах, курсор прозрачный
 
-(setq-default cursor-in-non-selected-windows nil)
+                                        ;(setq-default cursor-in-non-selected-windows nil)
 
 ;; В зависимости от включенного режима ввода, курсор меняет свой вид:
 
 (use-package cursor-chg
-    :init (установить-из :repo "emacsmirror/cursor-chg")
-    :functions (change-cursor-mode)
-    :defines (curchg-default-cursor-color)
-    :config
-    (require 'cursor-chg)
-    (setq-default curchg-input-method-cursor-color "orange"
-               curchg-default-cursor-type '(bar . 2)
-               curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
-               curchg-change-cursor-on-input-method-flag t)
+  :init (установить-из :repo "emacsmirror/cursor-chg")
+  :functions (change-cursor-mode)
+  :defines (curchg-default-cursor-color)
+  :config
+  (require 'cursor-chg)
+  (setq-default curchg-input-method-cursor-color "orange"
+             curchg-default-cursor-type '(bar . 2)
+             curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
+             curchg-change-cursor-on-input-method-flag t)
 
-    (change-cursor-mode t)
-    (add-hook 'after-load-theme-hook
-             (lambda ()
-                 (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
+  (change-cursor-mode t)
+  (add-hook 'after-load-theme-hook
+           (lambda ()
+             (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
 
 ;;;; Прокрутка
 
@@ -189,14 +193,52 @@
 (require 'image-mode)
 
 (use-package image+
-    :ensure t
-    :after 'image-mode
-    :hook (image-mode . image+)
-    :bind ((:map image-mode-map
-                   ("0" . imagex-sticky-restore-original)
-                   ("+" . imagex-sticky-maximize)
-                   ("=" . imagex-sticky-zoom-in)
-                   ("-" . imagex-sticky-zoom-out))))
+  :ensure t
+  :after 'image-mode
+  :hook (image-mode . image+)
+  :bind ((:map image-mode-map
+                 ("0" . imagex-sticky-restore-original)
+                 ("+" . imagex-sticky-maximize)
+                 ("=" . imagex-sticky-zoom-in)
+                 ("-" . imagex-sticky-zoom-out))))
+
+;;;; Подсвечивать при перемещении
+
+(defface pulsar-magenta
+  '((default :extend t)
+    (((class color) (min-colors 88) (background light))
+     :background "#ffccff")
+    (((class color) (min-colors 88) (background dark))
+     :background "#71206a")
+    (t :inverse-video t))
+  "Alternative magenta face for `pulsar-face'."
+  :group 'pulsar-faces)
+
+
+(use-package pulsar
+  :ensure t
+  :defines (pulsar-pulse-functions pulsar-global-mode)
+  :custom ((pulsar-face 'cursor))
+  :config
+  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
+  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
+  (add-to-list 'pulsar-pulse-functions 'goto-char)
+  (add-to-list 'pulsar-pulse-functions 'xref-find-definitions)
+  (add-to-list 'pulsar-pulse-functions 'xref-find-definitions-other-window)
+  :init
+  (pulsar-global-mode t))
+
+;; TODO Рамки окон...
+;; (modify-all-frames-parameters
+;;  '((right-divider-width . 40)
+;;    (internal-border-width . 40)))
+;; (dolist (face '(window-divider
+;; 		      window-divider-first-pixel
+;; 		      window-divider-last-pixel))
+;;   (face-spec-reset-face face)
+;;   (set-face-foreground face (face-attribute 'default :background)))
+;; (set-face-background 'fringe (face-attribute 'default :background))  
+
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here
