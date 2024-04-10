@@ -43,10 +43,15 @@
   :ensure t
 
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
-           (magit-after-save-refresh-buffers t))
+          (magit-after-save-refresh-buffers t))
   :init
   (add-hook 'magit-process-find-password-functions
-            'magit-process-password-auth-source))
+           'magit-process-password-auth-source))
+
+;;;; Машина времени для GIT
+
+(use-package git-timemachine
+  :ensure t)
 
 ;;;; Автоматизация проекта
 

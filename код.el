@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-(require 'use-package)
 (require 'загрузить)
+(require 'use-package)
 
 ;;;; Поддержка режимов
 
@@ -21,6 +21,8 @@
 
 ;; Eglot теперь встроен в EMACS
 
+(require 'jsonrpc)
+
 (use-package eglot
   :hook ((go-mode . eglot-ensure)
        (haskell-mode . eglot-ensure)
@@ -34,16 +36,18 @@
        (rust-mode . eglot-ensure))
   :functions (eglot-rename eglot-code-actions)
   :bind (:map eglot-mode-map
-                ("C-c r" . #'eglot-rename)
-                ("C-<down-mouse-1>" . #'xref-find-definitions)
-                ("C-S-<down-mouse-1>" . #'xref-find-references)
-                ("C-c C-c" . #'eglot-code-actions))
+                ("C-c r" . eglot-rename)
+                ("C-<down-mouse-1>" . xref-find-definitions)
+                ("C-S-<down-mouse-1>" . xref-find-references)
+                ("C-c C-c" . eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
+  (eglot-sync-connect 0)
+  (eglot-events-buffer-size 0)
   :config
   ;; Выключим лог, что увеличивает производительность
-  (require 'jsonrpc)
   (fset #'jsonrpc--log-event #'ignore)
+  (add-hook 'focus-out-hook 'garbage-collect)
   )
 
 ;; (use-package sideline
@@ -83,7 +87,7 @@
 (use-package paren-face
   :ensure t
   :if window-system
-  :defines (global-paren-face-mode)
+  :functions (global-paren-face-mode)
   :custom ((paren-face-regexp
            "[][(){}]"))
   :config (global-paren-face-mode t))
@@ -104,30 +108,36 @@ ARG - backward"
 
 ;;;;; Умные скобки
 
-;; TODO: заменить пакетом, основанным на tree-sitter ?
+;; TODO: Возможно, заменить пакетом, основанным на tree-sitter ?
 
-(use-package smartparens
-  :ensure t
-  :defines (smartparens-global-mode sp-local-pair)
-  :bind  (("C-^" . sp-unwrap-sexp)
-          ("M-j" . sp-next-sexp)
-          ("M-k" . sp-backward-sexp)
-          ("M-h" . sp-backward-up-sexp)
-          ("M-l" . sp-down-sexp))
-  :config
+(use-package electric-pair
+  :ensure nil
+  :hook
+  (after-init . electric-pair-mode)
+  (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
 
-  (smartparens-global-mode 1)
-  (sp-local-pair 'emacs-lisp-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'scheme-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'racket-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'lisp-mode "" nil
-                 :actions nil)
-  (show-smartparens-global-mode t)
-  ;; (show-paren-mode -1)
-  )
+;; (use-package smartparens
+;;   :ensure t
+;;   :defines (smartparens-global-mode sp-local-pair)
+;;   :bind  (("C-^" . sp-unwrap-sexp)
+;;           ("M-j" . sp-next-sexp)
+;;           ("M-k" . sp-backward-sexp)
+;;           ("M-h" . sp-backward-up-sexp)
+;;           ("M-l" . sp-down-sexp))
+;;   :config
+
+;;   (smartparens-global-mode 1)
+;;   (sp-local-pair 'emacs-lisp-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'scheme-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'racket-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'lisp-mode "" nil
+;;                  :actions nil)
+;;   (show-smartparens-global-mode t)
+;;   ;; (show-paren-mode -1)
+;;   )
 
 ;;;;; Подсветка глубины скобок
 
@@ -171,7 +181,7 @@ ARG - backward"
   :custom ((color-identifiers-coloring-method
            'hash)
           (color-identifiers:num-colors 32)
-          (color-identifiers:color-luminance 0.6)
+          (color-identifiers:color-luminance 0.3)
           (color-identifiers:min-color-saturation 0.2)
           (color-identifiers:max-color-saturation 0.7)))
 
@@ -270,11 +280,12 @@ ARG - backward"
   (interactive)
   (funcall-interactively 'yas-new-snippet)
   (erase-buffer)
-  (insert-file шаблон-для-сниппета))
+  (insert-file-contents шаблон-для-сниппета))
 
 (use-package yasnippet
   :ensure t
   :functions (yas-reload-all)
+  :defines (yas-snippet-dirs)
   :hook
   (prog-mode . yas-minor-mode)
   :config
@@ -339,12 +350,15 @@ ARG - backward"
 
 ;;;; Дебаггер
 
+(require 'projectile)
+
 (use-package dape
   :ensure t
   :init
-  :defines (dape-buffer-window-arrangment)
+  :defines (dape-buffer-window-arrangment dape-cwd-fn)
   :config
   (setq dape-buffer-window-arrangement 'gud)
+
   ;; Info buffers to the right
   ;;(setq dape-buffer-window-arrangement 'left)
 
@@ -369,12 +383,33 @@ ARG - backward"
 
 
   ;; Projectile users
-  (require 'projectile)
   (setq dape-cwd-fn (lambda (&optional skip-tramp-trim)
                     (let ((root (projectile-project-root)))
                       (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
                           (tramp-file-name-localname (tramp-dissect-file-name root))
                         root))))
+
+  ;; (add-to-list 'dape-configs
+  ;;            `(vscode-ts-js-attach
+  ;;              modes (js-mode js-ts-mode typescript-mode)
+  ;;              host "localhost"
+  ;;              port 8123
+  ;;              command "node"
+  ;;              ;; command-cwd "~/source/vscode-js-debug/dist/"
+  ;;              command-cwd "~/.emacs.d/debug-adapters/js-debug"
+  ;;              command-args ("src/dapDebugServer.js")
+  ;;              :port bob/get-inspect-port
+  ;;              :sourceMaps t
+  ;;              :resolveSourceMapLocations ["**/dist/**/*"]
+  ;;              :cwd dape-cwd-fn
+  ;;              :autoAttachChildProcesses t
+  ;;              :type "pwa-node"
+  ;;              :request "attach"
+  ;;              :outputCapture "console"
+  ;;              :sourceMapRenames t
+  ;;              :autoAttachChildProcesses t
+  ;;              :console "internalConsole"
+  ;;              :killBehavior "forceful"))
   )
 
 ;; (use-package dap-mode

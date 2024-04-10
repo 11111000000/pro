@@ -1,12 +1,12 @@
-;;; графическая-среда.el --- Оконный менеджер ExWM
+;;; графическая-среда.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; Emacs X Window Manager - полноценный тайловый оконный менеджер
 ;;; Code:
 ;;;; Xelb
 
 (use-package xelb
-    :ensure t
-    :if window-system)
+  :ensure t
+  :if window-system)
 
 ;;;; ExWM
 
@@ -51,14 +51,16 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (use-package exwm
   :ensure t
+  :functions (exwm-input-set-key)
+  :defines (exwm-class-name exwm-manage-configurations  exwm-title)
   :if window-system
-  :custom (
-          (exwm-workspace-number 5)
-          (exwm-workspace-show-all-buffers t)
-          (exwm-layout-show-all-buffers t)
-          (exwm-manage-force-tiling nil)
-          (exwm-systemtray-height 16)
-          (exwm-input-simulation-keys сочетания-для-эмуляции))
+  ;; :custom (
+  ;;          (exwm-workspace-number 5)
+  ;;          (exwm-workspace-show-all-buffers t)
+  ;;          (exwm-layout-show-all-buffers t)
+  ;;          (exwm-manage-force-tiling nil)
+  ;;          (exwm-systemtray-height 16)
+  ;;          (exwm-input-simulation-keys сочетания-для-эмуляции))
 
   :config
 
@@ -66,54 +68,59 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;;           (lambda ()
   ;;             (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
 
-  (defun exwm-update-title-hook ()
-    (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+  ;; (defun exwm-update-title-hook ()
+  ;;   (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
 
-  (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+  ;; (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
 
-  ;; Глобальные клавиши над всеми приложениями
+  ;; ;; Глобальные клавиши над всеми приложениями
 
-  (dotimes (i 10)
-    (if (> i 0) (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
-    (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
-    )
-  (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+  ;; (dotimes (i 10)
+  ;;   (if (> i 0) (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
+  ;;   (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+  ;;   (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+  ;;   (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
+  ;;   )
+  ;; (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
   
-  (exwm-input-set-keys
-   ("s-M-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
-   ("s-M-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
-   ("s-M-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
-   ("s-M-$" (lambda () (interactive) (exwm-workspace-move-window 4)))
-   ("s-M-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
-   ("s-M-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
-   ("s-M-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
-   ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0))))
+  ;; (exwm-input-set-keys
+  ;;  ("s-M-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
+  ;;  ("s-M-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
+  ;;  ("s-M-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
+  ;;  ("s-M-$" (lambda () (interactive) (exwm-workspace-move-window 4)))
+  ;;  ("s-M-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
+  ;;  ("s-M-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
+  ;;  ("s-M-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
+  ;;  ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0))))
 
-  (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
-                                   ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-                                    height 175 x 30 y 30 managed t)))
+  ;; (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
+  ;;                                    ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+  ;;                                     height 175 x 30 y 30 managed t)))
+  
+  :hook ((after-init . exwm-enable))
+  
   :init
 
   ;; Запуск EXWM
 
   (exwm-enable t)
+  ;;(exwm-init)
 
   ;; Запуск программ в трее
 
-  (require 'exwm-systemtray)
+  ;; (require 'exwm-systemtray)
 
-  (exwm-systemtray-enable)
+  ;; (exwm-systemtray-enable)
   
-  (add-hook 'exwm-init-hook (lambda ()
-                             (progn
-                               (start-process-shell-command "nm-applet" nil "sleep 0.5; dbus-launch nm-applet -t")
-                               (start-process-shell-command "blueman-applet" nil "sleep 0.5; dbus-launch blueman-applet")
-                               (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
-                               (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
-                               (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
-                               (start-process-shell-command "copyq" nil "sleep 0.5; copyq")))))
+  ;; (add-hook 'exwm-init-hook (lambda ()
+  ;;                             (progn
+  ;;                               (start-process-shell-command "nm-applet" nil "sleep 0.5; dbus-launch nm-applet -t")
+  ;;                               (start-process-shell-command "blueman-applet" nil "sleep 0.5; dbus-launch blueman-applet")
+  ;;                               (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
+  ;;                               (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
+  ;;                               (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
+  ;;                               (start-process-shell-command "copyq" nil "sleep 0.5; copyq"))))
+  )
 
 ;;;; Режимы ввода EMACS в приложениях
 
@@ -121,12 +128,12 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
 (use-package exim
-    :init (установить-из :repo "ch11ng/exim")
-    :after (exwm)
-    :if window-system
-    ;; :load-path "emacs-lisp/exim/exim"
-    :hook ((exwm-init . exim-start))
-    :config (push ?\C-\\ exwm-input-prefix-keys))
+  :init (установить-из :repo "ch11ng/exim")
+  :after (exwm)
+  :if window-system
+  ;; :load-path "emacs-lisp/exim/exim"
+  :hook ((exwm-init . exim-start))
+  :config (push ?\C-\\ exwm-input-prefix-keys))
 
 ;;;; Редактирование любых полей ввода через EMACS
 

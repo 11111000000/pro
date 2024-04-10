@@ -22,9 +22,9 @@
   ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120)))))
   ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8)))))
   ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0)))))
-  (custom-set-faces '(default ((t (:family "Fira Code Light" :height 120)))))
-  (custom-set-faces '(fixed-pitch ((t (:family "Fira Code Light" :height 0.8)))))
-  (custom-set-faces '(variable-pitch ((t (:family "Fira Sans" :height 1.0)))))
+  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120)))))
+  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8)))))
+  (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0)))))
   ;; (let* ((variable-tuple (cond
   ;;                        ;; ((x-list-fonts "OldSlavic")         '(:font "OldSlavic"))
   ;;                        ((x-list-fonts "Golos")         '(:font "Golos"))

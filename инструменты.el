@@ -8,7 +8,8 @@
 
 (use-package openwith
   :ensure t
-  :defines (openwith-mode)
+  :defines (openwith-associations)
+  :functions (openwith-mode)
   :config
   (openwith-mode t)
   (setq openwith-associations '(("\\.pdf\\'" "xdg-open" (file))
@@ -22,8 +23,9 @@
 ;;;; Запускалка приложений из системного меню
 
 (use-package app-launcher
-    :init (установить-из :repo "SebastienWae/app-launcher")
-    :bind (("s-x" . app-launcher-run-app)))
+  ;:ensure t
+  :init (установить-из :repo "SebastienWae/app-launcher")
+  :bind (("s-x" . app-launcher-run-app)))
 
 ;;;; Функции переферии
 

@@ -10,8 +10,8 @@
 (set-keyboard-coding-system 'utf-8)
 
 (setq locale-coding-system 'utf-8
-      default-file-name-coding-system 'utf-8
-      x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+    default-file-name-coding-system 'utf-8
+    x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 ;;;; Клавиатура
 
@@ -22,11 +22,13 @@
 ;; Трансляция сочетаний клавиш при включеном русском
 
 (use-package reverse-im
-    :ensure t
-    :config
-    (add-to-list 'reverse-im-modifiers 'super)
-    (add-to-list 'reverse-im-input-methods "russian-computer")
-    (reverse-im-mode t))
+  :ensure t
+  :defines (reverse-im-modifiers reverse-im-input-methods)
+  :functions (reverse-im-mode)
+  :config
+  (add-to-list 'reverse-im-modifiers 'super)
+  (add-to-list 'reverse-im-input-methods "russian-computer")
+  (reverse-im-mode t))
 
 ;; Удалять выделенное при печати нового
 
@@ -39,22 +41,22 @@
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 
 (use-package avy
-    :ensure t
-    :defer t
-    :custom ((avy-background nil)))
+  :ensure t
+  :defer t
+  :custom ((avy-background nil)))
 
 ;; Мульти-курсор
 
 (use-package multiple-cursors
-    :ensure t)
+  :ensure t)
 
 ;; При перемещении в начало строки *<C-a>*, сперва прыгать к  идентации, затем - к началу строки
 
 (defun к-идентации-или-началу-строки ()
-    "вернуться к идентации или началу строки."
-    (interactive)
-    (if (= (point) (progn (back-to-indentation) (point)))
-            (beginning-of-line)))
+  "вернуться к идентации или началу строки."
+  (interactive)
+  (if (= (point) (progn (back-to-indentation) (point)))
+      (beginning-of-line)))
 
 ;; Подсвечивать курсор при мгновенном перемещении, чтобы он не потерялся
 
@@ -71,61 +73,73 @@
 ;; Выделять "изнутри"
 
 (use-package expand-region
-    :ensure t
-    :config
-    (setq expand-region-contract-fast-key "M-S-SPC"
-          expand-region-reset-fast-key    "<ESC><ESC>"))
+  :ensure t
+  :defines (expand-region-contract-fast-key expand-region-reset-fast-key)
+  :config
+  (setq expand-region-contract-fast-key "M-S-SPC"
+      expand-region-reset-fast-key "<ESC><ESC>")
+  )
+
+;; Умное удаление
+
+;; (use-package puni
+;;   :ensure t
+;;   :functions (puni-global-mode puni-disable-puni-mode)
+;;   :init
+;;   (puni-global-mode t)
+;;   (add-hook 'term-mode-hook #'puni-disable-puni-mode))
 
 ;; Удалить до конца строки, но не CR
 
 (defun удалить-до-конца-строки ()
-    "Удалить до конца строки."
-    (interactive)
-    (delete-region (point) (line-end-position)))
+  "Удалить до конца строки."
+  (interactive)
+  (kill-region (point) (line-end-position)))
 
 ;; Операция над выделением или текущей линией
 
 (use-package whole-line-or-region
-    :ensure t
-    :init)
+  :ensure t
+  :init)
 
 ;; Функция delete-to-begin, для вырезания от курсора до начала строки:
 
 (defun delete-to-begin ()
-    "Удалить до начала строки."
-    (interactive)
-    (kill-line 0))
+  "Удалить до начала строки."
+  (interactive)
+  (kill-line 0))
 
 ;;;; Перемещение блоков
 
 (use-package shift-text
-    :ensure t
-    :defer t)
+  :ensure t
+  :defer t)
 
 ;;;; Отображения текста по центру ("режим чтения")
 
 (use-package olivetti
-    :ensure t
-    :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
-    :custom ((olivetti-minimum-body-width 80)
-             (olivetti-body-width 80)))
+  :ensure t
+  :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
+  :custom ((olivetti-minimum-body-width 80)
+          (olivetti-body-width 80)))
 
 ;;;; Закладки
 
 (use-package bookmark
-    :config
-    (setq bookmark-save-flag t))
+  :config
+  (setq bookmark-save-flag t))
 
 ;;;; Красивые типографские символы
 
 ;; Последовательности символов можно заменить на один глиф. Но при наведении курсора, мы хотим видеть оригинал:
 
 (use-package fira-code-mode
-    :if window-system
-    :ensure t
-    :hook ((prog-mode . fira-code-mode))
-    :config
-    (fira-code-mode-set-font))
+  :if window-system
+  :ensure t
+  :hook ((prog-mode . fira-code-mode))
+  :functions (fira-code-mode-set-font)
+  :config
+  (fira-code-mode-set-font))
 
 (global-prettify-symbols-mode +1)
 (setq prettify-symbols-unprettify-at-point t)
@@ -133,9 +147,9 @@
 ;;;; Переносы
 
 (setq-default truncate-lines t
-              truncate-partial-width-windows 50
-              longlines-show-hard-newlines t
-              line-move-visual t)
+           truncate-partial-width-windows 50
+           longlines-show-hard-newlines t
+           line-move-visual t)
 
 (toggle-truncate-lines t)
 (visual-line-mode t)
@@ -145,9 +159,9 @@
 ;; По умолчанию отступы в 2 пробела
 
 (setq-default indent-tabs-mode nil
-              tab-width 4
-              indent-line-function 'indent-relative
-              default-tabs-width 4)
+           tab-width 4
+           indent-line-function 'indent-relative
+           default-tabs-width 4)
 
 ;; Автоматически выравнивать при переводе строки
 
@@ -156,44 +170,46 @@
 ;; Автоматически определять отступы
 
 (use-package dtrt-indent
-    :ensure t
-    :init
-    (dtrt-indent-global-mode t))
+  :ensure t
+  :functions (dtrt-indent-global-mode)
+  :init
+  (dtrt-indent-global-mode t))
 
 ;; Настойчиво делать идентацию для некоторых типов файлов
 
 (use-package aggressive-indent
-    :ensure t
-    :hook ((emacs-lisp-mode . aggressive-indent-mode)))
+  :ensure t
+  :hook ((emacs-lisp-mode . aggressive-indent-mode)))
 
 ;; Настройка отступов берётся из файла .editorconfig
 
 (use-package editorconfig
-    :ensure t
-    :init
-    (editorconfig-mode 1))
+  :ensure t
+  :functions (editorconfig-mode)
+  :init
+  (editorconfig-mode 1))
 
 ;;;; Сравнение
 
 ;; Плоское, горизонтальное расположение при сравнении буферов
 
 (setq-default ediff-window-setup-function 'ediff-setup-windows-plain
-              ediff-split-window-function 'split-window-horizontally)
+           ediff-split-window-function 'split-window-horizontally)
 
 ;;;; Редактировать как Root
 
 (defun редактировать-текущий-файл-как-root ()
-    "Редактировать как root файл, связанный с текущим буфером."
-    (interactive)
-    (if (buffer-file-name)
-            (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
-                (find-file file))
-        (message "Буфер не связан с файлом.")))
+  "Редактировать как root файл, связанный с текущим буфером."
+  (interactive)
+  (if (buffer-file-name)
+      (let ((file (concat "/sudo:root@localhost:" (buffer-file-name))))
+        (find-file file))
+    (message "Буфер не связан с файлом.")))
 
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 
 (use-package string-inflection
-    :ensure t)
+  :ensure t)
 
 ;;;; Подсветка идентации
 
@@ -212,15 +228,17 @@
 
 ;;;; Проверка орфографии
 
-(use-package flymake-aspell
-    :ensure t
-    :hook ((text-mode . flymake-aspell-setup)
-           (org-mode . flymake-aspell-setup))
-    :init
-    (require 'ispell)
-    (setq ispell-dictionary "ru")
-    (setq ispell-program-name "aspell")
-    (setq ispell-silently-savep t))
+;; TODO: Заменить на flycheck-aspell
+
+;; (use-package flymake-aspell
+;;   :ensure t
+;;   :hook ((text-mode . flymake-aspell-setup)
+;;        (org-mode . flymake-aspell-setup))
+;;   :init
+;;   (require 'ispell)
+;;   (setq ispell-dictionary "ru")
+;;   (setq ispell-program-name "aspell")
+;;   (setq ispell-silently-savep t))
 
 ;;;; Поддержка языка  разметки Markdown
 
@@ -229,17 +247,19 @@
 ;;;; Вставить имя файла
 
 (defun вставить-имя-файла ()
-    "Вставить имя файла."
-    (interactive)
-    (insert (buffer-name)))
+  "Вставить имя файла."
+  (interactive)
+  (insert (buffer-name)))
 
 ;;;; Ёфикация
 
 ;; https://github.com/pok49/yomacs
 
 ;;;; Vim-клавиши
+
 (setq viper-mode nil)
 (require 'viper)
+(setq viper-inhibit-startup-message 't)
 
 (provide 'редактор)
 ;;; редактор.el ends here

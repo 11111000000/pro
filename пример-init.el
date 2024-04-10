@@ -1,4 +1,4 @@
-;;; пример-init.el --- Пример init.el
+;;; пример-init.el --- Пример init.el  -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; Этот файл можно скопировать в ~/.emacs.d/init.el

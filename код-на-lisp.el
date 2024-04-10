@@ -23,8 +23,6 @@
                 ("C-c C-c" . выполнить-регион-или-буфер)
                 ("C-x M-e" . eval-print-last-sexp)))
 
-
-
 ;;;; Функция для выполнения форм в буфере, включая определения переменных
 
 (defun перевыполнить-буфер ()
@@ -33,9 +31,9 @@
 образом `defvar' и `defcustom' устанавливаются заново."
   (interactive)
   (save-excursion (goto-char (point-min))
-                  (while (not (eobp))
-                    (forward-sexp)
-                    (eval-defun nil))))
+              (while (not (eobp))
+                (forward-sexp)
+                (eval-defun nil))))
 
 ;;;; Конфигурация проверки синтаксиа для Elisp
 
@@ -139,7 +137,16 @@
                 :map lisp-interaction-mode-map
                 ("C-c e" . macrostep-expand)))
 
-(use-package eros :ensure t :config (eros-mode t))
+(require 'тихо-применить)
+
+(use-package eros :ensure t
+  :defines (eros-eval-last-sexp)
+
+  :config
+  (eros-mode t)
+                                        ;(global-set-key [remap eval-last-sexp] (lambda () (interactive) (eros-eval-last-sexp)))
+                                        ;(global-set-key [remap eval-defun] #'eros-eval-defun)
+  )
 
 (use-package elisp-docstring-mode :ensure t)
 

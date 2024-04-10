@@ -4,17 +4,17 @@
 
 ;;;; Поиск по файлу
 
-(use-package
-  ctrlf
-  :defines (ctrlf-minibuffer-bindings ctrlf-default-search-style ctrlf-alternate-search-style)
-  :functions (ctrlf-mode)
-  :config
-  (add-to-list
-   'ctrlf-minibuffer-bindings '("C-r" . ctrlf-backward-default))
-  (setq ctrlf-default-search-style 'fuzzy-regexp)
-  (setq ctrlf-alternate-search-style 'literal)
-                                        ;(setq ctrlf-default-search-style 'literal)
-  (ctrlf-mode t))
+;; (use-package
+;;   ctrlf
+;;   :defines (ctrlf-minibuffer-bindings ctrlf-default-search-style ctrlf-alternate-search-style)
+;;   :functions (ctrlf-mode)
+;;   :config
+;;   (add-to-list
+;;    'ctrlf-minibuffer-bindings '("C-r" . ctrlf-backward-default))
+;;   (setq ctrlf-default-search-style 'fuzzy-regexp)
+;;   (setq ctrlf-alternate-search-style 'literal)
+;;                                         ;(setq ctrlf-default-search-style 'literal)
+;;   (ctrlf-mode t))
 
 ;;;; Вертикальные списки
 
@@ -74,16 +74,36 @@
 ;;;; Функции на базе автодополения
 
 (use-package consult
-    :ensure t
-    :defines (consult-project-root-function)
-    :functions (consult-customize)
-    :custom ((consult-preview-key "M-."))
-    :config
-    (autoload 'projectile-project-root "projectile")
-    (require 'consult-xref)
-    (setq consult-project-root-function #'projectile-project-root
-          xref-show-xrefs-function #'consult-xref
-          xref-show-definitions-function #'consult-xref))
+  :ensure t
+  :defines (consult-project-root-function)
+  :functions (consult-customize consult-xref)
+  :bind
+  (([remap bookmark-jump] . consult-bookmark)
+   ([remap goto-line] . consult-goto-line)
+   ([remap imenu] . consult-imenu)
+   ([remap isearch-forward] . consult-line)
+   ([remap project-switch-to-buffer] . consult-project-buffer)
+   ([remap repeat-complex-command] . consult-complex-command)
+   ([remap switch-to-buffer] . consult-buffer)
+   ([remap yank-pop] . consult-yank-pop)
+   ("C-S-r" . isearch-backward-regexp)
+   ("C-S-s" . isearch-forward-regexp)
+   :map consult-narrow-map
+   ("C-h" . consult-narrow-help)
+   :map goto-map
+   ("m" . consult-mark)
+   ;; TODO Use `consult-org-heading' in `org-mode'
+   ("o" . consult-outline)
+   :map help-map
+   ("M" . consult-minor-mode-menu))
+  :custom ((consult-preview-key "M-.")
+          (consult-line-start-from-top t)
+          (xref-show-definitions-function #'consult-xref)
+          (xref-show-xrefs-function #'consult-xref))
+  :config
+  (autoload 'projectile-project-root "projectile")
+  (require 'consult-xref)
+  (setq consult-project-root-function #'projectile-project-root))
 
 ;;;; Дополнение сниппетов
 

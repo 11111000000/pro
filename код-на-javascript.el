@@ -78,33 +78,12 @@
 
 ;; (use-package typescript-mode :disabled t)
 
+(require 'eglot)
+
 (use-package typescript-ts-mode
   :mode (("\\.ts\\'" . typescript-ts-mode)
          ("\\.tsx\\'" . tsx-ts-mode))
   :config
-  (require 'eglot)
-  ;; (setq-default
-  ;;  eglot-server-programs
-  ;;  (cl-substitute-if
-  ;;   (cons
-  ;;    '(js-base-mode typescript-ts-base-mode typescript-ts-mode typescript-mode ts-ts-mode)
-  ;;    '("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio" :initializationOptions
-  ;;      (:preferences
-  ;;       (
-  ;;        :includeInlayEnumMemberValueHints t
-  ;;        :includeInlayFunctionLikeReturnTypeHints t
-  ;;        :includeInlayFunctionParameterTypeHints t
-  ;;        :includeInlayParameterNameHints "all"
-  ;;        :includeInlayParameterNameHintsWhenArgumentMatchesName t
-  ;;        :includeInlayPropertyDeclarationTypeHints t
-  ;;        :includeInlayVariableTypeHints t
-  ;;        :includeInlayVariableTypeHintsWhenTypeMatchesName t))))
-  ;;   (lambda (program)
-  ;;     (if (listp (car program))
-  ;;         (member 'typescript-ts-mode (car program))
-  ;;       (eq 'typescript-ts-mode program)))
-  ;;   eglot-server-programs))
-  
   (add-to-list 'eglot-server-programs
              `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
                ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
@@ -112,6 +91,14 @@
   :hook
   ((typescript-ts-mode . eglot-ensure)
    (js-ts-mode . eglot-ensure)))
+
+;; (use-package tide
+;;   :ensure t
+;;   :after (flycheck)
+;;   :hook ((typescript-ts-mode . tide-setup)
+;;        (tsx-ts-mode . tide-setup)
+;;        (typescript-ts-mode . tide-hl-identifier-mode)
+;;        (before-save . tide-format-before-save)))
 
 ;; (use-package tsi
 ;;   :ensure t
@@ -141,7 +128,6 @@
   :ensure t)
 
 (use-package graphql-ts-mode :ensure t)
-
 
 ;;;; Сниппеты React
 

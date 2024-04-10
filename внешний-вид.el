@@ -1,4 +1,4 @@
-;;; внешний-вид.el --- Внешний вид и Интерфейс
+;;; внешний-вид.el --- Внешний вид и Интерфейс  -*- lexical-binding: t -*-
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
@@ -136,9 +136,12 @@
              curchg-change-cursor-on-input-method-flag t)
 
   (change-cursor-mode t)
-  (add-hook 'after-load-theme-hook
-           (lambda ()
-             (setq curchg-default-cursor-color (face-attribute 'default :foreground)))))
+  ;; (add-hook 'after-load-theme-hook
+  ;;          (lambda ()
+  ;;            (change-cursor-mode t)
+  ;;                                       ;(setq curchg-default-cursor-color (face-attribute 'default :foreground))
+  ;;            ))
+  )
 
 ;;;; Прокрутка
 
@@ -153,8 +156,8 @@
 
 ;; Плавная прокрутка
 
-(when (fboundp 'pixel-scroll-mode)
-    (pixel-scroll-mode -1))
+;; (when (fboundp 'pixel-scroll-mode)
+;;   (pixel-scroll-mode t))
 
 ;;;; Меню режима
 
@@ -162,8 +165,8 @@
 ;; как своего рода директории
 
 (use-package imenu
-    :custom ((imenu-auto-recsan t))
-    :defer t)
+  :custom ((imenu-auto-recsan t))
+  :defer t)
 
 ;;;; Мини-карта
 
@@ -237,7 +240,7 @@
 ;; 		      window-divider-last-pixel))
 ;;   (face-spec-reset-face face)
 ;;   (set-face-foreground face (face-attribute 'default :background)))
-;; (set-face-background 'fringe (face-attribute 'default :background))  
+;; (set-face-background 'fringe (face-attribute 'default :background))
 
 
 (provide 'внешний-вид)

@@ -7,43 +7,47 @@
 
 ;;;; Файлы и каталоги
 
-(defun директорию-вверх () (interactive) (find-file ".."))
+(defun директорию-вверх () "Перейти на директорию вверх."
+      (interactive) (find-file ".."))
 
 (use-package dired
-    :bind (
-           :map dired-mode-map
-           ("j" . dired-next-line)
-           ("k" . dired-previous-line)
-           ("l" . dired-find-file)
-           ("f" . dired-find-file)
-           ("o" . dired-find-file)
-           ("RET" . dired-find-file)
-           ("h" . dired-up-directory)
-           ("^" . dired-up-directory))
-    :hook ((dired-mode . dired-hide-details-mode)
-           (dired-mode . hl-line-mode)
-           ;;(dired-mode . hl-line-mode)
-           )
-    :custom
-    ;; (dired-listing-switches "-aBhlv --group-directories-first")
-    (ls-lisp-dirs-first t)
-    (ls-lisp-use-insert-directory-program nil)
-	(dired-dwim-target t)
-    (dired-auto-revert-buffer t)
-    (global-auto-revert-non-file-buffers t)
-    (dired-hide-details-hide-symlink-targets nil)
+  :bind (
+         :map dired-mode-map
+         ("j" . dired-next-line)
+         ("k" . dired-previous-line)
+         ("l" . dired-find-file)
+         ("f" . dired-find-file)
+         ("o" . dired-find-file)
+         ("RET" . dired-find-file)
+         ("h" . dired-up-directory)
+         ("^" . dired-up-directory))
+  :hook ((dired-mode . dired-hide-details-mode)
+       (dired-mode . hl-line-mode)
+       ;;(dired-mode . hl-line-mode)
+       )
+  :custom
+  ;; (dired-listing-switches "-aBhlv --group-directories-first")
+  (ls-lisp-dirs-first t)
+  (ls-lisp-use-insert-directory-program nil)
+  (dired-dwim-target t)
+  (dired-auto-revert-buffer t)
+  (global-auto-revert-non-file-buffers t)
+  (dired-hide-details-hide-symlink-targets nil)
 
-    ;;dired открывает в том же окне при использовании RET или ^
-    ;; (put 'dired-find-alternate-file 'disabled nil)
+  ;;dired открывает в том же окне при использовании RET или ^
+  ;; (put 'dired-find-alternate-file 'disabled nil)
 
-    )
+  )
 
 ;;;; Возможность выполнить M-x в выбранных файлах
 
+(require 'dired)
+
 (defun dired-do-command (command)
-  "Выполняет команду COMMAND для помеченных файлов. Все файлы, которые еще не открыты, будут открыты.
-После того, как эта команда будет выполнена, все буферы, которые она изменила, останутся.
-открытые и неспасенные."
+  "Выполняет команду COMMAND для помеченных файлов.
+Все файлы, которые еще не открыты, будут открыты.
+После того, как эта команда будет выполнена, все
+буферы, которые она изменила, останутся открытые и неспасенные."
   (interactive " M-x на выбранных файлах: ")
   (save-window-excursion
     (mapc (lambda (filename)
@@ -58,21 +62,24 @@
 ;; нажав C-c C-c или отменить C-g
 
 (use-package wdired
-    :ensure t
-    :after dired
-    :bind (
-           :map dired-mode-map
-           ("C-c C-c" . wdired-change-to-wdired-mode)
-           :map wdired-mode-map
-           ("C-c C-r" . replace-string)
-           ("C-c r" . replace-regexp)
-           ("C-g C-g" . wdired-exit)
-           ("ESC" . wdired-exit)))
+  :ensure t
+  :after dired
+  :bind (
+         :map dired-mode-map
+         ("C-c C-c" . wdired-change-to-wdired-mode)
+         :map wdired-mode-map
+         ("C-c C-r" . replace-string)
+         ("C-c r" . replace-regexp)
+         ("C-g C-g" . wdired-exit)
+         ("ESC" . wdired-exit)))
 
 ;;;; Дерево
 
 (use-package treemacs
   :ensure t
+  :functions (treemacs-follow-mode treemacs-filewatch-mode treemacs-select-window
+                                   treemacs-fringe-indicator-mode treemacs-git-mode
+                                   treemacs-hide-gitignored-files-mode treemacs-icons-dired-mode)
   :init
   (with-eval-after-load 'winum
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
