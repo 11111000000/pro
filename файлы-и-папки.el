@@ -85,7 +85,7 @@
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :bind (:map treemacs-mode-map
                 ("j" . treemacs-next-line)
-                ("k" . treemacs-prev-line))
+                ("k" . treemacs-previous-line))
   :config
   (progn
     (setq treemacs-collapse-dirs             (if treemacs-python-executable 3 0)
@@ -93,7 +93,7 @@
         treemacs-directory-name-transformer      #'identity
         treemacs-display-in-side-window          t
         treemacs-eldoc-display                   'simple
-        treemacs-file-event-delay                5000
+        treemacs-file-event-delay                3000
         treemacs-file-extension-regex            treemacs-last-period-regex-value
         treemacs-file-follow-delay               0.1
         treemacs-file-name-transformer           #'identity
@@ -128,14 +128,14 @@
         treemacs-select-when-already-in-treemacs 'move-back
         treemacs-space-between-root-nodes        nil
         treemacs-tag-follow-cleanup              t
-        treemacs-tag-follow-delay                1.5
-        treemacs-text-scale                      0.8
+        treemacs-tag-follow-delay                1
+        treemacs-text-scale                      0.5
         treemacs-user-mode-line-format           nil
         treemacs-user-header-line-format         nil
-        treemacs-wide-toggle-width               70
-        treemacs-width                           30
+        treemacs-wide-toggle-width               80
+        treemacs-width                           21
         treemacs-width-increment                 1
-        treemacs-width-is-initially-locked       t
+        treemacs-width-is-initially-locked       nil
         treemacs-workspace-switch-cleanup        nil)
 
     ;;(treemacs-resize-icons 44)
@@ -156,15 +156,6 @@
 
 ;;;; Иконки
 
-(use-package treemacs-icons-dired
-  :ensure t
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :init
-  (add-hook 'after-load-theme-hook
-          (lambda ()
-            (treemacs-icons-dired-mode -1)
-            (sleep-for 0 100)
-            (treemacs-icons-dired-mode 1))))
 
 ;;;; Дерево для проектов
 

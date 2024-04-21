@@ -56,19 +56,20 @@
 ;; Минибуфер - модлайн
 
 (use-package taoline
-    :if window-system
-    :init (установить-из :repo "11111000000/taoline")
-    :config
-    (taoline-mode 1))
+  :if window-system
+  :init (установить-из :repo "11111000000/taoline")
+  :config
+  (taoline-mode 1))
 
 ;;;; Иконки
+;;;;; Комплект All The Icons
 
 (use-package all-the-icons
-    :if window-system
-    :custom
-    (all-the-icons-scale-factor 1)
-    (all-the-icons-default-adjust 0)
-    :ensure t)
+  :if window-system
+  :custom
+  (all-the-icons-scale-factor 1)
+  (all-the-icons-default-adjust 0)
+  :ensure t)
 
 ;; (use-package mode-icons
 ;;   :ensure t
@@ -84,6 +85,8 @@
 ;;   (add-to-list 'mode-icons  '(".*Less.*" #xf1c9 FontAwesome))
 ;;   (mode-icons-mode t))
 
+;;;;; Иконки для автодополнения
+
 (use-package all-the-icons-completion
   :ensure
   :after (marginalia all-the-icons)
@@ -98,7 +101,20 @@
   :config
   (unless (display-graphic-p) (nerd-icons-completion-mode)))
 
-;;;;; Хук, срабатывающий после установки темы:
+;;;;; Иконки Treemacs для Dired
+
+(use-package treemacs-icons-dired
+  :ensure t
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :init
+  (add-hook 'after-load-theme-hook
+           (lambda ()
+             (treemacs-icons-dired-mode -1)
+             (sleep-for 0 100)
+             (treemacs-icons-dired-mode 1))))
+
+
+;;;; Хук при установке темы:
 
 (defvar after-load-theme-hook nil
   "Хук, срабатывающий после установки темы `load-theme'.")
@@ -148,11 +164,26 @@
 ;; Настройки прокрутки
 
 (setq-default scroll-conservatively 101
-           scroll-step 0
-           scroll-margin 5
-           hscroll-step 0
-           auto-window-vscroll nil
-           hscroll-margin 1)
+         scroll-step 0
+         scroll-margin 5
+         hscroll-step 0
+         auto-window-vscroll nil
+         fast-but-imprecise-scrolling t
+         jit-lock-defer-time 0
+         hscroll-margin 1)
+
+;;;; Быстрая прокрутка
+
+;; (require 'flycheck)
+
+;; (use-package fast-scroll
+;;   :defer 1
+;;   :hook
+;;   (fast-scroll-start . (lambda () (flycheck-mode -1)))
+;;   (fast-scroll-end . (lambda () (flycheck-mode 1)))
+;;   :config
+;;   (fast-scroll-config)
+;;   (fast-scroll-mode 1))
 
 ;; Плавная прокрутка
 
@@ -171,14 +202,14 @@
 ;;;; Мини-карта
 
 (use-package minimap
-    :ensure t
-    :config
-    (custom-set-faces
-     '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
-    :custom
-    (minimap-minimum-width 14)
-    (minimap-window-location 'right)
-    (minimap-width-fraction 0.08))
+  :ensure t
+  :config
+  (custom-set-faces
+   '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
+  :custom
+  (minimap-minimum-width 14)
+  (minimap-window-location 'right)
+  (minimap-width-fraction 0.08))
 
 ;;;; Сокращение диалогов до y/n
 
@@ -242,6 +273,10 @@
 ;;   (set-face-foreground face (face-attribute 'default :background)))
 ;; (set-face-background 'fringe (face-attribute 'default :background))
 
+
+;;;; Подтверждение выключения процессов
+
+(setq-default confirm-kill-processes nil)
 
 (provide 'внешний-вид)
 ;;; внешний-вид.el ends here

@@ -4,17 +4,17 @@
 
 ;;;; Поиск по файлу
 
-;; (use-package
-;;   ctrlf
-;;   :defines (ctrlf-minibuffer-bindings ctrlf-default-search-style ctrlf-alternate-search-style)
-;;   :functions (ctrlf-mode)
-;;   :config
-;;   (add-to-list
-;;    'ctrlf-minibuffer-bindings '("C-r" . ctrlf-backward-default))
-;;   (setq ctrlf-default-search-style 'fuzzy-regexp)
-;;   (setq ctrlf-alternate-search-style 'literal)
-;;                                         ;(setq ctrlf-default-search-style 'literal)
-;;   (ctrlf-mode t))
+(use-package ctrlf
+  :ensure t
+  :defines (ctrlf-minibuffer-bindings ctrlf-default-search-style ctrlf-alternate-search-style)
+  :functions (ctrlf-mode)
+  :config
+  (add-to-list
+   'ctrlf-minibuffer-bindings '("C-r" . ctrlf-backward-default))
+  (setq ctrlf-default-search-style 'fuzzy-regexp)
+  (setq ctrlf-alternate-search-style 'literal)
+                                        ;(setq ctrlf-default-search-style 'literal)
+  (ctrlf-mode t))
 
 ;;;; Вертикальные списки
 
@@ -81,13 +81,13 @@
   (([remap bookmark-jump] . consult-bookmark)
    ([remap goto-line] . consult-goto-line)
    ([remap imenu] . consult-imenu)
-   ([remap isearch-forward] . consult-line)
+                                        ;([remap isearch-forward] . consult-line)
    ([remap project-switch-to-buffer] . consult-project-buffer)
    ([remap repeat-complex-command] . consult-complex-command)
    ([remap switch-to-buffer] . consult-buffer)
    ([remap yank-pop] . consult-yank-pop)
-   ("C-S-r" . isearch-backward-regexp)
-   ("C-S-s" . isearch-forward-regexp)
+                                        ;("C-S-r" . isearch-backward-regexp)
+                                        ;("C-S-s" . isearch-forward-regexp)
    :map consult-narrow-map
    ("C-h" . consult-narrow-help)
    :map goto-map

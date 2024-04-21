@@ -18,20 +18,27 @@
 		  (make-llm-ollama
 		   :chat-model "codellama" :embedding-model "codellama")))
 
+
+(require 'установить-из)
+
 (defun запустить-codeium()
   "Enable codeium."
   (interactive)
   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
-(use-package codeium
-  :disabled t
-  :ensure t
-  :config
-  (setq codeium/metadata/api_key
-      (replace-regexp-in-string "\n\\'" ""
-                      (shell-command-to-string "pass show services/codeium/iocanel/api-key-emacs")))
+(require 'cape)
 
-  (setq use-dialog-box nil) ;; do not use popup boxes
+(use-package codeium
+  :init (установить-из :repo "Exafunction/codeium.el")
+  :bind ("C-c <TAB>" . дополнить-codeium)
+  :config
+
+  (defalias 'дополнить-codeium
+    (cape-capf-interactive #'codeium-completion-at-point))
+  
+  (setq codeium/metadata/api_key "1d48df4f-af97-4042-b5ab-cc8c4fac6d3c")
+  
+  (setq use-dialog-box nil)
   
   ;; используйте M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
   (setq codeium-api-enabled
@@ -57,6 +64,21 @@
 ;;   (установить-из :repo "Exafunction/codeium-diagnose.el")
 ;;   :config
 ;;   (setq use-dialog-box nil)
+
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :ensure t
+;;   :custom ((copilot-node-executable "/usr/bin/node" "Set node executable.")
+;;           (copilot-indent-warning-suppress t))
+;;   :hook (prog-mode . copilot-mode)
+;;   :config  
+;;   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+;;   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+;;   ;; custom completion
+;;   (with-eval-after-load 'copilot
+;; 	(define-key copilot-mode-map (kbd "<tab>") #'gf3/copilot-tab)))
+
 
 
 (provide 'искусственный-интеллект)

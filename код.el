@@ -2,52 +2,97 @@
 ;;; Commentary:
 ;;; Code:
 
-
 (require 'загрузить)
 (require 'use-package)
 
-;;;; Поддержка режимов
+;;;; Дерево синтаксиса
+
+;; Генератор инкрементальных парсеров tree sitter
+
+(use-package treesit
+  :when (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
+  :custom (major-mode-remap-alist
+          '((c-mode          . c-ts-mode)
+            (c++-mode        . c++-ts-mode)
+            (cmake-mode      . cmake-ts-mode)
+            (conf-toml-mode  . toml-ts-mode)
+            (css-mode        . css-ts-mode)
+            (js-mode         . js-ts-mode)
+            (js-json-mode    . json-ts-mode)
+            (python-mode     . python-ts-mode)
+            (sh-mode         . bash-ts-mode)
+            (typescript-mode . typescript-ts-mode)))
+  :config
+  ;; (setq treesit-language-source-alist
+  ;;     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+  ;;       (cmake "https://github.com/uyha/tree-sitter-cmake")
+  ;;       (css "https://github.com/tree-sitter/tree-sitter-css")
+  ;;       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+  ;;       (go "https://github.com/tree-sitter/tree-sitter-go")
+  ;;       (html "https://github.com/tree-sitter/tree-sitter-html")
+  ;;       (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+  ;;       (json "https://github.com/tree-sitter/tree-sitter-json")
+  ;;       (make "https://github.com/alemuller/tree-sitter-make")
+  ;;       (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+  ;;       (python "https://github.com/tree-sitter/tree-sitter-python")
+  ;;       (toml "https://github.com/tree-sitter/tree-sitter-toml")
+  ;;       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+  ;;       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+  ;;       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  )
+
+;;;; Автоматическая подгрузка синтасиса для открытого файла
 
 (use-package treesit-auto
   :ensure t
   :functions (treesit-auto-add-to-auto-mode-alist global-treesit-auto-mode)
   :custom
-  (treesit-auto-install 'prompt)
+  (treesit-auto-install 'prompt) ; Спрашивать при установке
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
+;; (use-package tree-sitter-langs
+;;   :ensure t
+;;   :after tree-sitter)
+
+
 ;;;; Языковой сервер
 
-;; Eglot теперь встроен в EMACS
+;; Языковой сервер Eglot теперь встроен в EMACS
 
 (require 'jsonrpc)
 
 (use-package eglot
   :hook ((go-mode . eglot-ensure)
-       (haskell-mode . eglot-ensure)
-       (typescript-mode . eglot-ensure)
-       (rust-mode . eglot-ensure)
-       (typescript-ts-mode . eglot-ensure)
-       (haskell-mode . eglot-ensure)
-       (js-mode . eglot-ensure)
-       (js-ts-mode . eglot-ensure)
-       (json-mode . eglot-ensure)
-       (rust-mode . eglot-ensure))
+         (haskell-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure)
+         (rust-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (haskell-mode . eglot-ensure)
+         (js-mode . eglot-ensure)
+         (js-ts-mode . eglot-ensure)
+         (json-mode . eglot-ensure)
+         (rust-mode . eglot-ensure))
   :functions (eglot-rename eglot-code-actions)
   :bind (:map eglot-mode-map
-                ("C-c r" . eglot-rename)
-                ("C-<down-mouse-1>" . xref-find-definitions)
-                ("C-S-<down-mouse-1>" . xref-find-references)
-                ("C-c C-c" . eglot-code-actions))
+              ("C-c r" . eglot-rename)
+              ("C-<down-mouse-1>" . xref-find-definitions)
+              ("C-S-<down-mouse-1>" . xref-find-references)
+              ("C-c C-c" . eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
-  (eglot-sync-connect 0)
-  (eglot-events-buffer-size 0)
+  (eglot-sync-connect 3)
+  (eglot-events-buffer-size '(:size 2000 :format full))
+  (eglot-send-changes-idle-time 0)
   :config
+  
   ;; Выключим лог, что увеличивает производительность
-  (fset #'jsonrpc--log-event #'ignore)
-  (add-hook 'focus-out-hook 'garbage-collect)
+  
+  (fset #'jsonrpc--log-event #'always)
+
+  ;; (add-hook 'focus-out-hook 'garbage-collect)
   )
 
 ;; (use-package sideline
@@ -78,7 +123,6 @@
 ;;;; Оверлеи покрытия
 
 (use-package coverlay :ensure t)
-
 
 ;;;; Скобки
 
@@ -177,13 +221,13 @@ ARG - backward"
   :if  window-system
   :ensure t
   :hook ((js-mode . color-identifiers-mode)
-       (typescript-ts-mode . color-identifiers-mode))
+         (typescript-ts-mode . color-identifiers-mode))
   :custom ((color-identifiers-coloring-method
-           'hash)
-          (color-identifiers:num-colors 32)
-          (color-identifiers:color-luminance 0.3)
-          (color-identifiers:min-color-saturation 0.2)
-          (color-identifiers:max-color-saturation 0.7)))
+            'hash)
+           (color-identifiers:num-colors 16)
+           (color-identifiers:color-luminance 0.3)
+           (color-identifiers:min-color-saturation 0.2)
+           (color-identifiers:max-color-saturation 0.7)))
 
 ;; Альтернативный алгоритм подсветки идентификаторов
 
@@ -222,12 +266,18 @@ ARG - backward"
 
 (use-package flymake
   :ensure t
-  :custom ((flymake-no-changes-timeout 0.1))
+  :custom ((flymake-no-changes-timeout 0.01))
   :hook ((emacs-lisp-mode) . flymake-mode)
   :bind (:map flymake-mode-map
-                ("M-]" . flymake-goto-next-error)
-                ("M-[" . flymake-goto-prev-error)
-                ("M-\\" . flymake-show-buffer-diagnostics)))
+              ("M-]" . flymake-goto-next-error)
+              ("M-[" . flymake-goto-prev-error)
+              ("M-\\" . flymake-show-buffer-diagnostics)))
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/quick-lint-js")
+
+(require 'eglot-quicklintjs)
+
+(use-package eglot-quicklintjs)
 
 ;; (use-package flycheck
 ;;   :bind (:map flycheck-mode-map
@@ -296,57 +346,6 @@ ARG - backward"
 (use-package yasnippet-snippets
   :ensure t
   :init)
-
-;;;; Дерево синтаксиса
-
-;; Генератор инкрементальных парсеров
-(use-package treesit
-  :when (and (fboundp 'treesit-available-p)
-           (treesit-available-p))
-  :custom (major-mode-remap-alist
-          '((c-mode          . c-ts-mode)
-            (c++-mode        . c++-ts-mode)
-            (cmake-mode      . cmake-ts-mode)
-            (conf-toml-mode  . toml-ts-mode)
-            (css-mode        . css-ts-mode)
-            (js-mode         . js-ts-mode)
-            (js-json-mode    . json-ts-mode)
-            (python-mode     . python-ts-mode)
-            (sh-mode         . bash-ts-mode)
-            (typescript-mode . typescript-ts-mode)))
-  :config
-  ;; (setq treesit-language-source-alist
-  ;;     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-  ;;       (cmake "https://github.com/uyha/tree-sitter-cmake")
-  ;;       (css "https://github.com/tree-sitter/tree-sitter-css")
-  ;;       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-  ;;       (go "https://github.com/tree-sitter/tree-sitter-go")
-  ;;       (html "https://github.com/tree-sitter/tree-sitter-html")
-  ;;       (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-  ;;       (json "https://github.com/tree-sitter/tree-sitter-json")
-  ;;       (make "https://github.com/alemuller/tree-sitter-make")
-  ;;       (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-  ;;       (python "https://github.com/tree-sitter/tree-sitter-python")
-  ;;       (toml "https://github.com/tree-sitter/tree-sitter-toml")
-  ;;       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-  ;;       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-  ;;       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-  )
-
-;; (use-package treesit-auto
-;;   :after (treesit)
-;;   :ensure t
-;;   :config
-;;   (require 'treesit)
-;;   (global-treesit-auto-mode))
-
-;; (use-package tree-sitter
-;;   :config (global-tree-sitter-mode)
-;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-
-;; (use-package tree-sitter-langs
-;;   :ensure t
-;;   :after tree-sitter)
 
 ;;;; Дебаггер
 

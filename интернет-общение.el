@@ -14,7 +14,9 @@
           (telega-emoji-font-family "Noto Color Emoji"))
   :hook ((telega-root-mode . telega-notifications-mode)
        (telega-load-hook . global-telega-url-shorten-mode)
-       (telega-root-mode . hl-line-mode))
+       (telega-root-mode . hl-line-mode)
+       (telega-chat-mode . variable-pitch-mode)
+       )
   :config)
 
 (provide 'интернет-общение)

@@ -19,10 +19,27 @@
 
   :init
   (add-hook 'eshell-mode-hook (lambda ()
-                                (progn
-                                  (define-key eshell-mode-map "\C-a" 'eshell-bol)
-                                  (define-key eshell-mode-map [up] 'previous-line)
-                                  (define-key eshell-mode-map [down] 'next-line)))))
+                               (progn
+                                 (define-key eshell-mode-map "\C-a" 'eshell-bol)
+                                 (define-key eshell-mode-map [up] 'previous-line)
+                                 (define-key eshell-mode-map [down] 'next-line)))))
+
+;; Подсветка синтаксиса в Eshell
+
+(use-package eshell-syntax-highlighting
+  :init (установить-из :repo "akreisher/eshell-syntax-highlighting")
+  :functions (eshell-syntax-highlighting-global-mode)
+  :config
+  (eshell-syntax-highlighting-global-mode 1))
+
+;; Предпросмотр а-ля в Plan9
+
+;; (use-package em-smart
+;;   :ensure t
+;;   :custom
+;;   (eshell-where-to-jump 'begin)
+;;   (eshell-review-quick-commands nil)
+;;   (eshell-smart-space-goes-to-end t))
 
 ;; Сокращалка путей
 

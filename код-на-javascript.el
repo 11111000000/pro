@@ -18,9 +18,14 @@
 
 (use-package add-node-modules-path :ensure t)
 
-;;;; Поддержка версий ноды
+;;;; Поддержка разных версий ноды
 
-(use-package nvm :ensure t)
+(use-package nvm
+  :ensure t
+  :functions (nvm-use)
+  :init
+  (nvm-use "16")
+  )
 
 ;;;; Документация в комментариях
 

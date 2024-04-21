@@ -10,14 +10,14 @@
 
 (defvar saved/gc-cons-threshold 100000000)
 (setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6)
+     gc-cons-percentage 0.6)
 
 ;; ...и включим её обратно, когда загрузимся
 
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold saved/gc-cons-threshold
-                  gc-cons-percentage 0.1)))
+;; (add-hook 'emacs-startup-hook
+;;           (lambda ()
+;;             (setq gc-cons-threshold saved/gc-cons-threshold
+;;                   gc-cons-percentage 0.1)))
 
 ;;;; Оптимизируем использование памяти в минибуфере
 
@@ -34,9 +34,9 @@
 (add-hook 'minibuffer-setup-hook #'задержать-сборку-мусора)
 (add-hook 'minibuffer-exit-hook #'восстановить-сборку-мусора)
 
-;;;; Показывать сообщение о сборке мусора
+;;;; Показывать ли сообщение о сборке мусора
 
-;; (setq garbage-collection-messages t)
+(setq garbage-collection-messages nil)
 
 ;;;; Временно выключим специальную обработку файлов
 

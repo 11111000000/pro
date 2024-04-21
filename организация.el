@@ -9,11 +9,11 @@
   :ensure nil
   :bind (
          :map org-mode-map
-                ("C-c o" . org-agenda-open-link)
-                ("C-c C-p" . nil))
+         ("C-c o" . org-agenda-open-link)
+         ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-           (org-todo-keywords '((sequence "СДЕЛАТЬ" "ДЕЛАЮ" "ВОПРОС" "ГОТОВО"))))
+          (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
   :config
   (require 'org-compat)
   :init)

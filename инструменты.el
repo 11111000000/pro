@@ -48,10 +48,10 @@
 
 ;;; Мониторинг нагрузки
 
-(use-package explain-pause-mode
-  :init (установить-из :repo "lastquestion/explain-pause-mode")
-  :config
-  (explain-pause-mode))
+;; (use-package explain-pause-mode
+;;   :init (установить-из :repo "lastquestion/explain-pause-mode")
+;;   :config
+;;   (explain-pause-mode -1))
 
 ;;; Меню действий
 

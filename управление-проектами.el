@@ -48,10 +48,42 @@
   (add-hook 'magit-process-find-password-functions
            'magit-process-password-auth-source))
 
+;; Улучшенная раскраска git diff
+
+(use-package magit-delta
+  :ensure t
+  :after magit
+  :commands magit-delta-mode
+  :hook (magit-mode . magit-delta-mode))
+
+;; Показываем незакоммиченные участки слева
+
+(use-package diff-hl
+  :ensure t
+  :functions (global-diff-hl-mode)
+  :hook
+  ;; (dired-mode . diff-hl-dired-mode-unless-remote)
+  :custom
+  (diff-hl-side 'right)
+  :config
+  (global-diff-hl-mode -1)
+  )
+
 ;;;; Машина времени для GIT
 
 (use-package git-timemachine
   :ensure t)
+
+;;;; Управление Github и Gitlab
+
+(use-package forge
+  :ensure t
+  :after magit
+  :config
+  (transient-append-suffix 'forge-dispatch '(0)
+	["Edit"
+	 ("e a" "assignees" forge-edit-topic-assignees)
+	 ("e r" "review requests" forge-edit-topic-review-requests)]))
 
 ;;;; Автоматизация проекта
 
