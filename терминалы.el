@@ -85,6 +85,8 @@
 
 (use-package vterm
   :ensure t
+  :functions (vterm-send-next-key vterm-yank)
+  :defines (vterm-mode-map)
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t)
@@ -96,18 +98,17 @@
                 ("s-v" . #'vterm-yank))
   :config
   
-  (custom-set-faces'
-   '(vterm-color-default ((t (:foreground "#ff0000" :background "#00ff00"))))
-   '(vterm-color-black ((t (:foreground "#3F3F3F" :background "#2B2B2B"))))
-   '(vterm-color-red ((t (:foreground "#AC7373" :background "#8C5353"))))
-   '(vterm-color-green ((t (:foreground "#7F9F7F" :background "#9FC59F"))))
-   '(vterm-color-yellow ((t (:foreground "#DFAF8F" :background "#9FC59F"))))
-   '(vterm-color-blue ((t (:foreground "#7CB8BB" :background "#4C7073"))))
-   '(vterm-color-magenta ((t (:foreground "#DC8CC3" :background "#CC9393"))))
-   '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
-   '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
-  
-  (defface terminal-face
+  ;; (custom-set-faces'   
+  ;;  '(vterm-color-black ((t (:foreground "#3F3F3F" :background "#2B2B2B"))))
+  ;;  '(vterm-color-red ((t (:foreground "#AC7373" :background "#8C5353"))))
+  ;;  '(vterm-color-green ((t (:foreground "#7F9F7F" :background "#9FC59F"))))
+  ;;  '(vterm-color-yellow ((t (:foreground "#DFAF8F" :background "#9FC59F"))))
+  ;;  '(vterm-color-blue ((t (:foreground "#7CB8BB" :background "#4C7073"))))
+  ;;  '(vterm-color-magenta ((t (:foreground "#DC8CC3" :background "#CC9393"))))
+  ;;  '(vterm-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
+  ;;  '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
+
+  (defface terminal-face 
     '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
       (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
     "Terminal face")
@@ -129,6 +130,7 @@
                      (lambda (str) (vterm-send-string str t))))
             (apply orig-fun args)))
       (apply orig-fun args)))
+  
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
   :hook
   (vterm-mode . turn-off-chrome)

@@ -7,7 +7,6 @@
 ;;; Code:
 ;;;; Инициализация Corfu
 
-
 (use-package corfu
   :ensure t
   :defines (corfu-map)
@@ -61,32 +60,13 @@
 ;;;; Расширения для автодополнения
 
 (use-package cape
-    :ensure t
-    :init)
+  :ensure t
+  :init)
 
 ;;;; Автодополнение для терминала
 
 (use-package corfu-terminal
-    :ensure t)
-
-;;;; Иконки для автодополнения
-
-(use-package kind-icon
-    :ensure t
-    :after corfu
-    :custom
-    (kind-icon-use-icons t)
-    (kind-icon-default-face 'corfu-default)
-    ;; (kind-icon-blend-background nil)
-    ;; (kind-icon-blend-frac 0.08)
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-    (add-hook 'kb/themes-hooks #'(lambda ()
-                                    (interactive)
-                                    (kind-icon-reset-cache))))
-
-;; (defun sorting (list)
-;;       (interactive))
+  :ensure t)
 
 
 

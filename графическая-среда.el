@@ -1,6 +1,6 @@
 ;;; графическая-среда.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
 ;;; Commentary:
-;; Emacs X Window Manager - полноценный тайловый оконный менеджер
+;; EXWM - Emacs X Window Manager, тайловый оконный менеджер
 ;;; Code:
 ;;;; Xelb
 
@@ -94,8 +94,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
    ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0))))
 
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
-                                   ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-                                    height 175 x 30 y 30 managed t)))
+                                    ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+                                     height 175 x 30 y 30 managed t)))
   
   ;;:hook ((after-init . exwm-enable))
   
@@ -106,7 +106,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (exwm-enable t)
   ;;(exwm-init)
 
-  ;; Запуск программ в трее
+  ;; Запуск различных программ в трее
+  ;; TODO: Вынести в отдельный файл?
 
   (require 'exwm-systemtray)
 

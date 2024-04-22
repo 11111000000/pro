@@ -62,7 +62,7 @@
   (taoline-mode 1))
 
 ;;;; Иконки
-;;;;; Комплект All The Icons
+;;;;; All The Icons
 
 (use-package all-the-icons
   :if window-system
@@ -70,6 +70,9 @@
   (all-the-icons-scale-factor 1)
   (all-the-icons-default-adjust 0)
   :ensure t)
+
+;;;;; Иконки для режимов
+;; TODO: Настроить с taoline
 
 ;; (use-package mode-icons
 ;;   :ensure t
@@ -87,6 +90,22 @@
 
 ;;;;; Иконки для автодополнения
 
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :defines (corfu-margin-formatters)
+  :functions (kind-icon-margin-formatter kind-icon-reset-cache)
+  :custom
+  (kind-icon-use-icons t)
+  (kind-icon-default-face 'corfu-default)
+  ;; (kind-icon-blend-background nil)
+  ;; (kind-icon-blend-frac 0.08)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+  (add-hook 'kb/themes-hooks #'(lambda ()
+                                (interactive)
+                                (kind-icon-reset-cache))))
+
 (use-package all-the-icons-completion
   :ensure
   :after (marginalia all-the-icons)
@@ -100,6 +119,10 @@
   :functions (nerd-icons-completion-mode)
   :config
   (unless (display-graphic-p) (nerd-icons-completion-mode)))
+
+
+
+
 
 ;;;;; Иконки Treemacs для Dired
 

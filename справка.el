@@ -69,8 +69,8 @@
   :custom ((eldoc-idle-delay 0.1)
           (eldoc-box-offset '(-50 50 -50)))
   :hook (
-       ;; (emacs-lisp-mode . eldoc-box-hover-mode)
-       ;; (prog-mode . eldoc-box-hover-mode)
+       (emacs-lisp-mode . eldoc-box-hover-mode)
+       (prog-mode . eldoc-box-hover-mode)
        (eglot-managed-mode-hook . eldoc-box-hover-mode)
        (eldoc-box-frame-hook . (lambda ()
                                  (toggle-truncate-lines t)

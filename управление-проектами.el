@@ -5,13 +5,13 @@
 
 (use-package projectile
   :ensure t
+  :defines (projectile-command-map)
   :custom ((projectile-sort-order 'recently-active)
-           ;(projectile-project-search-path '("~/Проекты/"))
-           (projectile-switch-project-action #'projectile-dired))
+                                        ;(projectile-project-search-path '("~/Проекты/"))
+          (projectile-switch-project-action #'projectile-dired))
   :bind (:map projectile-command-map
-              ("ss" . consult-ag))
+                ("ss" . consult-ag))
   :config
-  ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
   (projectile-mode t))
@@ -22,12 +22,12 @@
   :ensure t
   :after (projectile org)
   :bind (:map projectile-mode-map
-         ("C-c pt" . org-projectile-project-todo-completing-read)
-         ("C-c c" . org-projectile-capture-for-current-project))
+                ("C-c pt" . org-projectile-project-todo-completing-read)
+                ("C-c c" . org-projectile-capture-for-current-project))
   :config
-
+  
   (setq org-projectile-per-project-filepath "TODO.org")
-  ;(setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+                                        ;(setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
 
   ;; (progn
   ;;   (setq org-projectile-projects-file
@@ -41,7 +41,6 @@
 
 (use-package magit
   :ensure t
-
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
           (magit-after-save-refresh-buffers t))
   :init
@@ -61,13 +60,12 @@
 (use-package diff-hl
   :ensure t
   :functions (global-diff-hl-mode)
-  :hook
+  ;;:hook
   ;; (dired-mode . diff-hl-dired-mode-unless-remote)
   :custom
   (diff-hl-side 'right)
   :config
-  (global-diff-hl-mode -1)
-  )
+  (global-diff-hl-mode -1))
 
 ;;;; Машина времени для GIT
 

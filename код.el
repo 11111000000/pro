@@ -5,7 +5,7 @@
 (require 'загрузить)
 (require 'use-package)
 
-;;;; Дерево синтаксиса
+;;;; Синтаксис
 
 ;; Генератор инкрементальных парсеров tree sitter
 
@@ -42,7 +42,7 @@
   ;;       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
   )
 
-;;;; Автоматическая подгрузка синтасиса для открытого файла
+;;;; Cинтаксис для открытого файла
 
 (use-package treesit-auto
   :ensure t
