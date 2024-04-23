@@ -13,7 +13,7 @@
          ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-          (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
+          (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛЕГИРОВАЛ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
   :config
   (require 'org-compat)
   :init)

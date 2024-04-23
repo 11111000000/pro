@@ -88,14 +88,15 @@
   :functions (vterm-send-next-key vterm-yank)
   :defines (vterm-mode-map)
   :custom ((vterm-shell  "bash")
-          (vterm-kill-buffer-on-exit t)
-          (vterm-disable-bold-font t)
-          (vterm-term-environment-variable "xterm-256color" ))
+           (vterm-kill-buffer-on-exit t)
+           (vterm-disable-bold-font t)
+           ;;(vterm-term-environment-variable "xterm-256color" )
+	       )
   :bind (:map vterm-mode-map
-                ("M-v" . scroll-up-command) ;; TODO
-                ("C-\\" . #'toggle-input-method)
-                ("C-q" . #'vterm-send-next-key)
-                ("s-v" . #'vterm-yank))
+              ("M-v" . scroll-up-command) ;; TODO
+              ("C-\\" . #'toggle-input-method)
+              ("C-q" . #'vterm-send-next-key)
+              ("s-v" . #'vterm-yank))
   :config
   
   ;; (custom-set-faces'   
@@ -109,8 +110,8 @@
   ;;  '(vterm-color-white ((t (:foreground "#DCDCCC" :background "#656555")))))
 
   (defface terminal-face 
-    '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
-      (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
+    '((((background light)) (:background "#220000" :family "Terminus (TTF)" :height 1.1))
+      (((background dark)) (:background "#220000" :family "Terminus (TTF)"  :height 1.1)))
     "Terminal face")
 
   (defun turn-off-chrome ()
@@ -120,12 +121,12 @@
   (defun set-vterm-font ()
     (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
     (buffer-face-mode t)
-    (face-remap-add-relative 'default '(:foreground "#dddddd" :background "#000")))
+    (face-remap-add-relative 'default '(:foreground "#ffffff" :background "#000000")))
 
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
     (if (equal major-mode 'vterm-mode)
         (let ((inhibit-read-only t)
-             (yank-undo-function (lambda (_start _end) (vterm-undo))))
+              (yank-undo-function (lambda (_start _end) (vterm-undo))))
           (cl-letf (((symbol-function 'insert-for-yank)
                      (lambda (str) (vterm-send-string str t))))
             (apply orig-fun args)))
@@ -148,23 +149,25 @@
   :ensure t
   :config)
 
+(require 'projectile)
+
 (defun открыть-терминал-проекта ()
   "Открыть терминал проекта или директории."
   (interactive)
   (if (eq major-mode 'vterm-mode)
       (delete-window)
-      (let ((окно-терминала (cl-find-if
-                            (lambda (window)
-                              (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
-                            (window-list))))
-        (if окно-терминала
-            (select-window окно-терминала)
-          (if (projectile-project-p)
-              (progn
-                (split-window-below)
-                (windmove-down)
-                (projectile-run-vterm))
-            (vterm-toggle))))))
+    (let ((окно-терминала (cl-find-if
+                           (lambda (window)
+                             (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
+                           (window-list))))
+      (if окно-терминала
+          (select-window окно-терминала)
+        (if (projectile-project-p)
+            (progn
+              (split-window-below)
+              (windmove-down)
+              (projectile-run-vterm))
+          (vterm-toggle))))))
 
 (provide 'терминалы)
 ;;; терминалы.el ends here

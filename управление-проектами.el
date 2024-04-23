@@ -74,14 +74,14 @@
 
 ;;;; Управление Github и Gitlab
 
-(use-package forge
-  :ensure t
-  :after magit
-  :config
-  (transient-append-suffix 'forge-dispatch '(0)
-	["Edit"
-	 ("e a" "assignees" forge-edit-topic-assignees)
-	 ("e r" "review requests" forge-edit-topic-review-requests)]))
+;; (use-package forge
+;;   :ensure t
+;;   :after magit
+;;   :config
+;;   (transient-append-suffix 'forge-dispatch '(0)
+;; 	["Edit"
+;; 	 ("e a" "assignees" forge-edit-topic-assignees)
+;; 	 ("e r" "review requests" forge-edit-topic-review-requests)]))
 
 ;;;; Автоматизация проекта
 

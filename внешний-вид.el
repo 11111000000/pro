@@ -122,8 +122,6 @@
 
 
 
-
-
 ;;;;; Иконки Treemacs для Dired
 
 (use-package treemacs-icons-dired
@@ -131,10 +129,10 @@
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :init
   (add-hook 'after-load-theme-hook
-           (lambda ()
-             (treemacs-icons-dired-mode -1)
-             (sleep-for 0 100)
-             (treemacs-icons-dired-mode 1))))
+            (lambda ()
+              (treemacs-icons-dired-mode -1)
+              (sleep-for 0 100)
+              (treemacs-icons-dired-mode 1))))
 
 
 ;;;; Хук при установке темы:
