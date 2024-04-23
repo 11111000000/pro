@@ -14,10 +14,10 @@
 
 ;; ...и включим её обратно, когда загрузимся
 
-;; (add-hook 'emacs-startup-hook
-;;           (lambda ()
-;;             (setq gc-cons-threshold saved/gc-cons-threshold
-;;                   gc-cons-percentage 0.1)))
+(add-hook 'emacs-startup-hook
+         (lambda ()
+           (setq gc-cons-threshold saved/gc-cons-threshold
+                gc-cons-percentage 0.1)))
 
 ;;;; Оптимизируем использование памяти в минибуфере
 

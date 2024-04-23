@@ -257,9 +257,27 @@
 
 ;;;; Vim-клавиши
 
-(setq viper-mode nil)
+(setq-default viper-mode nil)
 (require 'viper)
+
 (setq viper-inhibit-startup-message 't)
+
+;;;; Навигация и структурное редактирование
+
+;; (use-package combobulate
+;;   :init (установить-из :repo "mickeynp/combobulate")
+;;   :preface
+;;   (setq combobulate-key-prefix "M-o")
+
+;;   :hook
+;;   ((python-ts-mode . combobulate-mode)
+;;    (js-ts-mode . combobulate-mode)
+;;    (html-ts-mode . combobulate-mode)
+;;    (css-ts-mode . combobulate-mode)
+;;    (yaml-ts-mode . combobulate-mode)
+;;    (typescript-ts-mode . combobulate-mode)
+;;    (json-ts-mode . combobulate-mode)
+;;    (tsx-ts-mode . combobulate-mode)))
 
 (provide 'редактор)
 ;;; редактор.el ends here

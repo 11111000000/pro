@@ -24,6 +24,7 @@
             (sh-mode         . bash-ts-mode)
             (typescript-mode . typescript-ts-mode)))
   :config
+  (tree-sitter-require 'elisp)
   ;; (setq treesit-language-source-alist
   ;;     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
   ;;       (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -155,7 +156,6 @@ ARG - backward"
 ;; TODO: Возможно, заменить пакетом, основанным на tree-sitter ?
 
 (use-package electric-pair
-  :ensure nil
   :hook
   (after-init . electric-pair-mode)
   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))

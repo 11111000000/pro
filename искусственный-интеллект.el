@@ -30,20 +30,17 @@
 
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
-  :bind ("C-c <TAB>" . дополнить-codeium)
+  :bind ("C-c <TAB>" . дополнить-codeium) ("M-S-<iso-lefttab>" . дополнить-codeium)
   :config
-
   (defalias 'дополнить-codeium
     (cape-capf-interactive #'codeium-completion-at-point))
-  
-  (setq codeium/metadata/api_key "1d48df4f-af97-4042-b5ab-cc8c4fac6d3c")
   
   (setq use-dialog-box nil)
   
   ;; используйте M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
   (setq codeium-api-enabled
-      (lambda (api)
-        (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+       (lambda (api)
+         (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
   ;; you can also set a config for a single buffer like this:
   ;; (add-hook 'python-mode-hook
   ;;     (lambda ()
