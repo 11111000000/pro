@@ -8,7 +8,7 @@
 
 ;;;; Временно выключим сборку мусора...
 
-(defvar saved/gc-cons-threshold 100000000)
+(defvar saved/gc-cons-threshold 800000)
 (setq gc-cons-threshold most-positive-fixnum
      gc-cons-percentage 0.6)
 

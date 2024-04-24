@@ -1,4 +1,4 @@
-;;; организация.el --- Конфигурация Org-mode и Outline/Outshine
+;;; организация.el --- Конфигурация
 ;;; Commentary:
 ;;; Code:
 ;;;; Базовые настройки
@@ -38,11 +38,11 @@
 
 ;;;; Блоки кода
 
-;; Скрываем блоки кода при открытии документа
+;; Скрываем ли блоки кода при открытии документа
 
 (setq-default org-hide-block-startup nil)
 
-;; Включаем соответствующую подстветку
+;; Включаем ли соответствующую подстветку блоков кода
 
 (setq-default org-src-fontify-natively t)
 
@@ -52,9 +52,8 @@
 
 ;; Перед кодом никаких автоотступов
 
-
 (setq-default org-src-preserve-indentation t
-              org-edit-src-content-indentation 0)
+         org-edit-src-content-indentation 0)
 
 ;; Авто-обновление картинок при выполнении кода
 
@@ -139,37 +138,26 @@
 
 ;; Современный вид для заголовков и таблиц
 
+
 (use-package org-modern
-  :custom ((org-modern-star '("•" "•" "•" "•" "•"))
-          (org-modern-hide-stars " "))
   :ensure t
+  :custom ((org-modern-star '("ᨀ" "ᨁ" "ᨂ" "ᨃ" "ᨄ" "ᨅ"))
+          (org-modern-hide-stars " "))
   :hook ((org-mode . org-modern-mode))
   :init
   
   (setq
-   ;; Edit settings
+   
    org-auto-align-tags nil
    org-tags-column 0
-   org-catch-invisible-edits 'show-and-error
+   org-fold-catch-invisible-edits 'show-and-error
    org-special-ctrl-a/e t
    org-insert-heading-respect-content t
 
-   ;; Org styling, hide markup etc.
+   
    org-hide-emphasis-markers t
    org-pretty-entities t
-   org-ellipsis "…"
-
-   ;; Agenda styling
-   org-agenda-tags-column 0
-   org-agenda-block-separator ?─
-   org-agenda-time-grid
-   '((daily today require-timed)
-     (800 1000 1200 1400 1600 1800 2000)
-     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-   org-agenda-current-time-string
-   "◀── now ─────────────────────────────────────────────────")
-
-  )
+   org-ellipsis "…"))
 
 ;;;; Организация кода
 
@@ -190,7 +178,7 @@
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	        (outshine-bullets-bullet-list '("•" "•" "•" "•" "•"))))
+	      (outshine-bullets-bullet-list '("ᨀ" "ᨁ" "ᨂ" "ᨃ" "ᨄ" "ᨅ"))))
 
 ;;;; Поддержка диаграмм из блоков на UML
 
@@ -226,7 +214,7 @@
     "Execute a block of flowchartjs code with org-babel."
     (let* ((in-file (org-babel-temp-file "" ".flowchart-js"))
           (out-file (or (cdr (assq :file params))
-                        (error "flowchart-js requires a \":file\" header argument")))
+                        (error "Error: flowchart-js requires a \":file\" header argument")))
           (cmd (format "diagrams flowchart %s %s" in-file out-file))
           (verbosity (or (cdr (assq :verbosity params)) 0)))
       (with-temp-buffer

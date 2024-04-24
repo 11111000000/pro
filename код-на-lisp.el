@@ -4,7 +4,6 @@
 
 (require 'use-package)
 
-
 ;;;; Выполнить регион или буфер
 
 (defun выполнить-регион-или-буфер ()
@@ -71,7 +70,6 @@
   :ensure t
   ;; :hook
   ;; ((emacs-lisp-mode
-  ;;         .
   ;;         (lambda
   ;;           ()
   ;;           (add-hook 'before-save-hook #'elisp-format-buffer))))
@@ -144,8 +142,8 @@
 
   :config
   (eros-mode t)
-                                        ;(global-set-key [remap eval-last-sexp] (lambda () (interactive) (eros-eval-last-sexp)))
-                                        ;(global-set-key [remap eval-defun] #'eros-eval-defun)
+  ;;(global-set-key [remap eval-last-sexp] (lambda () (interactive) (eros-eval-last-sexp)))
+  ;;(global-set-key [remap eval-defun] #'eros-eval-defun)
   )
 
 (use-package elisp-docstring-mode :ensure t)

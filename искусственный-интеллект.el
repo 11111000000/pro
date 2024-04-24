@@ -37,11 +37,13 @@
   
   (setq use-dialog-box nil)
   
-  ;; используйте M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
+  ;; используй M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
+  
   (setq codeium-api-enabled
        (lambda (api)
          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-  ;; you can also set a config for a single buffer like this:
+  
+  ;; Для отдельного буфера можно настроить так:
   ;; (add-hook 'python-mode-hook
   ;;     (lambda ()
   ;;         (setq-local codeium/editor_options/tab_size 4)))

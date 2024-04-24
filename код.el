@@ -66,22 +66,24 @@
 (require 'jsonrpc)
 
 (use-package eglot
-  :hook ((go-mode . eglot-ensure)
-         (haskell-mode . eglot-ensure)
-         (typescript-mode . eglot-ensure)
-         (rust-mode . eglot-ensure)
-         (typescript-ts-mode . eglot-ensure)
-         (haskell-mode . eglot-ensure)
-         (js-mode . eglot-ensure)
-         (js-ts-mode . eglot-ensure)
-         (json-mode . eglot-ensure)
-         (rust-mode . eglot-ensure))
+  :hook (
+       ;; (go-mode . eglot-ensure)
+       ;; (haskell-mode . eglot-ensure)
+       ;; (typescript-mode . eglot-ensure)
+       ;; (rust-mode . eglot-ensure)
+       (typescript-ts-mode . eglot-ensure)
+       ;; (haskell-mode . eglot-ensure)
+       ;; (js-mode . eglot-ensure)
+       ;; (js-ts-mode . eglot-ensure)
+       ;; (json-mode . eglot-ensure)
+       ;; (rust-mode . eglot-ensure)
+       )
   :functions (eglot-rename eglot-code-actions)
   :bind (:map eglot-mode-map
-              ("C-c r" . eglot-rename)
-              ("C-<down-mouse-1>" . xref-find-definitions)
-              ("C-S-<down-mouse-1>" . xref-find-references)
-              ("C-c C-c" . eglot-code-actions))
+                ("C-c r" . eglot-rename)
+                ("C-<down-mouse-1>" . xref-find-definitions)
+                ("C-S-<down-mouse-1>" . xref-find-references)
+                ("C-c C-c" . eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect 3)
@@ -269,15 +271,9 @@ ARG - backward"
   :custom ((flymake-no-changes-timeout 0.01))
   :hook ((emacs-lisp-mode) . flymake-mode)
   :bind (:map flymake-mode-map
-              ("M-]" . flymake-goto-next-error)
-              ("M-[" . flymake-goto-prev-error)
-              ("M-\\" . flymake-show-buffer-diagnostics)))
-
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/quick-lint-js")
-
-(require 'eglot-quicklintjs)
-
-(use-package eglot-quicklintjs)
+                ("M-]" . flymake-goto-next-error)
+                ("M-[" . flymake-goto-prev-error)
+                ("M-\\" . flymake-show-buffer-diagnostics)))
 
 ;; (use-package flycheck
 ;;   :bind (:map flycheck-mode-map
