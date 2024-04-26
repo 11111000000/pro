@@ -17,7 +17,7 @@
        (set-window-margins win mg 0)
        (window-width)))
    (delete (minibuffer-window)
-           (window-list))))
+         (window-list))))
 
 ;; (defun increase-margin ()
 ;;   "increase left margin"
@@ -408,5 +408,5 @@
 ;;                `(global-unset-key ,x))
 ;;              keys)))
 
-(provide 'разные-функции)
+(provide 'про-разные-функции)
 ;;; разные-функции.el ends here

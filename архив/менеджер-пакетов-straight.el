@@ -20,5 +20,5 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 
-(provide 'менеджер-пакетов-straight)
+(provide 'про-менеджер-пакетов-straight)
 ;;; менеджер-пакетов-straight.el ends here

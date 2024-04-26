@@ -49,8 +49,6 @@
     (unless (package-installed-p pac-name)
       (package-vc-install url iname rev backend))))
 
-
-
 (provide 'установить-из)
 
 ;;; установить-из.el ends here

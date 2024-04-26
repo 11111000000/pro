@@ -1961,15 +1961,15 @@ Returns nil if it is not visible in the current calendar window."
 (setq solar-n-hemi-seasons
   '( "春分" "夏至" "秋分"  "冬至"))
 (setq solar-s-hemi-seasons
-  '("秋分" "夏至" "春分" "冬至"))
+     '("秋分" "夏至" "春分" "冬至"))
 
 ;;重新绑定一些键值
-  (define-key calendar-mode-map [prior] 'scroll-calendar-right)
+(define-key calendar-mode-map [prior] 'scroll-calendar-right)
 ;;一次只移动一个月
-  (define-key calendar-mode-map "\ev"   'scroll-calendar-right)
-  (define-key calendar-mode-map [next]  'scroll-calendar-left)
-  (define-key calendar-mode-map "\C-v"  'scroll-calendar-left)
+(define-key calendar-mode-map "\ev"   'scroll-calendar-right)
+(define-key calendar-mode-map [next]  'scroll-calendar-left)
+(define-key calendar-mode-map "\C-v"  'scroll-calendar-left)
 ;;按中国习惯，周一为每周的第一天
- (setq calendar-week-start-day 1)   
-(provide 'chinese-calendar)
+(setq calendar-week-start-day 1)   
+(provide 'китайский-календарь)
 ;;; chinese-calendar.el ends here

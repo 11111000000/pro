@@ -7,9 +7,12 @@
 Если возникнет ошибка, её текст будет отображен в сообщении.
 Вернёт FEATURE если всё ок, и nil если файла нет, или другие ошибки возникли."
   (condition-case err
-      (require feature filename)
+      (progn
+        (message "%s..." feature)
+        (require feature filename)
+        )
     (error
-     (message "Ошибка загрузки %s: \"%s\"" (if filename (format "%s (%s)" feature filename) feature)
+     (message "%s %s: \"%s\"" (propertize "Ошибка загрузки" 'face 'highlight) (if filename (format "%s (%s)" feature filename) feature)
             (error-message-string err))
      nil)))
 
@@ -20,9 +23,8 @@
   (condition-case err
       (require feature filename)
     (error
-     (message "Ошибка загрузки %s: \"%s\"" (if filename (format "%s (%s)" feature filename) feature)
-            (error-message-string err))
-     nil)))
+     (message "%s %s: \"%s\"" (propertize "Ошибка загрузки" 'face 'highlight) (if filename (format "%s (%s)" feature filename) feature)
+            nil))))
 
 
 
