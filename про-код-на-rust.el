@@ -1,4 +1,4 @@
-;;; код-на-rust.el --- RUST
+;;; про-код-на-rust.el --- RUST
 ;;; Commentary:
 ;;; Code:
 ;;;; Rust mode

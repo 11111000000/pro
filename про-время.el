@@ -1,4 +1,4 @@
-;;; время.el --- Время и календарь -*- lexical-binding: t -*-
+;;; про-время.el --- Время и календарь -*- lexical-binding: t -*-
 
 ;; Author: az
 ;; Maintainer: az

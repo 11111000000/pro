@@ -1,4 +1,4 @@
-;;; код-на-lisp.el --- LISP
+;;; про-код-на-lisp.el --- LISP
 ;;; Commentary:
 ;;; Code:
 
@@ -7,37 +7,37 @@
 ;;;; xref-find-difinition должен заходить в сжатые файлы
 
 
-(defun etags-file-or-compressed-file-for (fname)
-  "Return the valid file name for FNAME.
-Check if FNAME is an existing file name, if not
-try FNAME appended with the following compression extensions:
-- \".gz\", the extension of compressed files created by gzip
-- \".bz2\", the extension for compressed files created by bzip2
-- \".xz\", the extension for compressed files created by xz
-- \".lzma\", the extension for compressed files created by xz.
+;; (defun etags-file-or-compressed-file-for (fname)
+;;   "Return the valid file name for FNAME.
+;; Check if FNAME is an existing file name, if not
+;; try FNAME appended with the following compression extensions:
+;; - \".gz\", the extension of compressed files created by gzip
+;; - \".bz2\", the extension for compressed files created by bzip2
+;; - \".xz\", the extension for compressed files created by xz
+;; - \".lzma\", the extension for compressed files created by xz.
 
-Return the file that exists or nil if nothing found."
-  (let ((fpath nil))
-    (cl-dolist (ext '(""
-                      ".gz"
-                      ".bz2"
-                      ".xz"
-                      ".lzma"))
-      (setq fpath (concat fname ext))
-      (when (file-exists-p fpath)
-        (cl-return fpath)))))
+;; Return the file that exists or nil if nothing found."
+;;   (let ((fpath nil))
+;;     (cl-dolist (ext '(""
+;;                       ".gz"
+;;                       ".bz2"
+;;                       ".xz"
+;;                       ".lzma"))
+;;       (setq fpath (concat fname ext))
+;;       (when (file-exists-p fpath)
+;;         (cl-return fpath)))))
 
-(cl-defmethod xref-location-marker ((l xref-etags-location))
-  (with-slots (tag-info file) l
-    (let (buffer
-         (fname (pel-file-or-compressed-file-for file)))
-      (if fname
-          (setq buffer (find-file-noselect fname))
-        (user-error "file %s (or .gz, .bz2, .xz, .lzma) does not exist" file))
-      (with-current-buffer buffer
-        (save-excursion
-          (etags-goto-tag-location tag-info)
-          (point-marker))))))
+;; (cl-defmethod xref-location-marker ((l xref-etags-location))
+;;   (with-slots (tag-info file) l
+;;     (let (buffer
+;;          (fname (pel-file-or-compressed-file-for file)))
+;;       (if fname
+;;           (setq buffer (find-file-noselect fname))
+;;         (user-error "file %s (or .gz, .bz2, .xz, .lzma) does not exist" file))
+;;       (with-current-buffer buffer
+;;         (save-excursion
+;;           (etags-goto-tag-location tag-info)
+;;           (point-marker))))))
 
 ;;;; Выполнить регион или буфер
 
@@ -52,7 +52,7 @@ Return the file that exists or nil if nothing found."
 
 ;;;; Emacs Lisp
 
-(use-package emacs-lisp
+(use-package emacs
   :bind (:map emacs-lisp-mode-map
                 ("C-c C-c" . выполнить-регион-или-буфер)
                 ("C-x M-e" . eval-print-last-sexp)))

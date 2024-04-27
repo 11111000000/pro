@@ -1,4 +1,4 @@
-;;; графическая-среда.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
+;;; про-графическую-среду.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; EXWM - Emacs X Window Manager, тайловый оконный менеджер
 ;;; Code:

@@ -13,7 +13,7 @@
 | M-f               | viper-forward-word                  |
 | M-b               | viper-backward-word                 |
 | M-j               | combobulate-navigate-next           |
-| M-k               | combobulate-navigate-previous   |
+| M-k               | combobulate-navigate-previous       |
 | M-y               | whole-line-or-region-kill-ring-save |
 | C-y               | yank                                |
 | C-d C-d           | whole-line-or-region-kill-region    |
@@ -95,6 +95,7 @@
 | C-c <mouse-1>     | mc/add-cursor-on-click              |
 | <backtab>         | hs-toggle-hiding                    |
 | C-c <f2>          | eglot-reconnect                     |
+| C-c v             | gts-do-translate                    |
 
 ** Клавиши над всеми Xorg приложениями:
 

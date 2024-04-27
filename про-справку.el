@@ -1,4 +1,4 @@
-;;; справка.el --- Справка и подсказки
+;;; про-справку.el --- Справка и подсказки
 ;;; Commentary:
 ;;; Code:
 
@@ -89,10 +89,11 @@
 
 (use-package keyfreq
   :ensure t
+  :functions (keyfreq-mode keyfreq-autosave-mode)
   :config
-  (keyfreq-mode)
+  (keyfreq-mode t)
   (keyfreq-autosave-mode))
 
 
 (provide 'про-справку)
-;;; справка.el ends here
+;;; про-справку.el ends here

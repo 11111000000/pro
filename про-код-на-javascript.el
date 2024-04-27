@@ -1,4 +1,4 @@
-;;; код-на-javascript.el --- Поддержка Javascript, Typescript
+;;; про-код-на-javascript.el --- Поддержка Javascript, Typescript
 ;;; Commentary:
 ;;; Code:
 ;;;; Подхватывать настройки проверки кода Javascript

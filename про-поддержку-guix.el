@@ -1,4 +1,4 @@
-;;; поддержка-guix.el --- Поддержка Guix
+;;; про-поддержку-guix.el --- Поддержка Guix
 ;; Guix
 ;;; Commentary:
 ;;; Code:

@@ -9,12 +9,12 @@
 ;;   (fixed-pitch-mode))
 
 (use-package mixed-pitch
-    :ensure t
-    :hook
-    (org-mode . mixed-pitch-mode)
-    (help-mode . mixed-pitch-mode))
+  :ensure t
+  :hook
+  (org-mode . mixed-pitch-mode)
+  (help-mode . mixed-pitch-mode))
 
-                                        ;(setq-default default-frame-alist '((font . "Fira Code")))
+;;(setq-default default-frame-alist '((font . "Fira Code")))
 
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."

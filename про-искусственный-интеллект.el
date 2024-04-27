@@ -1,4 +1,4 @@
-;;; искусственный-интеллект.el --- Искусственный Интеллект -*- lexical-binding: t -*-
+;;; про-искусственный-интеллект.el --- Искусственный Интеллект -*- lexical-binding: t -*-
 ;; Автор: Пётр (11111000000@email.com)
 ;; Version: 1.0
 ;; Package-Requires: (dependencies)
@@ -48,15 +48,13 @@
   ;;     (lambda ()
   ;;         (setq-local codeium/editor_options/tab_size 4)))
 
-  (defun my-codeium/document/text ()
-    (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
-
-  (defun my-codeium/document/cursor_offset ()
-    (codeium-utf8-byte-length
-     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
-  
-  (setq codeium/document/text 'my-codeium/document/text)
-  (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+  (setq codeium/document/text
+       (lambda ()
+         (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max)))))
+  (setq codeium/document/cursor_offset
+       (lambda ()
+         (codeium-utf8-byte-length
+          (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))))
 
 ;; (use-package codeium-diagnose)
 ;;   :init

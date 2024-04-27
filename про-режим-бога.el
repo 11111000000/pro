@@ -1,4 +1,4 @@
-;;; режим-бога.el --- Режим бога, постоянный Контрол
+;;; про-режим-бога.el --- Режим бога, постоянный Контрол
 ;;; Commentary:
 ;;; Code:
 
@@ -15,6 +15,7 @@
 
 (use-package god-mode
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
+  :defines (god-local-mode-map)
   :ensure t
   :hook (((god-mode-disabled god-mode-enabled) . обновить-курсор)
        ;;(god-mode-enabled . restore-input-method)
@@ -69,4 +70,4 @@
   (обновить-курсор))
 
 (provide 'про-режим-бога)
-;;; режим-бога.el ends here
+;;; про-режим-бога.el ends here

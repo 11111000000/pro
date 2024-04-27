@@ -1,4 +1,4 @@
-;;; цвет.el --- EMACS и Пустота
+;;; про-цвет.el --- EMACS и Пустота
 ;;; Commentary:
 
 ;; /AST не имеет ни цвета ни вкуса ни запаха, ни - физических размера или веса, какой-либо формы - только структуру/
@@ -13,6 +13,8 @@
 (defun tao-palette ()
   "Палитра."
   (tao-theme-yang-palette))
+
+(require 'установить-из)
 
 (use-package tao-theme
   :if window-system

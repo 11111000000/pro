@@ -1,4 +1,4 @@
-;;; внешний-вид.el --- Внешний вид и Интерфейс  -*- lexical-binding: t -*-
+;;; про-внешний-вид.el --- Внешний вид и Интерфейс  -*- lexical-binding: t -*-
 ;; Внешний вид и интерфейс (разделить)
 ;;; Commentary:
 ;;; Code:
@@ -15,10 +15,10 @@
 ;; Скрыта панель инструментов и меню
 
 (when (bound-and-true-p tool-bar-mode)
-    (tool-bar-mode -1))
+  (tool-bar-mode -1))
 
 (when (bound-and-true-p menu-bar-mode)
-    (menu-bar-mode -1))
+  (menu-bar-mode -1) )
 
 ;; Скрыты полосы прокрутки
 
