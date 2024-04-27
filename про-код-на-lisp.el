@@ -4,41 +4,6 @@
 
 (require 'use-package)
 
-;;;; xref-find-difinition должен заходить в сжатые файлы
-
-
-;; (defun etags-file-or-compressed-file-for (fname)
-;;   "Return the valid file name for FNAME.
-;; Check if FNAME is an existing file name, if not
-;; try FNAME appended with the following compression extensions:
-;; - \".gz\", the extension of compressed files created by gzip
-;; - \".bz2\", the extension for compressed files created by bzip2
-;; - \".xz\", the extension for compressed files created by xz
-;; - \".lzma\", the extension for compressed files created by xz.
-
-;; Return the file that exists or nil if nothing found."
-;;   (let ((fpath nil))
-;;     (cl-dolist (ext '(""
-;;                       ".gz"
-;;                       ".bz2"
-;;                       ".xz"
-;;                       ".lzma"))
-;;       (setq fpath (concat fname ext))
-;;       (when (file-exists-p fpath)
-;;         (cl-return fpath)))))
-
-;; (cl-defmethod xref-location-marker ((l xref-etags-location))
-;;   (with-slots (tag-info file) l
-;;     (let (buffer
-;;          (fname (pel-file-or-compressed-file-for file)))
-;;       (if fname
-;;           (setq buffer (find-file-noselect fname))
-;;         (user-error "file %s (or .gz, .bz2, .xz, .lzma) does not exist" file))
-;;       (with-current-buffer buffer
-;;         (save-excursion
-;;           (etags-goto-tag-location tag-info)
-;;           (point-marker))))))
-
 ;;;; Выполнить регион или буфер
 
 (defun выполнить-регион-или-буфер ()
@@ -80,8 +45,11 @@
 ;;   :after flycheck
 ;;   :config (flycheck-elsa-setup))
 
+(require 'установить-из)
+
 (use-package flymake-elisp-config
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
+  :functions (flymake-elisp-config-global-mode flymake-elisp-config-auto-mode)
   :config
   (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
@@ -129,33 +97,13 @@
 
 (use-package geiser-guile
   :ensure t
+  :defines (geiser-guile-manual-lookup-nodes)
   :requires geiser
   :config
   ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")
   (setq geiser-guile-manual-lookup-nodes
-	  '("guile"
-        "guix")))
-
-;;;; Рефакторинг Emacs lisp
-
-;; (use-package erefactor
-;;   :ensure t
-;;   :after (flymake))
-
-;;;; Редактирование лиспа
-
-;; (use-package lispy
-;;   :ensure t
-;;   ;; :hook
-;;   ;; (emacs-lisp-mode . lispy-mode)
-;;   )
-
-;;;; Подсветка вызовов функций
-
-;; (use-package highlight-function-calls
-;;   :ensure t
-;;   :hook
-;;   (emacs-lisp-mode . highlight-function-calls-mode))
+	   '("guile"
+         "guix")))
 
 ;;;; Разворачивание макросов
 
@@ -172,7 +120,7 @@
 
 (use-package eros :ensure t
   :defines (eros-eval-last-sexp)
-
+  :functions (eros-mode)
   :config
   (eros-mode t)
   ;;(global-set-key [remap eval-last-sexp] (lambda () (interactive) (eros-eval-last-sexp)))

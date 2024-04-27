@@ -1,12 +1,4 @@
 ;;; про-время.el --- Время и календарь -*- lexical-binding: t -*-
-
-;; Author: az
-;; Maintainer: az
-;; Version: 1.0.0
-;; Package-Requires: (dependencies)
-;; Homepage: dobro.ru
-;; Keywords: dobro
-
 ;;; Commentary:
 
 ;; Время и календарь
@@ -23,4 +15,4 @@
 
 (provide 'про-время)
 
-;;; время.el ends here
+;;; про-время.el ends here

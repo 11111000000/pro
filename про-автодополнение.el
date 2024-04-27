@@ -1,7 +1,4 @@
 ;;; про-автодополнение.el --- Автодополнение строк
-;; Author: Пётр (11111000000@email.com)
-;; Version: 1.0
-;; Homepage: https://github.com/11111000000/pro
 ;;; Commentary:
 ;; Автодополнение текста на базе Corfu
 ;;; Code:

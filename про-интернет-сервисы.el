@@ -81,24 +81,15 @@
   (autoload 'w3m-browse-url "w3m" ">" t)
 
   (setq-default w3m-use-cookies t
-             browse-url-new-window-flag t
-             w3m-show-graphic-icons-in-header-line t
-             w3m-display-inline-images t
-             w3m-show-graphic-icons-in-mode-line t
-             w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533."
-             w3m-session-load-always t
-             w3m-session-autosave t
-             w3m-session-load-last-sessions t))
+           browse-url-new-window-flag t
+           w3m-show-graphic-icons-in-header-line t
+           w3m-display-inline-images t
+           w3m-show-graphic-icons-in-mode-line t
+           w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533."
+           w3m-session-load-always t
+           w3m-session-autosave t
+           w3m-session-load-last-sessions t))
 
-;;;; HTTP-запросы
-
-;; (use-package plz
-;;   :init (установить-из :repo "alphapapa/plz")
-;;   ;; :quelpa (plz :fetcher github :repo "alphapapa/plz.el")
-;;   )
-
-;; (use-package ement
-;;   :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))
 
 ;;;; Карты OSM
 
@@ -110,6 +101,7 @@
 (use-package wttrin
   :ensure t
   :defer t
+  :defines (wttrin-default-accept-language wttrin-default-cities)
   :commands (wttrin)
   :bind (("<f1> W" . wttrin))
   :init

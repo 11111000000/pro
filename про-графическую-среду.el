@@ -1,7 +1,10 @@
 ;;; про-графическую-среду.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
 ;;; Commentary:
+
 ;; EXWM - Emacs X Window Manager, тайловый оконный менеджер
+
 ;;; Code:
+
 ;;;; Xelb
 
 (use-package xelb
@@ -51,7 +54,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (use-package exwm
   :ensure t
-  :functions (exwm-input-set-key exwm-workspace-rename-buffer)
+  :functions (exwm-input-set-key exwm-workspace-rename-buffer exwm-enable exwm-systemtray-enable)
   :defines (exwm-class-name exwm-manage-configurations  exwm-title)
   :if window-system
   :custom (
@@ -129,6 +132,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
+(require 'установить-из)
+
 (use-package exim
   :init (установить-из :repo "ch11ng/exim")
   :after (exwm)
@@ -140,20 +145,16 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;;;; Редактирование любых полей ввода через EMACS
 
 (use-package exwm-edit
-    :if window-system
-    :ensure t
-    :config
-    ;; (defun ag-exwm/on-exwm-edit-compose ()
-    ;;   (spacemacs/toggle-visual-line-navigation-on)
-    ;;   (funcall 'markdown-mode))
-    ;; (add-hook 'exwm-edit-compose-hook 'ag-exwm/on-exwm-edit-compose)
-    )
+  :if window-system
+  :ensure t
+  :config)
 
 (use-package exwm-mff
-    :if window-system
-    :ensure t
-    :init
-    (exwm-mff-mode t))
+  :if window-system
+  :functions (exwm-mff-mode)
+  :ensure t
+  :init
+  (exwm-mff-mode t))
 
 ;; (use-package exwm-firefox
 ;;   :if window-system
@@ -163,8 +164,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :init
   (установить-из :repo "pestctrl/exwm-background")
   :config
-                                        ;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
+  ;;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
   )
 
 (provide 'про-графическую-среду)
-;;; графическая-среда.el ends here
+;;; про-графическую-среду.el ends here

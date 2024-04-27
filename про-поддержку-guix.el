@@ -21,4 +21,4 @@
   (add-to-list 'yas-snippet-dirs "~/System/channels/guix/etc/snippets"))
 
 (provide 'про-поддержку-guix)
-;;; поддержка-guix.el ends here
+;;; про-поддержка-guix.el ends here

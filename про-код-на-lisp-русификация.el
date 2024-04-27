@@ -10,6 +10,8 @@
   "Добавить текущий символ в перевод."
   (interactive "P"))
 
+(require 'prettify-utils)
+
 (defun русификация-emacs-lisp ()
   "Русификация Emacs LISP."
   (interactive)
@@ -128,7 +130,8 @@
                                (":requires" ":требует")
                                (":require" ":требует")
                                (":global" ":глобально")
-                               (":define" ":определяет")
+                               (":defines" ":определения")
+                               (":commands" ":комманды")
                                (":functions" ":функции")
                                ("current-time-string" "текущее-время-строкой")
                                ("set-language-environment" "установить-языковое-окружение")
@@ -226,5 +229,4 @@
     (add-hook 'emacs-lisp-mode-hook 'русификация-emacs-lisp))
 
 (provide 'про-код-на-lisp-русификация)
-;;; код-на-lisp-русификация.el ends here
-
+;;; про-код-на-lisp-русификация.el ends here

@@ -8,17 +8,18 @@
 (use-package no-littering
   :ensure t
   :custom ((make-backup-files t)
-           (delete-by-moving-to-trash t)
-           (backup-by-copying t)
-           (kept-new-versions 25)
-           (history-delete-duplicates t)
-           (history-length 300)
-           (savehist-autosave-interval 300)
-           (kept-old-versions 25)
-           (delete-old-versions t)
-           (create-lockfiles nil)
-           (vc-make-backup-files t)
-           (version-control t))
+          (delete-by-moving-to-trash t)
+          (backup-by-copying t)
+          (kept-new-versions 25)
+          (history-delete-duplicates t)
+          (history-length 300)
+          (savehist-autosave-interval 300)
+          (kept-old-versions 25)
+          (delete-old-versions t)
+          (create-lockfiles nil)
+          (vc-make-backup-files t)
+          (version-control t))
+  :functions (no-littering-expand-var-file-name no-littering-expand-etc-file-name no-littering-theme-backups)
   :config
   (savehist-mode t)
   (setq
@@ -35,6 +36,7 @@
 (use-package undo-tree
   :ensure t
   :diminish " ⸙"
+  :functions (global-undo-tree-mode)
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-history-directory-alist `((".*" . ,(expand-file-name "~/.emacs.d/undo/"))))
@@ -66,6 +68,7 @@
 
 (use-package eyebrowse
   :ensure t
+  :functions (eyebrowse-mode)
   :config (eyebrowse-mode))
 
 ;;;; Помнить места

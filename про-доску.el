@@ -51,9 +51,7 @@
                                                                :v-adjust -0.05
                                                                :face 'font-lock-keyword-face) "."))
   :init
-  ;;(dashboard-setup-startup-hook)
-  (dashboard-refresh-buffer)
-  )
+  (dashboard-refresh-buffer))
 
 (provide 'про-доску)
 ;;; доска.el ends here

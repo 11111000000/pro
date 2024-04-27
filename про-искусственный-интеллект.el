@@ -1,12 +1,9 @@
 ;;; про-искусственный-интеллект.el --- Искусственный Интеллект -*- lexical-binding: t -*-
 ;; Автор: Пётр (11111000000@email.com)
-;; Version: 1.0
-;; Package-Requires: (dependencies)
-;; Homepage: https://github.com/11111000000/pro
 ;;; Commentary:
 ;; Конфигурация нейросетевых сервисов
-
 ;;; Code:
+
 ;;;; LLAMA
 
 (use-package ellama
@@ -18,6 +15,7 @@
 		  (make-llm-ollama
 		   :chat-model "codellama" :embedding-model "codellama")))
 
+;;;; Codeium
 
 (require 'установить-из)
 
@@ -56,25 +54,6 @@
          (codeium-utf8-byte-length
           (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))))
 
-;; (use-package codeium-diagnose)
-;;   :init
-;;   (установить-из :repo "Exafunction/codeium-diagnose.el")
-;;   :config
-;;   (setq use-dialog-box nil)
-
-;; (use-package copilot
-;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-;;   :ensure t
-;;   :custom ((copilot-node-executable "/usr/bin/node" "Set node executable.")
-;;           (copilot-indent-warning-suppress t))
-;;   :hook (prog-mode . copilot-mode)
-;;   :config  
-;;   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-;;   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-
-;;   ;; custom completion
-;;   (with-eval-after-load 'copilot
-;; 	(define-key copilot-mode-map (kbd "<tab>") #'gf3/copilot-tab)))
 
 
 

@@ -3,10 +3,9 @@
 ;; Author: az
 ;; Maintainer: az
 ;; Version: 1.0
-;; Package-Requires: ()
+;; Package-Requires: (package-vc)
 ;; Homepage: homepage
 ;; Keywords: emacs
-
 
 ;; This file is not part of GNU Emacs
 

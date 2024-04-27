@@ -275,43 +275,6 @@ ARG - backward"
                 ("M-[" . flymake-goto-prev-error)
                 ("M-\\" . flymake-show-buffer-diagnostics)))
 
-;; (use-package flycheck
-;;   :bind (:map flycheck-mode-map
-;;                 ("M-]" . flycheck-next-error)
-;;                 ("M-[" . flycheck-previous-error)
-;;                 ("M-\\" . flycheck-list-errors))
-;;   :functions (global-flycheck-mode)
-;;   :init
-;;   (global-flycheck-mode t)
-;;   )
-
-;; (use-package flycheck-eglot
-;;   :ensure t
-;;   :after (flycheck eglot)
-;;   :functions (global-flycheck-eglot-mode)
-;;   :config
-;;   (global-flycheck-eglot-mode t))
-
-;;;; Сообщения статического анализатора во всплывающем окне
-
-;; (use-package emacs-flymake-popon
-;;   :init
-;;   (unless (package-installed-p 'emacs-flymake-popon)
-;;     (package-vc-install "https://codeberg.org/akib/emacs-flymake-popon.git"))
-;;   :custom ((flymake-popon-delay .8)
-;;           (flymake-popon-posframe-extra-arguments '(:poshandler posframe-poshandler-point-bottom-left-corner)))
-;;   :hook ((flymake-mode) . flymake-popon-mode))
-
-;; (use-package flymake-posframe
-;;   :load-path "emacs-lisp/flymake-posframe"
-;;   :hook (flymake-mode . flymake-posframe-mode))
-
-;; (use-package flymake-diagnostic-at-point
-;;   :ensure t
-;;   :after flymake
-;;   :config
-;;   (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
-
 ;;;; Сниппеты
 
 ;; Быстрые шаблоны - сниппеты можно создавать на лету со шпаргалкой
@@ -354,77 +317,18 @@ ARG - backward"
   :config
   (setq dape-buffer-window-arrangement 'gud)
 
-  ;; Info buffers to the right
-  ;;(setq dape-buffer-window-arrangement 'left)
-
-  ;; To not display info and/or buffers on startup
-  ;; (remove-hook 'dape-on-start-hooks 'dape-info)
-  ;; (remove-hook 'dape-on-start-hooks 'dape-repl)
-
-  ;; To display info and/or repl buffers on stopped
-  ;; (add-hook 'dape-on-stopped-hooks 'dape-info)
-  ;; (add-hook 'dape-on-stopped-hooks 'dape-repl)
-
-  ;; By default dape uses gdb keybinding prefix
   (setq dape-key-prefix "C-.")
 
-  ;; Kill compile buffer on build success
-  ;; (add-hook 'dape-compile-compile-hooks 'kill-buffer)
-
-  ;; Save buffers on startup, useful for interpreted languages
   (add-hook 'dape-on-start-hooks
            (defun dape--save-on-start ()
              (save-some-buffers t t)))
 
-
-  ;; Projectile users
   (setq dape-cwd-fn (lambda (&optional skip-tramp-trim)
-                    (let ((root (projectile-project-root)))
-                      (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
-                          (tramp-file-name-localname (tramp-dissect-file-name root))
-                        root))))
+                     (let ((root (projectile-project-root)))
+                       (if (and (not skip-tramp-trim) (tramp-tramp-file-p root))
+                           (tramp-file-name-localname (tramp-dissect-file-name root))
+                         root)))))
 
-  ;; (add-to-list 'dape-configs
-  ;;            `(vscode-ts-js-attach
-  ;;              modes (js-mode js-ts-mode typescript-mode)
-  ;;              host "localhost"
-  ;;              port 8123
-  ;;              command "node"
-  ;;              ;; command-cwd "~/source/vscode-js-debug/dist/"
-  ;;              command-cwd "~/.emacs.d/debug-adapters/js-debug"
-  ;;              command-args ("src/dapDebugServer.js")
-  ;;              :port bob/get-inspect-port
-  ;;              :sourceMaps t
-  ;;              :resolveSourceMapLocations ["**/dist/**/*"]
-  ;;              :cwd dape-cwd-fn
-  ;;              :autoAttachChildProcesses t
-  ;;              :type "pwa-node"
-  ;;              :request "attach"
-  ;;              :outputCapture "console"
-  ;;              :sourceMapRenames t
-  ;;              :autoAttachChildProcesses t
-  ;;              :console "internalConsole"
-  ;;              :killBehavior "forceful"))
-  )
-
-;; (use-package dap-mode
-;;   :ensure t
-;;   :bind (:map dap-mode-map
-;;               ("C-c bb" . dap-ui-breakpoints)
-;;               ("C-c bl" . dap-ui-locals)
-;;               ("C-c bt" . dap-breakpoint-toggle)
-;;               ("C-c bd" . dap-breakpoint-delete)
-;;               ("C-c bi" . dap-step-in)
-;;               ("C-c bo" . dap-step-out)
-;;               ("C-c bc" . dap-continue)
-;;               ("<f5>" . dap-continue)
-;;               ("<f6>" . dap-step-in)
-;;               ("<f7>" . dap-step-out))
-;;   :config
-;;   (setq dap-auto-configure-features '(locals expression breakpoints))
-;;   (загрузить 'dap-chrome)
-;;   (загрузить 'dap-firefox)
-;;   (загрузить 'dap-node))
 
 ;;;; Конструктор регулярных выражений
 
@@ -448,4 +352,4 @@ ARG - backward"
           ("C-M-<tab>" . origami-toggle-all-nodes)))
 
 (provide 'про-код)
-;;; код.el ends here
+;;; про-код.el ends here

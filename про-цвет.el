@@ -30,4 +30,4 @@
   (загрузить 'face-remap))
 
 (provide 'про-цвет)
-;;; цвет.el ends here
+;;; про-цвет.el ends here

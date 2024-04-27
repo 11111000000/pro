@@ -58,6 +58,7 @@
 (use-package
   embark
   :ensure t
+  :functions (embark-prefix-help-command)
   :bind
   (("C-." . embark-act) ;; pick some comfortable binding
    ;; ("C-;" . embark-dwim) ;; good alternative: M-.
@@ -83,4 +84,4 @@
 
 
 (provide 'про-инструменты)
-;;; инструменты.el ends here
+;;; про-инструменты.el ends here

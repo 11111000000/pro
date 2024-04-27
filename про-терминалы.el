@@ -7,6 +7,7 @@
 ;;;; Оболочка Emacs Shell
 (use-package eshell
   :ensure t
+  :defines (eshell-mode-map)
   :custom
   (eshell-prompt-function 'приглашение-eshell)
   (eshell-highlight-prompt nil)
@@ -160,4 +161,4 @@
           (vterm-toggle))))))
 
 (provide 'про-терминалы)
-;;; терминалы.el ends here
+;;; про-терминалы.el ends here

@@ -279,5 +279,19 @@
 ;;    (json-ts-mode . combobulate-mode)
 ;;    (tsx-ts-mode . combobulate-mode)))
 
+;;;; Мини-карта
+
+(use-package minimap
+  :ensure t
+  :config
+  (custom-set-faces
+   '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
+  :custom
+  (minimap-minimum-width 14)
+  (minimap-window-location 'right)
+  (minimap-width-fraction 0.08))
+
+
+
 (provide 'про-редактор)
-;;; редактор.el ends here
+;;; про-редактор.el ends here

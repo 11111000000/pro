@@ -20,6 +20,8 @@
 
 (use-package org-projectile
   :ensure t
+  :functions (org-projectile-per-project)
+  :defines (org-projectile-per-project-filepath)
   :after (projectile org)
   :bind (:map projectile-mode-map
                 ("C-c pt" . org-projectile-project-todo-completing-read)
@@ -136,4 +138,4 @@
 ;;(use-package github :ensure t)
 
 (provide 'про-управление-проектами)
-;;; управление-проектами.el ends here
+;;; про-управление-проектами.el ends here

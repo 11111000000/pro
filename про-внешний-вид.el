@@ -41,18 +41,6 @@
 
 (setq message-truncate-lines nil)
 
-;; Шрифт минибуфера
-
-;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
-;; (defun my-minibuffer-setup ()
-;;        (set (make-local-variable 'face-remapping-alist)
-;;             '((default :height 1.2))))
-
-;; (dolist (buf '(" *Echo Area 0*" " *Echo Area 1*"))
-;;   (with-current-buffer (get-buffer buf)
-;;     (make-local-variable 'face-remapping-alist)
-;;     (add-to-list 'face-remapping-alist '(default (:background "white" :height 1.3)))))
-
 ;; Минибуфер - модлайн
 
 (use-package taoline
@@ -71,23 +59,6 @@
   (all-the-icons-scale-factor 1)
   (all-the-icons-default-adjust 0)
   :ensure t)
-
-;;;;; Иконки для режимов
-;; TODO: Настроить с taoline
-
-;; (use-package mode-icons
-;;   :ensure t
-;;   :custom (
-;;           (mode-icons-desaturate-active t))
-;;   :config
-;;   ;; В новых версиях Emacs есть два режима ELisp\d и ELisp\l - для динамической и лексической области видимости соотв.
-;;   (add-to-list 'mode-icons  '(".*ELisp.*" "emacs" xpm))
-;;   (add-to-list 'mode-icons  '(".*EXWM.*" #xf1b2 FontAwesome))
-;;   (add-to-list 'mode-icons  '(".*Dired.*" #xf07c FontAwesome))
-;;   (add-to-list 'mode-icons  '(".*TypeScript.*" #xeb1b FontAwesome))
-;;   (add-to-list 'mode-icons  '(".*HTML.*" "html" xpm))
-;;   (add-to-list 'mode-icons  '(".*Less.*" #xf1c9 FontAwesome))
-;;   (mode-icons-mode t))
 
 ;;;;; Иконки для автодополнения
 
@@ -154,10 +125,7 @@
 
 ;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
 
-;;(blink-cursor-mode nil)
 (setq cursor-type '(bar . 2))
-;;(setq x-stretch-cursor 1)
-;;(setq blink-cursor-delay 0.3)
 
 ;; В невыбраных окнах, курсор прозрачный
 
@@ -175,9 +143,7 @@
            curchg-default-cursor-type '(bar . 2)
            curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
            curchg-change-cursor-on-input-method-flag t)
-  (change-cursor-mode t)
-  
-  )
+  (change-cursor-mode t))
 
 ;;;; Прокрутка
 
@@ -192,23 +158,6 @@
          jit-lock-defer-time 0
          hscroll-margin 1)
 
-;;;;; Быстрая прокрутка
-
-;; (require 'flycheck)
-
-;; (use-package fast-scroll
-;;   :defer 1
-;;   :hook
-;;   (fast-scroll-start . (lambda () (flycheck-mode -1)))
-;;   (fast-scroll-end . (lambda () (flycheck-mode 1)))
-;;   :config
-;;   (fast-scroll-config)
-;;   (fast-scroll-mode 1))
-
-;;;;; Плавная прокрутка
-
-;; (when (fboundp 'pixel-scroll-mode)
-;;   (pixel-scroll-mode t))
 
 ;;;; Меню режима
 
@@ -218,18 +167,6 @@
 (use-package imenu
   :custom ((imenu-auto-recsan t))
   :defer t)
-
-;;;; Мини-карта
-
-(use-package minimap
-  :ensure t
-  :config
-  (custom-set-faces
-   '(minimap-active-region-background ((t :background "#111" :foreground "#aaa"))))
-  :custom
-  (minimap-minimum-width 14)
-  (minimap-window-location 'right)
-  (minimap-width-fraction 0.08))
 
 ;;;; Сокращение диалогов до y/n
 
@@ -271,7 +208,8 @@
 
 (use-package pulsar
   :ensure t
-  :defines (pulsar-pulse-functions pulsar-global-mode)
+  :defines (pulsar-pulse-functions)
+  :functions (pulsar-global-mode)
   :custom ((pulsar-face 'cursor))
   :config
   (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
@@ -282,16 +220,6 @@
   :init
   (pulsar-global-mode t))
 
-;; TODO Рамки окон...
-;; (modify-all-frames-parameters
-;;  '((right-divider-width . 40)
-;;    (internal-border-width . 40)))
-;; (dolist (face '(window-divider
-;; 		      window-divider-first-pixel
-;; 		      window-divider-last-pixel))
-;;   (face-spec-reset-face face)
-;;   (set-face-foreground face (face-attribute 'default :background)))
-;; (set-face-background 'fringe (face-attribute 'default :background))
 
 
 ;;;; Подтверждение выключения процессов

@@ -5,14 +5,19 @@
 
 (use-package go-translate
   :ensure t
-  :functions (gts-translator gts-prompt-picker gts-bing-engine gts-buffer-render)
+  :functions (gts-translator
+         gts-prompt-picker
+         gts-bing-engine
+         gts-buffer-render
+         gts-google-engine)
   :defines (gts-default-translator)
   :custom ((gts-translate-list '(("en" "ru")
                                 ("ru" "en"))))
   :config
   (setq gts-default-translator (gts-translator
                                :picker (gts-prompt-picker)
-                               :engines (list (gts-bing-engine) (gts-google-engine))
+                               :engines (list (gts-bing-engine)
+                                              (gts-google-engine))
                                :render (gts-buffer-render))))
 
 (provide 'про-словари-и-перевод)

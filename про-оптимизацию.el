@@ -60,4 +60,4 @@
   (setq read-process-output-max (* 1024 1024)))
 
 (provide 'про-оптимизацию)
-;;; оптимизация.el ends here
+;;; про-оптимизацию.el ends here

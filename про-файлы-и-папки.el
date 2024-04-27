@@ -182,4 +182,4 @@
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
 ;; End:
-;;; файлы-и-папки.el ends here
+;;; про-файлы-и-папки.el ends here

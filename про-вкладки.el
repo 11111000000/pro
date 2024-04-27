@@ -82,43 +82,38 @@
 ;;;;  Вкладки уровня окна
 
 (use-package tab-line
-    :custom
-    (tab-line-new-button-show nil)
-    (tab-line-close-button-show nil)
-    (tab-line-separator "")
-    (tab-line-switch-cycling t)
-    (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
-    :hook ((vterm-mode . tab-line-mode)
-           (telega-mode . tab-line-mode))
-    :bind (("M-s-n" . следующая-вкладочка)
-           ("M-s-p" . предыдущая-вкладочка))
-    :config
+  :custom
+  (tab-line-new-button-show nil)
+  (tab-line-close-button-show nil)
+  (tab-line-separator "")
+  (tab-line-switch-cycling t)
+  (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
+  :hook ((vterm-mode . tab-line-mode)
+       (telega-mode . tab-line-mode))
+  :bind (("M-s-n" . следующая-вкладочка)
+         ("M-s-p" . предыдущая-вкладочка))
+  :config
 
-    (defun следующая-вкладочка ()
-        (interactive)
-        "Следующая."
-        (if tab-line-mode (tab-line-switch-to-next-tab)))
+  (defun следующая-вкладочка ()
+    (interactive)
+    "Следующая."
+    (if tab-line-mode (tab-line-switch-to-next-tab)))
 
-    (defun предыдущая-вкладочка ()
-        (interactive)
-        "Предыдущая."
-        (if tab-line-mode (tab-line-switch-to-prev-tab)))
+  (defun предыдущая-вкладочка ()
+    (interactive)
+    "Предыдущая."
+    (if tab-line-mode (tab-line-switch-to-prev-tab)))
 
-    (defvar высота-tab-line 22)
+  (defvar высота-tab-line 22)
 
-    (require 'powerline)
+  (require 'powerline)
 
-    (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
-        (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
-                                (format "%s" (buffer-name buffer))
-                                (powerline-wave-left nil 'tab-line высота-tab-line))))
+  (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
+    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
+                            (format "%s" (buffer-name buffer))
+                            (powerline-wave-left nil 'tab-line высота-tab-line))))
 
-    (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
-
-;; (use-package project-tab-groups
-;;   :ensure
-;;   :config
-;;   (project-tab-groups-mode 1))
+  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 
 (defun закрыть-вкладку-и-буфер ()
   "Закрывает вкладку и буфер в ней."
