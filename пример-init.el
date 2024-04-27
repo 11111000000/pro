@@ -9,7 +9,7 @@
 
 ;;; Code:
 
-;; (add-to-list 'load-path "~/Добро")
+;; (add-to-list 'load-path "~/ПРО")
 
 (require 'загрузить)
 
@@ -47,8 +47,8 @@
 (загрузить 'про-искусственный-интеллект)
 (загрузить 'про-справку)
 
-(org-babel-load-file "/home/az/Добро/сочетания-клавиш.org")
-(delete-file "/home/az/Добро/сочетания-клавиш.el")
+(org-babel-load-file "/home/az/ПРО/сочетания-клавиш.org")
+(delete-file "/home/az/ПРО/сочетания-клавиш.el")
 
 (provide 'пример-init)
 
