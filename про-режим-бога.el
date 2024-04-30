@@ -15,13 +15,17 @@
 
 (use-package god-mode
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
-  :defines (god-local-mode-map)
+  :defines (god-local-mode-map god-local-mode)
+  :functions (god-mode-all)
   :ensure t
   :hook (((god-mode-disabled god-mode-enabled) . обновить-курсор)
        ;;(god-mode-enabled . restore-input-method)
        (god-mode-enabled . toggle-off-input-method))
 
   :bind (
+         ("M-i" . god-local-mode)
+         ("<escape>" . god-local-mode)
+
          :map god-local-mode-map
          ("C-\\" . nil)
          ("i" . god-local-mode)
@@ -56,7 +60,7 @@
                 lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
-  
+
   :config
 
   (global-set-key (kbd "C-<f1>") help-map)
@@ -65,7 +69,7 @@
   (defun обновить-курсор ()
     (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(bar . 3)))
     (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
-  
+
   (god-mode-all)
   (обновить-курсор))
 

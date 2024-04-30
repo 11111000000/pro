@@ -47,8 +47,6 @@
 | s-m               | consult-imenu-multi                 |
 | M-M               | bookmark-set                        |
 | M-m               | bookmark-jump                       |
-| M-i               | god-local-mode                      |
-| <escape>          | god-local-mode                      |
 | C-j               | next-line                           |
 | C-k               | previous-line                       |
 | M-o               | viper-open-line                     |

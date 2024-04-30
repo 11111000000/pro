@@ -39,14 +39,14 @@
   :init
   (org-projectile-per-project))
 
-;;;; Transient
+;;;; Текстовые меню - Transient
 
 (require 'установить-из)
 
-(use-package transient
-  :init (установить-из :repo "magit/transient" :name "transient"))
+;; (use-package transient
+;;   :init (установить-из :repo "magit/transient" :name "transient"))
 
-;(add-to-list 'package--builtin-versions '(transient 0 4 3))
+                                        ;(add-to-list 'package--builtin-versions '(transient 0 4 3))
 
 ;;;; Система контроля версий Git
 

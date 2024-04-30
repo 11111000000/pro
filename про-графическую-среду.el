@@ -107,7 +107,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;; Запуск EXWM
 
   (exwm-enable t)
-  ;;(exwm-init)
+  (exwm-init)
 
   ;; Запуск различных программ в трее
   ;; TODO: Вынести в отдельный файл?
@@ -117,6 +117,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (exwm-systemtray-enable)
   
   ;; TODO: перенести в подходящее место (м.б. таблицу?)
+  
   (add-hook 'exwm-init-hook (lambda ()
                              (progn
                                (start-process-shell-command "nm-applet" nil "sleep 0.5; dbus-launch nm-applet -t")
@@ -124,7 +125,10 @@ KEY-BINDINGS - список пар (клавиша функция)"
                                (start-process-shell-command "udiskie" nil "sleep 0.5; dbus-launch udiskie -t")
                                (start-process-shell-command "dunst" nil "sleep 0.5; dbus-launch dunst -conf ~/System/dunstrc")
                                (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
-                               (start-process-shell-command "copyq" nil "sleep 0.5; copyq"))))
+                               (start-process-shell-command "copyq" nil "sleep 0.5; copyq")
+                               )
+                             )
+           )
   )
 
 ;;;; Режимы ввода EMACS в приложениях
@@ -134,13 +138,16 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (require 'установить-из)
 
+(require 'exwm-input)
+
 (use-package exim
   :init (установить-из :repo "ch11ng/exim")
   :after (exwm)
   :if window-system
   ;; :load-path "emacs-lisp/exim/exim"
   :hook ((exwm-init . exim-start))
-  :config (push ?\C-\\ exwm-input-prefix-keys))
+  :config
+  (push ?\C-\\ exwm-input-prefix-keys))
 
 ;;;; Редактирование любых полей ввода через EMACS
 
@@ -160,12 +167,12 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;;   :if window-system
 ;;   :ensure t)
 
-(use-package exwm-background
-  :init
-  (установить-из :repo "pestctrl/exwm-background")
-  :config
-  ;;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
-  )
+;; (use-package exwm-background
+;;   :init
+;;   (установить-из :repo "pestctrl/exwm-background")
+;;   :config
+;;   ;;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
+;;   )
 
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here
