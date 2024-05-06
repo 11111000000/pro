@@ -24,22 +24,7 @@
             (sh-mode         . bash-ts-mode)
             (typescript-mode . typescript-ts-mode)))
   :config
-  ;; (setq treesit-language-source-alist
-  ;;     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-  ;;       (cmake "https://github.com/uyha/tree-sitter-cmake")
-  ;;       (css "https://github.com/tree-sitter/tree-sitter-css")
-  ;;       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-  ;;       (go "https://github.com/tree-sitter/tree-sitter-go")
-  ;;       (html "https://github.com/tree-sitter/tree-sitter-html")
-  ;;       (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-  ;;       (json "https://github.com/tree-sitter/tree-sitter-json")
-  ;;       (make "https://github.com/alemuller/tree-sitter-make")
-  ;;       (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-  ;;       (python "https://github.com/tree-sitter/tree-sitter-python")
-  ;;       (toml "https://github.com/tree-sitter/tree-sitter-toml")
-  ;;       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-  ;;       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-  ;;       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  
   )
 
 ;;;; Cинтаксис для открытого файла
@@ -70,19 +55,23 @@
        ;; (haskell-mode . eglot-ensure)
        ;; (typescript-mode . eglot-ensure)
        ;; (rust-mode . eglot-ensure)
-       (typescript-ts-mode . eglot-ensure)
+       
        (python-ts-mode . eglot-ensure)
        ;; (haskell-mode . eglot-ensure)
        ;;(js-mode . eglot-ensure)
-       (js-ts-mode . eglot-ensure)
+       
        ;; (json-mode . eglot-ensure)
        ;; (rust-mode . eglot-ensure)
        )
   :functions (eglot-rename eglot-code-actions)
   :bind (:map eglot-mode-map
                 ("C-c r" . eglot-rename)
+                ("M-'" . eglot-inlay-hints-mode)
                 ("C-<down-mouse-1>" . xref-find-definitions)
+                ("M-." . xref-find-definitions)
+                ("C-M-." . xref-find-references)
                 ("C-S-<down-mouse-1>" . xref-find-references)
+                ("C-c ." . eglot-code-actions)
                 ("C-c C-c" . eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
@@ -157,33 +146,33 @@ ARG - backward"
 
 ;; TODO: Возможно, заменить пакетом, основанным на tree-sitter ?
 
-(use-package electric-pair
-  :hook
-  (after-init . electric-pair-mode)
-  (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
+;; (use-package electric-pair
+;;   :hook
+;;   (after-init . electric-pair-mode)
+;;   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
 
-;; (use-package smartparens
-;;   :ensure t
-;;   :defines (smartparens-global-mode sp-local-pair)
-;;   :bind  (("C-^" . sp-unwrap-sexp)
-;;           ("M-j" . sp-next-sexp)
-;;           ("M-k" . sp-backward-sexp)
-;;           ("M-h" . sp-backward-up-sexp)
-;;           ("M-l" . sp-down-sexp))
-;;   :config
+(use-package smartparens
+  :ensure t
+  :defines (smartparens-global-mode sp-local-pair)
+  :bind  (("C-^" . sp-unwrap-sexp)
+          ("M-j" . sp-next-sexp)
+          ("M-k" . sp-backward-sexp)
+          ("M-h" . sp-backward-up-sexp)
+          ("M-l" . sp-down-sexp))
+  :config
 
-;;   (smartparens-global-mode 1)
-;;   (sp-local-pair 'emacs-lisp-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'scheme-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'racket-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'lisp-mode "" nil
-;;                  :actions nil)
-;;   (show-smartparens-global-mode t)
-;;   ;; (show-paren-mode -1)
-;;   )
+  (smartparens-global-mode 1)
+  (sp-local-pair 'emacs-lisp-mode "'" nil
+                 :actions nil)
+  (sp-local-pair 'scheme-mode "'" nil
+                 :actions nil)
+  (sp-local-pair 'racket-mode "'" nil
+                 :actions nil)
+  (sp-local-pair 'lisp-mode "" nil
+                 :actions nil)
+  (show-smartparens-global-mode t)
+  ;; (show-paren-mode -1)
+  )
 
 ;;;;; Подсветка глубины скобок
 
@@ -222,14 +211,13 @@ ARG - backward"
 (use-package color-identifiers-mode
   :if  window-system
   :ensure t
-  :hook ((js-mode . color-identifiers-mode)
-         (typescript-ts-mode . color-identifiers-mode))
+  :hook ((typescript-ts-mode . color-identifiers-mode))
   :custom ((color-identifiers-coloring-method
-            'hash)
-           (color-identifiers:num-colors 16)
-           (color-identifiers:color-luminance 0.3)
-           (color-identifiers:min-color-saturation 0.2)
-           (color-identifiers:max-color-saturation 0.7)))
+           'hash)
+          (color-identifiers:num-colors 16)
+          (color-identifiers:color-luminance 0.3)
+          (color-identifiers:min-color-saturation 0.2)
+          (color-identifiers:max-color-saturation 0.7)))
 
 ;; Альтернативный алгоритм подсветки идентификаторов
 

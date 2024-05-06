@@ -4,6 +4,7 @@
 ;;; Code:
 
 (require 'use-package)
+(require 'установить-из)
 
 ;;;; Общий вид
 

@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'use-package)
+(require 'установить-из)
 
 ;;;; Открыть файл с помощью чего-нибудь
 
@@ -13,12 +14,12 @@
   :config
   (openwith-mode t)
   (setq openwith-associations '(("\\.pdf\\'" "xdg-open" (file))
-                              ("\\.xlsx\\'" "soffice" (file))
-                              ("\\.docx\\'" "soffice" (file))
-                              ("\\.pptx\\'" "soffice" (file))
-                              ("\\.csv\\'" "soffice" (file))
-                              ("\\.ods\\'" "soffice" (file))
-                              ("\\.xopp\\'" "xournalpp" (file)))))
+                               ("\\.xlsx\\'" "soffice" (file))
+                               ("\\.docx\\'" "soffice" (file))
+                               ("\\.pptx\\'" "soffice" (file))
+                               ("\\.csv\\'" "soffice" (file))
+                               ("\\.ods\\'" "soffice" (file))
+                               ("\\.xopp\\'" "xournalpp" (file)))))
 
 ;;;; Запускалка приложений из системного меню
 
