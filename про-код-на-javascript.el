@@ -2,6 +2,40 @@
 ;;; Commentary:
 ;;; Code:
 
+;;;; Режим Javascript
+
+(require 'eglot)
+
+(use-package js
+  :after (eglot)
+  :hook ((js-ts-mode . eglot-ensure)
+       (js-ts-mode . (lambda () (eglot-inlay-hints-mode -1))) 
+       )
+  :mode (("\\.js\\'" . js-ts-mode)
+         ("\\.jsx\\'" . js-ts-mode))
+  :interpreter (("node" . js-ts-mode))
+  :init
+  (add-to-list 'eglot-server-programs
+             `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
+               ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
+                "--stdio"
+                :initializationOptions
+                (:preferences
+                 (
+                  :importModuleSpecifierPreference "non-relative"
+                  :includeInlayEnumMemberValueHints t
+                  :includeInlayFunctionLikeReturnTypeHints t
+                  :includeInlayFunctionParameterTypeHints t
+                  :includeInlayParameterNameHints "all" ; "none" | "literals" | "all"
+                  :includeInlayParameterNameHintsWhenArgumentMatchesName t
+                  :includeInlayPropertyDeclarationTypeHints t
+                  :includeInlayVariableTypeHints t
+                  :includeInlayVariableTypeHintsWhenTypeMatchesName t
+                  :organizeImportsCaseFirst "upper"
+                  :organizeImportsCollation "unicode" ; "ordinal" | "unicode"
+                  :organizeImportsIgnoreCase :json-false
+                  :quotePreference "single"))))))
+
 ;;;; Добавить путь для модулей
 
 (use-package add-node-modules-path :ensure t)
@@ -46,36 +80,17 @@
 
 ;; В Emacs теперь есть встроеная поддержка typescript-ts-mode
 
-(require 'eglot)
+
 
 (use-package typescript-ts-mode
-  :after (eglot)
+  :hook ((typescript-ts-mode . eglot-ensure))
   :mode (("\\.ts\\'" . typescript-ts-mode)
          ("\\.tsx\\'" . tsx-ts-mode))
   :config
 
   ;; Добавляем typescript-language-server
   
-  (add-to-list 'eglot-server-programs
-             `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
-               ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
-                "--stdio"
-                :initializationOptions
-                (:preferences
-                 (
-                  :importModuleSpecifierPreference "non-relative"
-                  :includeInlayEnumMemberValueHints t
-                  :includeInlayFunctionLikeReturnTypeHints t
-                  :includeInlayFunctionParameterTypeHints t
-                  :includeInlayParameterNameHints "literals" ; "none" | "literals" | "all"
-                  :includeInlayParameterNameHintsWhenArgumentMatchesName t
-                  :includeInlayPropertyDeclarationTypeHints t
-                  :includeInlayVariableTypeHints t
-                  :includeInlayVariableTypeHintsWhenTypeMatchesName t
-                  :organizeImportsCaseFirst "upper"
-                  :organizeImportsCollation "unicode" ; "ordinal" | "unicode"
-                  :organizeImportsIgnoreCase :json-false
-                  :quotePreference "single"))))))
+  )
 
 (use-package flymake-eslint
   :ensure t

@@ -189,7 +189,7 @@
 | C-x _                   | maximize-window               |
 | C-x -                   | minimize-window               |
 | C-c b                   | popwin:popup-buffer           |
-| C-c .                   | popwin:stick-popup-window     |
+| C-c C-b                 | popwin:stick-popup-window     |
 | s-f                     | ace-window                    |
 | s-F                     | ace-swap-window               |
 | C-c C-g l               | gitlab-show-projects          |
