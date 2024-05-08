@@ -54,12 +54,19 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (use-package exwm
   :ensure t
-  :functions (exwm-input-set-key exwm-workspace-rename-buffer exwm-enable exwm-systemtray-enable)
-  :defines (exwm-class-name exwm-manage-configurations  exwm-title exwm-input-prefix-keys)
-  :if window-system
-  :hook ((exwm-init . exim-start))
-  :custom (
-          (exwm-workspace-number 4)
+  ;;:init (установить-из :repo "emacs-exwm/exwm")
+  :functions (exwm-input-set-key
+         exwm-workspace-rename-buffer
+         exwm-enable
+         exwm-init
+         exwm-systemtray-enable)
+  :defines (exwm-class-name
+           exwm-manage-configurations
+           exwm-title
+           exwm-input-prefix-keys)
+  :if window-system  
+  ;;:hook ((exwm-init . exim-start))
+  :custom ((exwm-workspace-number 4)
           (exwm-workspace-show-all-buffers t)
           (exwm-layout-show-all-buffers t)
           (exwm-manage-force-tiling nil)
@@ -68,7 +75,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   :config
 
-  (push ?\C-\\ exwm-input-prefix-keys)
+  ;;(push ?\C-\\ exwm-input-prefix-keys)
   
   (add-hook 'exwm-update-class-hook
            (lambda ()
@@ -103,19 +110,11 @@ KEY-BINDINGS - список пар (клавиша функция)"
                                     ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
                                      height 175 x 30 y 30 managed t)))
   
-  ;;:hook ((after-init . exwm-enable))
+                                        ;:hook ((after-init . exwm-enable))
   
   :init
 
-
   ;; Запуск различных программ в трее
-  ;; TODO: Вынести в отдельный файл?
-
-  (require 'exwm-systemtray)
-
-  (exwm-systemtray-enable)
-  
-  ;; TODO: перенести в подходящее место (м.б. таблицу?)
   (add-hook 'exwm-init-hook (lambda ()
                              (progn
                                (start-process-shell-command "nm-applet" nil "sleep 0.1; dbus-launch nm-applet -t")
@@ -124,10 +123,17 @@ KEY-BINDINGS - список пар (клавиша функция)"
                                (start-process-shell-command "dunst" nil "sleep 0.4; dbus-launch dunst -conf ~/System/dunstrc")
                                (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
                                (start-process-shell-command "copyq" nil "sleep 0.6; copyq"))))
+  ;; TODO: Вынести в отдельный файл?
+
+  ;; TODO: перенести в подходящее место (м.б. таблицу?)
 
   ;; Запуск EXWM
-
-  (exwm-enable t))
+  (exwm-enable t)
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+  ;(exwm-init)
+  
+  )
 
 ;;;; Режимы ввода EMACS в приложениях
 
@@ -136,13 +142,13 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (require 'установить-из)
 
-;; (use-package exim
-;;   :init (установить-из :repo "ch11ng/exim")
-;;   :after (exwm)
-;;   :if window-system
-;;   ;; :load-path "emacs-lisp/exim/exim"
-;;   :hook ((exwm-init . exim-start))
-;;   :config (push ?\C-\\ exwm-input-prefix-keys))
+(use-package exim
+  :init (установить-из :repo "ch11ng/exim")
+  :after (exwm)
+  :if window-system
+  ;; :load-path "emacs-lisp/exim/exim"
+  :hook ((exwm-init . exim-start))
+  :config (push ?\C-\\ exwm-input-prefix-keys))
 
 ;;;; Редактирование любых полей ввода через EMACS
 

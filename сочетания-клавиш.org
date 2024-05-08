@@ -224,7 +224,7 @@
 
 (if (and window-system (functionp 'exwm-input-set-key))
     (progn
-	    (require 'exwm)        
+	    (require 'exwm)
 	    (mapcar
 	     (lambda (row)
 	       (cl-destructuring-bind (соч фун) row
@@ -233,6 +233,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 
