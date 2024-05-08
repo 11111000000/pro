@@ -40,7 +40,7 @@
   :ensure t
   :diminish " C-?"
   :custom
-  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s"))
+  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s" "C-h"))
    (guide-key/popup-window-position 'top)
    (guide-key/recursive-key-sequence-flag t)
    (guide-key/idle-delay 3)

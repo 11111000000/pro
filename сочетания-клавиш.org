@@ -222,6 +222,8 @@
      (global-set-key (kbd соч) (intern фун))))
  exwm-keys-table)
 
+
+    
 (if (and window-system (functionp 'exwm-input-set-key))
     (progn
 	    (require 'exwm)

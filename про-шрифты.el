@@ -11,6 +11,8 @@
 
 ;;(setq-default default-frame-alist '((font . "Fira Code")))
 
+;; function to convert from rubles to usd
+
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."
   (interactive)

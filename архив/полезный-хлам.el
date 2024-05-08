@@ -113,7 +113,7 @@
   (mini-frame-internal-border-color "#333333")
   (mini-frame-ignore-commands '(eval-expression "edebug-eval-expression" debugger-eval-expression replace-string replace-regex))
   :config
-  (mini-frame-mode t))
+  (mini-frame-mode -1))
 
 (use-package project-tab-groups
   :ensure

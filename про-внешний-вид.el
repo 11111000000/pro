@@ -19,7 +19,7 @@
   (tool-bar-mode -1))
 
 (when (bound-and-true-p menu-bar-mode)
-  (menu-bar-mode -1) )
+  (menu-bar-mode t) )
 
 ;; Скрыты полосы прокрутки
 
@@ -163,6 +163,15 @@
          jit-lock-defer-time 0
          hscroll-margin 1)
 
+(use-package iscroll
+  :ensure t
+  :functions (iscroll-mode)
+  :init
+  (add-hook 'org-mode-hook #'iscroll-mode)
+  (add-hook 'markdown-mode-hook #'iscroll-mode)
+  (add-hook 'image-mode-hook #'iscroll-mode)
+  (add-hook 'eww-mode-hook #'iscroll-mode)
+  (add-hook 'w3m-mode-hook #'iscroll-mode))
 
 ;;;; Меню режима
 

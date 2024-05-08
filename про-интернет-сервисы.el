@@ -1,4 +1,4 @@
-;;; про-интернет-сервисы.el --- Сеть и Интернет
+;;; про-интернет-сервисы.el --- Сеть и Интернет  -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; Конфигурация сетевых сервисов, браузеров и мессенджеров
 ;;; Code:
@@ -119,26 +119,31 @@
 (require 'url)
 
 (defun usd-to-rub (sum)
-  "Преобразует сумму в долларах SUM в рубли, используя текущий обменный курс с сервера."
-  (interactive "nВведите сумму в USD: ")
-  (url-retrieve "https://api.exchangerate-api.com/v4/latest/USD"
-                (lambda (status res)
-                  ;; Обработка возможных ошибок при запросе.
-                  (if (plist-get status :error)
-                      (message "Не удалось получить данные о курсе валют.")
-                    (goto-char url-http-end-of-headers)
-                    ;; Парсинг JSON-ответа
-                    (let* ((json-object-type 'hash-table)
-                          (json-array-type 'list)
-                          (json-key-type 'string)
-                          (response (json-read))
-                          (rates (gethash "rates" response))
-                          (rub-rate (gethash "RUB" rates)))
-                      (if rub-rate
-                          (message "Сумма в RUB: %.2f" (* sum rub-rate))
-                        (message "Не найден курс RUB в ответе.")))))
-                (list sum)))
+  "Преобразует сумму в долларах SUM в рубли.
+используя текущий обменный курс с сервера."
+  
+  (progn
+    (message "aaa %f" sum)
+    (url-retrieve "https://api.exchangerate-api.com/v4/latest/USD"
+                  (lambda (status res)
+                    (message "bbb %f" sum)
+                    ;; Обработка возможных ошибок при запросе.
+                    (if (plist-get status :error)
+                        (message "Не удалось получить данные о курсе валют.")
+                      (goto-char url-http-end-of-headers)
+                      ;; Парсинг JSON-ответа
+                      (let* ((json-object-type 'hash-table)
+                            (json-array-type 'list)
+                            (json-key-type 'string)
+                            (response (json-read))
+                            (rates (gethash "rates" response))
+                            (rub-rate (gethash "RUB" rates)))
+                        (if rub-rate
+                            (message "Сумма в RUB: %.2f" (* sum rub-rate))
+                          (message "Не найден курс RUB в ответе.")))))
+                  (list sum))))
 
+(usd-to-rub 100)
 
 (provide 'про-интернет-сервисы)
 ;;; интернет-сервисы.el ends here
