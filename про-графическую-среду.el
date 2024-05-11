@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(require 'установить-из)
+
 ;;;; Xelb
 
 (use-package xelb
@@ -14,43 +16,43 @@
 ;;;; ExWM
 
 (defvar сочетания-для-эмуляции
-    '(([?\C-b] . left)
-      ([?\M-b] . C-left)
-      ([?\C-f] . right)
-      ([?\M-f] . C-right)
-      ([?\C-p] . up)
-      ([?\C-n] . down)
-      ([?\C-a] . home)
-      ([?\C-e] . end)
-      ([?\M-v] . prior)
-      ([?\C-v] . next)
-      ([?\C-d] . ?\C-x)
-      ([?\M-d] . (C-S-right delete))
-      ;; cut/paste.
-      ([?\M-y] . ?\C-c)
-      ([?\M-w] . ?\C-c)
-      ([?\C-y] . ?\C-v)
-      ;; search
-      ([?\C-s] . ?\C-f)))
+  '(([?\C-b] . left)
+    ([?\M-b] . C-left)
+    ([?\C-f] . right)
+    ([?\M-f] . C-right)
+    ([?\C-p] . up)
+    ([?\C-n] . down)
+    ([?\C-a] . home)
+    ([?\C-e] . end)
+    ([?\M-v] . prior)
+    ([?\C-v] . next)
+    ([?\C-d] . ?\C-x)
+    ([?\M-d] . (C-S-right delete))
+    ;; cut/paste.
+    ([?\M-y] . ?\C-c)
+    ([?\M-w] . ?\C-c)
+    ([?\C-y] . ?\C-v)
+    ;; search
+    ([?\C-s] . ?\C-f)))
 
 (defun скриншот-области ()
-    "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
-    (interactive)
-    (async-shell-command
-     "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
+  "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
+  (interactive)
+  (async-shell-command
+   "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
 
 (defun скриншот ()
-    "Получить скриншот."
-    (interactive)
-    (sit-for 1)
-    (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
+  "Получить скриншот."
+  (interactive)
+  (sit-for 1)
+  (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
 
 (defmacro exwm-input-set-keys (&rest key-bindings)
-    "Макрос для установки клавиш, работающих поверх приложений Xorg.
+  "Макрос для установки клавиш, работающих поверх приложений Xorg.
 KEY-BINDINGS - список пар (клавиша функция)"
-    `(dolist (kb ',key-bindings)
-         (cl-destructuring-bind (key cmd) kb
-             (exwm-input-set-key (kbd key) cmd))))
+  `(dolist (kb ',key-bindings)
+     (cl-destructuring-bind (key cmd) kb
+       (exwm-input-set-key (kbd key) cmd))))
 
 (use-package exwm
   :ensure t
@@ -75,8 +77,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   :config
 
-  ;;(push ?\C-\\ exwm-input-prefix-keys)
-  
   (add-hook 'exwm-update-class-hook
            (lambda ()
              (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
@@ -92,10 +92,10 @@ KEY-BINDINGS - список пар (клавиша функция)"
     (if (> i 0) (exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
     (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
     (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
-    )
+    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+
   (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-  
+
   (exwm-input-set-keys
    ("s-M-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
    ("s-M-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
@@ -109,12 +109,11 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
                                     ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
                                      height 175 x 30 y 30 managed t)))
-  
-                                        ;:hook ((after-init . exwm-enable))
-  
+
   :init
 
   ;; Запуск различных программ в трее
+  ;; TODO: перенести в подходящее место (м.б. таблицу?)
   (add-hook 'exwm-init-hook (lambda ()
                              (progn
                                (start-process-shell-command "nm-applet" nil "sleep 0.1; dbus-launch nm-applet -t")
@@ -123,30 +122,22 @@ KEY-BINDINGS - список пар (клавиша функция)"
                                (start-process-shell-command "dunst" nil "sleep 0.4; dbus-launch dunst -conf ~/System/dunstrc")
                                (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
                                (start-process-shell-command "copyq" nil "sleep 0.6; copyq"))))
-  ;; TODO: Вынести в отдельный файл?
 
-  ;; TODO: перенести в подходящее место (м.б. таблицу?)
 
   ;; Запуск EXWM
   (exwm-enable t)
   (require 'exwm-systemtray)
-  (exwm-systemtray-enable)
-                                        ;(exwm-init)
-  
-  )
+  (exwm-systemtray-enable))
 
 ;;;; Режимы ввода EMACS в приложениях
 
 ;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
 ;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
 
-(require 'установить-из)
-
 (use-package exim
   :init (установить-из :repo "ch11ng/exim")
   :after (exwm)
   :if window-system
-  ;; :load-path "emacs-lisp/exim/exim"
   :hook ((exwm-init . exim-start))
   :config (push ?\C-\\ exwm-input-prefix-keys))
 

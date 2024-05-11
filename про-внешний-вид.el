@@ -15,11 +15,11 @@
 
 ;; Скрыта панель инструментов и меню
 
-(when (bound-and-true-p tool-bar-mode)
-  (tool-bar-mode -1))
+(if window-system
+    (tool-bar-mode -1))
 
-(when (bound-and-true-p menu-bar-mode)
-  (menu-bar-mode t) )
+(if window-system
+    (menu-bar-mode -1))
 
 ;; Скрыты полосы прокрутки
 
@@ -44,12 +44,13 @@
 
 ;; Минибуфер - модлайн
 
-;; (use-package taoline
-;;   :if window-system
-;;   :after (all-the-icons)
-;;   :init (установить-из :repo "11111000000/taoline")
-;;   :config
-;;   (taoline-mode 1))
+(use-package taoline
+  :if window-system
+  :after (all-the-icons)
+  :functions (taoline-mode)
+  :init (установить-из :repo "11111000000/taoline")
+  :config
+  (taoline-mode 1))
 
 ;;;; Иконки
 ;;;;; All The Icons

@@ -23,9 +23,7 @@
             (python-mode     . python-ts-mode)
             (sh-mode         . bash-ts-mode)
             (typescript-mode . typescript-ts-mode)))
-  :config
-  
-  )
+  :config)
 
 ;;;; Cинтаксис для открытого файла
 

@@ -22,11 +22,16 @@
                 ("C-c C-c" . выполнить-регион-или-буфер)
                 ("C-x M-e" . eval-print-last-sexp)))
 
-;;;;; Оптимизация хвостовой рекурсии 
+;;;;; Отладка объектов
+
+(setq eval-expression-print-level 15)
+(setq eval-expression-print-length 30)
+
+;;;;; Оптимизация хвостовой рекурсии
 
 (use-package tco :ensure t)
 
-;;;;; Асинхронные функции 
+;;;;; Асинхронные функции
 
 (use-package async-await :ensure t)
 

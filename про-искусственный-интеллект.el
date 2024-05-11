@@ -4,6 +4,22 @@
 ;; Конфигурация нейросетевых сервисов
 ;;; Code:
 
+;;;; OpenAI
+
+(use-package openai
+  :init
+  (установить-из :repo "11111000000/openai")
+  :custom
+  (openai-base-url "https://api.proxyapi.ru/openai/v1"))
+
+
+;; ChatGPT Shell
+
+(use-package chatgpt-shell
+  :ensure t
+  :custom (
+          (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")))
+
 ;;;; LLAMA
 
 (use-package ellama

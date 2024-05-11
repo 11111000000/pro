@@ -95,6 +95,7 @@
 | <backtab>         | hs-toggle-hiding                    |
 | C-c <f2>          | eglot-reconnect                     |
 | C-c v             | gts-do-translate                    |
+| s-.               | xref-find-definitions-other-window  |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -111,7 +112,6 @@
 | <XF86MonBrightnessDown> | уменьшить-яркость             |
 | <XF86TouchpadToggle>    | переключить-тачпад            |
 | s-b                     | consult-buffer                |
-| s-.                     | exwm-floating-toggle-floating |
 | C-s-d                   | delete-window                 |
 | s-h                     | windmove-left                 |
 | s-j                     | windmove-down                 |
@@ -236,6 +236,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 

@@ -81,14 +81,14 @@
                                  (toggle-truncate-lines t)
                                  (tab-bar-mode -1)
                                  (buffer-face-mode t)
-                                 (face-remap-add-relative 'default '(:foreground "#000000" :background "#ffffff"))
+                                 (face-remap-add-relative 'default '(:foreground (face-foreground 'default) :background (face-background 'default)))
                                  (setq-local cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
   
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :background "white" :family "Fira Code" :weight 'normal :italic nil :height 1.0))
+  (set-face-attribute 'eldoc-box-body nil :background (face-background 'default) :weight 'normal :italic nil :height 1.0))
 
 ;;;; Статистика нажатий
 
