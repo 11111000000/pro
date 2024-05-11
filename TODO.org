@@ -82,4 +82,3 @@
 ** АНАЛИЗ Telega конфликтует с transient
 internal-macroexpand-for-load: Eager macro-expansion failure: (error "transient-define-*: Interactive form missing")
 
-

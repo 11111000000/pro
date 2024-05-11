@@ -72,6 +72,18 @@
 
 
 
+;;;; Whisper
+
+(use-package whisper
+  :init (установить-из :repo "natrys/whisper.el")
+  :bind ("C-c w" . whisper-run)
+  :config
+  (setq whisper-install-directory "/tmp/"
+       whisper-model "base"
+       whisper-language "ru"
+       whisper-translate nil
+       whisper-use-threads (/ (num-processors) 2)))
+
 
 (provide 'про-искусственный-интеллект)
 
