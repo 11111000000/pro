@@ -146,33 +146,34 @@ ARG - backward"
 
 ;; TODO: Возможно, заменить пакетом, основанным на tree-sitter ?
 
-;; (use-package electric-pair
-;;   :hook
-;;   (after-init . electric-pair-mode)
-;;   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
+(use-package electric-pair
+  :hook
+  (after-init . electric-pair-mode)
+  (emacs-lisp . electric-pair-mode)
+  (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
+;; 
+;; (use-package smartparens
+;;   :ensure t
+;;   :defines (smartparens-global-mode sp-local-pair)
+;;   :bind  (("C-^" . sp-unwrap-sexp)
+;;           ("M-j" . sp-next-sexp)
+;;           ("M-k" . sp-backward-sexp)
+;;           ("M-h" . sp-backward-up-sexp)
+;;           ("M-l" . sp-down-sexp))
+;;   :config
 
-(use-package smartparens
-  :ensure t
-  :defines (smartparens-global-mode sp-local-pair)
-  :bind  (("C-^" . sp-unwrap-sexp)
-          ("M-j" . sp-next-sexp)
-          ("M-k" . sp-backward-sexp)
-          ("M-h" . sp-backward-up-sexp)
-          ("M-l" . sp-down-sexp))
-  :config
-
-  (smartparens-global-mode 1)
-  (sp-local-pair 'emacs-lisp-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'scheme-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'racket-mode "'" nil
-                 :actions nil)
-  (sp-local-pair 'lisp-mode "" nil
-                 :actions nil)
-  (show-smartparens-global-mode t)
-  ;; (show-paren-mode -1)
-  )
+;;   (smartparens-global-mode 1)
+;;   (sp-local-pair 'emacs-lisp-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'scheme-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'racket-mode "'" nil
+;;                  :actions nil)
+;;   (sp-local-pair 'lisp-mode "" nil
+;;                  :actions nil)
+;;   (show-smartparens-global-mode t)
+;;   ;; (show-paren-mode -1)
+;;   )
 
 ;;;;; Подсветка глубины скобок
 

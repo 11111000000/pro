@@ -33,13 +33,19 @@
   (dired-auto-revert-buffer t)
   (global-auto-revert-non-file-buffers t)
   (dired-hide-details-hide-symlink-targets nil)
-
   ;;dired открывает в том же окне при использовании RET или ^
   ;; (put 'dired-find-alternate-file 'disabled nil)
 
   )
 
-;;;; Возможность выполнить M-x в выбранных файлах
+(use-package async-await
+  :ensure t
+  :init
+  (autoload 'dired-async-mode "dired-async.el" nil t)
+  (dired-async-mode 1)
+  )
+
+;;;; Функция выполнить команду в выбранных файлах
 
 (require 'dired)
 
@@ -55,7 +61,7 @@
              (call-interactively command))
            (dired-get-marked-files))))
 
-;;;; Редактор каталогов WDired
+;;;; Редактор каталогов
 
 ;; Редактирование запускается в Dired с помощью C-c C-c, далее можно произвести
 ;; действия со списком файлов, как-будто это обычный текст и сохранить изменения,

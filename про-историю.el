@@ -114,4 +114,4 @@
 
 
 (provide 'про-историю)
-;;; история.el ends here
+;;; про-историю.el ends here

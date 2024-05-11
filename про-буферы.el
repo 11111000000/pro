@@ -37,4 +37,4 @@
 (setq warning-minimum-level :error)
 
 (provide 'про-буферы)
-;;; буферы.el ends here
+;;; про-буферы.el ends here

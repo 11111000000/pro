@@ -44,12 +44,12 @@
 
 ;; Минибуфер - модлайн
 
-(use-package taoline
-  :if window-system
-  :after (all-the-icons)
-  :init (установить-из :repo "11111000000/taoline")
-  :config
-  (taoline-mode 1))
+;; (use-package taoline
+;;   :if window-system
+;;   :after (all-the-icons)
+;;   :init (установить-из :repo "11111000000/taoline")
+;;   :config
+;;   (taoline-mode 1))
 
 ;;;; Иконки
 ;;;;; All The Icons
@@ -163,6 +163,19 @@
          jit-lock-defer-time 0
          hscroll-margin 1)
 
+;;;;; Более удобное позиционирование курсора при прокрутке
+
+(use-package better-scroll
+  :ensure t
+  :functions (better-scroll-setup)
+  :bind (("C-v" . better-scroll-up)
+         ("M-v" . better-scroll-down))
+  :custom ((better-scroll-align-type  'relative))
+  :init
+  (better-scroll-setup))
+
+;;;;; Плавная прокрутка изображений
+
 (use-package iscroll
   :ensure t
   :functions (iscroll-mode)
@@ -235,10 +248,17 @@
   (pulsar-global-mode t))
 
 
-
 ;;;; Подтверждение выключения процессов
 
 (setq-default confirm-kill-processes nil)
+
+;;;; Красивые индикаторы на рамке
+
+(use-package modern-fringes
+  :ensure t
+  :functions (modern-fringes-mode)
+  :init
+  (modern-fringes-mode t))
 
 (provide 'про-внешний-вид)
 ;;; внешний-вид.el ends here

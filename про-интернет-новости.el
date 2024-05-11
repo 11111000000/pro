@@ -6,6 +6,7 @@
 (use-package elfeed
   :ensure t
   :defines (elfeed-feeds elfeed-search-filter)
+                                        ;:hook ((elfeed-search-mode . variable-pitch-mode)))
   :config
   (setq elfeed-feeds
        '(("https://lenta.ru/rss" news russia)

@@ -64,7 +64,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
            exwm-manage-configurations
            exwm-title
            exwm-input-prefix-keys)
-  :if window-system  
+  :if window-system
   ;;:hook ((exwm-init . exim-start))
   :custom ((exwm-workspace-number 4)
           (exwm-workspace-show-all-buffers t)
@@ -131,7 +131,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (exwm-enable t)
   (require 'exwm-systemtray)
   (exwm-systemtray-enable)
-  ;(exwm-init)
+                                        ;(exwm-init)
   
   )
 

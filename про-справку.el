@@ -21,18 +21,23 @@
 (use-package helpful
   :ensure t
   :defer t
-  :bind (("C-h f" . helpful-callable)
-         ("C-h v" . helpful-variable)
-         ("C-h k" . helpful-key)
-         ("C-h ." . helpful-at-point)
-         ("C-h F" . helpful-function)
-         ("C-h C" . helpful-command)))
+  :bind
+  ([remap describe-command] . helpful-command)
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-key] . helpful-key)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ("C-h ." . helpful-at-point)
+  )
+  
 
 ;;;; Изучение API Elisp
 
 (use-package elisp-demos
   :ensure t
-  :config)
+  :functions (elisp-demos-advice-helpful-update)
+  :config
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 ;;;; Подсказка комбинаций кавиш
 
