@@ -80,25 +80,26 @@
                                 (interactive)
                                 (kind-icon-reset-cache))))
 
-(use-package all-the-icons-completion
-  :ensure
-  :after (marginalia all-the-icons)
-  :functions (all-the-icons-completion-mode)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
-  (all-the-icons-completion-mode))
+;; (use-package all-the-icons-completion
+;;   :ensure
+;;   :after (marginalia all-the-icons)
+;;   :functions (all-the-icons-completion-mode)
+;;   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+;;   :init
+;;   (all-the-icons-completion-mode))
 
 (use-package nerd-icons-completion
   :ensure t
   :functions (nerd-icons-completion-mode)
+  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
   :config
   (unless (display-graphic-p) (nerd-icons-completion-mode)))
-
 
 ;;;;; Иконки Treemacs для Dired
 
 (use-package treemacs-icons-dired
   :ensure t
+  :functions (treemacs-icons-dired-mode)
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :init
   (add-hook 'after-load-theme-hook
@@ -107,6 +108,11 @@
              (sleep-for 0 100)
              (treemacs-icons-dired-mode 1))))
 
+;;;;; Иконки для ibuffer
+
+(use-package nerd-icons-ibuffer
+  :ensure t
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 ;;;; Хук при установке темы:
 
@@ -166,14 +172,14 @@
 
 ;;;;; Более удобное позиционирование курсора при прокрутке
 
-(use-package better-scroll
-  :ensure t
-  :functions (better-scroll-setup)
-  :bind (("C-v" . better-scroll-up)
-         ("M-v" . better-scroll-down))
-  :custom ((better-scroll-align-type  'relative))
-  :init
-  (better-scroll-setup))
+;; (use-package better-scroll
+;;   :ensure t
+;;   :functions (better-scroll-setup)
+;;   :bind (("C-v" . better-scroll-up)
+;;          ("M-v" . better-scroll-down))
+;;   :custom ((better-scroll-align-type  'relative))
+;;   :init
+;;   (better-scroll-setup))
 
 ;;;;; Плавная прокрутка изображений
 

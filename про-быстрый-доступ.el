@@ -4,15 +4,16 @@
 
 ;;;; Поиск по файлу
 
-(use-package ctrlf
-  :ensure t
-  :defines (ctrlf-default-search-style ctrlf-alternate-search-style)
-  :functions (ctrlf-mode)
-  :config
-  (setq ctrlf-default-search-style 'fuzzy-regexp)
-  (setq ctrlf-alternate-search-style 'literal)
-  ;;(setq ctrlf-default-search-style 'literal)
-  (ctrlf-mode t))
+;; TODO: Слишком агрессивно мапит клавиши, заменить отдельные?
+;; (use-package ctrlf
+;;   :ensure t
+;;   :defines (ctrlf-default-search-style ctrlf-alternate-search-style)
+;;   :functions (ctrlf-mode)
+;;   :config
+;;   (setq ctrlf-default-search-style 'fuzzy-regexp)
+;;   (setq ctrlf-alternate-search-style 'literal)
+;;   ;;(setq ctrlf-default-search-style 'literal)
+;;   (ctrlf-mode -1))
 
 
 ;;;; Вертикальные списки

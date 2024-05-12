@@ -21,7 +21,8 @@
 | M-r               | replace-string                      |
 | M-R               | replace-regexp                      |
 | C-a               | к-идентации-или-началу-строки       |
-| C-S-R             | revert-buffer                       |
+| C-S-r             | revert-buffer-quick                 |
+| C-r               | revert-buffer                       |
 | C-S-M-p           | shift-text-up                       |
 | C-S-M-n           | shift-text-down                     |
 | C-S-M-f           | shift-text-right                    |
@@ -236,6 +237,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 
