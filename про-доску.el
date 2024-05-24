@@ -54,4 +54,4 @@
   (dashboard-refresh-buffer))
 
 (provide 'про-доску)
-;;; доска.el ends here
+;;; про-доску.el ends here

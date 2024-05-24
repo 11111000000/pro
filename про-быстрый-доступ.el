@@ -146,4 +146,4 @@
   :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols)))
 
 (provide 'про-быстрый-доступ)
-;;; быстрый-доступ.el ends here
+;;; про-быстрый-доступ.el ends here
