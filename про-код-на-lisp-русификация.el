@@ -3,6 +3,8 @@
 ;;  Русификация ЛИСП
 ;;; Code:
 
+(require 'установить-из)
+
 (use-package prettify-utils
   :init (установить-из :repo "Ilazki/prettify-utils.el"))
 
@@ -19,6 +21,8 @@
                                ("lambda" "λ")
                                ("t" "да")
                                ("nil" "нет")
+                               ("list" "список")
+                               ("vector" "вектор")
                                ("setq" "дано")
                                ("setf" "даны")
                                ("setenv" "окружение")

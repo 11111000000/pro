@@ -36,4 +36,4 @@
 (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen) ;; Mac style
 
 (provide 'про-огрызок)
-;;; огрызок.el ends here
+;;; про-огрызок.el ends here

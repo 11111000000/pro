@@ -91,8 +91,8 @@
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t)
-          (vterm-term-environment-variable "xterm-256color" )
-	      )
+                                        ;(vterm-term-environment-variable "xterm-256color" )
+          )
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
@@ -100,19 +100,7 @@
                 ("s-v" . #'vterm-yank))
   :config
   
-  (defun turn-off-chrome ()
-    (hl-line-mode -1)
-    (display-line-numbers-mode -1))
   
-  (defface terminal-face 
-    '((((background light)) (:background "#220000" :family "Terminus (TTF)" :height 1.1))
-      (((background dark)) (:background "#220000" :family "Terminus (TTF)"  :height 1.1)))
-    "Terminal face")
-
-  (defun set-vterm-font ()
-    (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
-    (buffer-face-mode t)
-    (face-remap-add-relative 'default '(:foreground "#ffffff" :background "#000000")))
 
   (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
     (if (equal major-mode 'vterm-mode)
@@ -124,6 +112,29 @@
       (apply orig-fun args)))
   
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
+  
+  (defface terminal-face
+    '((((background light)) (:background "#000000" :family "Terminus (TTF)" :height 1.1))
+      (((background dark)) (:background "#000000" :family "Terminus (TTF)"  :height 1.1)))
+    "Terminal face")
+
+  (defun turn-off-chrome ()
+    (hl-line-mode -1)
+    (display-line-numbers-mode -1))
+  
+  (defun set-vterm-font ()
+    ;; (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
+    ;; (buffer-face-mode t)
+    
+    ;; (face-remap-add-relative
+    ;;  'default
+    ;;  :foreground "#ffffff"
+    ;;  :background "#000000")
+    ;; (face-remap-add-relative
+    ;;  'fringe
+    ;;  :foreground "#ffffff"
+    ;;  :background "#000000")
+    )
   :hook
   (vterm-mode . turn-off-chrome)
   (vterm-mode . set-vterm-font))

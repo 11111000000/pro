@@ -9,8 +9,7 @@
 (use-package js
   :after (eglot)
   :hook ((js-ts-mode . eglot-ensure)
-       (js-ts-mode . (lambda () (eglot-inlay-hints-mode -1))) 
-       )
+       (js-ts-mode . (lambda () (eglot-inlay-hints-mode -1))))
   :mode (("\\.js\\'" . js-ts-mode)
          ("\\.jsx\\'" . js-ts-mode))
   :interpreter (("node" . js-ts-mode))
@@ -70,33 +69,18 @@
   :ensure t
   :hook ((json-mode . hs-minor-mode)))
 
-;;;;; Навигация по JSON
+;; Навигация по JSON
 
 (use-package json-navigator
   :ensure t)
 
-
-;;;; Typescript
-
-;; В Emacs теперь есть встроеная поддержка typescript-ts-mode
-
-
-
-(use-package typescript-ts-mode
-  :hook ((typescript-ts-mode . eglot-ensure))
-  :mode (("\\.ts\\'" . typescript-ts-mode)
-         ("\\.tsx\\'" . tsx-ts-mode))
-  :config
-
-  ;; Добавляем typescript-language-server
-  
-  )
+;;;; Проверка кода на Javascript
 
 (use-package flymake-eslint
   :ensure t
   :functions flymake-eslint-enable
   :preface
-  
+
   (defun попробовать-flymake-eslint ()
     "Включить `flymake-eslint' основываясь на конфигурации проекта.
 Ищет ESLint конфиг проекта, чтобы определить чем проверять буфер."
@@ -106,7 +90,7 @@
       (push (file-name-concat root "node_modules" ".bin") exec-path)
       (flymake-eslint-enable))))
 
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/quick-lint-js")
+;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/quick-lint-js")
 
 ;;;; JTSX
 
@@ -121,7 +105,7 @@
 
 ;;;; Сниппеты React
 
-(use-package react-snippets :ensure t :init (require 'react-snippets))
+;;(use-package react-snippets :ensure t :init (require 'react-snippets))
 
 ;;;; Генерация схем
 

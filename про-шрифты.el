@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-
 (use-package mixed-pitch
   :ensure t
   :hook

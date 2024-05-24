@@ -22,13 +22,34 @@
 (require 'all-the-icons)
 
 (use-package tab-bar
-  :ensure t
   :custom
   (tab-bar-new-button-show nil)
   (tab-bar-close-button-show nil)
   (tab-bar-separator " ")
   (tab-bar-auto-width nil)
   :config
+
+  (defun tab-bar--define-keys ()
+    "Установите привязки клавиш для переключения между вкладками, если их настроил пользователь"
+    (when tab-bar-select-tab-modifiers
+      (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?0)))
+                  'tab-recent)
+      (dotimes (i 8)
+        (global-set-key (vector (append tab-bar-select-tab-modifiers
+                                    (list (+ i 1 ?0))))
+                    'tab-bar-select-tab))
+      (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?9)))
+                  'tab-last))
+
+    (when (and (memq 'tab-bar-format-global tab-bar-format)
+            (member '(global-mode-string ("" global-mode-string))
+                    mode-line-misc-info))
+      (setf (alist-get 'global-mode-string mode-line-misc-info)
+           '(("" (:eval (if (and tab-bar-mode
+                                (memq 'tab-bar-format-global
+                                      tab-bar-format))
+                            "" global-mode-string)))))))
+
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
@@ -73,11 +94,15 @@
   (tab-bar-mode t)
   (tab-bar-history-mode t))
 
+;; Определение клавиш, которые работают в режиме tab-bar
+
+
+
 (defun открыть-новую-вкладку ()
-    "Открыть новую вкладку с дашбордом."
-    (interactive)
-    (tab-bar-new-tab-to)
-    (dashboard-open))
+  "Открыть новую вкладку с дашбордом."
+  (interactive)
+  (tab-bar-new-tab-to)
+  (dashboard-open))
 
 ;;;;  Вкладки уровня окна
 

@@ -95,8 +95,9 @@
 | C-c <mouse-1>     | mc/add-cursor-on-click              |
 | <backtab>         | hs-toggle-hiding                    |
 | C-c <f2>          | eglot-reconnect                     |
-| C-c v             | gts-do-translate                    |
+| C-c v             | gt-do-translate                     |
 | s-.               | xref-find-definitions-other-window  |
+| C-M-.             | xref-find-definitions-other-window  |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -197,6 +198,7 @@
 | C-c C-g l               | gitlab-show-projects          |
 | C-<f6>                  | profiler-start                |
 | C-<f7>                  | profiler-stop                 |
+| <f6>                    | exwm-floating-toggle-floating |
 
 ** СДЕЛАТЬ Клавиши для модов
 
@@ -224,8 +226,6 @@
      (global-set-key (kbd соч) (intern фун))))
  exwm-keys-table)
 
-
-    
 (if (and window-system (functionp 'exwm-input-set-key))
     (progn
 	    (require 'exwm)
@@ -237,6 +237,11 @@
 #+END_SRC
 
 #+RESULTS:
+
+
+
+
+
 
 
 

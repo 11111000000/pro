@@ -7,10 +7,11 @@
 
 (use-package org
   :ensure nil
-  :bind (
-         :map org-mode-map
-         ("C-c o" . org-agenda-open-link)
-         ("C-c C-p" . nil))
+  :bind (:map org-mode-map
+              ("C-<tab>" . org-cycle)
+              ("C-TAB" . org-cycle)
+              ("C-c o" . org-agenda-open-link)
+              ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
           (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛЕГИРОВАЛ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
@@ -170,7 +171,8 @@
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
                 ("C-<return>" . outshine-insert-heading)
-                ("C-<tab>" . outshine-cycle)))
+                ("C-<tab>" . outshine-cycle)
+                ))
 
 ;; Вместо символов комментария показывать пустоту и уровень вложенности
 
@@ -193,66 +195,11 @@
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((plantuml . t))))
-
 (use-package flycheck-plantuml
   :ensure t
+  :functions (flycheck-plantuml-setup)
   :after plantuml-mode
   :config (flycheck-plantuml-setup))
-
-(use-package eyuml
-  :ensure t
-  :after org
-  :init
-  (add-to-list 'org-src-lang-modes '("yuml" . yuml))
-  (add-to-list 'org-src-lang-modes '("flowchart-js" . flowchart-js))
-  :commands (org-babel-execute:yuml)
-  :config
-  ;;
-  ;; Flowchart.js
-  ;;
-  (defun org-babel-execute:flowchart-js (body params)
-    "Execute a block of flowchartjs code with org-babel."
-    (let* ((in-file (org-babel-temp-file "" ".flowchart-js"))
-          (out-file (or (cdr (assq :file params))
-                        (error "Error: flowchart-js requires a \":file\" header argument")))
-          (cmd (format "diagrams flowchart %s %s" in-file out-file))
-          (verbosity (or (cdr (assq :verbosity params)) 0)))
-      (with-temp-buffer
-        (insert body)
-        (goto-char (point-min))
-        (write-region nil nil in-file))
-      (shell-command cmd)
-      nil))
-
-  (defun org-babel-execute:yuml (body params)
-    "Execute a block of yuml code with org-babel."
-    (let ((in-file (org-babel-temp-file "" ".yuml"))
-         (type (or (cdr (assq :type params))
-                   (error "yuml requires a \":type\" header argument")))
-         (out-file (or (cdr (assq :file params))
-                       (error "yuml requires a \":file\" header argument")))
-         (verbosity (or (cdr (assq :verbosity params)) 0)))
-      (with-temp-buffer
-        (insert body)
-        (goto-char (point-min))
-        (while (search-forward "\n" nil t) (replace-match "," nil t))
-        (write-region nil nil in-file)
-        (message (buffer-substring (point-min) (point-max)))
-        (eyuml-create-document type out-file))
-      (format "[[file:%s]]" out-file)))
-
-  (defun eyuml-create-document (type &optional out-file)
-    "Fetch remote document, TYPE could be class,usecase or activity."
-    (let ((out-file (or out-file (eyuml-create-file-name))))
-      (request (eyuml-create-url type)
-        :parser 'buffer-string
-        :success (cl-function
-                  (lambda (&key data &allow-other-keys)
-                    (when data
-                      (with-temp-buffer
-                        (set-buffer-file-coding-system 'raw-text)
-                        (insert data)
-                        (write-region nil nil out-file)))))))))
 
 
 (provide 'про-организацию)

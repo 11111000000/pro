@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'use-package)
+(require 'установить-из)
 
 ;;;; Выполнить регион или буфер
 
@@ -52,13 +53,6 @@
 ;; (use-package elsa
 ;;   :ensure t
 ;;   )
-
-;; (use-package flycheck-elsa
-;;   :ensure t
-;;   :after flycheck
-;;   :config (flycheck-elsa-setup))
-
-(require 'установить-из)
 
 (use-package flymake-elisp-config
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")

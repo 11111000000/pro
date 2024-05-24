@@ -9,7 +9,7 @@
 
 ;;; Code:
 
-;; (add-to-list 'load-path "~/ПРО")
+(add-to-list 'load-path "~/ПРО")
 
 (require 'загрузить)
 
@@ -42,14 +42,14 @@
 (загрузить 'про-интернет-сервисы)
 (загрузить 'про-интернет-новости)
 (загрузить 'про-внешние-мониторы)
-(загрузить 'про-графическую-среду)
 (загрузить 'про-инструменты)
 (загрузить 'про-искусственный-интеллект)
 (загрузить 'про-справку)
+(загрузить 'про-графическую-среду)
 
-(org-babel-load-file "/home/az/ПРО/сочетания-клавиш.org")
-(delete-file "/home/az/ПРО/сочетания-клавиш.el")
+(org-babel-load-file (expand-file-name "~/ПРО/сочетания-клавиш.org"))
+(delete-file (expand-file-name "~/ПРО/сочетания-клавиш.el"))
 
-(provide 'пример-init)
+(load-file (expand-file-name "~/Zyfra/Zyfra.el"))
 
-;;; пример-init.el ends here
+;;; пример-init.el ends here.

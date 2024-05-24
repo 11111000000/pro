@@ -139,4 +139,4 @@
             aw-scope 'frame))
 
 (provide 'про-окна)
-;;; окна.el ends here
+;;; про-окна.el ends here

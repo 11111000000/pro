@@ -40,7 +40,6 @@
 ;;   :ensure t
 ;;   :after tree-sitter)
 
-
 ;;;; Языковой сервер
 
 ;; Языковой сервер Eglot теперь встроен в EMACS
@@ -48,19 +47,6 @@
 (require 'jsonrpc)
 
 (use-package eglot
-  :hook (
-       ;; (go-mode . eglot-ensure)
-       ;; (haskell-mode . eglot-ensure)
-       ;; (typescript-mode . eglot-ensure)
-       ;; (rust-mode . eglot-ensure)
-       
-       (python-ts-mode . eglot-ensure)
-       ;; (haskell-mode . eglot-ensure)
-       ;;(js-mode . eglot-ensure)
-       
-       ;; (json-mode . eglot-ensure)
-       ;; (rust-mode . eglot-ensure)
-       )
   :functions (eglot-rename eglot-code-actions)
   :bind (:map eglot-mode-map
                 ("C-c r" . eglot-rename)
@@ -69,8 +55,7 @@
                 ("M-." . xref-find-definitions)
                 ("C-M-." . xref-find-references)
                 ("C-S-<down-mouse-1>" . xref-find-references)
-                ("C-c ." . eglot-code-actions)
-                ("C-c C-c" . eglot-code-actions))
+                ("C-c ." . eglot-code-actions))
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect 3)
@@ -80,35 +65,9 @@
   
   ;; Выключим лог, что увеличивает производительность
   
-  (fset #'jsonrpc--log-event #'always)
-
-  ;; (add-hook 'focus-out-hook 'garbage-collect)
+  (fset #'jsonrpc--log-event #'ignore)
   )
 
-;; (use-package sideline
-;;   :ensure t
-;;   :hook ((flycheck-mode . sideline-mode)
-;;        (flymake-mode  . sideline-mode)
-;;        (eldoc . sideline-mode))
-;;   :init
-;;   ;; (setq sideline-backends-left '(sideline-flymake sideline-blame)
-;;   ;;       sideline-backends-right '(sideline-eldoc))
-;;   (setq sideline-backends-left-skip-current-line nil   ; don't display on current line (left)
-;;         sideline-backends-right-skip-current-line nil  ; don't display on current line (right)
-;;         sideline-order-left 'down                    ; or 'up
-;;         sideline-order-right 'up                     ; or 'down
-;;         sideline-format-left "%s   "                 ; format for left aligment
-;;         sideline-format-right "   %s"                ; format for right aligment
-;;         sideline-priority 100                        ; overlays' priority
-;;         sideline-display-backend-name t))
-                                        ; display the backend name
-
-;; (use-package sideline-flymake :ensure t :init (require 'sideline-flymake))
-;; (use-package sideline-blame :ensure t)
-;; (use-package sideline-eldoc
-;; :init
-;; (установить-из :repo "ginqi7/sideline-eldoc")
-;; (require 'sideline-eldoc))
 
 ;;;; Подсказки поверх кода
 
@@ -150,29 +109,6 @@ ARG - backward"
   (emacs-lisp . electric-pair-mode)
   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
 ;; 
-;; (use-package smartparens
-;;   :ensure t
-;;   :defines (smartparens-global-mode sp-local-pair)
-;;   :bind  (("C-^" . sp-unwrap-sexp)
-;;           ("M-j" . sp-next-sexp)
-;;           ("M-k" . sp-backward-sexp)
-;;           ("M-h" . sp-backward-up-sexp)
-;;           ("M-l" . sp-down-sexp))
-;;   :config
-
-;;   (smartparens-global-mode 1)
-;;   (sp-local-pair 'emacs-lisp-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'scheme-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'racket-mode "'" nil
-;;                  :actions nil)
-;;   (sp-local-pair 'lisp-mode "" nil
-;;                  :actions nil)
-;;   (show-smartparens-global-mode t)
-;;   ;; (show-paren-mode -1)
-;;   )
-
 ;;;;; Подсветка глубины скобок
 
 (defvar my/hl-paren-face)
@@ -211,9 +147,10 @@ ARG - backward"
   :if  window-system
   :defines (color-identifiers:modes-alist color-identifiers:re-not-inside-class-access)
   :ensure t
-  :hook ((typescript-ts-mode . color-identifiers-mode))
+  :hook ((typescript-ts-mode . color-identifiers-mode)
+       (js-ts-mode . color-identifiers-mode))
   :custom ((color-identifiers-coloring-method
-           'sequential)
+           'hash)
           (color-identifiers:num-colors 16)
           (color-identifiers:color-luminance 0.3)
           (color-identifiers:min-color-saturation 0.2)
@@ -246,11 +183,9 @@ ARG - backward"
 
 (use-package apheleia
   :ensure t
-  :hook ((js-mode . apheleia-mode)
+  :hook ((js-ts-mode . apheleia-mode)
        (typescript-ts-mode . apheleia-mode))
-  :config
-  ;;(apheleia-global-mode nil)
-  )
+  :config)
 
 ;;;; Подсветка цветов
 
@@ -262,43 +197,16 @@ ARG - backward"
 
 (use-package flymake
   :ensure t
-  :custom ((flymake-no-changes-timeout 0.01))
-  :hook ((emacs-lisp-mode) . flymake-mode)
+  :custom ((flymake-no-changes-timeout 0.01)
+          (elisp-flymake-byte-compile-load-path load-path))
+  :hook (emacs-lisp-mode . flymake-mode)
   :bind (:map flymake-mode-map
                 ("M-]" . flymake-goto-next-error)
                 ("M-[" . flymake-goto-prev-error)
-                ("M-\\" . flymake-show-buffer-diagnostics)))
-
-;;;; Сниппеты
-
-;; Быстрые шаблоны - сниппеты можно создавать на лету со шпаргалкой
-
-(defvar шаблон-для-сниппета (concat
-                             (file-name-directory
-                              (locate-library "про-код"))
-                             "etc/шаблон-сниппета.txt"))
-
-(defun создать-новый-сниппет-со-шпаргалкой ()
-  "Создать новый сниппет со шпаргалкой."
-  (interactive)
-  (funcall-interactively 'yas-new-snippet)
-  (erase-buffer)
-  (insert-file-contents шаблон-для-сниппета))
-
-(use-package yasnippet
-  :ensure t
-  :functions (yas-reload-all)
-  :defines (yas-snippet-dirs)
-  :hook
-  (prog-mode . yas-minor-mode)
-  :config
-  (yas-reload-all)
-  (setq yas-snippet-dirs
-      '("~/.emacs.d/snippets")))
-
-(use-package yasnippet-snippets
-  :ensure t
-  :init)
+                ("M-\\" . flymake-show-buffer-diagnostics))
+  
+  
+  )
 
 ;;;; Дебаггер
 
