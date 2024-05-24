@@ -141,7 +141,7 @@
 
 (use-package org-modern
   :ensure t
-  :custom ((org-modern-star '("ᨀ" "ᨁ" "ᨂ" "ᨃ" "ᨄ" "ᨅ"))
+  :custom ((org-modern-star '("▶" "▷" "▶" "▷" "▶" "▷"))
           (org-modern-hide-stars " "))
   :hook ((org-mode . org-modern-mode))
   :init

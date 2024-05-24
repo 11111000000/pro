@@ -122,4 +122,4 @@
   (tab-close))
 
 (provide 'про-вкладки)
-;;; вкладки.el ends here
+;;; про-вкладки.el ends here

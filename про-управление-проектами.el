@@ -61,11 +61,11 @@
 
 ;; Улучшенная раскраска git diff
 
-(use-package magit-delta
-  :ensure t
-  :after magit
-  :commands magit-delta-mode
-  :hook (magit-mode . magit-delta-mode))
+;; (use-package magit-delta
+;;   :ensure t
+;;   :after magit
+;;   :commands magit-delta-mode
+;;   :hook (magit-mode . magit-delta-mode))
 
 ;; Показываем незакоммиченные участки слева
 

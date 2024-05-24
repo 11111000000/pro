@@ -61,15 +61,15 @@
 (use-package corfu-candidate-overlay
   :ensure t
   :after corfu
+  :defines (corfu-candidate-overlay-map corfu-mode-map)
   :functions (corfu-candidate-overlay-mode)
+  :bind (:map corfu-mode-map
+                ("TAB" . corfu-candidate-overlay-complete-at-point))
   :config
+  
   (corfu-candidate-overlay-mode +1)
-  ;; bind Ctrl + TAB to trigger the completion popup of corfu
-  (global-set-key (kbd "M-<tab>") 'completion-at-point)
-  ;; bind Ctrl + Shift + Tab to trigger completion of the first candidate
-  ;; (keybing <iso-lefttab> may not work for your keyboard model)
-  (global-set-key (kbd "<tab>") 'corfu-candidate-overlay-complete-at-point)
-  )
+  
+  (global-set-key (kbd "M-<tab>") 'completion-at-point))
 
 ;;;; Расширения для автодополнения
 
