@@ -49,7 +49,7 @@
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
   :bind
-  ("C-c <TAB>" . дополнить-codeium)
+  ("C-c [tab]" . дополнить-codeium)
   ("M-S-<iso-lefttab>" . дополнить-codeium)
   :config
 
