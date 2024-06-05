@@ -75,10 +75,10 @@
 (use-package expand-region
   :ensure t
   :defines (expand-region-contract-fast-key expand-region-reset-fast-key)
+  :custom (expand-region-subword-enabled  t)
   :config
   (setq expand-region-contract-fast-key "M-S-SPC"
-      expand-region-reset-fast-key "<ESC><ESC>")
-  )
+       expand-region-reset-fast-key "<ESC><ESC>"))
 
 ;; Умное удаление
 

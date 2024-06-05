@@ -26,7 +26,7 @@
        ;;(dired-mode . hl-line-mode)
        )
   :custom
-  ;; (dired-listing-switches "-aBhlv --group-directories-first")
+  (dired-listing-switches "-aBhlv --group-directories-first")
   (ls-lisp-dirs-first t)
   (ls-lisp-use-insert-directory-program nil)
   (dired-dwim-target t)
@@ -40,10 +40,10 @@
 
 (use-package async-await
   :ensure t
+  :functions (dired-async-mode)
   :init
   (autoload 'dired-async-mode "dired-async.el" nil t)
-  (dired-async-mode 1)
-  )
+  (dired-async-mode 1))
 
 ;;;; Функция выполнить команду в выбранных файлах
 

@@ -222,7 +222,6 @@
   "Alternative magenta face for `pulsar-face'."
   :group 'pulsar-faces)
 
-
 (use-package pulsar
   :ensure t
   :defines (pulsar-pulse-functions)

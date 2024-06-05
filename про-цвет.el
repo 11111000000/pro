@@ -22,7 +22,7 @@
   :custom ((tao-theme-use-height nil)
           (tao-theme-use-boxes t)
           (tao-theme-use-sepia nil)
-          (tao-theme-scale-fn '(lambda ()'(3 5 8 10 23 37 60 97 158 195 218 232 241 246 250 252 259)))
+          ;(tao-theme-scale-fn '(lambda ()'(10 12 13 15 23 37 60 97 158 195 218 232 241 246 250 252 259)))
           )
   :config
   ;;(require 'tao-yang-theme)

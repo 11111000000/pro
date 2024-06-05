@@ -4,6 +4,7 @@
 
 (require 'загрузить)
 (require 'use-package)
+(require 'установить-из)
 
 ;;;; Синтаксис
 
@@ -35,10 +36,6 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
-
-;; (use-package tree-sitter-langs
-;;   :ensure t
-;;   :after tree-sitter)
 
 ;;;; Языковой сервер
 
@@ -244,8 +241,15 @@ ARG - backward"
 
 ;;;; Свёртка кода
 
+(use-package treesit-fold
+  :init (установить-из :repo "abougouffa/treesit-fold"))
+
+;; (use-package treesit-fold-indicators
+;;   :init (установить-из :repo "emacs-tree-sitter/treesit-fold"))
+
 (use-package origami
   :ensure t
+  ;;:hook ((json-ts-mode . origami-mode))
   :bind
   (:map origami-mode-map
           ("C-<tab>" . origami-recursively-toggle-node)

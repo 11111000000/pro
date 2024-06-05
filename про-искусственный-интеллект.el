@@ -19,8 +19,18 @@
 ;;;; REPL для разных нейросетей. ChatGPT Shell
 
 (use-package chatgpt-shell
-  :init (установить-из :repo "11111000000/chatgpt-shell")
+  :init (установить-из :repo "xenodium/chatgpt-shell")
   :custom (
+          (chatgpt-shell-model-versions '("gpt-4o"
+                                          "gpt-4-0125-preview"
+                                          "gpt-4-turbo-preview"
+                                          "gpt-4-1106-preview"
+                                          "gpt-4-0613"
+                                          "gpt-4"
+                                          "gpt-3.5-turbo-16k-0613"
+                                          "gpt-3.5-turbo-16k"
+                                          "gpt-3.5-turbo-0613"
+                                          "gpt-3.5-turbo"))
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")))
 

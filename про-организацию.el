@@ -8,10 +8,10 @@
 (use-package org
   :ensure nil
   :bind (:map org-mode-map
-              ("C-<tab>" . org-cycle)
-              ("C-TAB" . org-cycle)
-              ("C-c o" . org-agenda-open-link)
-              ("C-c C-p" . nil))
+                ("C-<tab>" . org-cycle)
+                ("C-TAB" . org-cycle)
+                ("C-c o" . org-agenda-open-link)
+                ("C-c C-p" . nil))
   :custom ((org-log-done nil)
                                         ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
           (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛЕГИРОВАЛ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
@@ -171,8 +171,7 @@
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
                 ("C-<return>" . outshine-insert-heading)
-                ("C-<tab>" . outshine-cycle)
-                ))
+                ("C-<tab>" . outshine-cycle)))
 
 ;; Вместо символов комментария показывать пустоту и уровень вложенности
 
@@ -189,18 +188,22 @@
   :mode "\\.plantuml\\'"
   :custom
   ;; (plantuml-jar-path "")
-  (org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
-  (plantuml-executable-path "/usr/bin/plantuml")
+  ;; (org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
+  ;; (plantuml-executable-path "/usr/bin/plantuml")
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-jar-path "/usr/share/plantuml/plantuml.jar")
+  (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
   :config
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  ;; (setq plantuml-default-exec-mode 'jar)
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((plantuml . t))))
+
 (use-package flycheck-plantuml
   :ensure t
   :functions (flycheck-plantuml-setup)
   :after plantuml-mode
   :config (flycheck-plantuml-setup))
-
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here
