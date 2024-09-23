@@ -56,7 +56,7 @@
 | M-O               | viper-Open-line                     |
 | C-M-O             | viper-Open-line                     |
 | C-d C-f           | delete-forward-char                 |
-| C-d C-b           | backward-dnelete-char-untabify      |
+| C-d C-b           | backward-delete-char-untabify       |
 | C-d C-e           | удалить-до-конца-строки             |
 | C-d C-w           | delete-trailing-whitespace          |
 | C-d C-a           | delete-to-begin                     |
@@ -199,12 +199,15 @@
 | C-<f6>                  | profiler-start                |
 | C-<f7>                  | profiler-stop                 |
 | <f6>                    | exwm-floating-toggle-floating |
+| s-a                     | chatgpt-shell-prompt          |
+| C-c C-'                 | exwm-edit--compose-minibuffer |
+| C-c '                   | exwm-edit--compose            |
 
 ** СДЕЛАТЬ Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |
- |----------------+-----------+--------------------------------|
+  |----------------+-----------+--------------------------------|
   | image-mode-map | 0         | imagex-sticky-restore-original |
   |                | -         | imagex-sticky-zoom-out         |
   |                | +         | imagex-sticky-zoom-in          |
@@ -235,20 +238,3 @@
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 #+END_SRC
-
-#+RESULTS:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

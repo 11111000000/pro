@@ -2,12 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
 (require 'package)
+
+(setq-default package-archives
+                        '(("melpa" . "https://melpa.org/packages/")
+                          ("gnu" . "https://elpa.gnu.org/packages/")
+                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (package-initialize)
 
@@ -25,5 +25,4 @@
 (setq package-install-upgrade-built-in t)
 
 (provide 'про-менеджер-пакетов)
-;;; менеджер-пакетов.el ends here
-
+;;; про-менеджер-пакетов.el ends here.

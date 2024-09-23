@@ -117,7 +117,10 @@
 (use-package macrostep
   :ensure t
   :custom-face
-  (macrostep-expansion-highlight-face ((t (:inherit default :extend t :background "#222"))))
+  (macrostep-expansion-highlight-face ((t (
+                                            :inherit default
+                                            :extend t
+                                            :background ,(face-attribute 'default :background)))))
   :bind (:map emacs-lisp-mode-map
                 ("C-c e" . macrostep-expand)
                 :map lisp-interaction-mode-map
@@ -143,4 +146,5 @@
   :init (установить-из :repo "mmontone/emacs-inspector"))
 
 (provide 'про-код-на-lisp)
-;;; код-на-lisp.el ends here
+;;; про-код-на-lisp.el ends here
+

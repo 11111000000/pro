@@ -1,10 +1,11 @@
 ;;; про-автодополнение.el --- Автодополнение строк
 ;;; Commentary:
-;; Автодополнение текста на базе Corfu
+;; Автодополнение текста (на базе Corfu)
 ;;; Code:
 ;;;; Инициализация Corfu
 
 ;; https://github.com/minad/corfu
+
 (use-package corfu
   :ensure t
   :defines (corfu-map)
@@ -42,7 +43,8 @@
 
   :config
   (require 'corfu)
-  (global-corfu-mode)
+  ;; Включен глобальный режим автодополнения
+  (global-corfu-mode t)
   (corfu-popupinfo-mode)
   (corfu-history-mode)
 

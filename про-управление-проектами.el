@@ -59,6 +59,22 @@
   (add-hook 'magit-process-find-password-functions
            'magit-process-password-auth-source))
 
+;; Кто это сделал?
+
+(use-package blamer
+  :ensure t
+  :bind (("C-c M-i" . blamer-show-commit-info)
+	     ("C-c M-b" . blamer-mode))
+  :defer 20
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 10)
+  :custom-face
+  (blamer-face ((t :foreground "#9099AB"
+		            :background nil
+		            :height .9
+		            :italic t))))
+
 ;; Улучшенная раскраска git diff
 
 ;; (use-package magit-delta

@@ -14,6 +14,7 @@
          ("\\.jsx\\'" . js-ts-mode))
   :interpreter (("node" . js-ts-mode))
   :init
+  
   (add-to-list 'eglot-server-programs
              `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
                ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
@@ -45,8 +46,7 @@
   :ensure t
   :functions (nvm-use)
   :init
-  (nvm-use "16")
-  )
+  (nvm-use "16"))
 
 ;;;; Документация в комментариях
 
@@ -118,6 +118,36 @@
 ;;;; CSV
 
 (use-package csv-mode :ensure t)
+
+;;;; HTML и шаблоны
+
+(use-package web-mode
+  :ensure t
+  :hook (web-mode . eglot-ensure)
+  :mode "\\.html?\\'"
+  :mode "\\.phtml\\'"
+  :mode "\\.tpl\\.php\\'"
+  :mode "\\.[agj]sp\\'"
+  :mode "\\.as[cp]x\\'"
+  :mode "\\.erb\\'"
+  :mode "\\.mustache\\'"
+  :mode "\\.djhtml\\'"
+  :config
+  ;;(add-to-list 'web-mode-engines-alist '("svelte" . "\\.svelte\\'"))
+  (add-to-list 'eglot-server-programs
+             `((web-mode) . ("vscode-html-language-server" "--stdio") ))
+  
+  (setq
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 4
+   web-mode-code-indent-offset 4
+   web-mode-style-padding 4
+   web-mode-script-padding 4
+   web-mode-enable-auto-closing t
+   web-mode-enable-auto-opening t
+   web-mode-enable-auto-pairing t
+   web-mode-enable-auto-indentation t
+   ))
 
 (provide 'про-код-на-javascript)
 ;;; про-код-на-javascript.el ends here.

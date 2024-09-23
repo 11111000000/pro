@@ -211,31 +211,39 @@
                  ("-" . imagex-sticky-zoom-out))))
 
 ;;;; Подсвечивать при перемещении
+(defun pulse-line (&rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
 
-(defface pulsar-magenta
-  '((default :extend t)
-    (((class color) (min-colors 88) (background light))
-     :background "#ffccff")
-    (((class color) (min-colors 88) (background dark))
-     :background "#71206a")
-    (t :inverse-video t))
-  "Alternative magenta face for `pulsar-face'."
-  :group 'pulsar-faces)
+(dolist (command '(scroll-up-command
+                  scroll-down-command
+                  recenter-top-bottom
+                  other-window))
+  (advice-add command :after #'pulse-line))
 
-(use-package pulsar
-  :ensure t
-  :defines (pulsar-pulse-functions)
-  :functions (pulsar-global-mode)
-  :custom ((pulsar-face 'cursor))
-  :config
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
-  (add-to-list 'pulsar-pulse-functions 'goto-char)
-  (add-to-list 'pulsar-pulse-functions 'xref-find-definitions)
-  (add-to-list 'pulsar-pulse-functions 'xref-find-definitions-other-window)
-  :init
-  (pulsar-global-mode t))
+;; (defface pulsar-magenta
+;;   '((default :extend t)
+;;     (((class color) (min-colors 88) (background light))
+;;      :background "#ffccff")
+;;     (((class color) (min-colors 88) (background dark))
+;;      :background "#71206a")
+;;     (t :inverse-video t))
+;;   "Alternative magenta face for `pulsar-face'."
+;;   :group 'pulsar-faces)
 
+;; (use-package pulsar
+;;   :ensure t
+;;   :defines (pulsar-pulse-functions)
+;;   :functions (pulsar-global-mode)
+;;   :custom ((pulsar-face 'cursor))
+;;   :config
+;;   (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
+;;   (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
+;;   (add-to-list 'pulsar-pulse-functions 'goto-char)
+;;   (add-to-list 'pulsar-pulse-functions 'xref-find-definitions)
+;;   (add-to-list 'pulsar-pulse-functions 'xref-find-definitions-other-window)
+;;   :init
+;;   (pulsar-global-mode t))
 
 ;;;; Подтверждение выключения процессов
 

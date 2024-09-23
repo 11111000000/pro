@@ -57,7 +57,7 @@
                 docker-image-mode docker-network-mode docker-volume-mode
                 package-menu-mode org-agenda-mode calc-mode comint-mode
                 racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
-                lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode))
+                lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
 

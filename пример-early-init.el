@@ -6,6 +6,10 @@
 
 (setq package-enable-at-startup nil)
 
+;; Предпочитать более новый код
+
+(customize-set-variable 'load-prefer-newer t)
+
 ;;;; Оптимизация загрузки UI
 
 (push '(menu-bar-lines . 0) default-frame-alist)

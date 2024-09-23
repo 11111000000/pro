@@ -105,7 +105,7 @@ ARG - backward"
   (after-init . electric-pair-mode)
   (emacs-lisp . electric-pair-mode)
   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
-;; 
+
 ;;;;; Подсветка глубины скобок
 
 (defvar my/hl-paren-face)
@@ -113,6 +113,7 @@ ARG - backward"
 
 (use-package highlight-parentheses
   :ensure t
+  :defines (global-highlight-parentheses-mode)
   :custom ((hl-paren-colors
            `("MediumOrchid2" "MediumAquamarine" "CornflowerBlue" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
              ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
@@ -177,6 +178,8 @@ ARG - backward"
        (format-all-mode-hook . format-all-ensure-formatter))
   :config (custom-set-variables '(format-all-formatters (quote (("Python" black)
                                                                ("R" styler))))))
+
+;; Альтернативный форматтер
 
 (use-package apheleia
   :ensure t
@@ -256,6 +259,32 @@ ARG - backward"
           ("C-TAB" . origami-recursively-toggle-node)
           ("C-S-<tab>" . origami-recursively-toggle-node)
           ("C-M-<tab>" . origami-toggle-all-nodes)))
+
+;; (use-package yafolding
+;;   :ensure t
+;;   :hook
+;;   (prog-mode-hook . yafolding-mode)
+;;   :bind ("C-c C-f" . yafolding-toggle-element))
+
+;;;; Zen-кодинг
+
+(use-package emmet-mode
+  :ensure t
+  :hook ((web-mode tsx-ts-mode typescript-ts-mode) . emmet-mode)
+  :defines (emmet-indent-after-insert
+	       emmet-indentation
+	       emmet-expand-jsx-className?
+	       emmet-move-cursor-between-quotes
+	       emmet-self-closing-tag-style
+           emmet-jsx-major-modes)
+  :config
+  (setq emmet-indent-after-insert nil
+	   emmet-indentation 2
+	   emmet-expand-jsx-className? t
+	   emmet-move-cursor-between-quotes t
+	   emmet-self-closing-tag-style " /")
+  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode))
+
 
 (provide 'про-код)
 ;;; про-код.el ends here

@@ -7,6 +7,14 @@
 (require 'установить-из)
 (require 'cape)
 
+;;;; Настройка openapi-key
+
+(if (boundp 'proxyapi-key)
+    (progn
+      (setq-default openai-key proxyapi-key)
+      (setq-default chatgpt-shell-openai-key proxyapi-key)
+      (setq-default dall-e-shell-openai-key proxyapi-key)))
+
 ;;;; Библиотека поддержки Нейросетей OpenAI
 
 ;; (use-package openai                       ;
@@ -15,11 +23,11 @@
 ;;   :custom
 ;;   (openai-base-url "https://api.proxyapi.ru/openai/v1"))
 
-
 ;;;; REPL для разных нейросетей. ChatGPT Shell
 
 (use-package chatgpt-shell
   :init (установить-из :repo "xenodium/chatgpt-shell")
+  :bind (("s-a" . chatgpt-shell-prompt))
   :custom (
           (chatgpt-shell-model-versions '("gpt-4o"
                                           "gpt-4-0125-preview"
@@ -34,7 +42,7 @@
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")))
 
-;;;; Поддержка локальной нейросети от Фейсбук. LLAMA
+;;;; Поддержка локальной нейросети LLAMA
 
 (use-package ellama
   :ensure t
@@ -59,7 +67,7 @@
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
   :bind
-  ("C-c [tab]" . дополнить-codeium)
+  ("C-c <tab>" . дополнить-codeium)
   ("M-S-<iso-lefttab>" . дополнить-codeium)
   :config
 
