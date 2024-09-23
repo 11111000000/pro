@@ -20,5 +20,49 @@
        (telega-chat-mode . variable-pitch-mode))
   :config)
 
+(defun выбрать-контакт-в-телеге ()
+  "Выбор из всех контактов Telega с помощью consult."
+  (interactive)
+  (require 'telega)
+  (require 'consult)
+  (let* ((contacts (telega--getContacts))
+        (formatted-contacts (mapcar (lambda (user)
+                                     (cons (telega--tl-get user :first_name) user))
+                                   contacts)))
+    (consult--read (mapcar 'car formatted-contacts)
+                   :prompt "Выберите контакт: "
+                   :category 'telega-contact
+                   :require-match t
+                   :history 'consult--telega-contacts-history
+                   :sort t
+                   :state (lambda (arg selected)
+                            (when selected
+                              (let ((contact (cdr (assoc selected formatted-contacts))))
+                                (message "Вы выбрали: %s %s %s"
+                                       (telega--tl-get contact :id)
+                                       (telega--tl-get contact :first_name)
+                                       (telega--tl-get contact :last_name))))))))
+
+
+(defun выбрать-контакт-в-телеге ()
+  "Выбор из всех контактов и чатов Telega с помощью consult."
+  (interactive)
+  (require 'telega)
+  (require 'consult)
+  (let* ((contacts (telega--getContacts))
+        (formatted-contacts (mapcar (lambda (user)
+                                     (cons (telega--tl-get user :first_name) user))
+                                   contacts)))
+    (consult--read (mapcar 'car formatted-contacts)
+                   :prompt "Выберите контакт или чат: "
+                   :category 'telega-contact-chat
+                   :require-match t
+                   :history 'consult--telega-contacts-chats-history
+                   :sort t
+                   :state (lambda (action selected)
+                            (when selected
+                              (let ((choice (cdr (assoc selected formatted-contacts))))
+                                (telega-chat-with choice)
+                                ))))))
 (provide 'про-интернет-общение)
 ;;; про-интернет-общение.el ends here

@@ -38,8 +38,9 @@
 | C-c f             | вставить-имя-файла                  |
 | C-x b             | consult-buffer                      |
 | C-x C-b           | consult-buffer                      |
-| C-x M-b           | consult-buffer-other-window         |
 | s-<tab>           | tab-bar-switch-to-next-tab          |
+| C-x M-b           | consult-buffer-other-window         |
+| C-x C-t           | выбрать-контакт-в-телеге            |
 | S-s-<iso-lefttab> | tab-bar-switch-to-prev-tab          |
 | M-s s             | consult-line                        |
 | M-s M-s           | consult-line-multi                  |
@@ -238,3 +239,6 @@
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 #+END_SRC
+
+#+RESULTS:
+
