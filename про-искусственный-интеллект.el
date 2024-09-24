@@ -135,7 +135,6 @@
 
 (require 'subr-x)
 
-
 (defun elfeed-обновить-и-выполнить (колбэк)
   "Update elfeed and call КОЛБЭК with the summary of today's entries."
   (let (хук-когда-обновятся-ленты)

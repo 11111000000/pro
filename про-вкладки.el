@@ -30,13 +30,13 @@
   :config
 
   (defun tab-bar--define-keys ()
-    "Установите привязки клавиш для переключения между вкладками, если их настроил пользователь"
+    "Установит привязки клавиш для переключения между вкладками, если их настроил пользователь"
     (when tab-bar-select-tab-modifiers
       (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?0)))
                   'tab-recent)
       (dotimes (i 8)
         (global-set-key (vector (append tab-bar-select-tab-modifiers
-                                    (list (+ i 1 ?0))))
+                                 (list (+ i 1 ?0))))
                     'tab-bar-select-tab))
       (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?9)))
                   'tab-last))
@@ -119,6 +119,15 @@
          ("M-s-p" . предыдущая-вкладочка))
   :config
 
+  (set-face-attribute 'tab-line-tab-current nil
+                      :inherit 'default
+                      :background nil
+                      :foreground nil)
+  (set-face-attribute 'tab-line nil
+                      :foreground nil
+                      :background nil
+                      :inherit 'tab-bar)
+
   (defun следующая-вкладочка ()
     (interactive)
     "Следующая."
@@ -134,9 +143,9 @@
   (require 'powerline)
 
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
-    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
+    (powerline-render (list (powerline-wave-right 'tab-bar nil высота-tab-line)
                             (format "%s" (buffer-name buffer))
-                            (powerline-wave-left nil 'tab-line высота-tab-line))))
+                            (powerline-wave-left nil 'tab-bar высота-tab-line))))
 
   (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 
