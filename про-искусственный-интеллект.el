@@ -106,6 +106,79 @@
        whisper-translate nil
        whisper-use-threads (/ (num-processors) 2)))
 
+
+;;;; Получить картину дня из elfeed
+
+(require 'elfeed)
+
+(require 'chatgpt-shell)
+
+(defun elfeed-entries-last-seconds (seconds)
+  "Return a list of titles of elfeed entries that are from the last hour."
+  (let* ((current-time (current-time))
+        (time-ago (time-subtract current-time (seconds-to-time seconds)))
+        (result '()))
+    (maphash
+     (lambda (_key entry)
+       (let ((entry-time (seconds-to-time (elfeed-entry-date entry))))
+         (when (and (time-less-p time-ago entry-time)
+                 (time-less-p entry-time current-time))
+           (push (elfeed-entry-title entry) result))))
+     elfeed-db-entries)
+    (reverse result)))
+
+(defun elfeed-entries-today ()
+  "Return a list of titles of elfeed entries that are from today."
+  (let ((today (format-time-string "%Y-%m-%d"))
+       (result '()))
+    (maphash
+     (lambda (_key entry)
+       (let ((date (seconds-to-time (elfeed-entry-date entry))))
+         (when (equal (format-time-string "%Y-%m-%d" date) today)
+           (push (elfeed-entry-title entry) result))))
+     elfeed-db-entries)
+    (reverse result)))
+
+(defun concat-list-to-string (list)
+  "Concatenate a LIST of strings into a single string with spaces in between."
+  (mapconcat 'identity list ";"))
+
+(defun elfeed-update-and-run-callback (callback)
+  "Update elfeed and call CALLBACK with the summary of today's entries."
+  (let* (хук-когда-обновятся-ленты)
+    (setq хук-когда-обновятся-ленты (lambda (hook-level)
+                                     (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+                                     (funcall callback)))
+    (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+    (elfeed-update)))
+
+(defun новости-за-время (hours)
+  "Рассказывает новсти Elfeed за HOURS."
+  (interactive)
+  (elfeed-update-and-run-callback
+   (lambda ()
+     (let* ((summary (concat-list-to-string (elfeed-entries-last-seconds (* 3600 hours)))))
+       (with-current-buffer (chatgpt-shell--primary-buffer)
+         (chatgpt-shell-send-to-buffer
+          (concat "Вот события за " (number-to-string hours) " часа, систематизируй и суммаризируй, отфильтруй спам и рекламу, простым текстом, без Markdown:" summary)
+          nil))))))
+
+(defun новости-за-час ()
+  "Рассказывает новсти Elfeed за час."
+  (interactive)
+  (новости-за-время 1))
+
+(defun новости-за-сутки ()
+  "Рассказывает новсти Elfeed за сутки."
+  (interactive)
+  (новости-за-время 24))
+
+(defun новости-за-день ()
+  "Рассказывает новсти Elfeed за день."
+  (interactive)
+  (новости-за-время 12))
+
 (provide 'про-искусственный-интеллект)
 
 ;;; про-искусственный-интеллект.el ends here
+
