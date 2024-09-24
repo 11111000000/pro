@@ -143,9 +143,9 @@
   (require 'powerline)
 
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
-    (powerline-render (list (powerline-wave-right 'tab-bar nil высота-tab-line)
+    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
                             (format "%s" (buffer-name buffer))
-                            (powerline-wave-left nil 'tab-bar высота-tab-line))))
+                            (powerline-wave-left nil 'tab-line высота-tab-line))))
 
   (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 

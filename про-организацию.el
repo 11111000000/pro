@@ -93,7 +93,6 @@
 
 (setq org-support-shift-select nil)
 
-;;;; TODO Учёт времени
 ;;;; Помодоро
 
 ;; Простой таймер для учёта рабочего времени и перерывов:
@@ -103,12 +102,12 @@
 (use-package org-pomodoro
   :ensure t :defer t
   :custom (
-           (org-pomodoro-length 15)
-  	       (org-pomodoro-short-break-length 5)
-  	       (org-pomodoro-long-break-length 15)
-  	       (org-pomodoro-play-sounds 1)))
+          (org-pomodoro-length 15)
+  	      (org-pomodoro-short-break-length 5)
+  	      (org-pomodoro-long-break-length 15)
+  	      (org-pomodoro-play-sounds 1)))
 
-;;;; TODO Поли-моды
+;;;; Поли-моды
 
 ;; https://polymode.github.io/usage/
 
@@ -139,10 +138,9 @@
 
 ;; Современный вид для заголовков и таблиц
 
-
 (use-package org-modern
   :ensure t
-  :custom ((org-modern-star '("▶" "▷" "▶" "▷" "▶" "▷"))
+  :custom ((org-modern-star '("●" "▶" "▷" "□" "◆" "◍"))
           (org-modern-hide-stars " "))
   :hook ((org-mode . org-modern-mode))
   :init
