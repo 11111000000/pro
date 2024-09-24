@@ -227,6 +227,12 @@
                                ("forward-char" "вперёд-символ")
                                ("point-marker" "маркер-точки")
                                ("directory-files" "файлы-директории")
+                               ("number-to-string" "число-в-строку")
+                               ("funcall" "вызвать")
+                               ("string-join" "объединить-строки")
+                               ("time-subtract" "вычесть-время")
+                               ("seconds-to-time" "секунды-во-время")
+                               ("time-less-p" "время-меньше")
                                ))
   (prettify-symbols-mode 1))
 

@@ -34,6 +34,62 @@
          ("https://sachachua.com/blog/category/emacs-news/feed" news it emacs))
        elfeed-search-filter "@2-days-ago +unread"))
 
+;;;; Получить картину дня из elfeed
+
+(require 'elfeed)
+(require 'chatgpt-shell)
+
+(defun elfeed-список-новостей-за (секунды)
+  "Возвращает список записей из лент за СЕКУНДЫ."
+  (let* ((время-сейчас (current-time))
+        (времени-прошло (time-subtract время-сейчас (seconds-to-time секунды)))
+        (результат '()))
+    (maphash
+     (lambda (_key entry)
+       (let ((время-записи (seconds-to-time (elfeed-entry-date entry))))
+         (when (and (time-less-p времени-прошло время-записи)
+                 (time-less-p время-записи время-сейчас))
+           (push (elfeed-entry-title entry) результат))))
+     elfeed-db-entries)
+    (reverse результат)))
+
+(require 'subr-x)
+
+(defun elfeed-обновить-и-выполнить (callback)
+  "Update elfeed and call CALLBACK with the summary of today's entries."
+  (let* (хук-когда-обновятся-ленты)
+    (setq хук-когда-обновятся-ленты (lambda (уровень-вызова)
+                                     (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+                                     (funcall callback)))
+    (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+    (elfeed-update)))
+
+(defun новости-за-время (hours)
+  "Рассказывает новсти Elfeed за HOURS."
+  (interactive)
+  (elfeed-обновить-и-выполнить
+   (lambda ()
+     (let* ((текст-новостей (string-join  (elfeed-список-новостей-за (* 3600 hours)))))
+       (with-current-buffer (chatgpt-shell--primary-buffer)
+         (chatgpt-shell-send-to-buffer
+          (concat "Вот события за " (number-to-string hours) " часа, разбей на группы по смыслу, систематизируй и суммаризируй, новости регионов - отдельно, отфильтруй спам и рекламу, простым текстом, без Markdown:" текст-новостей)
+          nil))))))
+
+(defun новости-за-час ()
+  "Рассказывает новсти Elfeed за час."
+  (interactive)
+  (новости-за-время 1))
+
+(defun новости-за-сутки ()
+  "Рассказывает новсти Elfeed за сутки."
+  (interactive)
+  (новости-за-время 24))
+
+(defun новости-за-день ()
+  "Рассказывает новсти Elfeed за день."
+  (interactive)
+  (новости-за-время 12))
+
 
 (provide 'про-интернет-новости)
 ;;; про-интернет-новости.el ends here
