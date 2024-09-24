@@ -233,6 +233,7 @@
                                ("time-subtract" "вычесть-время")
                                ("seconds-to-time" "секунды-во-время")
                                ("time-less-p" "время-меньше")
+                               ("reverse" "обратить")
                                ))
   (prettify-symbols-mode 1))
 

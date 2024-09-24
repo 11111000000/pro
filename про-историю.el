@@ -112,6 +112,12 @@
 
 ;;(ignore-errors (load custom-file))
 
+;;;; Синхронизация буфера обмена и kill ring
+
+(setq-default save-interprogram-paste-before-kill t)
+(setq-default yank-pop-change-selection t)
+(setq-default x-select-enable-primary t)
+
 
 (provide 'про-историю)
 ;;; про-историю.el ends here

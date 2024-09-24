@@ -291,7 +291,5 @@
   (minimap-window-location 'right)
   (minimap-width-fraction 0.08))
 
-
-
 (provide 'про-редактор)
 ;;; про-редактор.el ends here

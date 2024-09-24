@@ -10,7 +10,10 @@
                                         ;:hook ((elfeed-search-mode . variable-pitch-mode)))
   :config
   (setq elfeed-feeds
-       '(("https://lenta.ru/rss" news russia)
+       '(("https://www.finam.ru/analysis/nslent/rsspoint/" news russia market analytics)
+         ("https://www.finam.ru/analysis/conews/rsspoint/" news russia analytics)
+         ("https://www.finam.ru/international/advanced/rsspoint/" news world market analytics)
+         ("https://lenta.ru/rss" news russia)
          ("https://actualidad.rt.com/feed" news russia)
          ("http://static.feed.rbc.ru/rbc/logical/footer/news.rss" news)
          ("https://meduza.io/rss/all" news russia)

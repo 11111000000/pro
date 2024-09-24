@@ -27,20 +27,28 @@
 
 (use-package chatgpt-shell
   :init (установить-из :repo "xenodium/chatgpt-shell")
-  :bind (("s-a" . chatgpt-shell-prompt))
   :custom (
-          (chatgpt-shell-model-versions '("gpt-4o"
-                                          "gpt-4-0125-preview"
-                                          "gpt-4-turbo-preview"
-                                          "gpt-4-1106-preview"
-                                          "gpt-4-0613"
+          (chatgpt-shell-model-versions '("gpt-4o-mini"
+                                          "o1-mini"
+                                          "o1-preview"
+                                          "gpt-4o"
+                                          "gpt-4o-2024-08-06"
+                                          "gpt-4-turbo"
                                           "gpt-4"
-                                          "gpt-3.5-turbo-16k-0613"
-                                          "gpt-3.5-turbo-16k"
-                                          "gpt-3.5-turbo-0613"
-                                          "gpt-3.5-turbo"))
+                                          "gpt-3.5-turbo-0125"
+                                          "gemini-1.5-pro"
+                                          "gemini-1.5-flash"
+                                          "claude-3-opus-20240229"))
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
-          (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")))
+          (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations"))
+  :config
+
+  ;; Поддержка блоков Org-мод
+  ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
+  (require 'ob-chatgpt-shell)
+  (ob-chatgpt-shell-setup)
+  )
+
 
 ;;;; Поддержка локальной нейросети LLAMA
 
@@ -123,23 +131,10 @@
                  (time-less-p время-записи время-сейчас))
            (push (elfeed-entry-title entry) результат))))
      elfeed-db-entries)
-    (print результат)
     (reverse результат)))
 
 (require 'subr-x)
 
-;; -*- lexical-binding: t -*-
-
-;; (defun elfeed-обновить-и-выполнить (callback)
-;;   "Update elfeed and call КОЛБЭК with the summary of today's entries."
-;;   (let ((хук-когда-обновятся-ленты)
-;;        (колбэк callback))
-;;     (setq хук-когда-обновятся-ленты
-;;          (lambda (уровень-вызова)
-;;            (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;            (funcall колбэк)))
-;;     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;     (elfeed-update)))
 
 (defun elfeed-обновить-и-выполнить (колбэк)
   "Update elfeed and call КОЛБЭК with the summary of today's entries."
@@ -151,18 +146,21 @@
     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
     (elfeed-update)))
 
-(defun новости-за-время (hours)
-  "Рассказывает новсти Elfeed за HOURS."
+(defvar промт-новости-по-умолчанию "систематизируй и кратко суммаризируй новости, добавь ироничный комментарий в конце, в котором упомяни несколько ярких новостей. Отдельным блоком сделай все новости Иркутска и Ангарска")
+
+(defun новости-за-время (часов-новостей &optional промт)
+  "Рассказывает новости Elfeed за ЧАСОВ-НОВОСТЕЙ.  Можно добавить ПРОМТ."
   (interactive)
   (elfeed-обновить-и-выполнить
    (lambda ()
-     (let* ((список-новостей (elfeed-список-новостей-за (* 3600 hours)))
+     (let* ((список-новостей (elfeed-список-новостей-за (* 3600 часов-новостей)))
            (текст-новостей (string-join  список-новостей)))
        (with-current-buffer (or (chatgpt-shell--primary-buffer) (current-buffer))
          (chatgpt-shell-send-to-buffer
           (concat "Вот события за "
-                 (number-to-string hours)
-                 " часа, разбей на группы по смыслу, систематизируй и суммаризируй, новости регионов - отдельно, отфильтруй спам и рекламу, простым текстом, без Markdown:"
+                 (number-to-string часов-новостей)
+                 " часа. "
+                 (or промт промт-новости-по-умолчанию)
                  текст-новостей)
           nil))))))
 
@@ -181,6 +179,24 @@
   (interactive)
   (новости-за-время 12))
 
+(defun смешное-за-час ()
+  "Рассказывает новости Elfeed за день."
+  (interactive)
+  (новости-за-время 1
+                    "отфильтруй только смешные или просто несуразные и курьёзные новости и суммаризируй, простым текстом, без Markdown, только суммаризацию, но в стиле робота из Автостопом по галактике, добавь максимально ироничный и грустный комментарий робота:"))
+
+(defun война-за-час ()
+  "Рассказывает новости Elfeed за день."
+  (interactive)
+  (новости-за-время 1
+                    "покажи только военные новости, разбей на группы по смыслу, систематизируй и суммаризируй, отфильтруй спам и рекламу, простым текстом, без Markdown:"))
+
+
+(defun анализ-за-час ()
+  "Рассказывает анализ новостей за час."
+  (interactive)
+  (новости-за-время 1
+                    "отфильтруй спам и рекламу, и сделай анализ и предсказание по заголовкам новостей: напиши только результат анализа, простым текстом, без Markdown:"))
 
 (provide 'про-искусственный-интеллект)
 

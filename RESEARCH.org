@@ -1,0 +1,56 @@
+* Анализ
+** 
+
+   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
+Проанализируй решение задачи для Emacs: 
+#+end_src
+
+
+*** Интеграция ленты событий Jira и Confluence в Emacs agenda
+**** Понадобится пакет `org-jira` для работы с Jira и 
+**** Настройка org-jira
+
+Пример настройки:
+   #+BEGIN_SRC emacs-lisp
+   (setq org-jira-url "https://your-jira-instance.atlassian.net")
+   (setq org-jira-auth "your-email@example.com")
+   (setq org-jira-password "your-password-or-api-token")
+   #+END_SRC
+
+**** Получение данных событий
+   Теперь вы можете использовать команды `org-jira-get-issues` и другие функциональности `org-jira` для получения событий из Jira.
+   Для доступа к данным из Confluence, используйте функции, предоставляемые `confluence-mode`. 
+
+   Пример получения задач:
+   #+BEGIN_SRC emacs-lisp
+   (org-jira-get-issues)
+   #+END_SRC
+
+**** Интеграция с agenda
+   Чтобы добавить события в agenda, необходимо создать org-файлы, содержащие события из Jira и Confluence, и настроить их для отображения в agenda.
+
+   Пример создания org-файла:
+
+      #+BEGIN_SRC org
+   * Jira Events
+   :PROPERTIES:
+   :CATEGORY: Jira
+   :END:
+   - [ ] Поддержка задачи из Jira
+   - [ ] Завершение задачи из Confluence
+   #+END_SRC
+
+**** Обновление и доступ через agenda
+   Добавьте созданные org-файлы в ваш agenda. Вы можете указать путь к этим файлам в настройках org-agenda-files.
+
+   Пример настройки:
+   #+BEGIN_SRC emacs-lisp
+   (setq org-agenda-files '("~/path/to/your/org-files/"))
+   #+END_SRC 
+
+   
+
+
+
+
+
