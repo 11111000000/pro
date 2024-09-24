@@ -1,4 +1,4 @@
-;;; про-код-на-javascript.el --- Поддержка Javascript, Typescript
+;;; про-код-на-javascript.el --- Поддержка Javascript, Typescript -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 

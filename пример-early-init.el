@@ -1,4 +1,4 @@
-;;; пример-early-init.el --- Пример файла раннего запуска
+;;; пример-early-init.el --- Пример файла раннего запуска -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; Этот файл можно скопировать в ~/.emacs.d/early-init.el
 ;;; Code:

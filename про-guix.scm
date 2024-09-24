@@ -1,3 +1,4 @@
+
 (simple-service 'guixrus-service
                 home-channels-service-type
                 (list

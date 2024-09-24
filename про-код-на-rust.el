@@ -1,4 +1,4 @@
-;;; про-код-на-rust.el --- RUST
+;;; про-код-на-rust.el --- RUST -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 ;;;; Rust mode

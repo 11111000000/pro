@@ -1,4 +1,4 @@
-;;; шрифты.el --- Шрифты
+;;; шрифты.el --- Шрифты -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 

@@ -1,4 +1,4 @@
-;;; про-поддержку-guix.el --- Поддержка Guix
+;;; про-поддержку-guix.el --- Поддержка Guix -*- lexical-binding: t -*-
 ;; Guix
 ;;; Commentary:
 ;;; Code:

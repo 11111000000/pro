@@ -123,6 +123,7 @@
                  (time-less-p время-записи время-сейчас))
            (push (elfeed-entry-title entry) результат))))
      elfeed-db-entries)
+    (print результат)
     (reverse результат)))
 
 (require 'subr-x)
@@ -142,11 +143,11 @@
 
 (defun elfeed-обновить-и-выполнить (колбэк)
   "Update elfeed and call КОЛБЭК with the summary of today's entries."
-  (let ((хук-когда-обновятся-ленты))
-    (setq хук-когда-обновятся-ленты
-         (lambda (уровень-вызова)
-           (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-           (funcall колбэк)))
+  (let (хук-когда-обновятся-ленты)
+    (setq хук-когда-обновятся-ленты (lambda (уровень-вызова)
+                                     (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+                                     (funcall колбэк)
+                                     ))
     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
     (elfeed-update)))
 
@@ -155,8 +156,9 @@
   (interactive)
   (elfeed-обновить-и-выполнить
    (lambda ()
-     (let* ((текст-новостей (string-join  (elfeed-список-новостей-за (* 3600 hours)))))
-       (with-current-buffer (chatgpt-shell--primary-buffer)
+     (let* ((список-новостей (elfeed-список-новостей-за (* 3600 hours)))
+           (текст-новостей (string-join  список-новостей)))
+       (with-current-buffer (or (chatgpt-shell--primary-buffer) (current-buffer))
          (chatgpt-shell-send-to-buffer
           (concat "Вот события за "
                  (number-to-string hours)

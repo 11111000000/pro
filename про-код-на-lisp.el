@@ -1,4 +1,4 @@
-;;; про-код-на-lisp.el --- LISP
+;;; про-код-на-lisp.el --- LISP -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
