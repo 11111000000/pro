@@ -39,6 +39,61 @@
   :init
   (org-projectile-per-project))
 
+(cl-defun org-projectile-capture-for-current-project
+    (&rest additional-options &key capture-template &allow-other-keys)
+  "Capture a TODO for the current active project.
+
+If CAPTURE-TEMPLATE is provided use it as the capture template
+for the TODO. ADDITIONAL-OPTIONS will be supplied as though they
+were part of the capture template definition."
+  (declare (obsolete org-project-capture-capture-for-current-project "3.0.1"))
+  (interactive)
+  (let ((project-name
+        (org-project-capture-current-project
+         (org-project-capture-strategy-get-backend org-projectile-strategy)))
+       (project-file (if (file-exists-p (concat (projectile-project-root) "ЧТОДЕЛ.org"))
+                         (concat (projectile-project-root) "ЧТОДЕЛ.org")
+                       (concat projectile-project-root "todo.org"))))
+    (print project-file)
+    (if project-name
+        (occ-capture
+         (make-instance 'occ-context
+                        :category project-name
+                        :template (or capture-template
+                                      org-project-capture-capture-template)
+                        :options (append additional-options `(:file ,project-file))
+                        :strategy org-projectile-strategy))
+      (error (format "%s is not a recognized project."
+                  project-name)))))
+
+;; (cl-defun org-projectile-capture-for-current-project
+;;     (&rest additional-options &key capture-template &allow-other-keys)
+;;   "Capture a TODO for the current active project.
+
+;; If CAPTURE-TEMPLATE is provided use it as the capture template
+;; for the TODO. ADDITIONAL-OPTIONS will be supplied as though they
+;; were part of the capture template definition."
+;;   (declare (obsolete org-project-capture-capture-for-current-project "3.0.1"))
+;;   (interactive)
+;;   (let* ((project-root (org-project-capture-current-project-root
+;;                        (org-project-capture-strategy-get-backend org-projectile-strategy)))
+;;         (project-file (if (file-exists-p (concat project-root "ЧТОДЕЛ.org"))
+;;                           (concat project-root "ЧТОДЕЛ.org")
+;;                         (concat project-root "todo.org")))
+;;         (project-name
+;;          (org-project-capture-current-project
+;;           (org-project-capture-strategy-get-backend org-projectile-strategy))))
+;;     (if project-name
+;;         (occ-capture
+;;          (make-instance 'occ-context
+;;                         :category project-name
+;;                         :template (or capture-template
+;;                                       org-project-capture-capture-template)
+;;                         :options (append additional-options `(:file ,project-file))
+;;                         :strategy org-projectile-strategy))
+;;       (error (format "%s is not a recognized project."
+;;                   project-name)))))
+
 ;;;; Текстовые меню - Transient
 
 (require 'установить-из)
