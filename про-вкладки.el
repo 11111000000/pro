@@ -4,9 +4,11 @@
 ;;; Code:
 ;;;;  Верхний уровень вкладок
 
+;; Использование пакета powerline для улучшения отображения строки состояния.
 (use-package powerline
   :ensure t)
 
+;; Функция для замены строк. Принимает пары-для-замены и строку.
 (defun заменить-строки (пары-для-замены строка)
   "заменяет набор паттернов в строке.
 принимает ПАРЫ-ДЛЯ-ЗАМЕНЫ и СТРОКА"
@@ -19,16 +21,18 @@
    пары-для-замены
    строка))
 
+;; Требовать пакет all-the-icons для отображения значков.
 (require 'all-the-icons)
 
+;; Настройка пакета tab-bar для управления вкладками.
 (use-package tab-bar
-  :custom
-  (tab-bar-new-button-show nil)
-  (tab-bar-close-button-show nil)
-  (tab-bar-separator " ")
-  (tab-bar-auto-width nil)
+  :custom  
+  (tab-bar-new-button-show nil)  ;; Скрыть кнопку создания новой вкладки.
+  (tab-bar-close-button-show nil) ;; Скрыть кнопку закрытия вкладки.
+  (tab-bar-separator " ")         ;; Установить разделитель вкладок.
+  (tab-bar-auto-width nil)        ;; Отключить автоматическое изменение ширины вкладок.
   :config
-
+  ;; Определение клавиш для переключения между вкладками.
   (defun tab-bar--define-keys ()
     "Установит привязки клавиш для переключения между вкладками, если их настроил пользователь"
     (when tab-bar-select-tab-modifiers
@@ -49,10 +53,11 @@
                                 (memq 'tab-bar-format-global
                                       tab-bar-format))
                             "" global-mode-string)))))))
-
+  ;; Привязка клавиш для быстрого переключения вкладок.
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
+  ;; Функция форматирования отображения вкладок.  
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((высота-вкладки 18)
           (длинна-имени-вкладки 25)

@@ -1,48 +1,42 @@
 ;;; про-внешний-вид.el --- Внешний вид и Интерфейс  -*- lexical-binding: t -*-
-;; Внешний вид и интерфейс (разделить)
+;; Этот файл настраивает внешний вид и интерфейс Emacs.
 ;;; Commentary:
+;;; Здесь описываются различные настройки для улучшения интерфейса и внешнего вида в Emacs.
 ;;; Code:
 
-(require 'use-package)
-(require 'установить-из)
+(require 'use-package)      ; Подключение use-package для удобного управления пакетами.
+(require 'установить-из)     ; Подключение собственного пакета для установки (например, из GitHub).
 
 ;;;; Общий вид
 
-;; Система не издаёт лишних звуков и не мигает
+;; Отключение звуковых оповещений и миганий для более спокойной работы.
 
-(setq visible-bell nil)
-(setq ring-bell-function 'ignore)
+(setq visible-bell nil)                            ; Отключение видимого звоночка.
+(setq ring-bell-function 'ignore)                  ; Игнорирование звукового сигнала.
 
-;; Скрыта панель инструментов и меню
-
-(if window-system
-    (tool-bar-mode -1))
+;; Скрытие панели инструментов и меню для упрощения интерфейса в графических средах.
 
 (if window-system
-    (menu-bar-mode -1))
+    (tool-bar-mode -1))                            ; Скрыть панель инструментов.
 
-;; Скрыты полосы прокрутки
+(if window-system
+    (menu-bar-mode -1))                            ; Скрыть меню.
 
-(if window-system (scroll-bar-mode -1))
+;; Скрытие полосы прокрутки для более чистого интерфейса.
+
+(if window-system (scroll-bar-mode -1))          ; Скрыть полосы прокрутки в графическом интерфейсе.
 
 ;;;; Минибуфер
 
-;; Минибуферы могут открываться рекурсивно
+;; Настройки для улучшения работы с минибуфером.
 
-(setq-default enable-recursive-minibuffers t)
+(setq-default enable-recursive-minibuffers t)     ; Разрешение рекурсивного открытия минибуферов.
+(setq-default max-mini-window-height nil)          ; Минибуфер может быть любого размера.
+(setq resize-mini-windows t)                       ; Автоматический размер минибуфера.
 
-;; Минибуфер может менять размер
+(setq message-truncate-lines nil)                  ; Длинные сообщения не обрезаются.
 
-(setq-default max-mini-window-height nil)
-(setq resize-mini-windows t)
-;; (window-resize (minibuffer-window) 0.1)
-;; (add-hook 'minibuffer-setup-hook (lambda () (setq line-spacing 1.0)))
-
-;; Длинные сообщения не обрезаются
-
-(setq message-truncate-lines nil)
-
-;; Минибуфер - модлайн
+;; Настройка минималистичного вида минибуфера с иконками.
 
 (use-package taoline
   :if window-system
@@ -55,14 +49,18 @@
 ;;;; Иконки
 ;;;;; All The Icons
 
+;; Подключение библиотеки для использования иконок в интерфейсе.
+
 (use-package all-the-icons
   :if window-system
   :custom
-  (all-the-icons-scale-factor 1)
-  (all-the-icons-default-adjust 0)
+  (all-the-icons-scale-factor 1)                   ; Настройка масштаба иконок.
+  (all-the-icons-default-adjust 0)                 ; Настройка размещения иконок.
   :ensure t)
 
 ;;;;; Иконки для автодополнения
+
+;; Подключение иконок для автодополнения с помощью `kind-icon`.
 
 (use-package kind-icon
   :ensure t
@@ -70,32 +68,26 @@
   :defines (corfu-margin-formatters)
   :functions (kind-icon-margin-formatter kind-icon-reset-cache)
   :custom
-  (kind-icon-use-icons t)
+  (kind-icon-use-icons t)                           ; Включение использования иконок.
   (kind-icon-default-face 'corfu-default)
-  ;; (kind-icon-blend-background nil)
-  ;; (kind-icon-blend-frac 0.08)
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Добавление форматировщика иконок.
   (add-hook 'kb/themes-hooks #'(lambda ()
                                 (interactive)
-                                (kind-icon-reset-cache))))
+                                (kind-icon-reset-cache))))  ; Обновление иконок при смене темы.
 
-;; (use-package all-the-icons-completion
-;;   :ensure
-;;   :after (marginalia all-the-icons)
-;;   :functions (all-the-icons-completion-mode)
-;;   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-;;   :init
-;;   (all-the-icons-completion-mode))
+;; Подключение иконок для среды Marginalia.
 
 (use-package nerd-icons-completion
   :ensure t
   :functions (nerd-icons-completion-mode)
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
   :config
-  (unless (display-graphic-p) (nerd-icons-completion-mode)))
+  (unless (display-graphic-p) (nerd-icons-completion-mode))) ; Отключение иконок в терминальном режиме.
 
 ;;;;; Иконки Treemacs для Dired
+
+;; Настройка иконок в `dired` (менеджер файлов) для более удобного интерфейса.
 
 (use-package treemacs-icons-dired
   :ensure t
@@ -103,16 +95,16 @@
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :init
   (add-hook 'after-load-theme-hook
-           (lambda ()
-             (treemacs-icons-dired-mode -1)
-             (sleep-for 0 100)
-             (treemacs-icons-dired-mode 1))))
+            (lambda ()
+              (treemacs-icons-dired-mode -1)  ; Отключение иконок после смены темы.
+              (sleep-for 0 100)
+              (treemacs-icons-dired-mode 1)))) ; Включение иконок после небольшой задержки.
 
 ;;;;; Иконки для ibuffer
 
 (use-package nerd-icons-ibuffer
   :ensure t
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))  ; Включение иконок в ibuffer.
 
 ;;;; Хук при установке темы:
 
@@ -120,24 +112,22 @@
   "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-  "Запускает `after-load-theme-hook'."
-  (run-hooks 'after-load-theme-hook))
+  "Запускает `after-load-theme-hook'."  
+  (run-hooks 'after-load-theme-hook))  ; Запуск пользовательских хуков после установки темы.
 
 ;;;; Курсор
 
-;; Курсор представляет из себя мигающий прямоугольник, ширина которого зависит от размера символа под ним:
+;; Настройка типа курсора - мигающий прямоугольник с возможностью изменения ширины.
 
-(setq cursor-type '(bar . 4))
+(setq cursor-type '(bar . 4))                 ; Установка курсора типа 'bar' с шириной 4.
 
-;;(blink-cursor-mode nil)
-(setq x-stretch-cursor t)
-;;(setq blink-cursor-delay 0.3)
+(setq x-stretch-cursor t)                      ; Распространение курсора по высоте символа.
 
-;; В невыбраных окнах, курсор прозрачный
+;; В невыбранных окнах курсор будет полупрозрачным.
 
 (setq-default cursor-in-non-selected-windows t)
 
-;; В зависимости от включенного режима ввода, курсор меняет свой вид:
+;; Использование пакета для изменения курсора в зависимости от ввода.
 
 (use-package cursor-chg
   :init (установить-из :repo "emacsmirror/cursor-chg")
@@ -146,25 +136,29 @@
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
-           curchg-default-cursor-type '(bar . 2)
-           curchg-default-cursor-color "PaleGreen3" ;(face-attribute 'default :foreground)
-           curchg-change-cursor-on-input-method-flag t)
-  (change-cursor-mode t))
+                curchg-default-cursor-type '(bar . 2)
+                curchg-default-cursor-color "PaleGreen3" ; Цвет курсора по умолчанию.
+                curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
+  (change-cursor-mode t))                        ; Включение режима изменения курсора.
 
 ;;;; Прокрутка
 
 ;;;;; Настройки прокрутки
 
+;; Настройки для изменения поведения прокрутки.
+
 (setq-default scroll-conservatively 80
-         scroll-step 1
-         scroll-margin 5
-         hscroll-step 1
-         auto-window-vscroll nil
-         fast-but-imprecise-scrolling t
-         jit-lock-defer-time 0
-         hscroll-margin 1)
+              scroll-step 1
+              scroll-margin 5
+              hscroll-step 1
+              auto-window-vscroll nil
+              fast-but-imprecise-scrolling t
+              jit-lock-defer-time 0
+              hscroll-margin 1)
 
 ;;;;; Плавная прокрутка изображений
+
+;; Включение плавной прокрутки для определённых режимов.
 
 (use-package iscroll
   :ensure t
@@ -178,14 +172,15 @@
 
 ;;;; Меню режима
 
-;; Меню для текущего файла, в Org-mode например, показывает список заголовков
-;; как своего рода директории
+;; Включение меню для текущего файла, например в Org-mode, для отображения заголовков.
 
 (use-package imenu
   :custom ((imenu-auto-recsan t))
   :defer t)
 
 ;;;; Сокращение диалогов до y/n
+
+;; Упрощение диалоговых окон до y/n вместо yes/no.
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -194,60 +189,46 @@
 ;; (use-package solaire-mode
 ;;   :ensure t
 ;;   :config
-;;   (solaire-global-mode t))
+;;   (solaire-global-mode t))  ; Включение цветного фона для служебных буферов.
 
 ;;;; Изображения
 
-(require 'image-mode)
+(require 'image-mode)           ; Подключение модуля для работы с изображениями.
 
 (use-package image+
   :ensure t
   :after 'image-mode
-  :hook (image-mode . image+)
+  :hook (image-mode . image+)   ; Включение расширенного режима работы с изображениями.
   :bind ((:map image-mode-map
-                 ("0" . imagex-sticky-restore-original)
-                 ("+" . imagex-sticky-maximize)
-                 ("=" . imagex-sticky-zoom-in)
-                 ("-" . imagex-sticky-zoom-out))))
+               ("0" . imagex-sticky-restore-original)  ; Восстановление оригинала изображения.
+               ("+" . imagex-sticky-maximize)          ; Максимизация изображения.
+               ("=" . imagex-sticky-zoom-in)           ; Увеличение изображения.
+               ("-" . imagex-sticky-zoom-out))))       ; Уменьшение изображения.
 
 ;;;; Подсвечивать при перемещении
-(defun pulse-line (&rest _)
-  "Pulse the current line."
-  (pulse-momentary-highlight-one-line (point)))
+;; Подсвечивание текущей строки при перемещении курсора для улучшения визуального восприятия.
+;; (defun pulse-line (&rest _)
+;;   "Pulse the current line."
+;;   (pulse-momentary-highlight-one-line (point)))
 
-(dolist (command '(scroll-up-command
-                  scroll-down-command
-                  recenter-top-bottom
-                  other-window))
-  (advice-add command :after #'pulse-line))
-
-;; (defface pulsar-magenta
-;;   '((default :extend t)
-;;     (((class color) (min-colors 88) (background light))
-;;      :background "#ffccff")
-;;     (((class color) (min-colors 88) (background dark))
-;;      :background "#71206a")
-;;     (t :inverse-video t))
-;;   "Alternative magenta face for `pulsar-face'."
-;;   :group 'pulsar-faces)
-
-;; (use-package pulsar
-;;   :ensure t
-;;   :defines (pulsar-pulse-functions)
-;;   :functions (pulsar-global-mode)
-;;   :custom ((pulsar-face 'cursor))
-;;   :config
-;;   (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-;;   (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
-;;   (add-to-list 'pulsar-pulse-functions 'goto-char)
-;;   (add-to-list 'pulsar-pulse-functions 'xref-find-definitions)
-;;   (add-to-list 'pulsar-pulse-functions 'xref-find-definitions-other-window)
-;;   :init
-;;   (pulsar-global-mode t))
+;; (dolist (command '(scroll-up-command
+;;                   scroll-down-command
+;;                   recenter-top-bottom
+;;                   other-window
+;;                   windmove-down
+;;                   windmove-up
+;;                   windmove-left
+;;                   windmove-right
+;;                   flymake-goto-next-error
+;;                   flymake-goto-prev-error
+;;                   xref-find-definitions
+;;                   xref-find-definitions-other-window
+;;                   goto-char))
+;;   (advice-add command :after #'pulse-line))  ; Привязка функции подсветки к командам перемещения.
 
 ;;;; Подтверждение выключения процессов
 
-(setq-default confirm-kill-processes nil)
+(setq-default confirm-kill-processes nil)  ; Отключение подтверждения перед завершением процессов.
 
 ;;;; Красивые индикаторы на рамке
 
@@ -255,7 +236,7 @@
   :ensure t
   :functions (modern-fringes-mode)
   :init
-  (modern-fringes-mode t))
+  (modern-fringes-mode t))  ; Включение кастомизированных индикаторов.
 
-(provide 'про-внешний-вид)
+(provide 'про-внешний-вид)  ; Экспортирование конфигурации для использования в других частях Emacs.
 ;;; про-внешний-вид.el ends here

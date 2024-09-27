@@ -38,10 +38,11 @@
          ("https://sachachua.com/blog/category/emacs-news/feed" news it emacs))
        elfeed-search-filter "@2-days-ago +unread"))
 
+
+
 ;;;; Получить картину дня из elfeed
 
 (require 'elfeed)
-(require 'chatgpt-shell)
 
 (defun elfeed-список-новостей-за (секунды)
   "Возвращает список записей из лент за СЕКУНДЫ."
@@ -59,68 +60,15 @@
 
 (require 'subr-x)
 
-;; -*- lexical-binding: t -*-
-
-;; (defun elfeed-обновить-и-выполнить (callback)
-;;   "Update elfeed and call КОЛБЭК with the summary of today's entries."
-;;   (let ((хук-когда-обновятся-ленты)
-;;        (колбэк callback))
-;;     (setq хук-когда-обновятся-ленты
-;;          (lambda (уровень-вызова)
-;;            (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;            (funcall колбэк)))
-;;     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;     (elfeed-update)))
-
 (defun elfeed-обновить-и-выполнить (колбэк)
   "Update elfeed and call КОЛБЭК with the summary of today's entries."
-  (let ((хук-когда-обновятся-ленты))
-    (setq хук-когда-обновятся-ленты
-         (lambda (уровень-вызова)
-           (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-           (funcall колбэк)))
+  (let (хук-когда-обновятся-ленты)
+    (setq хук-когда-обновятся-ленты (lambda (уровень-вызова)
+                                     (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
+                                     (funcall колбэк)
+                                     ))
     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
     (elfeed-update)))
-
-;; (defun elfeed-обновить-и-выполнить (callback)
-;;   "Update elfeed and call КОЛБЭК with the summary of today's entries."
-;;   (let ((хук-когда-обновятся-ленты)
-;;        (колбэк callback))
-;;     (setq хук-когда-обновятся-ленты (lambda (уровень-вызова)
-;;                                      (remove-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;                                      (funcall колбэк)))
-;;     (add-hook 'elfeed-update-hooks хук-когда-обновятся-ленты)
-;;     (elfeed-update)))
-
-(defun новости-за-время (hours)
-  "Рассказывает новсти Elfeed за HOURS."
-  (interactive)
-  (elfeed-обновить-и-выполнить
-   (lambda ()
-     (let* ((текст-новостей (string-join  (elfeed-список-новостей-за (* 3600 hours)))))
-       (with-current-buffer (chatgpt-shell--primary-buffer)
-         (chatgpt-shell-send-to-buffer
-          (concat "Вот события за "
-                 (number-to-string hours)
-                 " часа, разбей на группы по смыслу, систематизируй и суммаризируй, новости регионов - отдельно, отфильтруй спам и рекламу, простым текстом, без Markdown:"
-                 текст-новостей)
-          nil))))))
-
-(defun новости-за-час ()
-  "Рассказывает новости Elfeed за час."
-  (interactive)
-  (новости-за-время 1))
-
-(defun новости-за-сутки ()
-  "Рассказывает новости Elfeed за сутки."
-  (interactive)
-  (новости-за-время 24))
-
-(defun новости-за-день ()
-  "Рассказывает новости Elfeed за день."
-  (interactive)
-  (новости-за-время 12))
-
 
 (provide 'про-интернет-новости)
 ;;; про-интернет-новости.el ends here

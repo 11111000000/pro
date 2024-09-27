@@ -13,4 +13,4 @@
 
 
 (provide 'про-код-на-rust)
-;;; код-на-rust.el ends here
+;;; про-код-на-rust.el ends here

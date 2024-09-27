@@ -177,7 +177,9 @@
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
-	      (outshine-bullets-bullet-list '("▶" "▷" "▶" "▷" "▶" "▷"))))
+	      (outshine-bullets-bullet-list '("●" "▶" "▷" "□" "◆" "◍"))))
+
+(set-face-attribute 'org-hide nil :foreground (face-background 'default))
 
 ;;;; Поддержка диаграмм из блоков на UML
 
