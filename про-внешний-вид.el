@@ -200,16 +200,17 @@
   :after 'image-mode
   :hook (image-mode . image+)   ; Включение расширенного режима работы с изображениями.
   :bind ((:map image-mode-map
-               ("0" . imagex-sticky-restore-original)  ; Восстановление оригинала изображения.
-               ("+" . imagex-sticky-maximize)          ; Максимизация изображения.
-               ("=" . imagex-sticky-zoom-in)           ; Увеличение изображения.
-               ("-" . imagex-sticky-zoom-out))))       ; Уменьшение изображения.
+                 ("0" . imagex-sticky-restore-original)  ; Восстановление оригинала изображения.
+                 ("+" . imagex-sticky-maximize)          ; Максимизация изображения.
+                 ("=" . imagex-sticky-zoom-in)           ; Увеличение изображения.
+                 ("-" . imagex-sticky-zoom-out))))       ; Уменьшение изображения.
 
 ;;;; Подсвечивать при перемещении
 ;; Подсвечивание текущей строки при перемещении курсора для улучшения визуального восприятия.
 ;; (defun pulse-line (&rest _)
 ;;   "Pulse the current line."
 ;;   (pulse-momentary-highlight-one-line (point)))
+
 
 ;; (dolist (command '(scroll-up-command
 ;;                   scroll-down-command
@@ -225,8 +226,21 @@
 ;;                   xref-find-definitions-other-window
 ;;                   goto-char))
 ;;   (advice-add command :after #'pulse-line))  ; Привязка функции подсветки к командам перемещения.
+(use-package pulsar
+  :ensure t  
+  :hook ((next-error xref-after-return) . pulsar-pulse-line) ; only pulse, don't recenter
+  :hook ((consult-after-jump imenu-after-jump xref-after-jump) . pulsar-recenter-center) ; pulse and recenter
+  :hook ((consult-after-jump imenu-after-jump xref-after-jump xref-after-return) . pulsar-reveal-entry) ; reveal if hidden
+  :custom
+  (pulsar-face 'pulsar-green)
+  :config
+  (cl-callf append pulsar-pulse-functions
+    '(what-cursor-position scroll-up-command scroll-down-command kill-whole-line yank-from-kill-ring yank yank-pop))
+  (pulsar-global-mode t)
+  )
 
-;;;; Подтверждение выключения процессов
+
+;;;; подтверждение выключения процессов
 
 (setq-default confirm-kill-processes nil)  ; Отключение подтверждения перед завершением процессов.
 
@@ -234,8 +248,8 @@
 
 (use-package modern-fringes
   :ensure t
-  :functions (modern-fringes-mode)
-  :init
+  :defines (modern-fringes-mode)
+  :config
   (modern-fringes-mode t))  ; Включение кастомизированных индикаторов.
 
 (provide 'про-внешний-вид)  ; Экспортирование конфигурации для использования в других частях Emacs.

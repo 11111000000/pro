@@ -17,6 +17,7 @@
     (start-process-shell-command
      "xrandr" nil
      (concat "xrandr --output " имя-внешнего-монитора " --auto --rotate normal --output " имя-встроенного-монитора " --auto " xrandr-position " " имя-внешнего-монитора " --primary"))
+    (sit-for 1)
     (exwm-randr-refresh)))
 
 (eval-after-load 'exwm

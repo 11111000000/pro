@@ -1,5 +1,4 @@
 * Анализ
-** 
 
    #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context nil
 Проанализируй решение задачи для Emacs: 
