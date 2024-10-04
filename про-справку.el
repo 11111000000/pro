@@ -27,8 +27,7 @@
   ([remap describe-key] . helpful-key)
   ([remap describe-symbol] . helpful-symbol)
   ([remap describe-variable] . helpful-variable)
-  ("C-h ." . helpful-at-point)
-  )
+  ("C-h ." . helpful-at-point))
   
 
 ;;;; Изучение API Elisp
@@ -69,8 +68,7 @@
 
 (use-package eldoc-box
   :ensure t
-  :bind (("C-c i" . eldoc-doc-buffer)
-         ("M-/" . eldoc-box-help-at-point))
+  :bind (("M-/" . eldoc-box-help-at-point)) ;; TODO: Перенести в org
   :custom ((eldoc-idle-delay 0.1)
           (eldoc-box-offset '(-50 50 -50)))
   :hook (

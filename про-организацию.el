@@ -36,6 +36,7 @@
 ;; Для определения размера отображения, сперва ищем атрибут вида {{
 
 (setq-default org-image-actual-width nil)
+(setq-default org-image-max-width 1000)
 
 ;;;; Блоки кода
 
