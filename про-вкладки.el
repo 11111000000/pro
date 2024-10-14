@@ -160,5 +160,11 @@
   (kill-this-buffer)
   (tab-close))
 
+;; Размапим C-tab, чтобы не конфликтовал с браузером и подобным
+
+(with-eval-after-load 'tab-bar
+  (define-key tab-bar-mode-map (kbd "C-<tab>") nil)
+  (define-key tab-bar-mode-map (kbd "C-S-<tab>") nil))
+
 (provide 'про-вкладки)
 ;;; про-вкладки.el ends here

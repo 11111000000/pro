@@ -139,13 +139,13 @@
   (vterm-mode . turn-off-chrome)
   (vterm-mode . set-vterm-font))
 
-(use-package vterm-toggle
-  :ensure t
-  :custom
-  (vterm-toggle-fullscreen-p nil)
-  (vterm-toggle-scope 'dedicated)
-  (vterm-toggle-hide-method 'delete-window)
-  :config)
+;; (use-package vterm-toggle
+;;   :ensure t
+;;   :custom
+;;   (vterm-toggle-fullscreen-p nil)
+;;   (vterm-toggle-scope 'dedicated)
+;;   (vterm-toggle-hide-method 'delete-window)
+;;   :config)
 
 (use-package multi-vterm
   :ensure t
