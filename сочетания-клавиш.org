@@ -48,8 +48,6 @@
 | C-x y             | consult-yank-from-kill-ring         |
 | <help> a          | consult-apropos                     |
 | s-m               | consult-imenu-multi                 |
-| M-M               | bookmark-set                        |
-| M-m               | bookmark-jump                       |
 | C-j               | next-line                           |
 | C-k               | previous-line                       |
 | M-o               | viper-open-line                     |
@@ -138,8 +136,10 @@
 | s-x                     | app-launcher-run-app          |
 | s-M-h                   | split-window-horizontally     |
 | s-M-k                   | split-window-vertically       |
-| C-x d                   | dired-jump                    |
+| C-x d                   | consult-find                  |
 | C-x C-d                 | dired-jump                    |
+| C-x m                   | bookmark-jump                 |
+| C-x C-m                 | bookmark-set                  |
 | <XF86Back>              | winner-undo                   |
 | <XF86Forward>           | winner-redo                   |
 | <print>                 | скриншот-области              |
@@ -242,4 +242,5 @@
 #+END_SRC
 
 #+RESULTS:
+
 

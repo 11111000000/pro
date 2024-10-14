@@ -1,20 +1,24 @@
-;;; шрифты.el --- Шрифты -*- lexical-binding: t -*-
+;;; шрифты.el --- Шрифты настройки -*- lexical-binding: t -*-
 ;;; Commentary:
+;; Этот файл настраивает шрифты в Emacs для различных режимов.
+;; Включает режим смешанных шрифтов для более эстетичного отображения текста.
 ;;; Code:
 
+;; Подключение пакета для смешанных шрифтов (mixing pitch)
 (use-package mixed-pitch
-  :ensure t
+  :ensure t  ;; Убедитесь, что пакет будет установлен
   :hook
-  (org-mode . mixed-pitch-mode)
-  (help-mode . mixed-pitch-mode)
+  ;; Включаем режим смешанных шрифтов в org-mode и help-mode
+  (org-mode . mixed-pitch-mode)  ;; В org-режиме используем смешанные шрифты
+  (help-mode . mixed-pitch-mode)  ;; В режиме справки также используем смешанные шрифты
   :custom
-  (mixed-pitch-variable-pitch-cursor nil)
+  (mixed-pitch-variable-pitch-cursor nil)  ;; Отключаем курсор переменной ширины
   :config
   (setq
    mixed-pitch-fixed-pitch-faces
-   (delete-dups
+   (delete-dups  ;; Удаляем дублирующиеся элементы
     (append
-     mixed-pitch-fixed-pitch-faces
+     mixed-pitch-fixed-pitch-faces  ;; Существующие лица фиксированной ширины
      '(font-lock-comment-delimiter-face font-lock-comment-face org-block
                                         org-block-begin-line org-block-end-line org-cite org-cite-key
                                         org-document-info-keyword org-done org-drawer org-footnote org-formula
@@ -24,31 +28,49 @@
                                         org-table org-tag org-tag-group org-todo org-verbatim org-verse)))))
 
 
-;;(setq-default default-frame-alist '((font . "Fira Code")))
+;; Установить шрифты по умолчанию в новом фрейме.
+;; (setq-default default-frame-alist '((font . "Fira Code")))
 
-;; function to convert from rubles to usd
-
+;; Функция для обновления настроек шрифтов
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."
   (interactive)
-  ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120)))))
-  ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8)))))
-  ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0)))))
-  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120)))))
-  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8)))))
-  (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0))))))
+  ;; Закомментированная часть позволяет использовать различные шрифты:
+  ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120))))) ;; Для стандартного текста
+  ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8))))) ;; Для фиксированного текста
+  ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0))))) ;; Для переменной ширины текста
+  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120))))) ;; Настраиваем шрифт по умолчанию
+  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8))))) ;; Настраиваем фиксированный шрифт
+  (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0)))))) ;; Настраиваем переменную ширину
 
+;; Добавление поддержки для эмодзи в шрифтовом наборе
 (set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend)
 
+;; Обновляем настройки шрифтов, когда загружается новая тема
 (add-hook 'after-load-theme-hook
-          (lambda ()
-              (обновить-настройки-шрифтов)))
+         (lambda ()
+           (обновить-настройки-шрифтов)))
 
+;; Инициализация настроек шрифтов
 (обновить-настройки-шрифтов)
 
-;; Межстрочный интервал
+;;;; Межстрочный интервал
+(setq-default line-spacing 1)  ;; Устанавливаем межстрочный интервал на единицу для улучшения читаемости
 
-(setq-default line-spacing 1)
+;;;; Красивые типографические символы
+;; Заменяем последовательности символов на красивые глифы
+;; При наведении курсора хотим видеть оригинал:
+(use-package fira-code-mode
+  :if window-system  ;; Убедимся, что это только для графических систем
+  :ensure t
+  :hook ((prog-mode . fira-code-mode))  ;; Включаем fira-code-mode в режимах программирования
+  :functions (fira-code-mode-set-font)  ;; Указываем, что будем использовать эту функцию
+  :config
+  (fira-code-mode-set-font))  ;; Настраиваем шрифт Fira Code для использования
 
-(provide 'про-шрифты)
+;; Включаем "красивые" символы в тексте
+(global-prettify-symbols-mode +1)
+(setq prettify-symbols-unprettify-at-point t)  ;; Возвращаем оригинальный символ при наведении курсора
+
+(provide 'про-шрифты) ;; Экспортируем текущий пакет
 ;;; про-шрифты.el ends here

@@ -49,9 +49,15 @@
   :config
   ;; Поддержка блоков Org-мод
   ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
-  (require 'ob-chatgpt-shell)
-  (ob-chatgpt-shell-setup)
+
   )
+
+(use-package ob-chatgpt-shell
+  :ensure t
+  :functions ()
+  :config
+  (require 'ob-chatgpt-shell)
+  (ob-chatgpt-shell-setup))
 
 
 ;;;; Поддержка локальной нейросети LLAMA
@@ -111,12 +117,14 @@
 (use-package whisper
   :init (установить-из :repo "natrys/whisper.el")
   :bind ("M-<f5>" . whisper-run)
+  :custom ((whisper--ffmpeg-input-format ))
   :config
   (setq whisper-install-directory (expand-file-name "~/.emacs.d/")
        whisper-model "medium"
        whisper-language "ru"
        whisper-translate nil
        whisper-use-threads (/ (num-processors) 2)))
+
 
 ;;;; Обработка новостей
 

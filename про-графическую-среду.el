@@ -116,7 +116,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;; TODO: перенести в подходящее место (м.б. таблицу?)
   (add-hook 'exwm-init-hook (lambda ()
                              (progn
-                               (start-process-shell-command "nm-applet" nil "sleep 0.1; dbus-launch nm-applet -t")
+                               (start-process-shell-command "nm-applet" nil "killall -9 nm-applet; sleep 0.1; dbus-launch nm-applet")
                                (start-process-shell-command "blueman-applet" nil "sleep 0.2; dbus-launch blueman-applet")
                                (start-process-shell-command "udiskie" nil "sleep 0.3; dbus-launch udiskie -t")
                                (start-process-shell-command "dunst" nil "sleep 0.4; dbus-launch dunst -conf ~/System/dunstrc")

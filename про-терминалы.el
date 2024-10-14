@@ -143,7 +143,7 @@
   :ensure t
   :custom
   (vterm-toggle-fullscreen-p nil)
-  (vterm-toggle-scope 'project)
+  (vterm-toggle-scope 'dedicated)
   (vterm-toggle-hide-method 'delete-window)
   :config)
 
@@ -169,7 +169,7 @@
               (split-window-below)
               (windmove-down)
               (projectile-run-vterm))
-          (vterm-toggle))))))
+          (multi-vterm-dedicated-open))))))
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here

@@ -129,27 +129,13 @@
   :config
   (setq bookmark-save-flag t))
 
-;;;; Красивые типографские символы
-
-;; Последовательности символов можно заменить на один глиф. Но при наведении курсора, мы хотим видеть оригинал:
-
-(use-package fira-code-mode
-  :if window-system
-  :ensure t
-  :hook ((prog-mode . fira-code-mode))
-  :functions (fira-code-mode-set-font)
-  :config
-  (fira-code-mode-set-font))
-
-(global-prettify-symbols-mode +1)
-(setq prettify-symbols-unprettify-at-point t)
 
 ;;;; Переносы
 
 (setq-default truncate-lines t
-           truncate-partial-width-windows 50
-           longlines-show-hard-newlines t
-           line-move-visual t)
+         truncate-partial-width-windows 50
+         longlines-show-hard-newlines t
+         line-move-visual t)
 
 (toggle-truncate-lines t)
 (visual-line-mode t)

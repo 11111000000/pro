@@ -84,7 +84,5 @@
 (use-package corfu-terminal
   :ensure t)
 
-
-
 (provide 'про-автодополнение)
 ;;; про-автодополнение.el ends here

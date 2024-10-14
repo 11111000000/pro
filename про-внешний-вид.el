@@ -112,14 +112,14 @@
   "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-  "Запускает `after-load-theme-hook'."  
+  "Запускает `after-load-theme-hook'."
   (run-hooks 'after-load-theme-hook))  ; Запуск пользовательских хуков после установки темы.
 
 ;;;; Курсор
 
 ;; Настройка типа курсора - мигающий прямоугольник с возможностью изменения ширины.
 
-(setq cursor-type '(bar . 4))                 ; Установка курсора типа 'bar' с шириной 4.
+(setq cursor-type '(bar . 4))                 ; Установка курсора 
 
 (setq x-stretch-cursor t)                      ; Распространение курсора по высоте символа.
 
@@ -236,8 +236,7 @@
   :config
   (cl-callf append pulsar-pulse-functions
     '(what-cursor-position scroll-up-command scroll-down-command kill-whole-line yank-from-kill-ring yank yank-pop))
-  (pulsar-global-mode t)
-  )
+  (pulsar-global-mode t))
 
 
 ;;;; подтверждение выключения процессов
@@ -251,6 +250,14 @@
   :defines (modern-fringes-mode)
   :config
   (modern-fringes-mode t))  ; Включение кастомизированных индикаторов.
+
+;;;; Выделение текущего окна
+;; (use-package selected-window-accent-mode
+;;   :config (selected-window-accent-mode 1)
+;;   :custom
+;;   (selected-window-accent-fringe-thickness 10)
+;;   (selected-window-accent-custom-color nil)
+;;   (selected-window-accent-mode-style 'subtle))
 
 (provide 'про-внешний-вид)  ; Экспортирование конфигурации для использования в других частях Emacs.
 ;;; про-внешний-вид.el ends here

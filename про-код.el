@@ -84,6 +84,15 @@
 
 (use-package coverlay :ensure t)
 
+;; (use-package sideline-eglot
+;;   :ensure t
+;;   :init
+;;   (setq sideline-backends-right '(sideline-eglot)))
+
+(use-package eglot-hierarchy
+  :init (установить-из :repo "dolmens/eglot-hierarchy"))
+
+
 ;;;; Скобки
 
 ;;;;; Подсвечивать все скобки
