@@ -4,6 +4,7 @@
 ;;;; Модуль для работы с проектами
 
 (use-package projectile
+  :defer t 
   :ensure t
   :defines (projectile-command-map)
   :custom ((projectile-sort-order 'recently-active)
@@ -19,6 +20,7 @@
 ;;;; Заметки к проекту
 
 (use-package org-projectile
+  :defer t 
   :ensure t
   :functions (org-projectile-per-project)
   :defines (org-projectile-per-project-filepath)
@@ -106,6 +108,7 @@ were part of the capture template definition."
 ;;;; Система контроля версий Git
 
 (use-package magit
+  :defer t 
   :after transient
   :ensure t
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
@@ -117,16 +120,17 @@ were part of the capture template definition."
 ;; Кто это сделал?
 
 (use-package blamer
+  :defer t 
   :ensure t
   :bind (("C-c M-i" . blamer-show-commit-info)
 	     ("C-c M-b" . blamer-mode))
-  :defer 20
+  :defer t
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 10)
   :custom-face
   (blamer-face ((t :foreground "#9099AB"
-		            :background nil
+		            :background "#AB9990"
 		            :height .9
 		            :italic t))))
 
@@ -141,6 +145,7 @@ were part of the capture template definition."
 ;; Показываем незакоммиченные участки слева
 
 (use-package diff-hl
+  :defer t 
   :ensure t
   :functions (global-diff-hl-mode)
   ;;:hook
@@ -153,6 +158,7 @@ were part of the capture template definition."
 ;;;; Машина времени для GIT
 
 (use-package git-timemachine
+  :defer t 
   :ensure t)
 
 ;;;; Управление Github и Gitlab
@@ -169,16 +175,19 @@ were part of the capture template definition."
 ;;;; Автоматизация проекта
 
 (use-package prodigy
+  :defer t 
   :ensure t)
 
 ;;;; Контейнеры
 
 (use-package docker
+  :defer t 
   :ensure t
   :init
   :config)
 
 (use-package dockerfile-mode
+  :defer t 
   :ensure t
   :init
   :config)
@@ -189,6 +198,7 @@ were part of the capture template definition."
 ;; :config)
 
 (use-package docker-compose-mode
+  :defer t 
   :ensure t
   :init
   :config)
@@ -201,6 +211,7 @@ were part of the capture template definition."
 ;;;; Поддержка Gitlab
 
 (use-package gitlab
+  :defer t 
   :ensure t)
 
 ;; (use-package lab

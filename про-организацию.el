@@ -6,6 +6,7 @@
 (load-library "find-lisp")
 
 (use-package org
+  :defer t 
   :ensure nil
   :bind (:map org-mode-map
                 ("C-<tab>" . org-cycle)
@@ -101,6 +102,7 @@
 (use-package pomodoro :ensure t :defer t)
 
 (use-package org-pomodoro
+  :defer t 
   :ensure t :defer t
   :custom (
           (org-pomodoro-length 15)
@@ -123,14 +125,16 @@
 (require 'doc-view)
 
 (use-package org-noter
+  :defer t 
   :ensure t
   :bind (
-        :map doc-view-mode-map
-        ("i" . org-noter-insert-note)))
+         :map doc-view-mode-map
+         ("i" . org-noter-insert-note)))
 
 ;;;; Цветные тэги
 
 (use-package org-rainbow-tags
+  :defer t 
   :ensure t
   :hook ((org-mode . org-rainbow-tags-mode))
   :init)
@@ -140,6 +144,7 @@
 ;; Современный вид для заголовков и таблиц
 
 (use-package org-modern
+  :defer t 
   :ensure t
   :custom ((org-modern-star '("●" "▶" "▷" "□" "◆" "◍"))
           (org-modern-hide-stars " "))
@@ -161,7 +166,7 @@
 
 ;;;; Организация кода
 
-(use-package outshine
+(use-package outshine  
   :ensure t
   :defines (outshine-mode-map)
   :custom ((outshine-startup-folded-p nil))
@@ -170,11 +175,14 @@
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
                 ("C-<return>" . outshine-insert-heading)
-                ("C-<tab>" . outshine-cycle)))
+                ("C-<tab>" . outshine-cycle)
+                ("C-M-i" . nil)
+                ))
 
 ;; Вместо символов комментария показывать пустоту и уровень вложенности
 
 (use-package outshine-bullets
+  :defer t 
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
@@ -185,6 +193,7 @@
 ;;;; Поддержка диаграмм из блоков на UML
 
 (use-package plantuml-mode
+  :defer t 
   :ensure t
   :mode "\\.plantuml\\'"
   :custom
@@ -201,6 +210,7 @@
                                '((plantuml . t))))
 
 (use-package flycheck-plantuml
+  :defer t 
   :ensure t
   :functions (flycheck-plantuml-setup)
   :after plantuml-mode

@@ -28,11 +28,13 @@
 ;;;; EWW - Браузер на ELISP
 
 (use-package eww
+  :defer t 
   :config)
 
 ;;;;; Нумерация ссылков
 
 (use-package ace-link
+  :defer t 
   :ensure t
   :after eww
   :defer t
@@ -43,20 +45,21 @@
                 ("C-c f" . ace-link-eww)))
 
 (use-package eww-lnum
+  :defer t 
   :ensure t
   :demand t
   :after eww
   :bind (
          :map eww-mode-map
-                ("C-f" . forward-char)
-                ("f" . eww-lnum-follow)
-                ("F" . eww-lnum-follow)))
+         ("C-f" . forward-char)
+         ("f" . eww-lnum-follow)
+         ("F" . eww-lnum-follow)))
 
 ;;;; W3M - альтернативный текстовый браузер
 
 (use-package w3m
+  :defer t 
   :ensure t
-  :defer t
   :hook (w3m-mode . w3m-lnum-mode)
   :bind (:map w3m-mode-map
                 ("C-<tab>" . w3m-tab-next-buffer)
@@ -94,13 +97,14 @@
 ;;;; Карты OSM
 
 (use-package osm
+  :defer t 
   :ensure t)
 
 ;;;; Погода
 
 (use-package wttrin
+  :defer t 
   :ensure t
-  :defer t
   :defines (wttrin-default-accept-language wttrin-default-cities)
   :commands (wttrin)
   :bind (("<f1> W" . wttrin))

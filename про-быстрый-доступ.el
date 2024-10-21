@@ -39,7 +39,7 @@
 
 (use-package orderless
   :ensure t
-  :config 
+  :config
   (setq completion-styles '(orderless basic) ;; Стили автодополнения
        completion-category-defaults nil 
        completion-category-overrides
@@ -90,11 +90,11 @@
 ;;;; Дополнение сниппетов
 
 (use-package consult-yasnippet
-  :ensure t) ;; Убедиться в наличии пакета
+  :ensure t) 
 
 ;;;; Поиск по документации (dash)
 
-(use-package consult-dash
+(use-package consult-dash  
   :ensure t
   :defines (consult-dash)
   :config 
@@ -135,10 +135,12 @@
 
 ;;;; Поиск по языковому серверу
 
-(use-package consult-lsp
-  :after (lsp consult) 
-  :ensure t 
-  :disabled t) 
+;; (use-package consult-lsp
+;;   :defer t 
+;;   :after (lsp consult) 
+;;   :ensure t 
+;;   :disabled t)
+
 
 (use-package consult-eglot
   :after (eglot consult)

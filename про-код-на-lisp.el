@@ -19,6 +19,7 @@
 ;;;; Emacs Lisp
 
 (use-package emacs
+  :defer t
   :bind (:map emacs-lisp-mode-map
                 ("C-c C-c" . выполнить-регион-или-буфер)
                 ("C-x M-e" . eval-print-last-sexp)))
@@ -30,11 +31,13 @@
 
 ;;;;; Оптимизация хвостовой рекурсии
 
-(use-package tco :ensure t)
+(use-package tco
+  :defer t  :ensure t)
 
 ;;;;; Асинхронные функции
 
-(use-package async-await :ensure t)
+(use-package async-await
+  :defer t  :ensure t)
 
 ;;;;; Функция для выполнения форм в буфере, включая определения переменных
 
@@ -55,6 +58,7 @@
 ;;   )
 
 (use-package flymake-elisp-config
+  :defer t 
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
   :functions (flymake-elisp-config-global-mode flymake-elisp-config-auto-mode)
   :config
@@ -70,11 +74,13 @@
 
 ;;;; Инспектор объектов ELISP
 
-(use-package inspector :ensure t)
+(use-package inspector
+  :defer t  :ensure t)
 
 ;;;; Форматирование ELISP
 
 (use-package elisp-format
+  :defer t 
   :ensure t
   ;; :hook
   ;; ((emacs-lisp-mode
@@ -91,6 +97,7 @@
 ;;;; REPL к разным LISP-ам Geiser
 
 (use-package geiser
+  :defer t 
   :ensure t
   :defines (geiser-mode-start-repl-p)
   :custom
@@ -103,6 +110,7 @@
 ;; Поддержка Geiser специально для Guile Scheme
 
 (use-package geiser-guile
+  :defer t 
   :ensure t
   :defines (geiser-guile-manual-lookup-nodes)
   :requires geiser
@@ -115,6 +123,7 @@
 ;;;; Разворачивание макросов
 
 (use-package macrostep
+  :defer t 
   :ensure t
   :custom-face
   (macrostep-expansion-highlight-face ((t (
@@ -128,7 +137,8 @@
 
 (require 'тихо-применить)
 
-(use-package eros :ensure t
+(use-package eros
+  :defer t  :ensure t
   :defines (eros-eval-last-sexp)
   :functions (eros-mode)
   :config
@@ -137,9 +147,11 @@
   ;;(global-set-key [remap eval-defun] #'eros-eval-defun)
   )
 
-(use-package elisp-docstring-mode :ensure t)
+(use-package elisp-docstring-mode
+  :defer t  :ensure t)
 
-(use-package format-all :ensure t :hook (elisp-mode . format-all-mode))
+(use-package format-all
+  :defer t  :ensure t :hook (elisp-mode . format-all-mode))
 
 (use-package
   inspector

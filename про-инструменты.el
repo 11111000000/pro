@@ -8,6 +8,7 @@
 ;;;; Открыть файл с помощью чего-нибудь
 
 (use-package openwith
+  :defer t 
   :ensure t
   :defines (openwith-associations)
   :functions (openwith-mode)
@@ -24,24 +25,15 @@
 ;;;; Запускалка приложений из системного меню
 
 (use-package app-launcher
-  ;:ensure t
+  :defer t 
+                                        ;:ensure t
   :init (установить-из :repo "SebastienWae/app-launcher")
   :bind (("s-x" . app-launcher-run-app)))
-
-;;;; Функции переферии
-
-(defun выключить-микрофон () "Выключить микрофон." (interactive) (async-shell-command "amixer set Capture toggle" nil nil))
-(defun выключить-звук () "Выключить звук." (interactive) (async-shell-command "pamixer -t" nil nil))
-(defun увеличить-громкость () "." (interactive) (async-shell-command "pamixer -i 10" nil nil))
-(defun уменьшить-громкость () "." (interactive) (async-shell-command "pamixer -d 10" nil nil))
-(defun увеличить-яркость () "." (interactive) (async-shell-command "echo ok" nil nil))
-(defun уменьшить-яркость () "." (interactive) (async-shell-command "echo ok" nil nil))
-(defun переключить-тачпад () "." (interactive) (async-shell-command "xinput toggle 13" nil nil))
-
 
 ;;;; REST Client
 
 (use-package restclient
+  :defer t 
   :ensure t
   :hook
   (restclient-mode . display-line-numbers-mode)
@@ -56,8 +48,8 @@
 
 ;;; Меню действий
 
-(use-package
-  embark
+(use-package embark
+  :defer t
   :ensure t
   :functions (embark-prefix-help-command)
   :bind
@@ -77,8 +69,9 @@
      (window-parameters (mode-line-format . none)))))
 
 ;; Consult users will also want the embark-consult package.
-(use-package
-  embark-consult
+
+(use-package embark-consult
+  :defer t
   :ensure t ; only need to install it, embark loads it after consult if found
   :after consult
   :hook (embark-collect-mode . consult-preview-at-point-mode))

@@ -105,13 +105,15 @@
 |-------------------------+-------------------------------|
 | s-q                     | exwm-reset                    |
 | s-\                     | toggle-input-method           |
-| <XF86AudioMicMute>      | выключить-микрофон            |
+| <XF86AudioMicMute>      | переключить-микрофон-alsa     |
 | <XF86AudioMute>         | выключить-звук                |
 | <XF86AudioRaiseVolume>  | увеличить-громкость           |
 | <XF86AudioLowerVolume>  | уменьшить-громкость           |
 | <XF86MonBrightnessUp>   | увеличить-яркость             |
 | <XF86MonBrightnessDown> | уменьшить-яркость             |
 | <XF86TouchpadToggle>    | переключить-тачпад            |
+| C-c <f4>                | выключить-все-микрофоны       |
+| C-c M-<f4>              | включить-гарнитуру            |
 | s-b                     | consult-buffer                |
 | C-s-d                   | delete-window                 |
 | s-h                     | windmove-left                 |
@@ -242,5 +244,6 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 

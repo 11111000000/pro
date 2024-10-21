@@ -38,7 +38,8 @@
 
 ;;;; Добавить путь для модулей
 
-(use-package add-node-modules-path :ensure t)
+(use-package add-node-modules-path
+  :defer t  :ensure t)
 
 ;;;; Поддержка разных версий ноды
 
@@ -46,8 +47,16 @@
   :ensure t
   :functions (nvm-use)
   :init
-  (nvm-use "18")
-  )
+  (nvm-use "18"))
+
+(use-package nvm
+  :ensure t
+  :functions (nvm-use nvm--version-installed?)
+  :init
+  (let ((node-version "18.20.4"))
+    (if (nvm--version-installed? node-version)
+        (nvm-use node-version)
+      (message "Node version %s is not installed." node-version))))
 
 ;;;; Документация в комментариях
 
@@ -61,23 +70,25 @@
 
 ;;;; HTTP Запросы
 
-(use-package request
+(use-package request  
   :ensure t)
 
 ;;;; Поддержка JSON
 
-(use-package json-mode
+(use-package json-mode  
   :ensure t
   :hook ((json-mode . hs-minor-mode)))
 
 ;; Навигация по JSON
 
 (use-package json-navigator
+  :defer t 
   :ensure t)
 
 ;;;; Проверка кода на Javascript
 
 (use-package flymake-eslint
+  :defer t 
   :ensure t
   :functions flymake-eslint-enable
   :preface
@@ -100,9 +111,11 @@
 ;;;; GraphQL
 
 (use-package graphql-mode
+  :defer t 
   :ensure t)
 
-(use-package graphql-ts-mode :ensure t)
+(use-package graphql-ts-mode
+  :defer t  :ensure t)
 
 ;;;; Сниппеты React
 
@@ -118,11 +131,13 @@
 
 ;;;; CSV
 
-(use-package csv-mode :ensure t)
+(use-package csv-mode
+  :defer t  :ensure t)
 
 ;;;; HTML и шаблоны
 
 (use-package web-mode
+  :defer t 
   :ensure t
   :hook (web-mode . eglot-ensure)
   :mode "\\.html?\\'"

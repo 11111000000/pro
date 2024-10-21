@@ -51,7 +51,7 @@
 
 ;; Подключение библиотеки для использования иконок в интерфейсе.
 
-(use-package all-the-icons
+(use-package all-the-icons  
   :if window-system
   :custom
   (all-the-icons-scale-factor 1)                   ; Настройка масштаба иконок.
@@ -78,7 +78,7 @@
 
 ;; Подключение иконок для среды Marginalia.
 
-(use-package nerd-icons-completion
+(use-package nerd-icons-completion  
   :ensure t
   :functions (nerd-icons-completion-mode)
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
@@ -89,16 +89,16 @@
 
 ;; Настройка иконок в `dired` (менеджер файлов) для более удобного интерфейса.
 
-(use-package treemacs-icons-dired
+(use-package treemacs-icons-dired  
   :ensure t
   :functions (treemacs-icons-dired-mode)
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :init
   (add-hook 'after-load-theme-hook
-            (lambda ()
-              (treemacs-icons-dired-mode -1)  ; Отключение иконок после смены темы.
-              (sleep-for 0 100)
-              (treemacs-icons-dired-mode 1)))) ; Включение иконок после небольшой задержки.
+           (lambda ()
+             (treemacs-icons-dired-mode -1)  ; Отключение иконок после смены темы.
+             (sleep-for 0 100)
+             (treemacs-icons-dired-mode 1)))) ; Включение иконок после небольшой задержки.
 
 ;;;;; Иконки для ibuffer
 
@@ -136,9 +136,9 @@
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
-                curchg-default-cursor-type '(bar . 2)
-                curchg-default-cursor-color "PaleGreen3" ; Цвет курсора по умолчанию.
-                curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
+           curchg-default-cursor-type '(bar . t)
+           curchg-default-cursor-color "PaleGreen3" ; Цвет курсора по умолчанию.
+           curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
   (change-cursor-mode t))                        ; Включение режима изменения курсора.
 
 ;;;; Прокрутка
@@ -148,13 +148,13 @@
 ;; Настройки для изменения поведения прокрутки.
 
 (setq-default scroll-conservatively 80
-              scroll-step 1
-              scroll-margin 5
-              hscroll-step 1
-              auto-window-vscroll nil
-              fast-but-imprecise-scrolling t
-              jit-lock-defer-time 0
-              hscroll-margin 1)
+         scroll-step 1
+         scroll-margin 5
+         hscroll-step 1
+         auto-window-vscroll nil
+         fast-but-imprecise-scrolling t
+         jit-lock-defer-time 0
+         hscroll-margin 1)
 
 ;;;;; Плавная прокрутка изображений
 
@@ -175,8 +175,7 @@
 ;; Включение меню для текущего файла, например в Org-mode, для отображения заголовков.
 
 (use-package imenu
-  :custom ((imenu-auto-recsan t))
-  :defer t)
+  :custom ((imenu-auto-recsan t)))
 
 ;;;; Сокращение диалогов до y/n
 
@@ -196,6 +195,7 @@
 (require 'image-mode)           ; Подключение модуля для работы с изображениями.
 
 (use-package image+
+  :defer t 
   :ensure t
   :after 'image-mode
   :hook (image-mode . image+)   ; Включение расширенного режима работы с изображениями.
@@ -227,6 +227,7 @@
 ;;                   goto-char))
 ;;   (advice-add command :after #'pulse-line))  ; Привязка функции подсветки к командам перемещения.
 (use-package pulsar
+  :defer t 
   :ensure t  
   :hook ((next-error xref-after-return) . pulsar-pulse-line) ; only pulse, don't recenter
   :hook ((consult-after-jump imenu-after-jump xref-after-jump) . pulsar-recenter-center) ; pulse and recenter

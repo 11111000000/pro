@@ -52,12 +52,14 @@
 ;;;;; Вернуться к последней правке
 
 (use-package goto-last-change
+  :defer t
   :ensure t
   :bind (("C-c C-," . goto-last-point)))
 
 ;;;;; Вернуться к предыдущей позиции курсора
 
 (use-package goto-last-point
+  :defer t 
   :ensure t
   :functions (goto-last-point-mode)
   :bind (("C-c ," . goto-last-point))
@@ -67,6 +69,7 @@
 ;; Сохранение положения
 
 (use-package eyebrowse
+  :defer t 
   :ensure t
   :functions (eyebrowse-mode)
   :config (eyebrowse-mode))
@@ -84,18 +87,18 @@
 (use-package recentf
   :after (no-littering)
   :custom ((recentf-max-saved-items 512)   ;; всего
-           (recentf-max-menu-items 100)    ;; меню
+          (recentf-max-menu-items 100)    ;; меню
 
-           ;; ...исключая некоторые:
+          ;; ...исключая некоторые:
 
-           (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
-                              "/\\.emacs\\.d/elpa" ; ELPA
-                              "-autoloads\\.el\\'"
-                              no-littering-var-directory
-                              no-littering-etc-directory
-                              "\\.elc\\'"
-                              "/TAGS\\'"))
-           )
+          (recentf-exclude '("/\\.git/.*\\'"      ; Git contents
+                             "/\\.emacs\\.d/elpa" ; ELPA
+                             "-autoloads\\.el\\'"
+                             no-littering-var-directory
+                             no-littering-etc-directory
+                             "\\.elc\\'"
+                             "/TAGS\\'"))
+          )
   :config
   (recentf-mode t))
 

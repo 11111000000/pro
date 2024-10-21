@@ -6,6 +6,7 @@
 
 ;; Подключение пакета для смешанных шрифтов (mixing pitch)
 (use-package mixed-pitch
+  :defer t 
   :ensure t  ;; Убедитесь, что пакет будет установлен
   :hook
   ;; Включаем режим смешанных шрифтов в org-mode и help-mode
@@ -61,6 +62,7 @@
 ;; Заменяем последовательности символов на красивые глифы
 ;; При наведении курсора хотим видеть оригинал:
 (use-package fira-code-mode
+  :defer t 
   :if window-system  ;; Убедимся, что это только для графических систем
   :ensure t
   :hook ((prog-mode . fira-code-mode))  ;; Включаем fira-code-mode в режимах программирования

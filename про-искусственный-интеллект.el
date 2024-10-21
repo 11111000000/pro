@@ -26,6 +26,7 @@
 ;;;; REPL для разных нейросетей. ChatGPT Shell
 
 (use-package chatgpt-shell
+  :defer t 
   :init (установить-из :repo "xenodium/chatgpt-shell")
   :bind (:map chatgpt-shell-mode-map
                 ("C-c C-c" . chatgpt-shell-interrupt))
@@ -53,6 +54,7 @@
   )
 
 (use-package ob-chatgpt-shell
+  :defer t 
   :ensure t
   :functions ()
   :config
@@ -63,6 +65,7 @@
 ;;;; Поддержка локальной нейросети LLAMA
 
 (use-package ellama
+  :defer t 
   :ensure t
   :init
   (require 'llm-ollama)
@@ -83,6 +86,7 @@
 ;; настройки для программного интерфейса Codeium
 
 (use-package codeium
+  :defer t 
   :init (установить-из :repo "Exafunction/codeium.el")
   :bind
   ("C-c <tab>" . дополнить-codeium)
@@ -115,6 +119,7 @@
 ;;;; Распознавание голоса. Whisper
 
 (use-package whisper
+  :defer t 
   :init (установить-из :repo "natrys/whisper.el")
   :bind ("M-<f5>" . whisper-run)
   :custom ((whisper--ffmpeg-input-format ))

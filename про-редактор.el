@@ -10,8 +10,8 @@
 (set-keyboard-coding-system 'utf-8)
 
 (setq locale-coding-system 'utf-8
-    default-file-name-coding-system 'utf-8
-    x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+     default-file-name-coding-system 'utf-8
+     x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 ;;;; Клавиатура
 
@@ -22,6 +22,7 @@
 ;; Трансляция сочетаний клавиш при включеном русском
 
 (use-package reverse-im
+  :defer t 
   :ensure t
   :defines (reverse-im-modifiers reverse-im-input-methods)
   :functions (reverse-im-mode)
@@ -41,13 +42,14 @@
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 
 (use-package avy
+  :defer t 
   :ensure t
-  :defer t
   :custom ((avy-background nil)))
 
 ;; Мульти-курсор
 
 (use-package multiple-cursors
+  :defer t 
   :ensure t)
 
 ;; При перемещении в начало строки *<C-a>*, сперва прыгать к  идентации, затем - к началу строки
@@ -73,6 +75,7 @@
 ;; Выделять "изнутри"
 
 (use-package expand-region
+  :defer t 
   :ensure t
   :defines (expand-region-contract-fast-key expand-region-reset-fast-key)
   :custom (expand-region-subword-enabled  t)
@@ -99,6 +102,7 @@
 ;; Операция над выделением или текущей линией
 
 (use-package whole-line-or-region
+  :defer t 
   :ensure t
   :init)
 
@@ -118,6 +122,7 @@
 ;;;; Отображения текста по центру ("режим чтения")
 
 (use-package olivetti
+  :defer t 
   :ensure t
   :hook ((text-mode Man-mode Info-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)
@@ -126,6 +131,7 @@
 ;;;; Закладки
 
 (use-package bookmark
+  :defer t 
   :config
   (setq bookmark-save-flag t))
 
@@ -145,9 +151,9 @@
 ;; По умолчанию отступы в 2 пробела
 
 (setq-default indent-tabs-mode nil
-           tab-width 4
-           indent-line-function 'indent-relative
-           default-tabs-width 4)
+         tab-width 4
+         indent-line-function 'indent-relative
+         default-tabs-width 4)
 
 ;; Автоматически выравнивать при переводе строки
 
@@ -156,6 +162,7 @@
 ;; Автоматически определять отступы
 
 (use-package dtrt-indent
+  :defer t 
   :ensure t
   :functions (dtrt-indent-global-mode)
   :init
@@ -164,12 +171,14 @@
 ;; Настойчиво делать идентацию для некоторых типов файлов
 
 (use-package aggressive-indent
+  :defer t 
   :ensure t
   :hook ((emacs-lisp-mode . aggressive-indent-mode)))
 
 ;; Настройка отступов берётся из файла .editorconfig
 
 (use-package editorconfig
+  :defer t 
   :ensure t
   :functions (editorconfig-mode)
   :init
@@ -180,7 +189,7 @@
 ;; Плоское, горизонтальное расположение при сравнении буферов
 
 (setq-default ediff-window-setup-function 'ediff-setup-windows-plain
-           ediff-split-window-function 'split-window-horizontally)
+         ediff-split-window-function 'split-window-horizontally)
 
 ;;;; Редактировать как Root
 
@@ -195,6 +204,7 @@
 ;;;; Переключение CamelCase/snakeCase/dash-divided итд
 
 (use-package string-inflection
+  :defer t 
   :ensure t)
 
 ;;;; Подсветка идентации
@@ -228,7 +238,8 @@
 
 ;;;; Поддержка языка  разметки Markdown
 
-(use-package markdown-mode :ensure t)
+(use-package markdown-mode
+  :defer t  :ensure t)
 
 ;;;; Вставить имя файла
 
@@ -268,6 +279,7 @@
 ;;;; Мини-карта
 
 (use-package minimap
+  :defer t 
   :ensure t
   :config
   (custom-set-faces

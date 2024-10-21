@@ -11,6 +11,7 @@
   (buffer-face-mode t))
 
 (use-package calendar
+  :defer t 
   :hook ((calendar-mode . set-calendar-font)))
 
 (provide 'про-время)

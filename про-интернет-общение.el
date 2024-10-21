@@ -8,6 +8,7 @@
 (require 'установить-из)
 
 (use-package telega
+  :defer t
   :init (установить-из :repo "zevlg/telega.el")
   :custom ((telega-use-docker t)
           (telega-use-images t)

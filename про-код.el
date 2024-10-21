@@ -82,7 +82,8 @@
 
 ;;;; Подсказки поверх кода
 
-(use-package coverlay :ensure t)
+(use-package coverlay  
+  :ensure t)
 
 ;; (use-package sideline-eglot
 ;;   :ensure t
@@ -125,11 +126,12 @@ ARG - backward"
 
 ;; TODO: Возможно, заменить пакетом, основанным на tree-sitter ?
 
-(use-package electric-pair
+(use-package electric-pair  
   :hook
   (after-init . electric-pair-mode)
   (emacs-lisp . electric-pair-mode)
   (minibuffer-setup . (lambda () (electric-pair-local-mode 0))))
+
 
 ;;;;; Подсветка глубины скобок
 
@@ -167,6 +169,7 @@ ARG - backward"
 ;; - `color-identifiers-mode` подсвечивает идентификаторы в коде разными цветами, делая код более читабельным и упрощая процесс отладки.
 
 (use-package color-identifiers-mode
+  :defer t 
   :if  window-system
   :defines (color-identifiers:modes-alist color-identifiers:re-not-inside-class-access)
   :ensure t
@@ -188,6 +191,7 @@ ARG - backward"
 ;; Альтернативный алгоритм подсветки идентификаторов
 
 (use-package rainbow-identifiers
+  :defer t 
   :if window-system
   :ensure t
   :defer t
@@ -198,6 +202,7 @@ ARG - backward"
 ;; - `format-all` автоматически форматирует код в различных языках, используя специфичные для них инструменты (например, `black` для Python). Это гарантирует, что код будет выглядеть аккуратно и эстетично.
 
 (use-package format-all
+  :defer t 
   :ensure t
   :hook ((ess-r-mode . format-all-mode)
        (python-mode . format-all-mode)
@@ -209,6 +214,7 @@ ARG - backward"
 ;; Альтернативный форматтер
 
 (use-package apheleia
+  :defer t 
   :ensure t
   :hook ((js-ts-mode . apheleia-mode)
        (typescript-ts-mode . apheleia-mode))
@@ -220,6 +226,7 @@ ARG - backward"
 
 
 (use-package rainbow-mode
+  :defer t 
   :ensure t
   :hook (prog-mode))
 
@@ -230,15 +237,12 @@ ARG - backward"
 (use-package flymake
   :ensure t
   :custom ((flymake-no-changes-timeout 0.01)
-          (elisp-flymake-byte-compile-load-path load-path))
+           (elisp-flymake-byte-compile-load-path load-path))
   :hook (emacs-lisp-mode . flymake-mode)
   :bind (:map flymake-mode-map
                 ("M-]" . flymake-goto-next-error)
                 ("M-[" . flymake-goto-prev-error)
-                ("M-\\" . flymake-show-buffer-diagnostics))
-  
-  
-  )
+                ("M-\\" . flymake-show-buffer-diagnostics)))
 
 ;;;; Дебаггер
 
@@ -247,6 +251,7 @@ ARG - backward"
 (require 'projectile)
 
 (use-package dape
+  :defer t 
   :ensure t
   :init
   :defines (dape-buffer-window-arrangment dape-cwd-fn)
@@ -279,12 +284,14 @@ ARG - backward"
 ;;;; Свёртка кода
 
 (use-package treesit-fold
+  :defer t 
   :init (установить-из :repo "abougouffa/treesit-fold"))
 
 ;; (use-package treesit-fold-indicators
 ;;   :init (установить-из :repo "emacs-tree-sitter/treesit-fold"))
 
 (use-package origami
+  :defer t 
   :ensure t
   ;;:hook ((json-ts-mode . origami-mode))
   :bind
@@ -303,6 +310,7 @@ ARG - backward"
 ;;;; Zen-кодинг
 
 (use-package emmet-mode
+  :defer t 
   :ensure t
   :hook ((web-mode tsx-ts-mode typescript-ts-mode) . emmet-mode)
   :defines (emmet-indent-after-insert

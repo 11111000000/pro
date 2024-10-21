@@ -164,7 +164,7 @@
 
 (with-eval-after-load 'tab-bar
   (define-key tab-bar-mode-map (kbd "C-<tab>") nil)
-  (define-key tab-bar-mode-map (kbd "C-S-<tab>") nil))
+  (define-key tab-bar-mode-map (kbd "C-<iso-lefttab>") nil))
 
 (provide 'про-вкладки)
 ;;; про-вкладки.el ends here

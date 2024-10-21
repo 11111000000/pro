@@ -11,6 +11,7 @@
       (interactive) (find-file ".."))
 
 (use-package dired
+  :defer t 
   :bind (
          :map dired-mode-map
          ("j" . dired-next-line)
@@ -39,6 +40,7 @@
   )
 
 (use-package async-await
+  :defer t 
   :ensure t
   :functions (dired-async-mode)
   :init
@@ -68,6 +70,7 @@
 ;; нажав C-c C-c или отменить C-g
 
 (use-package wdired
+  :defer t 
   :ensure t
   :after dired
   :bind (
@@ -82,10 +85,11 @@
 ;;;; Дерево
 
 (use-package treemacs
+  :defer t 
   :ensure t
   :functions (treemacs-follow-mode treemacs-filewatch-mode treemacs-select-window
-                                   treemacs-fringe-indicator-mode treemacs-git-mode
-                                   treemacs-hide-gitignored-files-mode treemacs-icons-dired-mode)
+                              treemacs-fringe-indicator-mode treemacs-git-mode
+                              treemacs-hide-gitignored-files-mode treemacs-icons-dired-mode)
   :init
   (with-eval-after-load 'winum
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
@@ -95,54 +99,54 @@
   :config
   (progn
     (setq treemacs-collapse-dirs             (if treemacs-python-executable 3 0)
-        treemacs-deferred-git-apply-delay        0.5
-        treemacs-directory-name-transformer      #'identity
-        treemacs-display-in-side-window          t
-        treemacs-eldoc-display                   'simple
-        treemacs-file-event-delay                3000
-        treemacs-file-extension-regex            treemacs-last-period-regex-value
-        treemacs-file-follow-delay               0.1
-        treemacs-file-name-transformer           #'identity
-        treemacs-follow-after-init               t
-        treemacs-expand-after-init               t
-        treemacs-find-workspace-method           'find-for-file-or-pick-first
-        treemacs-git-command-pipe                ""
-        treemacs-goto-tag-strategy               'refetch-index
-        treemacs-indentation                     1
-        treemacs-indentation-string              " "
-        treemacs-is-never-other-window           nil
-        treemacs-max-git-entries                 5000
-        treemacs-missing-project-action          'remove
-        treemacs-move-forward-on-expand          nil
-        treemacs-no-png-images                   nil
-        treemacs-no-delete-other-windows         t
-        treemacs-project-follow-cleanup          nil
-        treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-        treemacs-position                        'left
-        treemacs-read-string-input               'from-child-frame
-        treemacs-recenter-distance               0.1
-        treemacs-recenter-after-file-follow      nil
-        treemacs-recenter-after-tag-follow       nil
-        treemacs-recenter-after-project-jump     'always
-        treemacs-recenter-after-project-expand   'on-distance
-        treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-        treemacs-show-cursor                     nil
-        treemacs-show-hidden-files               t
-        treemacs-silent-filewatch                nil
-        treemacs-silent-refresh                  nil
-        treemacs-sorting                         'alphabetic-asc
-        treemacs-select-when-already-in-treemacs 'move-back
-        treemacs-space-between-root-nodes        nil
-        treemacs-tag-follow-cleanup              t
-        treemacs-tag-follow-delay                1
-        treemacs-text-scale                      0.5
-        treemacs-user-mode-line-format           nil
-        treemacs-user-header-line-format         nil
-        treemacs-wide-toggle-width               80
-        treemacs-width                           21
-        treemacs-width-increment                 1
-        treemacs-width-is-initially-locked       nil
-        treemacs-workspace-switch-cleanup        nil)
+         treemacs-deferred-git-apply-delay        0.5
+         treemacs-directory-name-transformer      #'identity
+         treemacs-display-in-side-window          t
+         treemacs-eldoc-display                   'simple
+         treemacs-file-event-delay                3000
+         treemacs-file-extension-regex            treemacs-last-period-regex-value
+         treemacs-file-follow-delay               0.1
+         treemacs-file-name-transformer           #'identity
+         treemacs-follow-after-init               t
+         treemacs-expand-after-init               t
+         treemacs-find-workspace-method           'find-for-file-or-pick-first
+         treemacs-git-command-pipe                ""
+         treemacs-goto-tag-strategy               'refetch-index
+         treemacs-indentation                     1
+         treemacs-indentation-string              " "
+         treemacs-is-never-other-window           nil
+         treemacs-max-git-entries                 5000
+         treemacs-missing-project-action          'remove
+         treemacs-move-forward-on-expand          nil
+         treemacs-no-png-images                   nil
+         treemacs-no-delete-other-windows         t
+         treemacs-project-follow-cleanup          nil
+         treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+         treemacs-position                        'left
+         treemacs-read-string-input               'from-child-frame
+         treemacs-recenter-distance               0.1
+         treemacs-recenter-after-file-follow      nil
+         treemacs-recenter-after-tag-follow       nil
+         treemacs-recenter-after-project-jump     'always
+         treemacs-recenter-after-project-expand   'on-distance
+         treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+         treemacs-show-cursor                     nil
+         treemacs-show-hidden-files               t
+         treemacs-silent-filewatch                nil
+         treemacs-silent-refresh                  nil
+         treemacs-sorting                         'alphabetic-asc
+         treemacs-select-when-already-in-treemacs 'move-back
+         treemacs-space-between-root-nodes        nil
+         treemacs-tag-follow-cleanup              t
+         treemacs-tag-follow-delay                1
+         treemacs-text-scale                      0.5
+         treemacs-user-mode-line-format           nil
+         treemacs-user-header-line-format         nil
+         treemacs-wide-toggle-width               80
+         treemacs-width                           21
+         treemacs-width-increment                 1
+         treemacs-width-is-initially-locked       nil
+         treemacs-workspace-switch-cleanup        nil)
 
     ;;(treemacs-resize-icons 44)
 
@@ -166,12 +170,14 @@
 ;;;; Дерево для проектов
 
 (use-package treemacs-projectile
+  :defer t 
   :after (treemacs projectile)
   :ensure t)
 
 ;;;; Дерево для Git
 
 (use-package treemacs-magit
+  :defer t 
   :after (treemacs magit)
   :ensure t)
 
@@ -180,9 +186,11 @@
 ;;   :ensure t
 ;;   :config (treemacs-set-scope-type 'Perspectives))
 
-(use-package ag :ensure t)
+(use-package ag
+  :defer t  :ensure t)
 
-(use-package dired-toggle-sudo :ensure t)
+(use-package dired-toggle-sudo
+  :defer t  :ensure t)
 
 (provide 'про-файлы-и-папки)
 ;; Local Variables:

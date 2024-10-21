@@ -4,11 +4,13 @@
 ;;;; Rust mode
 
 (use-package rust-mode
+  :defer t 
   :ensure t)
 
 ;;;; Rustics
 
 (use-package rustic
+  :defer t 
   :ensure t)
 
 

@@ -5,16 +5,17 @@
 ;;;; Info
 
 (use-package info
+  :defer t 
   :bind (:map Info-mode-map
-         ("DEL" . Info-history-back)
-         ("B" . Info-history-back)
-         ("F" . Info-history-forward)
-         ("h" . Info-up)
-         ("j" . next-line)
-         ("k" . previous-line)
-         ("l" . Info-follow-nearest-node)
-         ("<XF86Back>" . nil)
-         ("<XF86Forward>" . nil)))
+                ("DEL" . Info-history-back)
+                ("B" . Info-history-back)
+                ("F" . Info-history-forward)
+                ("h" . Info-up)
+                ("j" . next-line)
+                ("k" . previous-line)
+                ("l" . Info-follow-nearest-node)
+                ("<XF86Back>" . nil)
+                ("<XF86Forward>" . nil)))
 
 ;;;; Дополнительная справка
 
@@ -33,6 +34,7 @@
 ;;;; Изучение API Elisp
 
 (use-package elisp-demos
+  :defer t 
   :ensure t
   :functions (elisp-demos-advice-helpful-update)
   :config
@@ -41,6 +43,7 @@
 ;;;; Подсказка комбинаций кавиш
 
 (use-package guide-key
+  :defer t 
   :ensure t
   :diminish " C-?"
   :custom
@@ -67,6 +70,7 @@
 ;;;; Документация по языку во всплывающем окне
 
 (use-package eldoc-box
+  :defer t 
   :ensure t
   :bind (("M-/" . eldoc-box-help-at-point)) ;; TODO: Перенести в org
   :custom ((eldoc-idle-delay 0.1)
@@ -91,6 +95,7 @@
 ;;;; Статистика нажатий
 
 (use-package keyfreq
+  :defer t 
   :ensure t
   :functions (keyfreq-mode keyfreq-autosave-mode)
   :config

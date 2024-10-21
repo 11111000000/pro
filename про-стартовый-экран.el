@@ -31,6 +31,7 @@
 ;;; Code:
 
 (use-package grid
+  :defer t 
   :ensure t
   :init
   (unless (package-installed-p 'grid)
@@ -90,6 +91,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
       (calendar-exit))))
 
 (use-package enlight
+  :defer t 
   :custom
   (enlight-content
    (concat

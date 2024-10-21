@@ -6,6 +6,7 @@
 
 ;; chess - шахматы
 (use-package chess
+  :defer t
   :ensure t
   :commands (chess-game-mode chess-board-mode chess-board)
   :config)
