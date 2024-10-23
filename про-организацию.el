@@ -6,7 +6,6 @@
 (load-library "find-lisp")
 
 (use-package org
-  :defer t 
   :ensure nil
   :bind (:map org-mode-map
                 ("C-<tab>" . org-cycle)
@@ -18,6 +17,7 @@
           (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛЕГИРОВАЛ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
   :config
   (require 'org-compat)
+  (require 'org-tempo)
   :init)
 
 ;;;; Иконки приоритетов
@@ -32,7 +32,8 @@
 
 ;; По-умолчанию изображения в Org-файлах показаны:
 
-(setq-default org-startup-with-inline-images nil)
+(setq-default org-startup-with-inline-images t)
+(setq-default org-redisplay-inline-images t)
 
 ;; Для определения размера отображения, сперва ищем атрибут вида {{
 
@@ -57,6 +58,14 @@
 
 (setq-default org-src-preserve-indentation t
          org-edit-src-content-indentation 0)
+
+;; Не автодополнять пару "<>", чтобы вводить быстрые блоки
+
+(add-hook 'org-mode-hook (lambda ()
+                          (setq-local electric-pair-inhibit-predicate
+                                 `(lambda (c)
+                                    (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
 
 ;; Авто-обновление картинок при выполнении кода
 
@@ -94,6 +103,40 @@
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
 (setq org-support-shift-select nil)
+
+(require 'ov)
+(require 'markdown-mode)
+
+(defun render-org-results-as-markdown ()
+  "Render #+RESULTS: example blocks as markdown preview."
+  (interactive)
+  (save-excursion
+    ;; Ищем все блоки #+RESULTS: с последующим #+begin_example ... #+end_example
+    (goto-char (point-min))
+    (while (re-search-forward "^#\\+RESULTS:\\(?: \\(.*\\)\\)?\n#+begin_example\n\\(\\(?:.\\|\n\\)*?\\)#+end_example" nil t)
+      (let* ((params (match-string 1))
+            (content (match-string 2))
+            (begin (match-beginning 0))
+            (end (match-end 0))
+            (rendered-content))
+        ;; Используем markdown-mode для рендеринга содержимого
+        (with-temp-buffer
+          (insert content)
+          (markdown)
+          (setq rendered-content (buffer-string)))
+        ;; Создаем оверлей для отображения отрендеренного контента
+        (let ((ov (ov begin end)))
+          (ov-set ov 'display rendered-content)
+          (ov-set ov 'ov-rendered t))))))
+
+;; Функция для обновления рендеринга при изменениях
+(defun update-org-results-as-markdown ()
+  "Update markdown rendering in #+RESULTS: blocks."
+  (when (eq major-mode 'org-mode)
+    (render-org-results-as-markdown)))
+
+;; Добавляем хук для автоматического обновления рендеринга при сохранении файла
+(add-hook 'after-save-hook 'update-org-results-as-markdown)
 
 ;;;; Помодоро
 
@@ -179,7 +222,7 @@
                 ("C-M-i" . nil)
                 ))
 
-;; Вместо символов комментария показывать пустоту и уровень вложенности
+;; Вместо символов комментария показывать уровень вложенности
 
 (use-package outshine-bullets
   :defer t 
@@ -204,10 +247,18 @@
   (plantuml-jar-path "/usr/share/plantuml/plantuml.jar")
   (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
   :config
+  
+  ;; Понимать блоки кода UML
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   ;; (setq plantuml-default-exec-mode 'jar)
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((plantuml . t))))
+                               '((plantuml . t)))
+
+  ;; Быстрый ввод блоков кода UML
+  (add-to-list 'org-structure-template-alist
+             '("uml" . "src plantuml :file ./diagram.svg")))
+
+
 
 (use-package flycheck-plantuml
   :defer t 
@@ -215,6 +266,12 @@
   :functions (flycheck-plantuml-setup)
   :after plantuml-mode
   :config (flycheck-plantuml-setup))
+
+;;;; Асинхронное выполнение блоков кода
+
+(use-package ob-async
+  :ensure t
+  )
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

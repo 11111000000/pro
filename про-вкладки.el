@@ -26,7 +26,7 @@
 
 ;; Настройка пакета tab-bar для управления вкладками.
 (use-package tab-bar
-  :custom  
+  :custom
   (tab-bar-new-button-show nil)  ;; Скрыть кнопку создания новой вкладки.
   (tab-bar-close-button-show nil) ;; Скрыть кнопку закрытия вкладки.
   (tab-bar-separator " ")         ;; Установить разделитель вкладок.
@@ -40,8 +40,8 @@
                   'tab-recent)
       (dotimes (i 8)
         (global-set-key (vector (append tab-bar-select-tab-modifiers
-                                 (list (+ i 1 ?0))))
-                    'tab-bar-select-tab))
+                                     (list (+ i 1 ?0))))
+                        'tab-bar-select-tab))
       (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?9)))
                   'tab-last))
 
@@ -57,7 +57,7 @@
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
 
-  ;; Функция форматирования отображения вкладок.  
+  ;; Функция форматирования отображения вкладок.
   (defun формат-вкладки-tab-bar (tab i)
     (let* ((высота-вкладки 18)
           (длинна-имени-вкладки 25)
@@ -124,14 +124,14 @@
          ("M-s-p" . предыдущая-вкладочка))
   :config
 
-  (set-face-attribute 'tab-line-tab-current nil
-                      :inherit 'default
-                      :background nil
-                      :foreground nil)
-  (set-face-attribute 'tab-line nil
-                      :foreground nil
-                      :background nil
-                      :inherit 'tab-bar)
+  ;; (set-face-attribute 'tab-line-tab-current nil
+  ;;                     :inherit 'default
+  ;;                     :background nil
+  ;;                     :foreground nil)
+  ;; (set-face-attribute 'tab-line nil
+  ;;                     :foreground nil
+  ;;                     :background nil
+  ;;                     :inherit 'tab-bar)
 
   (defun следующая-вкладочка ()
     (interactive)
@@ -143,7 +143,7 @@
     "Предыдущая."
     (if tab-line-mode (tab-line-switch-to-prev-tab)))
 
-  (defvar высота-tab-line 22)
+  (defvar высота-tab-line 20)
 
   (require 'powerline)
 
@@ -152,7 +152,17 @@
                             (format "%s" (buffer-name buffer))
                             (powerline-wave-left nil 'tab-line высота-tab-line))))
 
-  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
+  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line)
+
+  (custom-set-faces
+   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :inherit tab-bar))))
+   '(tab-line-tab ((t (:height 1.0 :box nil :inherit tab-line))))
+   '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab :background "#000000" :foreground "#eeeeee"))))
+   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :inherit tab-line-tab)))))
+
+  )
+
+
 
 (defun закрыть-вкладку-и-буфер ()
   "Закрывает вкладку и буфер в ней."

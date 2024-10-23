@@ -46,8 +46,15 @@
   :bind (("C-M--" . undo-tree-visualize)
          ("C-M-_" . undo-tree-visualize)
          ("M-u" . undo-tree-visualize))
-  :init (global-undo-tree-mode 1))
-
+  :config
+  (defun очистить-историю-отмен ()
+    "Очищает историю отмен."
+    (interactive)
+    (setq undo-tree-stack nil)
+    (setq undo-tree-redo-stack nil)
+    (setq buffer-undo-tree nil))
+  :init
+  (global-undo-tree-mode 1))
 
 ;;;;; Вернуться к последней правке
 
@@ -59,7 +66,7 @@
 ;;;;; Вернуться к предыдущей позиции курсора
 
 (use-package goto-last-point
-  :defer t 
+  :defer t
   :ensure t
   :functions (goto-last-point-mode)
   :bind (("C-c ," . goto-last-point))
@@ -69,7 +76,7 @@
 ;; Сохранение положения
 
 (use-package eyebrowse
-  :defer t 
+  :defer t
   :ensure t
   :functions (eyebrowse-mode)
   :config (eyebrowse-mode))

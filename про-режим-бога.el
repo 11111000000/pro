@@ -14,7 +14,6 @@
 ;;;; Режим Бога (всегда Ctrl)
 
 (use-package god-mode
-  :defer t
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
   :defines (god-local-mode-map god-local-mode)
   :functions (god-mode-all)
@@ -58,7 +57,8 @@
                 docker-image-mode docker-network-mode docker-volume-mode
                 package-menu-mode org-agenda-mode calc-mode comint-mode
                 racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
-                lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode flymake-diagnostics-buffer-mode))
+                lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode
+                flymake-diagnostics-buffer-mode profiler-report-mode custom-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
 

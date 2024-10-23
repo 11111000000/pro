@@ -96,7 +96,7 @@
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t)
-          (vterm-term-environment-variable "xterm-256color" ))
+          (vterm-term-environment-variable "eterm-color" ))
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
@@ -114,43 +114,90 @@
       (apply orig-fun args)))
   
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
-  
+
   (defface terminal-face
-    '((((background light)) (:family "Terminus (TTF)" :height 150))
-      (((background dark)) (:family "Terminus (TTF)"  :height 150)))
-    "Terminal face")
+    '((t (:family "Terminus (TTF)" :height 150)))
+    "Terminal face for vterm buffers.")
 
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
-  
+
+  (defun my-vterm-set-colors ()
+    "Set vterm colors to black background and white foreground."
+    ;; Set the default face for vterm to have white text on black background
+                                        ;(set-face-foreground 'vterm-color-default "white")
+                                        ;(set-face-background 'vterm-color-default "black")
+    ;; Customize the other vterm faces as needed
+    
+    (set-face-foreground 'vterm-color-black "gray")
+    (set-face-background 'vterm-color-black "black")
+    (set-face-foreground 'vterm-color-red "red")
+    (set-face-background 'vterm-color-red "black")
+    (set-face-foreground 'vterm-color-green "green")
+    (set-face-background 'vterm-color-green "black")
+    (set-face-foreground 'vterm-color-yellow "yellow")
+    (set-face-background 'vterm-color-yellow "black")
+    (set-face-foreground 'vterm-color-blue "blue")
+    (set-face-background 'vterm-color-blue "black")
+    (set-face-foreground 'vterm-color-magenta "magenta")
+    (set-face-background 'vterm-color-magenta "black")
+    (set-face-foreground 'vterm-color-cyan "cyan")
+    (set-face-background 'vterm-color-cyan "black")
+    (set-face-foreground 'vterm-color-white "white")
+    (set-face-background 'vterm-color-white "black")
+    (set-face-attribute 'vterm-color-black nil :foreground "#000000" :background "#000000")
+    )
+
   (defun set-vterm-font ()
+    ;; Устанавливаем желаемый шрифт (если необходимо)
     (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
     (buffer-face-mode t)
-    ;; (set-background-color "black")
-    ;; (set-foreground-color "white")
-    ;; (set-face-background 'vterm-color-black "black")
-    ;; (set-face-foreground 'vterm-color-white "white")
-    ;; (set-face-attribute 'vterm-color-black nil :foreground "#073642" :background "#002b36")
-    ;; (set-face-attribute 'vterm-color-red nil :foreground "#dc322f" :background "#cb4b16")
-    ;; (set-face-attribute 'vterm-color-green nil :foreground "#859900" :background "#586e75")
-    ;; (set-face-attribute 'vterm-color-yellow nil :foreground "#b58900" :background "#657b83")
-    ;; (set-face-attribute 'vterm-color-blue nil :foreground "#268bd2" :background "#839496")
-    ;; (set-face-attribute 'vterm-color-magenta nil :foreground "#d33682" :background "#6c71c4")
-    ;; (set-face-attribute 'vterm-color-cyan nil :foreground "#2aa198" :background "#93a1a1")
-    ;; (set-face-attribute 'vterm-color-white nil :foreground "#eee8d5" :background "#fdf6e3")
-    ;; (face-remap-add-relative
-    ;;  'default
-    ;;  :foreground "#000000"
-    ;;  :background "#000000")
-    ;; (face-remap-add-relative
-    ;;  'fringe
-    ;;  :foreground "#ffffff"
-    ;;  :background "#000000")
+    ;; Локально изменяем лицо 'default' для текущего буфера
+    (face-remap-add-relative 'default :background "black" :foreground "white")
+    (face-remap-add-relative 'fringe :background "black" :foreground "white")
     )
+
+  (defun km-vterm--get-color (index &rest args)
+    "Retrieve the color by INDEX from `vterm-color-palette'.
+
+A special INDEX of -1 refers to the default colors. ARGS can
+optionally include `:underline’ or `:inverse-video’ to indicate
+cells with these attributes. If ARGS contains `:foreground',
+return the foreground color of the specified face instead of the
+background color.
+
+This function addresses an issue where the foreground color in
+vterm may match the background color, rendering text invisible."
+    (let ((foreground    (member :foreground args))
+         (underline     (member :underline args))
+         (inverse-video (member :inverse-video args)))
+      (let* ((fn (if foreground #'face-foreground #'face-background))
+            (base-face
+             (cond ((and (>= index 0)
+                      (< index 16))
+                   (elt vterm-color-palette index))
+                  ((and (= index -1) foreground
+                      underline)
+                   'vterm-color-underline)
+                  ((and (= index -1)
+                      (not foreground)
+                      inverse-video)
+                   'vterm-color-inverse-video)
+                  ((and (= index -2))
+                   'vterm-color-inverse-video))))
+        (if base-face
+            (funcall fn base-face nil t)
+          (if (eq fn 'face-background)
+              (face-foreground 'default)
+            (face-background 'default))))))
+
+  (advice-add 'vterm--get-color :override #'km-vterm--get-color)
+  
   :hook
   (vterm-mode . turn-off-chrome)
-  (vterm-mode . set-vterm-font))
+  (vterm-mode . set-vterm-font)
+  (vterm-mode . my-vterm-set-colors))
 
 (use-package eterm-256color
   :defer t 

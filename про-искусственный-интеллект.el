@@ -26,10 +26,10 @@
 ;;;; REPL для разных нейросетей. ChatGPT Shell
 
 (use-package chatgpt-shell
-  :defer t 
+  :defer t
   :init (установить-из :repo "xenodium/chatgpt-shell")
   :bind (:map chatgpt-shell-mode-map
-                ("C-c C-c" . chatgpt-shell-interrupt))
+                ("C-g" . chatgpt-shell-interrupt))
   :custom (
           ;; Настройка версии моделей и URL API
           ;; (по-умолчанию используется первая из списка, переключение в шелле C-c C-v)
@@ -46,26 +46,43 @@
                                           "claude-3-opus-20240229"))
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")
-          (chatgpt-shell-transmitted-context-length 30))
+          (chatgpt-shell-streaming nil)
+          (chatgpt-shell-transmitted-context-length 0))
   :config
-  ;; Поддержка блоков Org-мод
-  ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
 
   )
 
+;;; Поддержка блоков Org-мод
+;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
+
 (use-package ob-chatgpt-shell
-  :defer t 
   :ensure t
-  :functions ()
+  :functions (ob-chatgpt-shell-setup)
   :config
   (require 'ob-chatgpt-shell)
-  (ob-chatgpt-shell-setup))
+  
+  (ob-chatgpt-shell-setup)
+  
+  (add-to-list 'org-structure-template-alist
+             '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
 
+
+  ;; Преобразуем example в Mardown
+  (defun my/convert-example-to-src-markdown ()
+    "Convert example blocks to src markdown blocks in results."
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward "#+begin_example" nil t)
+        (replace-match "#+begin_src markdown"))
+      (goto-char (point-min))
+      (while (search-forward "#+end_example" nil t)
+        (replace-match "#+end_src"))))
+  
+  (add-hook 'org-babel-after-execute-hook 'my/convert-example-to-src-markdown))
 
 ;;;; Поддержка локальной нейросети LLAMA
 
 (use-package ellama
-  :defer t 
   :ensure t
   :init
   (require 'llm-ollama)
@@ -86,7 +103,6 @@
 ;; настройки для программного интерфейса Codeium
 
 (use-package codeium
-  :defer t 
   :init (установить-из :repo "Exafunction/codeium.el")
   :bind
   ("C-c <tab>" . дополнить-codeium)
