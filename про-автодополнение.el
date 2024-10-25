@@ -82,7 +82,6 @@
 ;;;; Автодополнение для терминала
 
 (use-package corfu-terminal
-  :defer t 
   :ensure t)
 
 (provide 'про-автодополнение)

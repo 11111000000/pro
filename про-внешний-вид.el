@@ -51,7 +51,7 @@
 
 ;; Подключение библиотеки для использования иконок в интерфейсе.
 
-(use-package all-the-icons  
+(use-package all-the-icons
   :if window-system
   :custom
   (all-the-icons-scale-factor 1)                   ; Настройка масштаба иконок.
@@ -226,8 +226,9 @@
 ;;                   xref-find-definitions-other-window
 ;;                   goto-char))
 ;;   (advice-add command :after #'pulse-line))  ; Привязка функции подсветки к командам перемещения.
+
 (use-package pulsar
-  :defer t 
+  :disabled t
   :ensure t  
   :hook ((next-error xref-after-return) . pulsar-pulse-line) ; only pulse, don't recenter
   :hook ((consult-after-jump imenu-after-jump xref-after-jump) . pulsar-recenter-center) ; pulse and recenter
@@ -237,7 +238,7 @@
   :config
   (cl-callf append pulsar-pulse-functions
     '(what-cursor-position scroll-up-command scroll-down-command kill-whole-line yank-from-kill-ring yank yank-pop))
-  (pulsar-global-mode t))
+  (pulsar-global-mode -1))
 
 
 ;;;; подтверждение выключения процессов

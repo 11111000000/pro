@@ -104,8 +104,7 @@
                              no-littering-var-directory
                              no-littering-etc-directory
                              "\\.elc\\'"
-                             "/TAGS\\'"))
-          )
+                             "/TAGS\\'")))
   :config
   (recentf-mode t))
 
@@ -127,7 +126,6 @@
 (setq-default save-interprogram-paste-before-kill t)
 (setq-default yank-pop-change-selection t)
 (setq-default x-select-enable-primary t)
-
 
 (provide 'про-историю)
 ;;; про-историю.el ends here

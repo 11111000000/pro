@@ -28,8 +28,9 @@
 (use-package chatgpt-shell
   :defer t
   :init (установить-из :repo "xenodium/chatgpt-shell")
-  :bind (:map chatgpt-shell-mode-map
-                ("C-g" . chatgpt-shell-interrupt))
+  :bind (
+         :map chatgpt-shell-mode-map
+         ("C-g" . chatgpt-shell-interrupt))
   :custom (
           ;; Настройка версии моделей и URL API
           ;; (по-умолчанию используется первая из списка, переключение в шелле C-c C-v)
@@ -37,7 +38,6 @@
                                           "o1-mini"
                                           "o1-preview"
                                           "gpt-4o"
-                                          "gpt-4o-2024-08-06"
                                           "gpt-4-turbo"
                                           "gpt-4"
                                           "gpt-3.5-turbo-0125"
@@ -46,11 +46,9 @@
                                           "claude-3-opus-20240229"))
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")
-          (chatgpt-shell-streaming nil)
-          (chatgpt-shell-transmitted-context-length 0))
-  :config
-
-  )
+          (chatgpt-shell-streaming t)
+          (chatgpt-shell-transmitted-context-length 3))
+  :config)
 
 ;;; Поддержка блоков Org-мод
 ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs

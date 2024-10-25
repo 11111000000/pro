@@ -4,9 +4,11 @@
 ;; Конфигурация терминалов
 
 ;;; Code:
+
+(require 'установить-из)
+
 ;;;; Оболочка Emacs Shell
 (use-package eshell
-  :defer t
   :ensure t
   :defines (eshell-mode-map)
   :custom
@@ -29,7 +31,6 @@
 ;; Подсветка синтаксиса в Eshell
 
 (use-package eshell-syntax-highlighting
-  :defer t 
   :init (установить-из :repo "akreisher/eshell-syntax-highlighting")
   :functions (eshell-syntax-highlighting-global-mode)
   :config
@@ -47,20 +48,17 @@
 ;; Сокращалка путей
 
 (use-package shrink-path
-  :defer t 
   :ensure t
   :demand t)
 
 (defun приглашение-eshell ()
   "Настройка приглашения оболочки EShell."
-  (let* (
-        (git-branch-unparsed
+  (let* ((git-branch-unparsed
          (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
         (git-branch
          (if (string= git-branch-unparsed "")
              ""
-           (substring git-branch-unparsed 0 -1)))
-        )
+           (substring git-branch-unparsed 0 -1))))
     (format "%s %s%s %s\n%s "
           (all-the-icons-octicon "repo")
           (propertize (car (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
@@ -74,10 +72,7 @@
 ;;   (eshell-did-you-mean-setup)
 ;;   :ensure t)
 
-
-
 (use-package eshell-toggle
-  :defer t 
   :ensure t
   :custom
   (eshell-toggle-size-fraction 3)
@@ -89,14 +84,18 @@
 ;;;; Терминал VTerm
 
 (use-package vterm
-  :defer t 
   :ensure t
-  :functions (vterm-send-next-key vterm-yank)
+  :functions (
+         vterm-send-next-key
+         vterm-yank
+         vterm-undo
+         vterm-send-string
+         vterm-counsel-yank-pop-action)
   :defines (vterm-mode-map)
   :custom ((vterm-shell  "bash")
           (vterm-kill-buffer-on-exit t)
           (vterm-disable-bold-font t)
-          (vterm-term-environment-variable "eterm-color" ))
+          (vterm-term-environment-variable "xterm-256color"))
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command) ;; TODO
                 ("C-\\" . #'toggle-input-method)
@@ -115,21 +114,14 @@
   
   (advice-add 'consult-yank-from-kill-ring :around #'vterm-counsel-yank-pop-action)
 
-  (defface terminal-face
-    '((t (:family "Terminus (TTF)" :height 150)))
-    "Terminal face for vterm buffers.")
-
   (defun turn-off-chrome ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1))
 
   (defun my-vterm-set-colors ()
     "Set vterm colors to black background and white foreground."
-    ;; Set the default face for vterm to have white text on black background
                                         ;(set-face-foreground 'vterm-color-default "white")
                                         ;(set-face-background 'vterm-color-default "black")
-    ;; Customize the other vterm faces as needed
-    
     (set-face-foreground 'vterm-color-black "gray")
     (set-face-background 'vterm-color-black "black")
     (set-face-foreground 'vterm-color-red "red")
@@ -146,17 +138,22 @@
     (set-face-background 'vterm-color-cyan "black")
     (set-face-foreground 'vterm-color-white "white")
     (set-face-background 'vterm-color-white "black")
-    (set-face-attribute 'vterm-color-black nil :foreground "#000000" :background "#000000")
-    )
+    (set-face-attribute 'vterm-color-black nil :foreground "#000000" :background "#000000"))
 
+  (defface terminal-face
+    '((t (:family "Terminus (TTF)" :height 150)))
+    "Terminal face for vterm buffers.")
+  
   (defun set-vterm-font ()
+    
     ;; Устанавливаем желаемый шрифт (если необходимо)
+    
     (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
     (buffer-face-mode t)
-    ;; Локально изменяем лицо 'default' для текущего буфера
-    (face-remap-add-relative 'default :background "black" :foreground "white")
-    (face-remap-add-relative 'fringe :background "black" :foreground "white")
-    )
+    
+    ))
+
+  ;; Таким образом мы получаем всегда чёрный фон терминала, с белым текстом на нём:
 
   (defun km-vterm--get-color (index &rest args)
     "Retrieve the color by INDEX from `vterm-color-palette'.
@@ -189,44 +186,47 @@ vterm may match the background color, rendering text invisible."
         (if base-face
             (funcall fn base-face nil t)
           (if (eq fn 'face-background)
-              (face-foreground 'default)
-            (face-background 'default))))))
-
+              "#000000"
+            "#ffffff")))))
+  
   (advice-add 'vterm--get-color :override #'km-vterm--get-color)
   
   :hook
+  
   (vterm-mode . turn-off-chrome)
   (vterm-mode . set-vterm-font)
   (vterm-mode . my-vterm-set-colors))
 
 (use-package eterm-256color
-  :defer t 
+  :defer t
   :ensure t)
 
 (use-package multi-vterm
-  :defer t 
+  :defer t
   :ensure t
-  :config)
+  :functions (multi-vterm-dedicated-open)
+  :config
+  (defun открыть-терминал-проекта ()
+    "Открыть терминал проекта или директории."
+    (interactive)
+    (if (eq major-mode 'vterm-mode)
+        (delete-window)
+      (let ((окно-терминала (cl-find-if
+                            (lambda (window)
+                              (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
+                            (window-list))))
+        (if окно-терминала
+            (select-window окно-терминала)
+          (if (projectile-project-p)
+              (progn
+                (split-window-below)
+                (windmove-down)
+                (projectile-run-vterm))
+            (multi-vterm-dedicated-open)))))))
 
 (require 'projectile)
 
-(defun открыть-терминал-проекта ()
-  "Открыть терминал проекта или директории."
-  (interactive)
-  (if (eq major-mode 'vterm-mode)
-      (delete-window)
-    (let ((окно-терминала (cl-find-if
-                          (lambda (window)
-                            (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
-                          (window-list))))
-      (if окно-терминала
-          (select-window окно-терминала)
-        (if (projectile-project-p)
-            (progn
-              (split-window-below)
-              (windmove-down)
-              (projectile-run-vterm))
-          (multi-vterm-dedicated-open))))))
+
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here
