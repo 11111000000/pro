@@ -69,28 +69,17 @@
 
 ;;;; Документация по языку во всплывающем окне
 
-(use-package eldoc-box
-  :defer t 
+(use-package eldoc-box  
   :ensure t
   :bind (("M-/" . eldoc-box-help-at-point)) ;; TODO: Перенести в org
   :custom ((eldoc-idle-delay 0.1)
           (eldoc-box-offset '(-50 50 -50)))
-  :hook (
-                                        ;(emacs-lisp-mode . eldoc-box-hover-mode)
-       ;; (prog-mode . eldoc-box-hover-mode)
-       ;; (eglot-managed-mode-hook . eldoc-box-hover-mode)
-       (eldoc-box-frame-hook . (lambda ()
-                                 (toggle-truncate-lines t)
-                                 (tab-bar-mode -1)
-                                 (buffer-face-mode t)
-                                 (face-remap-add-relative 'default '(:foreground (face-foreground 'default) :background (face-background 'default)))
-                                 (setq-local cursor-in-non-selected-windows nil))))
   :config
   (require 'eldoc)
   
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
-  (set-face-attribute 'eldoc-box-body nil :background (face-background 'default) :weight 'normal :italic nil :height 1.0))
+  (set-face-attribute 'eldoc-box-body nil :background (face-background 'default) :foreground (face-foreground 'default)  :weight 'normal :italic nil :height 0.9))
 
 ;;;; Статистика нажатий
 

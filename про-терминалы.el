@@ -150,13 +150,13 @@
     
     (set (make-local-variable 'buffer-face-mode-face) 'terminal-face)
     (buffer-face-mode t)
-    
-    ))
+    (face-remap-add-relative 'default :background "black" :foreground "white")
+    (face-remap-add-relative 'fringe :background "black" :foreground "black")))
 
-  ;; Таким образом мы получаем всегда чёрный фон терминала, с белым текстом на нём:
+;; Таким образом мы получаем всегда чёрный фон терминала, с белым текстом на нём:
 
-  (defun km-vterm--get-color (index &rest args)
-    "Retrieve the color by INDEX from `vterm-color-palette'.
+(defun km-vterm--get-color (index &rest args)
+  "Retrieve the color by INDEX from `vterm-color-palette'.
 
 A special INDEX of -1 refers to the default colors. ARGS can
 optionally include `:underline’ or `:inverse-video’ to indicate
@@ -166,64 +166,63 @@ background color.
 
 This function addresses an issue where the foreground color in
 vterm may match the background color, rendering text invisible."
-    (let ((foreground    (member :foreground args))
-         (underline     (member :underline args))
-         (inverse-video (member :inverse-video args)))
-      (let* ((fn (if foreground #'face-foreground #'face-background))
-            (base-face
-             (cond ((and (>= index 0)
-                      (< index 16))
-                   (elt vterm-color-palette index))
-                  ((and (= index -1) foreground
-                      underline)
-                   'vterm-color-underline)
-                  ((and (= index -1)
-                      (not foreground)
-                      inverse-video)
-                   'vterm-color-inverse-video)
-                  ((and (= index -2))
-                   'vterm-color-inverse-video))))
-        (if base-face
-            (funcall fn base-face nil t)
-          (if (eq fn 'face-background)
-              "#000000"
-            "#ffffff")))))
-  
-  (advice-add 'vterm--get-color :override #'km-vterm--get-color)
-  
-  :hook
-  
-  (vterm-mode . turn-off-chrome)
-  (vterm-mode . set-vterm-font)
-  (vterm-mode . my-vterm-set-colors))
+  (let ((foreground    (member :foreground args))
+       (underline     (member :underline args))
+       (inverse-video (member :inverse-video args)))
+    (let* ((fn (if foreground #'face-foreground #'face-background))
+          (base-face
+           (cond ((and (>= index 0)
+                    (< index 16))
+                 (elt vterm-color-palette index))
+                ((and (= index -1) foreground
+                    underline)
+                 'vterm-color-underline)
+                ((and (= index -1)
+                    (not foreground)
+                    inverse-video)
+                 'vterm-color-inverse-video)
+                ((and (= index -2))
+                 'vterm-color-inverse-video))))
+      (if base-face
+          (funcall fn base-face nil t)
+        (if (eq fn 'face-background)
+            "#000000"
+          "#ffffff")))))
+
+(advice-add 'vterm--get-color :override #'km-vterm--get-color)
+
 
 (use-package eterm-256color
   :defer t
   :ensure t)
 
 (use-package multi-vterm
-  :defer t
   :ensure t
   :functions (multi-vterm-dedicated-open)
-  :config
-  (defun открыть-терминал-проекта ()
-    "Открыть терминал проекта или директории."
-    (interactive)
-    (if (eq major-mode 'vterm-mode)
-        (delete-window)
-      (let ((окно-терминала (cl-find-if
-                            (lambda (window)
-                              (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
-                            (window-list))))
-        (if окно-терминала
-            (select-window окно-терминала)
-          (if (projectile-project-p)
-              (progn
-                (split-window-below)
-                (windmove-down)
-                (projectile-run-vterm))
-            (multi-vterm-dedicated-open)))))))
+  :hook
+  (vterm-mode . turn-off-chrome)
+  (vterm-mode . set-vterm-font)
+  (vterm-mode . my-vterm-set-colors)
 
+  :config
+  )
+(defun открыть-терминал-проекта ()
+  "Открыть терминал проекта или директории."
+  (interactive)
+  (if (eq major-mode 'vterm-mode)
+      (delete-window)
+    (let ((окно-терминала (cl-find-if
+                          (lambda (window)
+                            (with-current-buffer (window-buffer window) (eq major-mode 'vterm-mode)))
+                          (window-list))))
+      (if окно-терминала
+          (select-window окно-терминала)
+        (if (projectile-project-p)
+            (progn
+              (split-window-below)
+              (windmove-down)
+              (projectile-run-vterm))
+          (multi-vterm-dedicated-open))))))
 (require 'projectile)
 
 

@@ -75,46 +75,47 @@
   :config
   (require 'popwin)
   (setq popwin:special-display-config
-        '(("*Miniedit Help*" :noselect t)
-          lsp-ui-imenu-mode
-          special-mode
-          (completion-list-mode :noselect t)
-          (compilation-mode :noselect t)
-          (grep-mode :noselect t)
-          (occur-mode :noselect t)
-          (Man-mode :noselect nil :position top)
-          ("*Pp Macroexpand Output*" :noselect t)
-          "*Shell Command Output*"
-          "*Backtrace*"
-          "*vc-diff*"
-          "*vc-change-log*"
-          (" *undo-tree*" :width 60 :position right)
-          ("^.*Developer.*$" :regexp t :width .5 :position right)
-          ("^\\*anything.*\\*$" :regexp t)
-          "*slime-apropos*"
-          "*slime-macroexpansion*"
-          "*slime-description*"
-          ("*slime-compilation*" :noselect t)
-          "*slime-xref*"
-          "*Calendar*"
-          (vterm-mode :noselect t :position bottom :stick t)
-          ("*Messages*" :noselect t :position bottom :stick t)
-          ("*Warnings*" :noselect t :position bottom :stick t)
-          ("*Racket Describe*" :noselect t :position top :stick t)
-          ("*Racket REPL*" :noselect t :position bottom :stick t)
-          ("*ielm*" :noselect t :position bottom :stick t)
-          ("*prettier errors*" :noselect t :position top :stick nil)
-          ("Run.rkt" :noselect t :position right :width .5 :stick t)
-          ("chrome dev" :noselect nil :position bottom :stick t :height .5)
-          ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
-          ("chrome dev2" :noselect t :position top :height 15 :stick t)
-          ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
-          ("chrome app" :noselect nil :position right :stick t :width .5)
-          ("ff dev" :noselect nil :position bottom :height .5 :stick t)
-          ("ff" :noselect nil :position right :width .5 :stick t)
-          (sldb-mode :stick t)
-          ;;(shell-mode :stick nil :position bottom )
-          ))
+       '(("*Miniedit Help*" :noselect t)
+         lsp-ui-imenu-mode
+         special-mode
+         (completion-list-mode :noselect t)
+         (compilation-mode :noselect t)
+         (grep-mode :noselect t)
+         (occur-mode :noselect t)
+         (Man-mode :noselect nil :position top)
+         ("*Pp Macroexpand Output*" :noselect t)
+         "*Shell Command Output*"
+         "*Backtrace*"
+         ("*chatgpt*" :position bottom :height 20 :stick t)
+         "*vc-diff*"
+         "*vc-change-log*"
+         (" *undo-tree*" :width 60 :position right)
+         ("^.*Developer.*$" :regexp t :width .5 :position right)
+         ("^\\*anything.*\\*$" :regexp t)
+         "*slime-apropos*"
+         "*slime-macroexpansion*"
+         "*slime-description*"
+         ("*slime-compilation*" :noselect t)
+         "*slime-xref*"
+         "*Calendar*"
+         (vterm-mode :noselect t :position bottom :stick t)
+         ("*Messages*" :noselect t :position bottom :stick t)
+         ("*Warnings*" :noselect t :position bottom :stick t)
+         ("*Racket Describe*" :noselect t :position top :stick t)
+         ("*Racket REPL*" :noselect t :position bottom :stick t)
+         ("*ielm*" :noselect t :position bottom :stick t)
+         ("*prettier errors*" :noselect t :position top :stick nil)
+         ("Run.rkt" :noselect t :position right :width .5 :stick t)
+         ("chrome dev" :noselect nil :position bottom :stick t :height .5)
+         ("^\\*Launch.*$" :regexp t :noselect nil :position bottom :stick t :height .5)
+         ("chrome dev2" :noselect t :position top :height 15 :stick t)
+         ("gimp" :regexp t :noselect nil :position right :width .5 :stick nil)
+         ("chrome app" :noselect nil :position right :stick t :width .5)
+         ("ff dev" :noselect nil :position bottom :height .5 :stick t)
+         ("ff" :noselect nil :position right :width .5 :stick t)
+         (sldb-mode :stick t)
+         ;;(shell-mode :stick nil :position bottom )
+         ))
   (popwin-mode 1))
 
 ;; Функция для переключения окна в попапе по имени буфера

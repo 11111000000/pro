@@ -24,6 +24,7 @@
 ;;   (openai-base-url "https://api.proxyapi.ru/openai/v1"))
 
 ;;;; REPL для разных нейросетей. ChatGPT Shell
+(require 'popwin)
 
 (use-package chatgpt-shell
   :defer t
@@ -48,7 +49,18 @@
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")
           (chatgpt-shell-streaming t)
           (chatgpt-shell-transmitted-context-length 3))
-  :config)
+  :config
+  (defun показать-скрыть-ии ()
+    "Открыть или закрыть chatgpt-shell в popwin буфере снизу."
+    (interactive)
+    (let ((chatgpt-buffer (cl-find-if (lambda (buf)
+                                       (with-current-buffer buf
+                                         (eq major-mode 'chatgpt-shell-mode)))
+                                     (buffer-list))))
+      (if (and chatgpt-buffer (popwin:popup-window-live-p))
+          (popwin:close-popup-window)
+        (when chatgpt-buffer
+          (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom))))))
 
 ;;; Поддержка блоков Org-мод
 ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs

@@ -203,7 +203,9 @@
 | C-<f7>                  | profiler-stop                 |
 | <f6>                    | exwm-floating-toggle-floating |
 | s-a                     | ellama-ask-about              |
-| s-i                     | chatgpt-shell-prompt          |
+| s-I                     | chatgpt-shell-prompt          |
+| s-i                     | показать-скрыть-ии            |
+| C-c i                   | показать-скрыть-ии            |
 | C-c C-'                 | exwm-edit--compose-minibuffer |
 | C-c '                   | exwm-edit--compose            |
 

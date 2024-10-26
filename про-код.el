@@ -310,7 +310,6 @@ ARG - backward"
 ;;;; Zen-кодинг
 
 (use-package emmet-mode
-  :defer t 
   :ensure t
   :hook ((web-mode tsx-ts-mode typescript-ts-mode) . emmet-mode)
   :defines (emmet-indent-after-insert
@@ -326,6 +325,9 @@ ARG - backward"
 	   emmet-move-cursor-between-quotes t
 	   emmet-self-closing-tag-style " /")
   (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode))
+
+;;;; Импорты во всплывающем окне
+
 
 
 (provide 'про-код)

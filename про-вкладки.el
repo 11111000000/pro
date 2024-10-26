@@ -8,6 +8,9 @@
 (use-package powerline
   :ensure t)
 
+
+
+
 ;; Функция для замены строк. Принимает пары-для-замены и строку.
 (defun заменить-строки (пары-для-замены строка)
   "заменяет набор паттернов в строке.
@@ -134,36 +137,33 @@
   ;;                     :inherit 'tab-bar)
 
   (defun следующая-вкладочка ()
-    (interactive)
     "Следующая."
+    (interactive)
     (if tab-line-mode (tab-line-switch-to-next-tab)))
 
   (defun предыдущая-вкладочка ()
-    (interactive)
     "Предыдущая."
+    (interactive)
     (if tab-line-mode (tab-line-switch-to-prev-tab)))
 
   (defvar высота-tab-line 20)
 
-  (require 'powerline)
 
   (custom-set-faces
-   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#aaaaaa"))))
+   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333"))))
    '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee"))))
    '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab
                                      :background "#000000"
                                      :foreground "#cccccc"))))
-   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777"))))
+   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777" :foreground "#333"))))
    '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888")))))
-
+  (require 'powerline)
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
     (powerline-render (list (powerline-wave-right 'tab-line-tab nil высота-tab-line)
                             (format "%s" (buffer-name buffer))
                             (powerline-wave-left nil 'tab-line-tab высота-tab-line))))
 
-  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line)
-
-  )
+  (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 
 
 
