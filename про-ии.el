@@ -61,9 +61,11 @@
           (popwin:close-popup-window)
         (if chatgpt-buffer
             (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom)
-          (progn
-            (popwin:popup-buffer "*scratch*")
-            (chatgpt-shell)))))))
+          (chatgpt-shell)
+          ;; (progn
+          ;;   (popwin:popup-buffer "*scratch*")
+          ;;   (chatgpt-shell))
+          )))))
 
 (defun shell-maker-welcome-message (config)
   "Return a welcome message to be printed using CONFIG."
@@ -127,6 +129,7 @@
 
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
+  :functions (codeium-utf8-byte-length)
   :bind
   ("C-c <tab>" . дополнить-codeium)
   ("M-S-<iso-lefttab>" . дополнить-codeium)
@@ -168,7 +171,6 @@
        whisper-language "ru"
        whisper-translate nil
        whisper-use-threads (/ (num-processors) 2)))
-
 
 ;;;; Обработка новостей
 

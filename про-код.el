@@ -172,11 +172,8 @@ ARG - backward"
   :defer t 
   :if  window-system
   :defines (color-identifiers:modes-alist color-identifiers:re-not-inside-class-access)
-  :ensure t
-  :hook ((typescript-ts-mode . color-identifiers-mode)
-       (js-ts-mode . color-identifiers-mode))
-  :custom ((color-identifiers-coloring-method
-           'hash)
+  :ensure t  
+  :custom ((color-identifiers-coloring-method 'hash)
           (color-identifiers:num-colors 16)
           (color-identifiers:color-luminance 0.3)
           (color-identifiers:min-color-saturation 0.2)
@@ -185,17 +182,14 @@ ARG - backward"
   (add-to-list
    'color-identifiers:modes-alist
    '(js-ts-mode "" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)"
-                (nil font-lock-variable-name-face tree-sitter-hl-face:variable)))
-  )
+                (nil font-lock-variable-name-face tree-sitter-hl-face:variable))))
 
 ;; Альтернативный алгоритм подсветки идентификаторов
 
-(use-package rainbow-identifiers
-  :defer t 
-  :if window-system
-  :ensure t
-  :defer t
-  :hook ((emacs-lisp-mode . rainbow-identifiers-mode)))
+;; (use-package rainbow-identifiers
+;;   :defer t 
+;;   :if window-system
+;;   :ensure t)
 
 ;;;; Форматирование
 

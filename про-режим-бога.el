@@ -13,12 +13,17 @@
 
 ;;;; Режим Бога (всегда Ctrl)
 
+(defun курсор-бога ()
+  (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(bar . 3)))
+  (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
+
+
 (use-package god-mode
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
   :defines (god-local-mode-map god-local-mode)
   :functions (god-mode-all)
   :ensure t
-  :hook (((god-mode-disabled god-mode-enabled) . обновить-курсор)
+  :hook (((god-mode-disabled god-mode-enabled) . курсор-бога)
        ;;(god-mode-enabled . restore-input-method)
        (god-mode-enabled . toggle-off-input-method))
 
@@ -67,12 +72,9 @@
   (global-set-key (kbd "C-<f1>") help-map)
   (global-set-key (kbd "C-h") help-map)
 
-  (defun обновить-курсор ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(bar . 2)))
-    (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
 
   (god-mode-all)
-  (обновить-курсор))
+  (курсор-бога))
 
 (provide 'про-режим-бога)
 ;;; про-режим-бога.el ends here

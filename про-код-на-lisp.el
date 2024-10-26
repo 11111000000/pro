@@ -126,10 +126,11 @@
   :defer t 
   :ensure t
   :custom-face
-  (macrostep-expansion-highlight-face ((t (
-                                            :inherit default
-                                            :extend t
-                                            :background ,(face-attribute 'default :background)))))
+  (macrostep-expansion-highlight-face
+   ((t (
+         :inherit default
+         :extend t
+         :background ,(face-attribute 'default :background)))))
   :bind (:map emacs-lisp-mode-map
                 ("C-c e" . macrostep-expand)
                 :map lisp-interaction-mode-map

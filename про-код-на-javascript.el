@@ -165,5 +165,10 @@
    web-mode-enable-auto-indentation t
    ))
 
+;;;; Поддержка Angular
+
+(use-package angular-mode :ensure t)
+(use-package aangit :ensure t )
+
 (provide 'про-код-на-javascript)
 ;;; про-код-на-javascript.el ends here.

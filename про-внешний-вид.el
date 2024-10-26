@@ -78,7 +78,7 @@
 
 ;; Подключение иконок для среды Marginalia.
 
-(use-package nerd-icons-completion  
+(use-package nerd-icons-completion
   :ensure t
   :functions (nerd-icons-completion-mode)
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
@@ -89,7 +89,7 @@
 
 ;; Настройка иконок в `dired` (менеджер файлов) для более удобного интерфейса.
 
-(use-package treemacs-icons-dired  
+(use-package treemacs-icons-dired
   :ensure t
   :functions (treemacs-icons-dired-mode)
   :hook (dired-mode . treemacs-icons-dired-enable-once)
@@ -97,7 +97,7 @@
   (add-hook 'after-load-theme-hook
            (lambda ()
              (treemacs-icons-dired-mode -1)  ; Отключение иконок после смены темы.
-             (sleep-for 0 100)
+             (sleep-for 0)
              (treemacs-icons-dired-mode 1)))) ; Включение иконок после небольшой задержки.
 
 ;;;;; Иконки для ibuffer
@@ -119,7 +119,7 @@
 
 ;; Настройка типа курсора - мигающий прямоугольник с возможностью изменения ширины.
 
-(setq cursor-type '(bar . 4))                 ; Установка курсора 
+(setq cursor-type '(bar . 2))                 ; Установка курсора
 
 (setq x-stretch-cursor t)                      ; Распространение курсора по высоте символа.
 
@@ -136,10 +136,10 @@
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
-           curchg-default-cursor-type '(bar . t)
-           curchg-default-cursor-color "PaleGreen3" ; Цвет курсора по умолчанию.
+           curchg-default-cursor-type cursor-type
+           curchg-default-cursor-color "black" 
            curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
-  (change-cursor-mode t))                        ; Включение режима изменения курсора.
+  (change-cursor-mode t))                        
 
 ;;;; Прокрутка
 
@@ -239,6 +239,25 @@
   (cl-callf append pulsar-pulse-functions
     '(what-cursor-position scroll-up-command scroll-down-command kill-whole-line yank-from-kill-ring yank yank-pop))
   (pulsar-global-mode -1))
+
+;; Подсветка строки только в текущем окне
+
+;; (defun подсветка-строки-только-в-текущем-окне ()
+;;   "Enable hl-line-mode in the current window if god-mode is enabled or it is a dired buffer, and disable it in all other windows."
+;;   (let ((active-window (selected-window)))  ; Сохраняем текущее активное окно
+;;     ;; Отключаем hl-line-mode во всех неактивных окнах
+;;     (dolist (win (window-list))
+;;       (with-selected-window win
+;;         (hl-line-mode -1)))  ; Выключаем в каждом окне
+
+;;     ;; Включаем hl-line-mode в активном окне, если god-mode включен или это dired
+;;     (with-selected-window (selected-window)
+;;       (when (or god-local-mode ; Проверяем, активен ли god-mode
+;;                buffer-read-only ; Толькочтение 
+;;                (derived-mode-p 'dired-mode)) ; или dired
+;;         (hl-line-mode 1)))))
+
+;; (add-hook 'window-selection-change-functions (lambda (_) (подсветка-строки-только-в-текущем-окне)))
 
 
 ;;;; подтверждение выключения процессов

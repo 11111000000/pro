@@ -1,6 +1,6 @@
 * Анализ
 
-#+begin_src chatgpt-shell :context 0 :version "o1-preview" :system nil
+#+begin_src chatgpt-shell :context 0 :version "o1-preview" :system nil 
       
 #+end_src
 

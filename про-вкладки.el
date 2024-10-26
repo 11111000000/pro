@@ -8,9 +8,6 @@
 (use-package powerline
   :ensure t)
 
-
-
-
 ;; Функция для замены строк. Принимает пары-для-замены и строку.
 (defun заменить-строки (пары-для-замены строка)
   "заменяет набор паттернов в строке.
@@ -43,8 +40,8 @@
                   'tab-recent)
       (dotimes (i 8)
         (global-set-key (vector (append tab-bar-select-tab-modifiers
-                                     (list (+ i 1 ?0))))
-                        'tab-bar-select-tab))
+                                 (list (+ i 1 ?0))))
+                    'tab-bar-select-tab))
       (global-set-key (vector (append tab-bar-select-tab-modifiers (list ?9)))
                   'tab-last))
 
@@ -56,6 +53,7 @@
                                 (memq 'tab-bar-format-global
                                       tab-bar-format))
                             "" global-mode-string)))))))
+  
   ;; Привязка клавиш для быстрого переключения вкладок.
   (dotimes (i 10)
     (global-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
@@ -104,8 +102,6 @@
 
 ;; Определение клавиш, которые работают в режиме tab-bar
 
-
-
 (defun открыть-новую-вкладку ()
   "Открыть новую вкладку с дашбордом."
   (interactive)
@@ -148,7 +144,6 @@
 
   (defvar высота-tab-line 20)
 
-
   (custom-set-faces
    '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333"))))
    '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee"))))
@@ -164,8 +159,6 @@
                             (powerline-wave-left nil 'tab-line-tab высота-tab-line))))
 
   (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
-
-
 
 (defun закрыть-вкладку-и-буфер ()
   "Закрывает вкладку и буфер в ней."

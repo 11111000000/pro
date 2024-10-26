@@ -13,8 +13,10 @@
                 ("C-c o" . org-agenda-open-link)
                 ("C-c C-p" . nil))
   :custom ((org-log-done nil)
-                                        ;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-          (org-todo-keywords '((sequence "ОФОРМИТЬ" "СДЕЛАТЬ" "АНАЛИЗ" "ДЕЛЕГИРОВАЛ" "ДЕЛАЮ" "ВОПРОС" "ДЕПЛОЙ" "ГОТОВО"))))
+          ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
+          (org-todo-keywords '((sequence "НАДО" "ДУМАЮ" "ДЕЛАЮ" "|" "ГОТОВО")))
+          (org-not-done-keywords '("TODO" "НАДО" "ДУМАЮ" "ДЕЛАЮ"))
+          (org-done-keywords '("DONE" "ГОТОВО" "ЕСТЬ" "ОТМЕНА" "ПЕРЕДАЛ")))
   :config
   (require 'org-compat)
   (require 'org-tempo)
@@ -268,8 +270,11 @@
 ;;;; Асинхронное выполнение блоков кода
 
 (use-package ob-async
-  :ensure t
-  )
+  :ensure t)
+
+(use-package kanban :ensure t)
+
+(use-package org-kanban :ensure t)
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

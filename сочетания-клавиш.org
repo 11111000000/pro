@@ -105,6 +105,7 @@
 |-------------------------+--------------------------------------|
 | s-q                     | exwm-reset                           |
 | s-\                     | toggle-input-method                  |
+| s-a                     | toggle-input-method                  |
 | <XF86AudioMicMute>      | переключить-микрофон-alsa            |
 | <XF86AudioMute>         | выключить-звук                       |
 | <XF86AudioRaiseVolume>  | увеличить-громкость                  |
@@ -152,7 +153,6 @@
 | s-<right>               | enlarge-window-horizontally          |
 | s-<down>                | shrink-window                        |
 | s-<up>                  | enlarge-window                       |
-| s-f                     | ace-window                           |
 | s-z                     | avy-goto-char                        |
 | s-_                     | winner-undo                          |
 | s-M-_                   | winner-redo                          |
@@ -194,15 +194,15 @@
 | C-x =                   | balance-windows                      |
 | C-x _                   | maximize-window                      |
 | C-x -                   | minimize-window                      |
-| C-c b                   | popwin:popup-buffer                  |
-| C-c C-b                 | popwin:stick-popup-window            |
-| s-f                     | ace-window                           |
+| s-b                     | popwin:popup-buffer                  |
+| s-*                     | popwin:stick-popup-window            |
+| s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
 | C-c C-g l               | gitlab-show-projects                 |
 | C-<f6>                  | profiler-start                       |
 | C-<f7>                  | profiler-stop                        |
 | <f6>                    | exwm-floating-toggle-floating        |
-| s-a                     | ellama-ask-about                     |
+| s-e                     | ellama-ask-about                     |
 | s-I                     | chatgpt-shell-prompt                 |
 | s-i                     | показать-скрыть-ии                   |
 | C-c i                   | показать-скрыть-ии                   |
@@ -247,6 +247,9 @@
 #+END_SRC
 
 #+RESULTS:
+
+
+
 
 
 

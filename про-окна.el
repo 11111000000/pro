@@ -69,7 +69,6 @@
 ;;   (popper-mode +1)
 ;;   (popper-echo-mode +1))
 
-
 (use-package popwin
   :ensure t
   :config
@@ -86,7 +85,7 @@
          ("*Pp Macroexpand Output*" :noselect t)
          "*Shell Command Output*"
          "*Backtrace*"
-         (chatgpt-shell-mode :position bottom :height 42 :stick t)
+         (chatgpt-shell-mode :position bottom :stick t)
          "*vc-diff*"
          "*vc-change-log*"
          (" *undo-tree*" :width 60 :position right)
@@ -98,7 +97,7 @@
          ("*slime-compilation*" :noselect t)
          "*slime-xref*"
          "*Calendar*"
-         (vterm-mode :noselect t :position bottom :stick t)
+         ;(vterm-mode :noselect t :position bottom :stick t)
          ("*Messages*" :noselect t :position bottom :stick t)
          ("*Warnings*" :noselect t :position bottom :stick t)
          ("*Racket Describe*" :noselect t :position top :stick t)
