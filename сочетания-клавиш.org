@@ -101,113 +101,114 @@
 ** Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
-| Сочетание               | Функция                       |
-|-------------------------+-------------------------------|
-| s-q                     | exwm-reset                    |
-| s-\                     | toggle-input-method           |
-| <XF86AudioMicMute>      | переключить-микрофон-alsa     |
-| <XF86AudioMute>         | выключить-звук                |
-| <XF86AudioRaiseVolume>  | увеличить-громкость           |
-| <XF86AudioLowerVolume>  | уменьшить-громкость           |
-| <XF86MonBrightnessUp>   | увеличить-яркость             |
-| <XF86MonBrightnessDown> | уменьшить-яркость             |
-| <XF86TouchpadToggle>    | переключить-тачпад            |
-| C-c <f4>                | выключить-все-микрофоны       |
-| C-c M-<f4>              | включить-гарнитуру            |
-| s-b                     | consult-buffer                |
-| C-s-d                   | delete-window                 |
-| s-h                     | windmove-left                 |
-| s-j                     | windmove-down                 |
-| s-k                     | windmove-up                   |
-| s-l                     | windmove-right                |
-| s-H                     | buf-move-left                 |
-| s-J                     | buf-move-down                 |
-| s-K                     | buf-move-up                   |
-| s-L                     | buf-move-right                |
-| s-R                     | rename-buffer                 |
-| s-t                     | открыть-новую-вкладку         |
-| s-T                     | tab-bar-undo-close-tab        |
-| s-r                     | tab-bar-rename-tab            |
-| s-N                     | tab-bar-move-tab              |
-| s-P                     | tab-bar-move-tab-backward     |
-| s-n                     | tab-bar-switch-to-next-tab    |
-| s-p                     | tab-bar-switch-to-prev-tab    |
-| s-w                     | tab-bar-close-tab             |
-| s-W                     | закрыть-вкладку-и-буфер       |
-| s-d                     | delete-window                 |
-| s-x                     | app-launcher-run-app          |
-| s-M-h                   | split-window-horizontally     |
-| s-M-k                   | split-window-vertically       |
-| C-x d                   | consult-find                  |
-| C-x C-d                 | dired-jump                    |
-| C-x m                   | bookmark-jump                 |
-| C-x C-m                 | bookmark-set                  |
-| <XF86Back>              | winner-undo                   |
-| <XF86Forward>           | winner-redo                   |
-| <print>                 | скриншот-области              |
-| s-s                     | consult-ag                    |
-| s-<print>               | скриншот                      |
-| s-S-s                   | скриншот                      |
-| s-<left>                | shrink-window-horizontally    |
-| s-<right>               | enlarge-window-horizontally   |
-| s-<down>                | shrink-window                 |
-| s-<up>                  | enlarge-window                |
-| s-f                     | ace-window                    |
-| s-z                     | avy-goto-char                 |
-| s-_                     | winner-undo                   |
-| s-M-_                   | winner-redo                   |
-| s-u                     | tab-bar-history-back          |
-| s-U                     | tab-bar-history-forward       |
-| C-<f3>                  | battery                       |
-| s-`                     | открыть-терминал-проекта      |
-| C-c tt                  | multi-vterm                   |
-| C-c tn                  | multi-vterm-next              |
-| C-c tp                  | multi-vterm-prev              |
-| C-c to                  | multi-vterm-dedicated-open    |
-| s-~                     | eshell-toggle                 |
-| C-c s                   | scratch-pop                   |
-| C-c l                   | org-store-link                |
-| C-c a                   | org-agenda                    |
-| C-x +                   | golden-ratio                  |
-| C-x =                   | balance-windows               |
-| C-x _                   | maximize-window               |
-| C-x -                   | minimize-window               |
-| C-c pa                  | projectile-add-known-project  |
-| C-c p C-p               | projectile-add-known-project  |
-| C-c pp                  | projectile-switch-project     |
-| C-c C-p                 | projectile-switch-project     |
-| C-c ps s                | consult-ag                    |
-| C-x C-1                 | delete-other-windows          |
-| C-x C-2                 | split-window-below            |
-| C-x C-3                 | split-window-right            |
-| C-x C-0                 | delete-window                 |
-| s-h                     | windmove-left                 |
-| s-j                     | windmove-down                 |
-| s-k                     | windmove-up                   |
-| s-l                     | windmove-right                |
-| s-K                     | buf-move-up                   |
-| s-J                     | buf-move-down                 |
-| s-H                     | buf-move-left                 |
-| s-L                     | buf-move-right                |
-| s-g                     | treemacs                      |
-| C-x +                   | golden-ratio                  |
-| C-x =                   | balance-windows               |
-| C-x _                   | maximize-window               |
-| C-x -                   | minimize-window               |
-| C-c b                   | popwin:popup-buffer           |
-| C-c C-b                 | popwin:stick-popup-window     |
-| s-f                     | ace-window                    |
-| s-F                     | ace-swap-window               |
-| C-c C-g l               | gitlab-show-projects          |
-| C-<f6>                  | profiler-start                |
-| C-<f7>                  | profiler-stop                 |
-| <f6>                    | exwm-floating-toggle-floating |
-| s-a                     | ellama-ask-about              |
-| s-I                     | chatgpt-shell-prompt          |
-| s-i                     | показать-скрыть-ии            |
-| C-c i                   | показать-скрыть-ии            |
-| C-c C-'                 | exwm-edit--compose-minibuffer |
-| C-c '                   | exwm-edit--compose            |
+| Сочетание               | Функция                              |
+|-------------------------+--------------------------------------|
+| s-q                     | exwm-reset                           |
+| s-\                     | toggle-input-method                  |
+| <XF86AudioMicMute>      | переключить-микрофон-alsa            |
+| <XF86AudioMute>         | выключить-звук                       |
+| <XF86AudioRaiseVolume>  | увеличить-громкость                  |
+| <XF86AudioLowerVolume>  | уменьшить-громкость                  |
+| <XF86MonBrightnessUp>   | увеличить-яркость                    |
+| <XF86MonBrightnessDown> | уменьшить-яркость                    |
+| <XF86TouchpadToggle>    | переключить-тачпад                   |
+| C-c <f4>                | выключить-все-микрофоны              |
+| C-c M-<f4>              | включить-гарнитуру                   |
+| s-b                     | consult-buffer                       |
+| C-s-d                   | delete-window                        |
+| s-h                     | windmove-left                        |
+| s-j                     | windmove-down                        |
+| s-k                     | windmove-up                          |
+| s-l                     | windmove-right                       |
+| s-H                     | buf-move-left                        |
+| s-J                     | buf-move-down                        |
+| s-K                     | buf-move-up                          |
+| s-L                     | buf-move-right                       |
+| s-R                     | rename-buffer                        |
+| s-t                     | открыть-новую-вкладку                |
+| s-T                     | tab-bar-undo-close-tab               |
+| s-r                     | tab-bar-rename-tab                   |
+| s-N                     | tab-bar-move-tab                     |
+| s-P                     | tab-bar-move-tab-backward            |
+| s-n                     | tab-bar-switch-to-next-tab           |
+| s-p                     | tab-bar-switch-to-prev-tab           |
+| s-w                     | tab-bar-close-tab                    |
+| s-W                     | закрыть-вкладку-и-буфер              |
+| s-d                     | delete-window                        |
+| s-x                     | app-launcher-run-app                 |
+| s-M-h                   | split-window-horizontally            |
+| s-M-k                   | split-window-vertically              |
+| C-x d                   | consult-find                         |
+| C-x C-d                 | dired-jump                           |
+| C-x m                   | bookmark-jump                        |
+| C-x C-m                 | bookmark-set                         |
+| <XF86Back>              | winner-undo                          |
+| <XF86Forward>           | winner-redo                          |
+| <print>                 | скриншот-области                     |
+| s-s                     | consult-ag                           |
+| s-<print>               | скриншот                             |
+| s-S-s                   | скриншот                             |
+| s-<left>                | shrink-window-horizontally           |
+| s-<right>               | enlarge-window-horizontally          |
+| s-<down>                | shrink-window                        |
+| s-<up>                  | enlarge-window                       |
+| s-f                     | ace-window                           |
+| s-z                     | avy-goto-char                        |
+| s-_                     | winner-undo                          |
+| s-M-_                   | winner-redo                          |
+| s-u                     | tab-bar-history-back                 |
+| s-U                     | tab-bar-history-forward              |
+| C-<f3>                  | battery                              |
+| s-`                     | открыть-терминал-проекта             |
+| C-c tt                  | multi-vterm                          |
+| C-c tn                  | multi-vterm-next                     |
+| C-c tp                  | multi-vterm-prev                     |
+| C-c to                  | multi-vterm-dedicated-open           |
+| s-~                     | eshell-toggle                        |
+| C-c s                   | scratch-pop                          |
+| C-c l                   | org-store-link                       |
+| C-c a                   | org-agenda                           |
+| C-x +                   | golden-ratio                         |
+| C-x =                   | balance-windows                      |
+| C-x _                   | maximize-window                      |
+| C-x -                   | minimize-window                      |
+| C-c pa                  | projectile-add-known-project         |
+| C-c p C-p               | projectile-add-known-project         |
+| C-c pp                  | projectile-switch-project            |
+| C-c C-p                 | projectile-switch-project            |
+| C-c ps s                | consult-ag                           |
+| C-x C-1                 | delete-other-windows                 |
+| C-x C-2                 | split-window-below                   |
+| C-x C-3                 | split-window-right                   |
+| C-x C-0                 | delete-window                        |
+| s-h                     | windmove-left                        |
+| s-j                     | windmove-down                        |
+| s-k                     | windmove-up                          |
+| s-l                     | windmove-right                       |
+| s-K                     | buf-move-up                          |
+| s-J                     | buf-move-down                        |
+| s-H                     | buf-move-left                        |
+| s-L                     | buf-move-right                       |
+| s-g                     | treemacs                             |
+| C-x +                   | golden-ratio                         |
+| C-x =                   | balance-windows                      |
+| C-x _                   | maximize-window                      |
+| C-x -                   | minimize-window                      |
+| C-c b                   | popwin:popup-buffer                  |
+| C-c C-b                 | popwin:stick-popup-window            |
+| s-f                     | ace-window                           |
+| s-F                     | ace-swap-window                      |
+| C-c C-g l               | gitlab-show-projects                 |
+| C-<f6>                  | profiler-start                       |
+| C-<f7>                  | profiler-stop                        |
+| <f6>                    | exwm-floating-toggle-floating        |
+| s-a                     | ellama-ask-about                     |
+| s-I                     | chatgpt-shell-prompt                 |
+| s-i                     | показать-скрыть-ии                   |
+| C-c i                   | показать-скрыть-ии                   |
+| s-M-i                   | chatgpt-shell-send-and-review-region |
+| C-c C-'                 | exwm-edit--compose-minibuffer        |
+| C-c '                   | exwm-edit--compose                   |
 
 ** СДЕЛАТЬ Клавиши для модов
 
@@ -246,6 +247,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 
