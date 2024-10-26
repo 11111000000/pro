@@ -86,7 +86,7 @@
          ("*Pp Macroexpand Output*" :noselect t)
          "*Shell Command Output*"
          "*Backtrace*"
-         ("*chatgpt*" :position bottom :height 20 :stick t)
+         (chatgpt-shell-mode :position bottom :height 42 :stick t)
          "*vc-diff*"
          "*vc-change-log*"
          (" *undo-tree*" :width 60 :position right)

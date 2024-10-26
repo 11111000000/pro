@@ -61,11 +61,11 @@
 
 ;; Не автодополнять пару "<>", чтобы вводить быстрые блоки
 
+(require 'elec-pair)
 (add-hook 'org-mode-hook (lambda ()
                           (setq-local electric-pair-inhibit-predicate
                                  `(lambda (c)
                                     (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
-
 
 ;; Авто-обновление картинок при выполнении кода
 
@@ -96,9 +96,7 @@
    (js . t)
    (R . t)
    ;;(http . t)
-   (shell . t)
-   ))
-
+   (shell . t)))
 
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 

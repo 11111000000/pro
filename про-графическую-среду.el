@@ -15,6 +15,8 @@
 
 ;;;; ExWM
 
+(setq-default exwm-debug t)
+
 (defvar сочетания-для-эмуляции
   '(([?\C-b] . left)
     ([?\M-b] . C-left)
@@ -61,7 +63,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
          exwm-workspace-rename-buffer
          exwm-enable
          exwm-init
-         exwm-systemtray-enable)
+         exwm-systemtray-mode)
   :defines (exwm-class-name
            exwm-manage-configurations
            exwm-title
@@ -114,20 +116,15 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
   ;; Запуск различных программ в трее
   ;; TODO: перенести в подходящее место (м.б. таблицу?)
-  (add-hook 'exwm-init-hook (lambda ()
-                             (progn
-                               (start-process-shell-command "nm-applet" nil "killall -9 nm-applet; sleep 0.1; dbus-launch nm-applet")
-                               (start-process-shell-command "blueman-applet" nil "sleep 0.2; dbus-launch blueman-applet")
-                               (start-process-shell-command "udiskie" nil "sleep 0.3; dbus-launch udiskie -t")
-                               (start-process-shell-command "dunst" nil "sleep 0.4; dbus-launch dunst -conf ~/System/dunstrc")
-                               (start-process-shell-command "pasystray" nil "sleep 0.5; dbus-launch pasystray")
-                               (start-process-shell-command "copyq" nil "sleep 0.6; copyq"))))
-
 
   ;; Запуск EXWM
   (exwm-enable t)
   (require 'exwm-systemtray)
-  (exwm-systemtray-enable))
+  (exwm-systemtray-mode)
+  ;; TODO: Возможно,этому место только в init.el [!]
+  ;; (add-hook 'exwm-init-hook (lambda ()
+  ;;                            (org-babel-load-file (expand-file-name "~/pro/про-запуск-программ.org"))))
+  )
 
 ;;;; Режимы ввода EMACS в приложениях
 

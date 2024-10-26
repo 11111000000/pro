@@ -1,4 +1,4 @@
-;;; про-искусственный-интеллект.el --- Искусственный Интеллект -*- lexical-binding: t -*-
+;;; про-ии.el --- Искусственный Интеллект -*- lexical-binding: t -*-
 ;; Автор: Пётр (11111000000@email.com)
 ;;; Commentary:
 ;; Конфигурация нейросетевых сервисов
@@ -59,22 +59,21 @@
                                      (buffer-list))))
       (if (and chatgpt-buffer (popwin:popup-window-live-p))
           (popwin:close-popup-window)
-        (when chatgpt-buffer
-          (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom)
-          (if (chatgpt-shell))))))
-  ;; (defun показать-скрыть-ии ()
-  ;;   "Открыть или закрыть chatgpt-shell в popwin буфере снизу."
-  ;;   (interactive)
-  ;;   (let ((chatgpt-buffer (cl-find-if (lambda (buf)
-  ;;                                      (with-current-buffer buf
-  ;;                                        (eq major-mode 'chatgpt-shell-mode)))
-  ;;                                    (buffer-list))))
-  ;;     (if (and chatgpt-buffer (popwin:popup-window-live-p))
-  ;;         (popwin:close-popup-window)
-  ;;       (when chatgpt-buffer
-  ;;         (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom)
-  ;;         (if (chatgpt-shell))))))
-  )
+        (if chatgpt-buffer
+            (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom)
+          (progn
+            (popwin:popup-buffer "*scratch*")
+            (chatgpt-shell)))))))
+
+(defun shell-maker-welcome-message (config)
+  "Return a welcome message to be printed using CONFIG."
+  (format
+   "Welcome to %s shell\n\n  Type %s and press %s for details.\n\n"
+   (propertize (shell-maker-config-name config)
+               'font-lock-face 'font-lock-comment-face)
+   (propertize "help" 'font-lock-face 'italic)
+   (shell-maker--propertize-key-binding "-shell-submit" config)
+   ))
 
 ;;; Поддержка блоков Org-мод
 ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
@@ -241,7 +240,7 @@
   (новости-за-время 24
                     "убери рекламу, и сделай анализ и предсказание по заголовкам новостей: напиши только результат анализа, простым текстом, без Markdown:"))
 
-(provide 'про-искусственный-интеллект)
+(provide 'про-ии)
 
-;;; про-искусственный-интеллект.el ends here
+;;; про-ии.el ends here
 
