@@ -78,16 +78,16 @@ KEY-BINDINGS - список пар (клавиша функция)"
           (exwm-input-simulation-keys сочетания-для-эмуляции))
 
   :config
-
+  ;; Смена имени окна 
   (add-hook 'exwm-update-class-hook
            (lambda ()
              (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-
+  ;; Смена заголовка окна
   (defun exwm-update-title-hook ()
     (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
 
   (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-
+  
   ;; Глобальные клавиши над всеми приложениями
 
   (dotimes (i 10)
@@ -136,7 +136,13 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :after (exwm)
   :if window-system
   :hook ((exwm-init . exim-start))
-  :config (push ?\C-\\ exwm-input-prefix-keys))
+  :config
+  (push (kbd "C-\\") exwm-input-prefix-keys)
+  (push (kbd "s-a") exwm-input-prefix-keys)
+  (push (kbd "s-SPC") exwm-input-prefix-keys))
+
+(provide 'про-графическую-среду)
+;;; про-графическую-среду.el ends here
 
 ;;;; Редактирование любых полей ввода через EMACS
 

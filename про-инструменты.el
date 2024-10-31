@@ -35,7 +35,7 @@
 (use-package restclient
   :defer t 
   :ensure t
-  :hook
+  :hook  
   (restclient-mode . display-line-numbers-mode)
   :mode ((rx ".http" eos) . restclient-mode))
 
@@ -71,7 +71,7 @@
 ;; Consult users will also want the embark-consult package.
 
 (use-package embark-consult
-  :defer t
+  :defer t  
   :ensure t ; only need to install it, embark loads it after consult if found
   :after consult
   :hook (embark-collect-mode . consult-preview-at-point-mode))

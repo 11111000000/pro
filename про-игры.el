@@ -11,5 +11,8 @@
   :commands (chess-game-mode chess-board-mode chess-board)
   :config)
 
+(use-package pygn-mode :ensure t)
+
+
 (provide 'про-игры)
 ;;; про-игры.el ends here

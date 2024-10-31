@@ -3,22 +3,21 @@
 
 * Команды для запуска
 #+NAME: starting-table
-| Команда                                  | Примечание                |
-|------------------------------------------+---------------------------|
-| pgrep nm-applet && killall -9 nm-applet  | Убираем запущенный апплет |
-| dbus-launch nm-applet                    | Сетевой апплет            |
-| dbus-launch blueman-applet               | Блутус апплет             |
-| dbus-launch udiskie -t                   | Управление дисками        |
-| dbus-launch dunst -conf ~/System/dunstrc | Нотификации               |
-| dbus-launch pasystray                    | Микшер в трее             |
-| copyq                                    | Буфер обмена              |
+| Команда                                   | Примечание         |
+|-------------------------------------------+--------------------|
+| dbus-launch blueman-applet                | Блутус апплет      |
+| dbus-launch udiskie -t                    | Управление дисками |
+| dbus-launch dunst -conf ~/pro/etc/dunstrc | Нотификации        |
+| dbus-launch pasystray                     | Микшер в трее      |
+| dbus-launch nm-applet                     | Сетевой апплет     |
+| copyq                                     | Буфер обмена       |
 
 * Код для асинхронного запуска команд
 #+BEGIN_SRC emacs-lisp :var keys-table=starting-table
 (require 'cl-lib)
 (let ((commands (mapcar 'car keys-table))  ;; Извлечение команд
      (programs (mapcar 'cadr keys-table))  ;; Извлечение примечаний
-     (delay 0.1)) ;; Начальная задержка
+     (delay 0.2)) ;; Начальная задержка
   (cl-loop for (cmd program) in (cl-mapcar 'list commands programs)
        do
        (run-at-time delay nil
@@ -26,7 +25,7 @@
                       (message "Запуск: %s [%s]" prog command)  ;; Печать сообщения с именем программы
                       (async-shell-command command))
                     cmd program)
-       (setq delay (+ delay 0.1))))
+       (setq delay (+ delay 0.2))))
 
 
       #+END_SRC

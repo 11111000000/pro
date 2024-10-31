@@ -35,13 +35,31 @@
   :config
   (vertico-mode t)) ;; Включить режим vertico
 
+;; Поддержка директорий
+
+;; (use-package vertico-directory
+;;   :ensure t
+;;   :after (vertico)
+;;   :bind
+;;   (:map vertico-map
+;;           ("RET" . vertico-directory-enter)
+;;           ("DEL" . vertico-directory-delete-char))
+;;   :config
+;;   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
+
+;; В виде таблицы
+
+;; (use-package vertico-grid
+;;   :ensure t
+;;   :after (vertico))
+
 ;;;; Сортировка
 
 (use-package orderless
   :ensure t
   :config
   (setq completion-styles '(orderless basic) ;; Стили автодополнения
-       completion-category-defaults nil 
+       completion-category-defaults nil
        completion-category-overrides
        '((file
           (styles partial-completion))))) ;; Настройки для работы с файлами
@@ -79,6 +97,7 @@
    ("M" . consult-minor-mode-menu)) ;; Доступ к меню минорных режимов
   :custom 
   ((consult-preview-key "M-.") ;; Клавиша предварительного просмотра
+;;;; 
    (consult-line-start-from-top t) ;; Начинать поиск сверху
    (xref-show-definitions-function #'consult-xref) ;; Отображение определений
    (xref-show-xrefs-function #'consult-xref)) ;; Отображение ссылок

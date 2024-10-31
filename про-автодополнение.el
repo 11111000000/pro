@@ -57,21 +57,24 @@
 
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
 
-;;;; Предпросмотр кандидатов
+;;;; Предпросмотр первого кандидата
 
-;; https://github.com/minad/corfu-candidate-overlay
 (use-package corfu-candidate-overlay
   :ensure t
   :after corfu
   :defines (corfu-candidate-overlay-map corfu-mode-map)
   :functions (corfu-candidate-overlay-mode)
-  :bind (:map corfu-mode-map
-                ("TAB" . corfu-candidate-overlay-complete-at-point))
+  :bind (
+         :map corfu-mode-map
+         ("M-TAB" . corfu-candidate-overlay-complete-at-point))
+  :hook ((emacs-lisp-mode . corfu-candidate-overlay-mode)
+       ((typescript-ts-mode . corfu-candidate-overlay-mode)
+        (js-ts-mode . corfu-candidate-overlay-mode)))
   :config
-  
-  (corfu-candidate-overlay-mode +1)
-  
-  (global-set-key (kbd "M-<tab>") 'completion-at-point))
+
+  (corfu-candidate-overlay-mode -1)
+  ;;(global-set-key (kbd "M-<tab>") 'completion-at-point)
+  )
 
 ;;;; Расширения для автодополнения
 

@@ -12,8 +12,8 @@
 | M-\               | nil                                 |
 | M-f               | viper-forward-word                  |
 | M-b               | viper-backward-word                 |
-| M-j               | combobulate-navigate-next           |
-| M-k               | combobulate-navigate-previous       |
+| M-j               | scroll-down                         |
+| M-k               | scroll-up                           |
 | M-y               | whole-line-or-region-kill-ring-save |
 | C-y               | yank                                |
 | C-d C-d           | whole-line-or-region-kill-region    |
@@ -37,9 +37,9 @@
 | C-$               | toggle-truncate-lines               |
 | C-c f             | вставить-имя-файла                  |
 | C-x b             | consult-buffer                      |
-| C-x C-b           | consult-buffer                      |
-| s-<tab>           | tab-bar-switch-to-next-tab          |
+| C-x C-b           | consult-buffer-other-window         |
 | C-x M-b           | consult-buffer-other-window         |
+| s-<tab>           | tab-bar-switch-to-next-tab          |
 | C-x C-t           | выбрать-контакт-в-телеге            |
 | S-s-<iso-lefttab> | tab-bar-switch-to-prev-tab          |
 | M-s s             | consult-line                        |
@@ -105,6 +105,8 @@
 |-------------------------+--------------------------------------|
 | s-q                     | exwm-reset                           |
 | s-\                     | toggle-input-method                  |
+| C-\                     | toggle-input-method                  |
+| s-SPC                   | toggle-input-method                  |
 | s-a                     | toggle-input-method                  |
 | <XF86AudioMicMute>      | переключить-микрофон-alsa            |
 | <XF86AudioMute>         | выключить-звук                       |
@@ -159,19 +161,18 @@
 | s-u                     | tab-bar-history-back                 |
 | s-U                     | tab-bar-history-forward              |
 | C-<f3>                  | battery                              |
-| s-`                     | открыть-терминал-проекта             |
+| s-`                     | eshell-toggle                        |
 | C-c tt                  | multi-vterm                          |
 | C-c tn                  | multi-vterm-next                     |
 | C-c tp                  | multi-vterm-prev                     |
 | C-c to                  | multi-vterm-dedicated-open           |
-| s-~                     | eshell-toggle                        |
 | C-c s                   | scratch-pop                          |
 | C-c l                   | org-store-link                       |
 | C-c a                   | org-agenda                           |
-| C-x +                   | golden-ratio                         |
-| C-x =                   | balance-windows                      |
-| C-x _                   | maximize-window                      |
-| C-x -                   | minimize-window                      |
+| s-+                     | golden-ratio                         |
+| s-=                     | balance-windows                      |
+| s-_                     | maximize-window                      |
+| s--                     | minimize-window                      |
 | C-c pa                  | projectile-add-known-project         |
 | C-c p C-p               | projectile-add-known-project         |
 | C-c pp                  | projectile-switch-project            |
@@ -203,14 +204,15 @@
 | C-<f7>                  | profiler-stop                        |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-e                     | ellama-ask-about                     |
-| s-I                     | chatgpt-shell-prompt                 |
-| s-i                     | показать-скрыть-ии                   |
-| C-c i                   | показать-скрыть-ии                   |
-| s-M-i                   | chatgpt-shell-send-and-review-region |
+| s-:                     | chatgpt-shell-prompt                 |
+| C-c i i                 | chatgpt-shell                        |
+| C-c i l                 | ellama-chat                          |
+| s-~                     | показать-скрыть-ии                   |
+| s-v                     | chatgpt-shell-send-and-review-region |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 
-** СДЕЛАТЬ Клавиши для модов
+** ДУМАЮ Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |

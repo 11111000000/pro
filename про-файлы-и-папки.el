@@ -11,7 +11,6 @@
       (interactive) (find-file ".."))
 
 (use-package dired
-  :defer t 
   :bind (
          :map dired-mode-map
          ("j" . dired-next-line)

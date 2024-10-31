@@ -4,8 +4,8 @@
 ;;; Здесь описываются различные настройки для улучшения интерфейса и внешнего вида в Emacs.
 ;;; Code:
 
-(require 'use-package)      ; Подключение use-package для удобного управления пакетами.
-(require 'установить-из)     ; Подключение собственного пакета для установки (например, из GitHub).
+(require 'use-package)
+(require 'установить-из)
 
 ;;;; Общий вид
 
@@ -119,7 +119,7 @@
 
 ;; Настройка типа курсора - мигающий прямоугольник с возможностью изменения ширины.
 
-(setq cursor-type '(bar . 2))                 ; Установка курсора
+(setq cursor-type '(bar . 3))                 ; Установка курсора
 
 (setq x-stretch-cursor t)                      ; Распространение курсора по высоте символа.
 
@@ -136,9 +136,9 @@
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
-           curchg-default-cursor-type cursor-type
-           curchg-default-cursor-color "black" 
-           curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
+                curchg-default-cursor-type '(bar . 3)
+                curchg-default-cursor-color "black" 
+                curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
   (change-cursor-mode t))                        
 
 ;;;; Прокрутка

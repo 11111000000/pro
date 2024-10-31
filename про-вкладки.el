@@ -26,6 +26,13 @@
 
 ;; Настройка пакета tab-bar для управления вкладками.
 (use-package tab-bar
+  :bind (:map tab-bar-mode-map
+                ("C-S-<iso-lefttab>" . nil)
+                ("C-<tab>" . nil)
+                :map help-quick-use-map
+                ("C-S-<iso-lefttab>" . nil)
+                ("C-<tab>" . nil))
+  
   :custom
   (tab-bar-new-button-show nil)  ;; Скрыть кнопку создания новой вкладки.
   (tab-bar-close-button-show nil) ;; Скрыть кнопку закрытия вкладки.
@@ -53,6 +60,23 @@
                                 (memq 'tab-bar-format-global
                                       tab-bar-format))
                             "" global-mode-string)))))))
+
+  ;; Убрать дефолтные клавиши (мешают)
+
+
+  (with-eval-after-load 'tab-bar
+    (define-key global-map (kbd "C-S-<iso-lefttab>") nil)
+    (define-key global-map (kbd "C-<tab>") nil)
+    (define-key tab-bar-mode-map (kbd "C-<tab>") nil)
+    (define-key tab-bar-mode-map (kbd "C-<iso-lefttab>") nil))
+  
+  (defvar tab-bar-mode-map
+    (let ((map (make-sparse-keymap)))
+      (tab-bar-mode--tab-key-bind map [(control tab)] nil)
+      (tab-bar-mode--tab-key-bind map [(control shift tab)] nil)
+      (tab-bar-mode--tab-key-bind map [(control shift iso-lefttab)] nil)
+      map)
+    "Tab Bar mode map.")
   
   ;; Привязка клавиш для быстрого переключения вкладок.
   (dotimes (i 10)
@@ -119,9 +143,16 @@
   (tab-line-tabs-function 'tab-line-tabs-mode-buffers)
   :hook ((vterm-mode . tab-line-mode)
        (telega-mode . tab-line-mode))
-  :bind (("M-s-n" . следующая-вкладочка)
-         ("M-s-p" . предыдущая-вкладочка))
+  :bind (:map tab-line-mode-map
+                ("C-<tab>" . tab-line-switch-to-next-tab)
+                ("C-S-<iso-lefttab>" . tab-line-switch-to-prev-tab)
+                ("s-]" . tab-line-switch-to-next-tab)
+                ("s-[" . tab-line-switch-to-prev-tab))
   :config
+
+  (with-eval-after-load 'tab-line (lambda ()
+                             (define-key global-map (kbd "C-S-<iso-lefttab>") nil)
+                             (define-key global-map (kbd "C-<tab>") nil)))
 
   ;; (set-face-attribute 'tab-line-tab-current nil
   ;;                     :inherit 'default
@@ -130,33 +161,26 @@
   ;; (set-face-attribute 'tab-line nil
   ;;                     :foreground nil
   ;;                     :background nil
-  ;;                     :inherit 'tab-bar)
-
-  (defun следующая-вкладочка ()
-    "Следующая."
-    (interactive)
-    (if tab-line-mode (tab-line-switch-to-next-tab)))
-
-  (defun предыдущая-вкладочка ()
-    "Предыдущая."
-    (interactive)
-    (if tab-line-mode (tab-line-switch-to-prev-tab)))
+  ;;                     :inherit 'tab-bar)  
 
   (defvar высота-tab-line 20)
 
-  (custom-set-faces
-   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333"))))
-   '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee"))))
-   '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab
-                                     :background "#000000"
-                                     :foreground "#cccccc"))))
-   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777" :foreground "#333"))))
-   '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888")))))
+  ;; (custom-set-faces }
+  ;;                   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333")))) }
+  ;;                   '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee")))) }
+  ;;                   '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab }
+  ;;                                                     :background "#000000" }
+  ;;                                                     :foreground "#cccccc" }
+  ;;                                                     )))) }
+  ;;                   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777" :foreground "#333")))) }
+  ;;                   '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888"))))) }
+
   (require 'powerline)
+  
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
-    (powerline-render (list (powerline-wave-right 'tab-line-tab nil высота-tab-line)
+    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
                             (format "%s" (buffer-name buffer))
-                            (powerline-wave-left nil 'tab-line-tab высота-tab-line))))
+                            (powerline-wave-left nil 'tab-line высота-tab-line))))
 
   (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line))
 
@@ -165,12 +189,6 @@
   (interactive)
   (kill-this-buffer)
   (tab-close))
-
-;; Размапим C-tab, чтобы не конфликтовал с браузером и подобным
-
-(with-eval-after-load 'tab-bar
-  (define-key tab-bar-mode-map (kbd "C-<tab>") nil)
-  (define-key tab-bar-mode-map (kbd "C-<iso-lefttab>") nil))
 
 (provide 'про-вкладки)
 ;;; про-вкладки.el ends here

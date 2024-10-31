@@ -63,7 +63,7 @@
                 package-menu-mode org-agenda-mode calc-mode comint-mode
                 racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
                 lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode
-                flymake-diagnostics-buffer-mode profiler-report-mode custom-mode))
+                flymake-diagnostics-buffer-mode profiler-report-mode custom-mode chatgpt-shell-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
 

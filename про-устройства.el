@@ -6,13 +6,13 @@
   "Включает профиль звука HFP на гарнитуре soundcore."
   (interactive)
   (message "Включаем профиль звука HFP...")
-  (start-process-shell-command "soundcore hsp" nil (expand-file-name "./bin/soundcore-auto.sh")))
+  (start-process-shell-command "soundcore hsp" nil (expand-file-name "/home/az/pro/bin/soundcore-auto.sh")))
 
 (defun выключить-все-микрофоны ()
   "Выключает все микрофоны."
   (interactive)
   (message "Выключаем микрофоны...")
-  (start-process-shell-command "mute all mic" nil (expand-file-name "./bin/mute-all-mic.sh")))
+  (start-process-shell-command "mute all mic" nil (expand-file-name "/home/az/pro/bin/mute-all-mic.sh")))
 
 ;;;; Функции переферии
 

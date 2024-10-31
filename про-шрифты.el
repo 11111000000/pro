@@ -6,7 +6,6 @@
 
 ;; Подключение пакета для смешанных шрифтов (mixing pitch)
 (use-package mixed-pitch
-  :defer t 
   :ensure t  ;; Убедитесь, что пакет будет установлен
   :hook
   ;; Включаем режим смешанных шрифтов в org-mode и help-mode
@@ -40,8 +39,9 @@
   ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120))))) ;; Для стандартного текста
   ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8))))) ;; Для фиксированного текста
   ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0))))) ;; Для переменной ширины текста
-  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120))))) ;; Настраиваем шрифт по умолчанию
-  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8))))) ;; Настраиваем фиксированный шрифт
+
+  (custom-set-faces '(default ((t (:family "Hack" :height 120))))) ;; Настраиваем шрифт по умолчанию
+  (custom-set-faces '(fixed-pitch ((t (:family "Hack" :height 0.8))))) ;; Настраиваем фиксированный шрифт
   (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0)))))) ;; Настраиваем переменную ширину
 
 ;; Добавление поддержки для эмодзи в шрифтовом наборе
@@ -56,7 +56,7 @@
 (обновить-настройки-шрифтов)
 
 ;;;; Межстрочный интервал
-(setq-default line-spacing 0.2)  ;; Устанавливаем межстрочный интервал на единицу для улучшения читаемости
+(setq-default line-spacing 0.3)  ;; Устанавливаем межстрочный интервал на единицу для улучшения читаемости
 
 ;;;; Красивые типографические символы
 ;; Заменяем последовательности символов на красивые глифы

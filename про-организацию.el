@@ -6,7 +6,6 @@
 (load-library "find-lisp")
 
 (use-package org
-  :ensure nil
   :bind (:map org-mode-map
                 ("C-<tab>" . org-cycle)
                 ("C-TAB" . org-cycle)
@@ -217,8 +216,7 @@
        (outline-minor-mode . outshine-mode)
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
-                ("C-<return>" . outshine-insert-heading)
-                ("C-<tab>" . outshine-cycle)
+                ("C-<return>" . outshine-insert-heading)                
                 ("C-M-i" . nil)
                 ))
 

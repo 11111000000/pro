@@ -24,7 +24,7 @@
 ;;   (openai-base-url "https://api.proxyapi.ru/openai/v1"))
 
 ;;;; REPL для разных нейросетей. ChatGPT Shell
-(require 'popwin)
+                                        ;(require 'popwin)
 
 (use-package chatgpt-shell
   :defer t
@@ -50,22 +50,23 @@
           (chatgpt-shell-streaming t)
           (chatgpt-shell-transmitted-context-length 3))
   :config
-  (defun показать-скрыть-ии ()
-    "Открыть или закрыть chatgpt-shell в popwin буфере снизу."
-    (interactive)
-    (let ((chatgpt-buffer (cl-find-if (lambda (buf)
-                                       (with-current-buffer buf
-                                         (eq major-mode 'chatgpt-shell-mode)))
-                                     (buffer-list))))
-      (if (and chatgpt-buffer (popwin:popup-window-live-p))
-          (popwin:close-popup-window)
-        (if chatgpt-buffer
-            (popwin:popup-buffer chatgpt-buffer :height 20 :position 'bottom)
-          (chatgpt-shell)
-          ;; (progn
-          ;;   (popwin:popup-buffer "*scratch*")
-          ;;   (chatgpt-shell))
-          )))))
+  ;; (defun показать-скрыть-ии ()
+  ;;   "Открыть или закрыть chatgpt-shell в popwin буфере снизу."
+  ;;   (interactive)
+  ;;   (let ((chatgpt-buffer (cl-find-if (lambda (buf)
+  ;;                                      (with-current-buffer buf
+  ;;                                        (eq major-mode 'chatgpt-shell-mode)))
+  ;;                                    (buffer-list))))
+  ;;     (if (and chatgpt-buffer (popwin:popup-window-live-p))
+  ;;         (popwin:close-popup-window)
+  ;;       (if chatgpt-buffer
+  ;;           (popwin:popup-buffer chatgpt-buffer :position 'bottom :stick t)
+  ;;         (chatgpt-shell)
+  ;;         ;; (progn
+  ;;         ;;   (popwin:popup-buffer "*scratch*")
+  ;;         ;;   (chatgpt-shell))
+  ;;         ))))
+  )
 
 (defun shell-maker-welcome-message (config)
   "Return a welcome message to be printed using CONFIG."
@@ -74,8 +75,7 @@
    (propertize (shell-maker-config-name config)
                'font-lock-face 'font-lock-comment-face)
    (propertize "help" 'font-lock-face 'italic)
-   (shell-maker--propertize-key-binding "-shell-submit" config)
-   ))
+   (shell-maker--propertize-key-binding "-shell-submit" config)))
 
 ;;; Поддержка блоков Org-мод
 ;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
@@ -85,13 +85,9 @@
   :functions (ob-chatgpt-shell-setup)
   :config
   (require 'ob-chatgpt-shell)
-  
   (ob-chatgpt-shell-setup)
-  
   (add-to-list 'org-structure-template-alist
              '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
-
-
   ;; Преобразуем example в Mardown
   (defun my/convert-example-to-src-markdown ()
     "Convert example blocks to src markdown blocks in results."
@@ -123,16 +119,18 @@
   (interactive)
   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
-;; Codeium
-
-;; настройки для программного интерфейса Codeium
+(defun выключить-codeium ()
+  "Disable codeium."
+  (interactive)
+  (setq completion-at-point-functions
+       (remove #'codeium-completion-at-point completion-at-point-functions)))
 
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
   :functions (codeium-utf8-byte-length)
   :bind
   ("C-c <tab>" . дополнить-codeium)
-  ("M-S-<iso-lefttab>" . дополнить-codeium)
+  ;; ("M-S-<iso-lefttab>" . дополнить-codeium)
   :config
 
   (defalias 'дополнить-codeium
@@ -153,18 +151,20 @@
   (setq codeium/document/text
        (lambda ()
          (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max)))))
+
   (setq codeium/document/cursor_offset
        (lambda ()
          (codeium-utf8-byte-length
           (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))))
 
 ;;;; Распознавание голоса. Whisper
-
+;; Сейчас мы надиктуем небольшой комментарий, он останется здесь, а я пока поперемещаю курсор туда-сюда.
+;; Пишите комментарии. Да, кажется пишите.
 (use-package whisper
-  :defer t 
+  :defer t
   :init (установить-из :repo "natrys/whisper.el")
   :bind ("M-<f5>" . whisper-run)
-  :custom ((whisper--ffmpeg-input-format ))
+  :custom ((whisper--ffmpeg-input-format "alsa"))
   :config
   (setq whisper-install-directory (expand-file-name "~/.emacs.d/")
        whisper-model "medium"

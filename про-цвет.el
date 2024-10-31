@@ -1,4 +1,4 @@
-;;; про-цвет.el --- EMACS и Пустота -*- lexical-binding: t -*-
+;;; про-цвет.el --- EMACS и Пустота  -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; /AST не имеет ни цвета ни вкуса ни запаха, ни - физических размера или веса, какой-либо формы - только структуру/
@@ -10,6 +10,8 @@
 
 ;;; Code:
 
+(require 'загрузить)
+
 (defun tao-palette ()
   "Палитра."
   (tao-theme-yang-palette))
@@ -19,15 +21,15 @@
 (use-package tao-theme
   :if window-system
   :init (установить-из :repo "11111000000/tao-theme-emacs")
-  :custom ((tao-theme-use-height nil)
+  :custom ((tao-theme-use-height t)
           (tao-theme-use-boxes t)
           (tao-theme-use-sepia nil)
-          ;(tao-theme-scale-fn '(lambda ()'(10 12 13 15 23 37 60 97 158 195 218 232 241 246 250 252 259)))
+          ;;(tao-theme-scale-fn '(lambda ()'(10 12 13 15 23 37 60 97 158 195 218 232 241 246 250 252 259)))
           )
   :config
   ;;(require 'tao-yang-theme)
   (load-theme 'tao-yang t)
   (загрузить 'face-remap))
 
-(provide 'про-цвет)
+  (provide 'про-цвет)
 ;;; про-цвет.el ends here
