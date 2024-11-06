@@ -168,6 +168,7 @@
 ;;;; Поддержка Angular
 
 (use-package angular-mode :ensure t)
+(use-package ng2-mode :ensure t)
 (use-package aangit :ensure t )
 
 (provide 'про-код-на-javascript)

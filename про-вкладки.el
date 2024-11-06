@@ -161,19 +161,19 @@
   ;; (set-face-attribute 'tab-line nil
   ;;                     :foreground nil
   ;;                     :background nil
-  ;;                     :inherit 'tab-bar)  
+  ;;                     :inherit 'tab-bar)
 
   (defvar высота-tab-line 20)
 
-  ;; (custom-set-faces }
-  ;;                   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333")))) }
-  ;;                   '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee")))) }
-  ;;                   '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab }
-  ;;                                                     :background "#000000" }
-  ;;                                                     :foreground "#cccccc" }
-  ;;                                                     )))) }
-  ;;                   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777" :foreground "#333")))) }
-  ;;                   '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888"))))) }
+  ;; (custom-set-faces
+  ;;                   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil :background "#333"))))
+  ;;                   '(tab-line-tab ((t (:height 1.0 :box nil :background "#333333" :foreground "#eeeeee"))))
+  ;;                   '(tab-line-tab-current ((t (:height 1.0 :box nil :inherit tab-line-tab
+  ;;                                                     :background "#000000"
+  ;;                                                     :foreground "#cccccc"
+  ;;                                                     ))))
+  ;;                   '(tab-line-tab-inactive ((t (:height 1.0 :box nil :background "#777777" :foreground "#333"))))
+  ;;                   '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888")))))
 
   (require 'powerline)
   

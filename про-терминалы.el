@@ -31,7 +31,7 @@
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm"))
+  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "docker"))
 
   :init
   (add-hook 'eshell-mode-hook (lambda ()

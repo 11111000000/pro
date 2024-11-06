@@ -136,10 +136,10 @@
   :config
   (require 'cursor-chg)
   (setq-default curchg-input-method-cursor-color "orange"
-                curchg-default-cursor-type '(bar . 3)
-                curchg-default-cursor-color "black" 
-                curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
-  (change-cursor-mode t))                        
+           curchg-default-cursor-type '(bar . 3)
+           curchg-default-cursor-color "forest green"
+           curchg-change-cursor-on-input-method-flag t) ; Изменение курсора при смене метода ввода.
+  (change-cursor-mode t))
 
 ;;;; Прокрутка
 

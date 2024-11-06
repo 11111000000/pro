@@ -124,7 +124,7 @@
 (use-package olivetti
   :defer t 
   :ensure t
-  :hook ((Man-mode Info-mode) . olivetti-mode)
+  :hook ((man-mode info-mode org-mode markdown-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)
           (olivetti-body-width 80)))
 
@@ -288,6 +288,35 @@
   (minimap-minimum-width 14)
   (minimap-window-location 'right)
   (minimap-width-fraction 0.08))
+
+(use-package copy-as-format
+  :ensure t
+  :defer 110
+  :after org
+  ;;:bind  (:map my-map ("f" . (lambda () (interactive)
+  ;;                         (setq current-prefix-arg '(4)) ; C-u (universal argument)
+  ;;                         (call-interactively 'copy-as-format))))
+  :config
+  (defalias 'copy-as-format-reddit 'copy-as-format-markdown) ;; idea from https://www.reddit.com/r/emacs/comments/oil7xw/i_made_a_thing_for_org_bespoke_completion_sparse/h517hps/?context=3
+  (defvar copy-as-format-format-alist
+    '(
+      ;;("asciidoc"  copy-as-format--asciidoc)
+      ;;("bitbucket" copy-as-format--github)
+      ("disqus"    copy-as-format--disqus)
+      ("github"    copy-as-format--github)
+      ("gitlab"    copy-as-format--github)
+      ;;("hipchat"   copy-as-format--hipchat)
+      ("html"      copy-as-format--html)
+      ("jira"      copy-as-format--jira)
+      ("markdown"  copy-as-format--markdown)
+      ("reddit"  copy-as-format--reddit)
+      ;;("mediawiki" copy-as-format--mediawiki)
+      ;;("org-mode"  copy-as-format--org-mode)
+      ;;("pod"       copy-as-format--pod)
+      ;;("rst"       copy-as-format--rst)
+      ;;("slack"     copy-as-format--slack)
+      )
+    "Alist of format names and the function to do the formatting."))
 
 (provide 'про-редактор)
 ;;; про-редактор.el ends here

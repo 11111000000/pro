@@ -5,6 +5,19 @@
 
 (require 'use-package)
 
+;;;; Tor proxy
+
+(require 'url)
+
+;; Set the proxy for HTTP and HTTPS
+(setq url-proxy-services
+     '(("no_proxy" . "localhost, 127.0.0.1") ; Not to proxy local addresses
+       ("http" . "socks5://127.0.0.1:9050")
+       ("https" . "socks5://127.0.0.1:9050")))
+
+;(setq url-http-timeout 30)
+
+
 ;;;; Ускорение работы SSH
 
 (require 'tramp)
@@ -146,6 +159,23 @@
                             (message "Сумма в RUB: %.2f" (* sum rub-rate))
                           (message "Не найден курс RUB в ответе.")))))
                   (list sum))))
+
+(defun my-browse-url-at-mouse (event)
+  "Open URL at mouse point with Alt or Shift key modifier.
+Use Firefox if Alt is pressed, Chrome if Shift is pressed."
+  (interactive "e")
+  (let* ((mouse-pos (event-start event))
+        (url (thing-at-point 'url)))
+    (cond
+     ((and (equal (event-modifiers event) '(alt)) url) ;; Alt pressed
+      (start-process "firefox" nil "firefox" url))
+     ((and (equal (event-modifiers event) '(shift)) url) ;; Shift pressed
+      (start-process "chrome" nil "google-chrome" url))
+     (url
+      (browse-url-default-browser url))))) ;; Open in default browser if no modifier
+
+(global-set-key [mouse-1] 'my-browse-url-at-mouse) ;; Настраиваем левую кнопку мыши
+
 
 (provide 'про-интернет-сервисы)
 ;;; про-интернет-сервисы.el ends here

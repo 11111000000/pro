@@ -72,8 +72,8 @@
 
 (defun поправить-встроеные-изображения ()
   "Перерисовать изображения."
-  (when org-inline-image-overlays
-    (org-redisplay-inline-images)))
+  
+  (org-redisplay-inline-images))
 
 (add-hook 'org-babel-after-execute-hook 'поправить-встроеные-изображения)
 

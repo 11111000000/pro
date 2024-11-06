@@ -59,22 +59,20 @@
 
 ;;;; Предпросмотр первого кандидата
 
-(use-package corfu-candidate-overlay
-  :ensure t
-  :after corfu
-  :defines (corfu-candidate-overlay-map corfu-mode-map)
-  :functions (corfu-candidate-overlay-mode)
-  :bind (
-         :map corfu-mode-map
-         ("M-TAB" . corfu-candidate-overlay-complete-at-point))
-  :hook ((emacs-lisp-mode . corfu-candidate-overlay-mode)
-       ((typescript-ts-mode . corfu-candidate-overlay-mode)
-        (js-ts-mode . corfu-candidate-overlay-mode)))
-  :config
+;; (use-package corfu-candidate-overlay
+;;   :ensure t
+;;   :after corfu
+;;   :defines (corfu-candidate-overlay-map corfu-mode-map)
+;;   :functions (corfu-candidate-overlay-mode)
+;;   :bind (:map corfu-mode-map
+;;                 ("M-TAB" . corfu-candidate-overlay-complete-at-point))
+;;   :hook ((emacs-lisp-mode . corfu-candidate-overlay-mode)
+;;        ((typescript-ts-mode . corfu-candidate-overlay-mode)
+;;         (js-ts-mode . corfu-candidate-overlay-mode)))
+;;   :config
 
-  (corfu-candidate-overlay-mode -1)
-  ;;(global-set-key (kbd "M-<tab>") 'completion-at-point)
-  )
+;;   ;;(global-set-key (kbd "M-<tab>") 'completion-at-point)
+;;   )
 
 ;;;; Расширения для автодополнения
 

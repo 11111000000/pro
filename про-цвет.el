@@ -14,7 +14,7 @@
 
 (defun tao-palette ()
   "Палитра."
-  (tao-theme-yang-palette))
+  (tao-theme-yin-palette))
 
 (require 'установить-из)
 
@@ -27,8 +27,8 @@
           ;;(tao-theme-scale-fn '(lambda ()'(10 12 13 15 23 37 60 97 158 195 218 232 241 246 250 252 259)))
           )
   :config
-  ;;(require 'tao-yang-theme)
-  (load-theme 'tao-yang t)
+  ;;(require 'tao-yin-theme)
+  (load-theme 'tao-yin t)
   (загрузить 'face-remap))
 
   (provide 'про-цвет)

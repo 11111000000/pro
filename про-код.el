@@ -30,6 +30,7 @@
             (css-mode        . css-ts-mode)
             (js-mode         . js-ts-mode)
             (js-json-mode    . json-ts-mode)
+            (json-mode    . json-ts-mode)
             (python-mode     . python-ts-mode)
             (sh-mode         . bash-ts-mode)
             (typescript-mode . typescript-ts-mode)))
@@ -48,6 +49,10 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+;;;; Идентация Treesitter
+
+(use-package tree-sitter-indent :ensure t)
 
 ;;;; Языковой сервер
 
@@ -322,7 +327,17 @@ ARG - backward"
 
 ;;;; Импорты во всплывающем окне
 
+;;;; Bash
 
+;;(use-package bash-mode :ensure t)
+
+(use-package flymake-bashate
+  :ensure t
+  :commands flymake-bashate-setup
+  :hook (((bash-ts-mode sh-mode) . flymake-bashate-setup)
+       ((bash-ts-mode sh-mode) . flymake-mode))
+  :custom
+  (flymake-bashate-max-line-length 80))
 
 (provide 'про-код)
 ;;; про-код.el ends here
