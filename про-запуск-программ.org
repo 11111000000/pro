@@ -51,17 +51,24 @@
   (setq async-shell-processes '())  ;; Очищаем список после завершения
   (message "Все программы остановлены."))
 
-(let ((commands (mapcar 'car программы))  ;; Извлечение команд
-     (имена (mapcar 'cadr программы))  ;; Извлечение примечаний
-     (delay 7))  ;; Начальная задержка
-  (cl-loop for (cmd program) in (cl-mapcar 'list commands имена)
-       do
-       (run-at-time delay nil
-                    (lambda (command prog)
-                      (message "Запуск: %s [%s]" prog command)  ;; Печать сообщения с именем программы
-                      (запустить-программу (concat "dbus-launch " command)))
-                    cmd program)
-       (setq delay (+ delay 0.3))))
+(add-hook 'kill-emacs-hook 'выключить-все-запущенные-программы)
+
+(defun запустить-программы-из-таблицы ()
+  "Запускает все программы из таблицы"
+  (interactive)
+  (let ((commands (mapcar 'car программы))  ;; Извлечение команд
+       (имена (mapcar 'cadr программы))  ;; Извлечение примечаний
+       (delay 7))  ;; Начальная задержка
+    (cl-loop for (cmd program) in (cl-mapcar 'list commands имена)
+         do
+         (run-at-time delay nil
+                      (lambda (command prog)
+                        (message "Запуск: %s [%s]" prog command)  ;; Печать сообщения с именем программы
+                        (запустить-программу (concat "dbus-launch " command)))
+                      cmd program)
+         (setq delay (+ delay 0.3)))))
+
+(запустить-программы-из-таблицы)
       #+END_SRC
 
 #+RESULTS:
