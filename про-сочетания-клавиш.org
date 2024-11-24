@@ -107,7 +107,6 @@
 | s-\                     | toggle-input-method                  |
 | C-\                     | toggle-input-method                  |
 | s-SPC                   | toggle-input-method                  |
-| s-a                     | toggle-input-method                  |
 | <XF86AudioMicMute>      | переключить-микрофон-alsa            |
 | <XF86AudioMute>         | выключить-звук                       |
 | <XF86AudioRaiseVolume>  | увеличить-громкость                  |
@@ -137,7 +136,7 @@
 | s-p                     | tab-bar-switch-to-prev-tab           |
 | s-w                     | tab-bar-close-tab                    |
 | s-W                     | закрыть-вкладку-и-буфер              |
-| s-d                     | delete-window                        |
+| s-d                     | treemacs                             |
 | s-x                     | app-launcher-run-app                 |
 | s-M-h                   | split-window-horizontally            |
 | s-M-k                   | split-window-vertically              |
@@ -162,6 +161,7 @@
 | s-U                     | tab-bar-history-forward              |
 | C-<f3>                  | battery                              |
 | s-`                     | eshell-toggle                        |
+| s-~                     | eshell                               |
 | C-c tt                  | multi-vterm                          |
 | C-c tn                  | multi-vterm-next                     |
 | C-c tp                  | multi-vterm-prev                     |
@@ -190,7 +190,7 @@
 | s-J                     | buf-move-down                        |
 | s-H                     | buf-move-left                        |
 | s-L                     | buf-move-right                       |
-| s-g                     | treemacs                             |
+| s-g                     | delete-window                        |
 | C-x +                   | golden-ratio                         |
 | C-x =                   | balance-windows                      |
 | C-x _                   | maximize-window                      |
@@ -199,7 +199,6 @@
 | s-*                     | popwin:stick-popup-window            |
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
-| C-c C-g l               | gitlab-show-projects                 |
 | C-<f6>                  | profiler-start                       |
 | C-<f7>                  | profiler-stop                        |
 | <f6>                    | exwm-floating-toggle-floating        |
@@ -207,8 +206,8 @@
 | s-:                     | chatgpt-shell-prompt                 |
 | C-c i i                 | chatgpt-shell                        |
 | C-c i l                 | ellama-chat                          |
-| s-~                     | показать-скрыть-ии                   |
-| s-v                     | chatgpt-shell-send-and-review-region |
+| s-a                     | treemacs                             |
+| C-c i v                 | chatgpt-shell-send-and-review-region |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 
@@ -247,12 +246,3 @@
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 #+END_SRC
-
-#+RESULTS:
-
-
-
-
-
-
-

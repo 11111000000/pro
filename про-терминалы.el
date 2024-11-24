@@ -32,7 +32,6 @@
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
   (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "docker"))
-
   :init
   (add-hook 'eshell-mode-hook (lambda ()
                                (progn
@@ -87,7 +86,7 @@
 (use-package eshell-toggle
   :ensure t
   :custom
-  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-size-fraction 4)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-find-project-root-package 'projectile)
                                         ;(eshell-toggle-find-project-root-package t)

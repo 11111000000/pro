@@ -47,8 +47,8 @@
                                           "claude-3-opus-20240229"))
           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")
-          (chatgpt-shell-streaming t)
-          (chatgpt-shell-transmitted-context-length 3))
+          (chatgpt-shell-streaming nil)
+          (chatgpt-shell-transmitted-context-length 0))
   :config
   ;; (defun показать-скрыть-ии ()
   ;;   "Открыть или закрыть chatgpt-shell в popwin буфере снизу."

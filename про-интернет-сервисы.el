@@ -9,13 +9,28 @@
 
 (require 'url)
 
-;; Set the proxy for HTTP and HTTPS
-(setq url-proxy-services
-     '(("no_proxy" . "localhost, 127.0.0.1") ; Not to proxy local addresses
-       ("http" . "socks5://127.0.0.1:9050")
-       ("https" . "socks5://127.0.0.1:9050")))
+(use-package use-proxy
+  :ensure t
+  :config
+  ;; Set up proxy settings here
+  (setq use-proxy-http-proxy "socks5h://127.0.0.1:9050")
+  (setq use-proxy-https-proxy "socks5h://127.0.0.1:9050")
+  (setq use-proxy-no-proxy "localhost|127.0.0.1|::1")
+  
+  (use-proxy-mode 1)
 
-;(setq url-http-timeout 30)
+  ;; Key bindings to toggle proxy settings
+  
+  (global-set-key (kbd "C-c C-g") 'use-proxy-toggle-proxies-global))
+
+
+;; Set the proxy for HTTP and HTTPS
+;; (setq url-proxy-services
+;;      '(("no_proxy" . "localhost, 127.0.0.1") ; Not to proxy local addresses
+;;        ("http" . "socks5://127.0.0.1:9050")
+;;        ("https" . "socks5://127.0.0.1:9050")))
+
+                                        ;(setq url-http-timeout 30)
 
 
 ;;;; Ускорение работы SSH

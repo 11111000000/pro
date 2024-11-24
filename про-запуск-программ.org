@@ -58,7 +58,7 @@
   (interactive)
   (let ((commands (mapcar 'car программы))  ;; Извлечение команд
        (имена (mapcar 'cadr программы))  ;; Извлечение примечаний
-       (delay 7))  ;; Начальная задержка
+       (delay 12))  ;; Начальная задержка
     (cl-loop for (cmd program) in (cl-mapcar 'list commands имена)
          do
          (run-at-time delay nil

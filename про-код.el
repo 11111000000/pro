@@ -74,6 +74,8 @@
                 ("C-M-." . xref-find-references)
                 ("C-S-<down-mouse-1>" . xref-find-references)
                 ("C-c ." . eglot-code-actions))
+  :hook
+  (bash-ts-mode . eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect 3)
@@ -331,13 +333,18 @@ ARG - backward"
 
 ;;(use-package bash-mode :ensure t)
 
-(use-package flymake-bashate
-  :ensure t
-  :commands flymake-bashate-setup
-  :hook (((bash-ts-mode sh-mode) . flymake-bashate-setup)
-       ((bash-ts-mode sh-mode) . flymake-mode))
-  :custom
-  (flymake-bashate-max-line-length 80))
+;; (use-package flymake-bashate
+;;   :ensure t
+;;   :commands flymake-bashate-setup
+;;   :hook (((bash-ts-mode sh-mode) . flymake-bashate-setup)
+;;        ((bash-ts-mode sh-mode) . flymake-mode))
+;;   :custom
+;;   (flymake-bashate-max-line-length 80))
+
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :hook (((bash-ts-mode sh-mode) . flymake-shellcheck-load))
+  :init)
 
 (provide 'про-код)
 ;;; про-код.el ends here

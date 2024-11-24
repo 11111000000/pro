@@ -124,7 +124,7 @@
 (use-package olivetti
   :defer t 
   :ensure t
-  :hook ((man-mode info-mode org-mode markdown-mode) . olivetti-mode)
+  :hook ((man-mode info-mode markdown-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)
           (olivetti-body-width 80)))
 

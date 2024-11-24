@@ -9,7 +9,9 @@
   :bind (:map org-mode-map
                 ("C-<tab>" . org-cycle)
                 ("C-TAB" . org-cycle)
-                ("C-c o" . org-agenda-open-link)
+                ("M-RET" . org-agenda-open-link)
+                ("M-p" . org-previous-visible-heading)
+                ("M-n" . org-next-visible-heading)
                 ("C-c C-p" . nil))
   :custom ((org-log-done nil)
           ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
@@ -19,6 +21,12 @@
   :config
   (require 'org-compat)
   (require 'org-tempo)
+  (setq org-todo-keyword-faces
+       '(("TODO" . org-warning)
+         ("FIX" . (:foreground "white" :background "red" :weight bold))
+         ("IN-PROGRESS" . (:foreground "blue" :weight bold))
+         ("DONE" . (:foreground "green" :weight normal))
+         ("CANCELLED" . (:foreground "gray" :weight normal))))
   :init)
 
 ;;;; Иконки приоритетов
@@ -273,6 +281,35 @@
 (use-package kanban :ensure t)
 
 (use-package org-kanban :ensure t)
+
+(require 'org)
+
+(defun my/org-archive-done-tasks ()
+  "Вырезает все записи со статусом DONE и сохраняет их в архивный файл."
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+        (archive-file (concat current-file ".archive.org"))
+        (done-tasks '()))
+    (save-excursion
+      ;; Сначала ищем записи со статусом DONE
+      (goto-char (point-min))
+      (while (re-search-forward "^\\*+[ ]+DONE" nil t)
+        (let ((start (match-beginning 0))
+             (end (progn
+                    (outline-next-heading)
+                    (point))))
+          (push (buffer-substring-no-properties start end) done-tasks)
+          (delete-region start end)))
+      ;; Если есть записи, сохраняем их в архивный файл
+      (when done-tasks
+        (with-temp-buffer
+          (insert (mapconcat 'identity (nreverse done-tasks) "\n\n"))
+          (append-to-file (point-min) (point-max) archive-file)))
+      ;; Выводим сообщение об успешном архивировании
+      (if done-tasks
+          (message "Делания с пометкой DONE были перенесены в %s" archive-file)
+        (message "Не найдено задач с пометкой DONE.")))))
+
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

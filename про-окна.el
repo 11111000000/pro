@@ -55,18 +55,21 @@
   (setq popper-reference-buffers
        '("\\*Messages\\*"
          "Output\\*$"
-         "\\*Async Shell Command\\*"
          shell-command-mode
          help-mode
          compilation-mode
          calendar-mode
          chatgpt-shell-mode
-         "^\\*eshell.*\\*$" eshell-mode
-         "^\\*shell.*\\*$"  shell-mode
+         ;;"^\\*eshell.*\\*$" eshell-mode
+         ;;"^\\*shell.*\\*$"  shell-mode
          "^\\*term.*\\*$"   term-mode
-         "^\\*vterm.*\\*$"  vterm-mode))
+         "^\\*vterm.*\\*$"  vterm-mode
+         ))
   (popper-mode +1)
-  (popper-echo-mode +1))
+  (popper-echo-mode +1)
+  (add-to-list 'display-buffer-alist
+             (cons "\\*Async.*" (cons #'display-buffer-no-window nil)))
+  )
 
 ;; (use-package popwin
 ;;   :ensure t
