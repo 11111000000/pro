@@ -29,6 +29,10 @@
          ("CANCELLED" . (:foreground "gray" :weight normal))))
   :init)
 
+;;;; Отключаем использование _ и ^ для подстрочных и надстрочных символов
+
+(setq org-use-sub-superscripts nil)
+
 ;;;; Иконки приоритетов
 
 (use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
@@ -111,7 +115,7 @@
 
 (setq org-support-shift-select nil)
 
-(require 'ov)
+
 (require 'markdown-mode)
 
 (defun render-org-results-as-markdown ()
@@ -266,12 +270,12 @@
 
 
 
-(use-package flycheck-plantuml
-  :defer t 
-  :ensure t
-  :functions (flycheck-plantuml-setup)
-  :after plantuml-mode
-  :config (flycheck-plantuml-setup))
+;; (use-package flycheck-plantuml
+;;   :defer t 
+;;   :ensure t
+;;   :functions (flycheck-plantuml-setup)
+;;   :after plantuml-mode
+;;   :config (flycheck-plantuml-setup))
 
 ;;;; Асинхронное выполнение блоков кода
 

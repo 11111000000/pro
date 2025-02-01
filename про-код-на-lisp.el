@@ -132,9 +132,11 @@
          :extend t
          :background ,(face-attribute 'default :background)))))
   :bind (:map emacs-lisp-mode-map
-                ("C-c e" . macrostep-expand)
+                ("C-c >" . macrostep-expand)
+                ("C-c <" . macrostep-collapse)
                 :map lisp-interaction-mode-map
-                ("C-c e" . macrostep-expand)))
+                ("C-c >" . macrostep-expand)
+                ("C-c <" . macrostep-collapse)))
 
 (require 'тихо-применить)
 

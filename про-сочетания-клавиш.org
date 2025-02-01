@@ -37,8 +37,10 @@
 | C-$               | toggle-truncate-lines               |
 | C-c f             | вставить-имя-файла                  |
 | C-x b             | consult-buffer                      |
-| C-x C-b           | consult-buffer-other-window         |
+| C-x C-b           | consult-buffer                      |
 | C-x M-b           | consult-buffer-other-window         |
+| C-c b             | consult-buffer-other-window         |
+| C-c C-b           | consult-buffer-other-window         |
 | s-<tab>           | tab-bar-switch-to-next-tab          |
 | C-x C-t           | выбрать-контакт-в-телеге            |
 | S-s-<iso-lefttab> | tab-bar-switch-to-prev-tab          |
@@ -83,9 +85,7 @@
 | C-c y n           | создать-новый-сниппет-со-шпаргалкой |
 | C-c hl            | rainbow-identifiers-mode            |
 | C-c hi            | color-identifiers-mode              |
-| C-z               | avy-goto-char                       |
-| s-z               | avy-goto-char                       |
-| M-z               | avy-goto-char                       |
+| M-g g             | avy-goto-char                       |
 | M-SPC             | er/expand-region                    |
 | M-S-SPC           | er/contract-region                  |
 | S-SPC             | mark-current-line                   |
@@ -97,6 +97,38 @@
 | C-c v             | gt-do-translate                     |
 | s-.               | xref-find-definitions-other-window  |
 | C-M-.             | xref-find-definitions-other-window  |
+| C-.               | embark-act                          |
+| C-c .             | embark-act                          |
+| C-c ir            | gptel-rewrite                       |
+| C-c im            | gptel-menu                          |
+| C-c in            | gptel-context-next                  |
+| C-c i.            | gptel-quick                         |
+| C-c ia            | gptel-add                           |
+| C-c if            | gptel-add-file                      |
+| C-c ip            | gptel-system-prompt                 |
+| C-c i RET         | gptel-send                          |
+| C-c is            | gptel-send                          |
+| C-c ik            | gptel-abort                         |
+| C-c ig            | gptel-abort                         |
+| C-c iq            | elysium-query                       |
+| C-c iw            | whisper-run                         |
+| C-c ic            | переключить-codeium                 |
+| C-z               | nil                                 |
+| C-c e e           | evedel-create-directive             |
+| C-c e i           | evedel-modify-directive             |
+| C-c e D           | evedel-modify-directive-tag-query   |
+| C-c e P           | evedel-preview-directive-prompt     |
+| C-c e RET         | evedel-process-directives           |
+| C-c e TAB         | evedel-convert-instructions         |
+| C-c e r           | evedel-create-reference             |
+| C-c e k           | evedel-delete-instructions          |
+| C-c e C-'         | evedel-modify-reference-commentary  |
+| C-c e n           | evedel-next-instruction             |
+| C-c e p           | evedel-previous-instruction         |
+| C-c e s           | evedel-save-instructions            |
+| C-c e l           | evedel-load-instructions            |
+| C-c e t           | evedel-add-tags                     |
+| C-c e T           | evedel-remove-tags                  |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -161,11 +193,8 @@
 | s-U                     | tab-bar-history-forward              |
 | C-<f3>                  | battery                              |
 | s-`                     | eshell-toggle                        |
-| s-~                     | eshell                               |
-| C-c tt                  | multi-vterm                          |
-| C-c tn                  | multi-vterm-next                     |
-| C-c tp                  | multi-vterm-prev                     |
-| C-c to                  | multi-vterm-dedicated-open           |
+| s-~                     | multi-vterm-dedicated-toggle         |
+| C-c tt                  | eshell-here                          |
 | C-c s                   | scratch-pop                          |
 | C-c l                   | org-store-link                       |
 | C-c a                   | org-agenda                           |
@@ -195,8 +224,6 @@
 | C-x =                   | balance-windows                      |
 | C-x _                   | maximize-window                      |
 | C-x -                   | minimize-window                      |
-| s-b                     | popwin:popup-buffer                  |
-| s-*                     | popwin:stick-popup-window            |
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
 | C-<f6>                  | profiler-start                       |
@@ -204,10 +231,12 @@
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-e                     | ellama-ask-about                     |
 | s-:                     | chatgpt-shell-prompt                 |
-| C-c i i                 | chatgpt-shell                        |
-| C-c i l                 | ellama-chat                          |
+| C-c i M-i               | chatgpt-shell                        |
+| C-c ie                  | chatgpt-shell                        |
+| C-c il                  | ellama-chat                          |
+| C-c ii                  | gptel                                |
 | s-a                     | treemacs                             |
-| C-c i v                 | chatgpt-shell-send-and-review-region |
+| C-c iv                  | chatgpt-shell-send-and-review-region |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 
@@ -246,3 +275,19 @@
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 #+END_SRC
+
+#+RESULTS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+

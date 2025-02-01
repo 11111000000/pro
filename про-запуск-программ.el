@@ -1,23 +1,3 @@
-#+T#+TITLE: Запуск команд EXWM
-#+AUTHOR: Petr 11111000000
-
-* Команды для запуска
-#+NAME: таблица-программ
-| Команда                       | Примечание                              |
-|-------------------------------+-----------------------------------------|
-| nm-applet                     | Сетевой апплет                          |
-| blueman-applet                | Блутус апплет                           |
-| copyq                         | Буфер обмена                            |
-| udiskie -t                    | Управление дисками                      |
-| dunst -conf ~/pro/etc/dunstrc | Нотификации                             |
-| pasystray                     | Микшер в трее                           |
-| xset s noblank                | Предотвращаем затемнение экрана         |
-| xset s off                    | Отключаем заставку экрана               |
-| xset -dpms                    | Отключаем функции энергосбережения DPMS |
-
-* Команда в имени буфера
-
-#+begin_src emacs-lisp
 ;; Показывать команду в имени буфера
 (defun my-async-shell-command-advice (orig-fun command &rest args)
   "Create a custom buffer name for async-shell-command using COMMAND."
@@ -27,10 +7,7 @@
 
 (advice-add 'async-shell-command :around #'my-async-shell-command-advice)
 
-#+end_src
-
-* Код для асинхронного запуска команд
-#+BEGIN_SRC emacs-lisp :var программы=таблица-программ
+(let ((программы '(("nm-applet" "Сетевой апплет") ("blueman-applet" "Блутус апплет") ("copyq" "Буфер обмена") ("udiskie -t" "Управление дисками") ("dunst -conf ~/pro/etc/dunstrc" "Нотификации") ("pasystray" "Микшер в трее") ("xset s noblank" "Предотвращаем затемнение экрана") ("xset s off" "Отключаем заставку экрана") ("xset -dpms" "Отключаем функции энергосбережения DPMS"))))
 (require 'cl-lib)
 
 ;; Список для хранения активных процессов
@@ -72,6 +49,4 @@
          (setq delay (+ delay 0.3)))))
 
 (запустить-программы-из-таблицы)
-      #+END_SRC
-
-#+RESULTS:
+)

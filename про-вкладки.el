@@ -147,7 +147,9 @@
                 ("C-<tab>" . tab-line-switch-to-next-tab)
                 ("C-S-<iso-lefttab>" . tab-line-switch-to-prev-tab)
                 ("s-]" . tab-line-switch-to-next-tab)
-                ("s-[" . tab-line-switch-to-prev-tab))
+                ("s-[" . tab-line-switch-to-prev-tab)
+                ("s-M-n" . tab-line-switch-to-next-tab)
+                ("s-M-p" . tab-line-switch-to-prev-tab))
   :config
 
   (with-eval-after-load 'tab-line (lambda ()

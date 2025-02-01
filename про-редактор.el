@@ -124,7 +124,7 @@
 (use-package olivetti
   :defer t 
   :ensure t
-  :hook ((man-mode info-mode markdown-mode) . olivetti-mode)
+  :hook ((man-mode info-mode markdown-mode org-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)
           (olivetti-body-width 80)))
 
@@ -151,9 +151,8 @@
 ;; По умолчанию отступы в 2 пробела
 
 (setq-default indent-tabs-mode nil
-         tab-width 4
-         indent-line-function 'indent-relative
-         default-tabs-width 4)
+         tab-width 8
+         indent-line-function 'indent-relative)
 
 ;; Автоматически выравнивать при переводе строки
 
@@ -226,20 +225,22 @@
 
 ;; TODO: Заменить на flycheck-aspell
 
-;; (use-package flymake-aspell
-;;   :ensure t
-;;   :hook ((text-mode . flymake-aspell-setup)
-;;        (org-mode . flymake-aspell-setup))
-;;   :init
-;;   (require 'ispell)
-;;   (setq ispell-dictionary "ru")
-;;   (setq ispell-program-name "aspell")
-;;   (setq ispell-silently-savep t))
+(use-package flymake-aspell
+  :ensure t
+  :hook ((text-mode . flymake-aspell-setup)
+       (org-mode . flymake-aspell-setup))
+  :defines (ispell-dictionary ispell-silently-savep ispell-program-name)
+  :init
+  (require 'ispell)
+  (setq ispell-dictionary "ru")
+  (setq ispell-program-name "aspell")
+  (setq ispell-silently-savep t))
 
 ;;;; Поддержка языка  разметки Markdown
 
 (use-package markdown-mode
-  :defer t  :ensure t)
+  :defer t
+  :ensure t)
 
 ;;;; Вставить имя файла
 
@@ -317,6 +318,11 @@
       ;;("slack"     copy-as-format--slack)
       )
     "Alist of format names and the function to do the formatting."))
+
+(use-package smerge-mode
+  :ensure nil
+  :hook
+  (prog-mode . smerge-mode))
 
 (provide 'про-редактор)
 ;;; про-редактор.el ends here

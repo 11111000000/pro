@@ -16,6 +16,12 @@
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank)))
 
+; (use-package capf-autosuggest }
+;   :ensure t }
+;   :hook }
+;   (eshell-mode capf-autosuggest-mode) }
+;    (comint-mode capf-autosuggest-mode)) }
+
 ;; Оболочка Emacs Shell
 
 (use-package eshell
@@ -38,6 +44,14 @@
                                  (define-key eshell-mode-map "\C-a" 'eshell-bol)
                                  (define-key eshell-mode-map [up] 'previous-line)
                                  (define-key eshell-mode-map [down] 'next-line)))))
+
+(defun eshell-here ()
+  "Открыть новый буфер Eshell в каталоге текущего буфера."
+  (interactive)
+  (let ((default-directory (or (and (buffer-file-name)
+                                    (file-name-directory (buffer-file-name)))
+                               default-directory)))
+    (eshell t)))
 
 ;; Подсветка синтаксиса в Eshell
 
@@ -105,6 +119,8 @@
     (delete-char -1)))
 
 (define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace)
+
+
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here

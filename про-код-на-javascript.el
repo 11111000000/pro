@@ -70,19 +70,19 @@
 
 ;;;; HTTP Запросы
 
-(use-package request  
+(use-package request
   :ensure t)
 
 ;;;; Поддержка JSON
 
-(use-package json-mode  
+(use-package json-mode
   :ensure t
   :hook ((json-mode . hs-minor-mode)))
 
 ;; Навигация по JSON
 
 (use-package json-navigator
-  :defer t 
+  :defer t
   :ensure t)
 
 ;;;; Проверка кода на Javascript

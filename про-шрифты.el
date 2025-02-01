@@ -35,14 +35,17 @@
 (defun обновить-настройки-шрифтов ()
   "Настройки шрифтов."
   (interactive)
-  ;; Закомментированная часть позволяет использовать различные шрифты:
   ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120))))) ;; Для стандартного текста
   ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8))))) ;; Для фиксированного текста
   ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0))))) ;; Для переменной ширины текста
+  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120))))) ;; Для стандартного текста
+  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8))))) ;; Для фиксированного текста
+  (custom-set-faces '(variable-pitch ((t (:family "Noto Sans" :height 1.0))))) ;; Для переменной ширины текста
 
-  (custom-set-faces '(default ((t (:family "Hack" :height 120))))) ;; Настраиваем шрифт по умолчанию
-  (custom-set-faces '(fixed-pitch ((t (:family "Hack" :height 0.8))))) ;; Настраиваем фиксированный шрифт
-  (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0)))))) ;; Настраиваем переменную ширину
+  ; (custom-set-faces '(default ((t (:family "Hack" :height 120))))) ;\;\ Настраиваем шрифт по умолчанию }
+  ; (custom-set-faces '(fixed-pitch ((t (:family "Hack" :height 0.8))))) ;\;\ Настраиваем фиксированный шрифт }
+  ; (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0))))) }
+  ) ;; Настраиваем переменную ширину
 
 ;; Добавление поддержки для эмодзи в шрифтовом наборе
 (set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend)
@@ -62,7 +65,7 @@
 ;; Заменяем последовательности символов на красивые глифы
 ;; При наведении курсора хотим видеть оригинал:
 (use-package fira-code-mode
-  :defer t 
+  :defer t
   :if window-system  ;; Убедимся, что это только для графических систем
   :ensure t
   :hook ((prog-mode . fira-code-mode))  ;; Включаем fira-code-mode в режимах программирования

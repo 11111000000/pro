@@ -4,7 +4,6 @@
 ;;; Code:
 
 (use-package go-translate
-  :defer t 
   :ensure t
   :functions (gt-translator
          gt-prompt-picker

@@ -70,7 +70,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
            exwm-input-prefix-keys)
   :if window-system
   ;;:hook ((exwm-init . exim-start))
-  :custom ((exwm-workspace-number 2)
+  :custom ((exwm-workspace-number 3)
           (exwm-workspace-show-all-buffers t)
           (exwm-layout-show-all-buffers t)
           (exwm-manage-force-tiling nil)
@@ -118,7 +118,9 @@ KEY-BINDINGS - список пар (клавиша функция)"
   ;; Запуск EXWM
   (exwm-enable)
   (require 'exwm-systemtray)
-  (exwm-systemtray-mode))
+  (exwm-systemtray-mode)
+  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
+  )
 
 ;;;; Режимы ввода EMACS в приложениях
 

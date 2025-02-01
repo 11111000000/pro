@@ -1,72 +1,128 @@
 ;;; про-ии.el --- Искусственный Интеллект -*- lexical-binding: t -*-
 ;; Автор: Пётр (11111000000@email.com)
+
 ;;; Commentary:
-;; Конфигурация нейросетевых сервисов
+;; Это файл конфигурации для интеграции различных сервисов искусственного интеллекта
+;; в Emacs.  Здесь настраиваются пакеты для работы с нейросетями, такими как GPT,
+;; Codeium, Whisper и другими.
+
 ;;; Code:
 
-(require 'установить-из)
-(require 'cape)
+;; Начальная настройка: импорт необходимых функций и пакетов
+(require 'установить-из)  ;; Вспомогательная функция для установки пакетов из репозиториев
+(require 'cape)           ;; Пакет для дополнения кода
 
-;;;; Настройка openapi-key
+;;;; Настройка OpenAI API ключа
 
-(if (boundp 'proxyapi-key)
+;; Если установлены переменные proxyapi-key и proxyapi-url, используем их
+;; для настройки ключей доступа к OpenAI API через прокси-сервер
+(if (and (boundp 'proxyapi-key) (boundp 'proxyapi-url))
     (progn
+      ;; Устанавливаем ключи API для различных пакетов, использующих OpenAI
       (setq-default openai-key proxyapi-key)
+      (setq-default gptel-api-key proxyapi-key)
       (setq-default chatgpt-shell-openai-key proxyapi-key)
       (setq-default dall-e-shell-openai-key proxyapi-key)))
 
-;;;; Библиотека поддержки Нейросетей OpenAI
+;;;; GPTEL - универсальный интерфейс для работы с ИИ
 
-;; (use-package openai                       ;
-;;   :init
-;;   (установить-из :repo "11111000000/openai")
-;;   :custom
-;;   (openai-base-url "https://api.proxyapi.ru/openai/v1"))
+;; Настраиваем пакет gptel для общения с моделями GPT внутри Emacs
+(use-package gptel
+  :ensure t
+  :functions (gptel-make-openai)
+  :custom (
+           (gptel-default-mode 'org-mode) ;; Устанавливаем режим по умолчанию для буферов gptel
+           (gptel-org-branching-context t) ;; Включаем ветвление контекста в org-mode
+           (gptel-api-key 'proxyapi-key) ;; Используем proxyapi-key в качестве ключа API
+           (gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
+           (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
+           (gptel-backend (gptel-make-openai "ProxyAPI ChatGPT"
+                            :protocol "https"
+                            :host "api.proxyapi.ru"
+                            :endpoint "/openai/v1/chat/completions"
+                            :stream nil
+                            :key gptel-api-key
+                            :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+                            :models gptel--openai-models)) ;; Настраиваем бэкенд для работы через прокси API
+           )
+  :init)
 
-;;;; REPL для разных нейросетей. ChatGPT Shell
-                                        ;(require 'popwin)
+;;;; GptEl-quick - быстрые запросы к GPT по точке
 
+;; Пакет для быстрого выполнения запросов к GPT на основе текущего положения курсора
+(use-package gptel-quick
+  :after gptel
+  :custom (
+           (gptel-quick-model :o1-mini) ;; Модель по умолчанию для быстрых запросов
+           (gptel-quick-backend gptel-backend) ;; Используем тот же бэкенд, что и для gptel
+           )
+  :init
+  (установить-из :repo "karthink/gptel-quick"))
+
+;;;; Elysium - управление окнами для отображения результатов ИИ
+
+;; Настраиваем пакет Elysium для управления окнами в Emacs при работе с ИИ
+(use-package elysium
+  :ensure t
+  :custom
+  (elysium-window-size 0.33) ;; Устанавливаем размер окна для отображения результатов
+  (elysium-window-style 'vertical) ;; Задаем стиль окна (вертикальный или горизонтальный)
+  )
+
+;;;; Evedel - среда разработки с использованием LLM (Large Language Models)
+
+;; Настраиваем пакет evedel для интеграции LLM в процесс разработки
+(use-package evedel
+  :ensure t
+  :custom (
+           ;; Определяем роли для различных режимов редактирования
+           (e-descriptive-mode-roles
+            '((emacs-lisp-mode . "an Emacs Lisp programmer")
+              (js-mode         . "a JavaScript programmer")
+              (js-ts-mode      . "a JavaScript programmer")
+              (typescript-ts-mode . "a TypeScript programmer")
+              (typescript-mode . "a TypeScript programmer")
+              (haskell-ts-mode . "a Haskell programmer")
+              (bash-ts-mode    . "a Bash programmer")
+              (c-mode          . "a C programmer")
+              (c++-mode        . "a C++ programmer")
+              (lisp-mode       . "a Common Lisp programmer")
+              (web-mode        . "a web developer")
+              (erlang-mode     . "an Erlang programmer")))))
+
+;;;; ChatGPT Shell - REPL для различных нейросетей
+
+;; Настраиваем пакет chatgpt-shell для интерактивного общения с моделями ChatGPT
 (use-package chatgpt-shell
-  :defer t
   :init (установить-из :repo "xenodium/chatgpt-shell")
   :bind (
          :map chatgpt-shell-mode-map
+         ;; Привязываем сочетание клавиш C-g для прерывания текущего запроса
          ("C-g" . chatgpt-shell-interrupt))
   :custom (
-          ;; Настройка версии моделей и URL API
-          ;; (по-умолчанию используется первая из списка, переключение в шелле C-c C-v)
-          (chatgpt-shell-model-versions '("gpt-4o-mini"
-                                          "o1-mini"
-                                          "o1-preview"
-                                          "gpt-4o"
-                                          "gpt-4-turbo"
-                                          "gpt-4"
-                                          "gpt-3.5-turbo-0125"
-                                          "gemini-1.5-pro"
-                                          "gemini-1.5-flash"
-                                          "claude-3-opus-20240229"))
-          (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai")
-          (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations")
-          (chatgpt-shell-streaming nil)
-          (chatgpt-shell-transmitted-context-length 0))
-  :config
-  ;; (defun показать-скрыть-ии ()
-  ;;   "Открыть или закрыть chatgpt-shell в popwin буфере снизу."
-  ;;   (interactive)
-  ;;   (let ((chatgpt-buffer (cl-find-if (lambda (buf)
-  ;;                                      (with-current-buffer buf
-  ;;                                        (eq major-mode 'chatgpt-shell-mode)))
-  ;;                                    (buffer-list))))
-  ;;     (if (and chatgpt-buffer (popwin:popup-window-live-p))
-  ;;         (popwin:close-popup-window)
-  ;;       (if chatgpt-buffer
-  ;;           (popwin:popup-buffer chatgpt-buffer :position 'bottom :stick t)
-  ;;         (chatgpt-shell)
-  ;;         ;; (progn
-  ;;         ;;   (popwin:popup-buffer "*scratch*")
-  ;;         ;;   (chatgpt-shell))
-  ;;         ))))
-  )
+           
+           (chatgpt-shell-model-versions '("o1-mini"
+                                           "o1-preview"
+                                           "gpt-4o-mini"
+                                           "gpt-4o"
+                                           "gpt-4-turbo"
+                                           "gpt-4"
+                                           "gpt-3.5-turbo-0125"
+                                           "gemini-1.5-pro"
+                                           "gemini-1.5-flash"
+                                           "claude-3-opus-20240229")) ;; Определяем список версий моделей для использования
+           
+           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai") ;; Устанавливаем базовый URL для API
+           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations") ;; URL для генерации изображений через DALL-E
+           (chatgpt-shell-streaming nil) ;; Отключаем стриминг ответов
+           (chatgpt-shell-transmitted-context-length 0) ;; Устанавливаем длину передаваемого контекста в 0 (без истории)
+           (chatgpt-shell-system-prompt "") ;; Оставляем системный промпт пустым
+           )
+  :config)
+
+;; Переопределяем функцию приветственного сообщения для shell-maker
+
+(require 'shell-maker)
 
 (defun shell-maker-welcome-message (config)
   "Return a welcome message to be printed using CONFIG."
@@ -77,8 +133,11 @@
    (propertize "help" 'font-lock-face 'italic)
    (shell-maker--propertize-key-binding "-shell-submit" config)))
 
-;;; Поддержка блоков Org-мод
-;; Пример:   #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
+;;;; Поддержка блоков Org-mode для интеграции с ChatGPT Shell
+
+;; Настраиваем выполнение блоков кода в org-mode с использованием chatgpt-shell
+;; Пример использования:
+;; #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
 
 (use-package ob-chatgpt-shell
   :ensure t
@@ -86,9 +145,12 @@
   :config
   (require 'ob-chatgpt-shell)
   (ob-chatgpt-shell-setup)
+
+  ;; Добавляем шаблон для быстрого вставки блока chatgpt-shell в org-mode
   (add-to-list 'org-structure-template-alist
-             '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
-  ;; Преобразуем example в Mardown
+               '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
+
+  ;; Функция для преобразования блоков example в src markdown после выполнения
   (defun my/convert-example-to-src-markdown ()
     "Convert example blocks to src markdown blocks in results."
     (save-excursion
@@ -99,150 +161,97 @@
       (while (search-forward "#+end_example" nil t)
         (replace-match "#+end_src"))))
   
+  ;; Добавляем хук для преобразования блоков после выполнения кода
   (add-hook 'org-babel-after-execute-hook 'my/convert-example-to-src-markdown))
 
-;;;; Поддержка локальной нейросети LLAMA
+;;;; Поддержка локальных нейросетей LLAMA
 
+;; Настраиваем пакет ellama для работы с локальными моделями LLAMA
 (use-package ellama
   :ensure t
   :init
   (require 'llm-ollama)
-  (setopt ellama-language "Russian")
+  
+  (setopt ellama-language "Russian") ;; Устанавливаем язык по умолчанию на русский
+  
   (setopt ellama-provider
-		  (make-llm-ollama
-		   :chat-model "codellama" :embedding-model "codellama")))
+          (make-llm-ollama
+           :chat-model "codellama"
+           :embedding-model "codellama")) ;; Настраиваем провайдера для использования модели codellama
+  )
 
-;;;; Дополните кода нейросетью Codeium
+;;;; Дополнение кода с использованием нейросети Codeium
 
-(defun запустить-codeium()
-  "Enable codeium."
-  (interactive)
-  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
-
-(defun выключить-codeium ()
-  "Disable codeium."
-  (interactive)
-  (setq completion-at-point-functions
-       (remove #'codeium-completion-at-point completion-at-point-functions)))
-
+;; Настраиваем пакет codeium для автоматического дополнения кода
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
-  :functions (codeium-utf8-byte-length)
+  :functions (codeium-utf8-byte-length codeium-init codeium-completion-at-point)
   :bind
-  ("C-c <tab>" . дополнить-codeium)
-  ;; ("M-S-<iso-lefttab>" . дополнить-codeium)
+  ("C-c <tab>" . codeium-complete)
   :config
+  
+  ;; Функция для включения codeium
+  (defun codeium-on ()
+    "Enable codeium."
+    (interactive)
+    (codeium-init)
+    (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
 
-  (defalias 'дополнить-codeium
+  ;; Функция для отключения codeium
+  (defun codeium-off ()
+    "Disable codeium."
+    (interactive)
+    (setq completion-at-point-functions
+          (remove #'codeium-completion-at-point completion-at-point-functions)))
+
+  ;; Функция для переключения состояния codeium
+  (defun codeium-toggle ()
+    "Toggle codeium."
+    (interactive)
+    (if (memq #'codeium-completion-at-point completion-at-point-functions)
+        (codeium-off)
+      (codeium-on)))
+
+  ;; Определяем alias для функции codeium-complete
+  (defalias 'codeium-complete
     (cape-capf-interactive #'codeium-completion-at-point))
 
+  ;; Отключаем использование диалоговых окон
   (setq use-dialog-box nil)
 
-  ;; используй M-x codeium-diagnose, чтобы увидеть API/поля, которые будут отправлены на локальный языковой сервер
+  ;; Настраиваем какие API доступны
   (setq codeium-api-enabled
-       (lambda (api)
-         (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-
-  ;; Для отдельного буфера можно настроить так:
+        (lambda (api)
+          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  ;; Можно добавить дополнительные настройки для конкретных буферов
+  ;; Например, для python-mode:
   ;; (add-hook 'python-mode-hook
-  ;;     (lambda ()
-  ;;         (setq-local codeium/editor_options/tab_size 4)))
+  ;;           (lambda ()
+  ;;             (setq-local codeium/editor_options/tab_size 4)))
+  )
 
-  (setq codeium/document/text
-       (lambda ()
-         (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max)))))
+;;;; Распознавание голоса с помощью Whisper
 
-  (setq codeium/document/cursor_offset
-       (lambda ()
-         (codeium-utf8-byte-length
-          (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))))
-
-;;;; Распознавание голоса. Whisper
-;; Сейчас мы надиктуем небольшой комментарий, он останется здесь, а я пока поперемещаю курсор туда-сюда.
-;; Пишите комментарии. Да, кажется пишите.
+;; Настраиваем пакет whisper для преобразования речи в текст
+;; Можно использовать для диктовки комментариев или кода
 (use-package whisper
-  :defer t
   :init (установить-из :repo "natrys/whisper.el")
-  :bind ("M-<f5>" . whisper-run)
-  :custom ((whisper--ffmpeg-input-format "alsa"))
+  :bind
+  :custom (
+          (whisper--ffmpeg-input-format "alsa") ;; Настраиваем формат ввода для ffmpeg (используем Alsa)
+          )
   :config
-  (setq whisper-install-directory (expand-file-name "~/.emacs.d/")
-       whisper-model "medium"
-       whisper-language "ru"
-       whisper-translate nil
-       whisper-use-threads (/ (num-processors) 2)))
-
-;;;; Обработка новостей
-
-(require 'chatgpt-shell)
-
-(defvar промт-новости-по-умолчанию "убери рекламу, систематизируй и кратко суммаризируй все новости, добавь аналитику на главные темы")
-
-(defun новости-за-время (часов-новостей &optional промт)
-  "Рассказывает новости Elfeed за ЧАСОВ-НОВОСТЕЙ.  Можно добавить ПРОМТ."
-  (interactive)
-  (elfeed-обновить-и-выполнить
-   (lambda ()
-     (let* ((список-новостей (elfeed-список-новостей-за (* 3600 часов-новостей)))
-           (текст-новостей (string-join  список-новостей)))
-       (with-current-buffer (or (chatgpt-shell--primary-buffer) (current-buffer))
-         (chatgpt-shell-send-to-buffer
-          (concat "Вот события за "
-                 (number-to-string часов-новостей)
-                 " часа. "
-                 (or промт промт-новости-по-умолчанию)
-                 текст-новостей)
-          nil))))))
-
-(defun новости-за-час ()
-  "Рассказывает новости Elfeed за час."
-  (interactive)
-  (новости-за-время 1))
-
-(defun новости-за-сутки ()
-  "Рассказывает новости Elfeed за сутки."
-  (interactive)
-  (новости-за-время 24))
-
-(defun новости-за-день ()
-  "Рассказывает новости Elfeed за день."
-  (interactive)
-  (новости-за-время 12))
-
-(defun куплет-за-сутки ()
-  "Поёт новости Elfeed за сутки."
-  (interactive)
-  (новости-за-время 24
-                    "Сперва сгруппируй новости на одну тему, а потом сделай лёгкий красивый поэтический рифмованый пересказ:"))
-
-
-(defun смешное-за-час ()
-  "Рассказывает новости Elfeed за день."
-  (interactive)
-  (новости-за-время 1
-                    "Перескажи только смешные или просто несуразные и курьёзные новости и суммаризируй, простым текстом, без Markdown, только суммаризацию, неформальным, лёгким языком :"))
-
-(defun смешное-за-сутки ()
-  "Рассказывает смешные новости Elfeed за сутки."
-  (interactive)
-  (новости-за-время 24
-                    "Перескажи только смешные или просто несуразные и курьёзные новости и суммаризируй, простым текстом, без Markdown, только суммаризацию, неформальным, лёгким языком :"))
-
-
-(defun война-за-сутки ()
-  "Рассказывает новости войны за сутки."
-  (interactive)
-  (новости-за-время 24
-                    "Перескажи кратко только военные новости, разбей на группы по смыслу, систематизируй и суммаризируй, простым текстом, без Markdown:"))
-
-
-(defun анализ-за-сутки ()
-  "Рассказывает анализ новостей за сутки."
-  (interactive)
-  (новости-за-время 24
-                    "убери рекламу, и сделай анализ и предсказание по заголовкам новостей: напиши только результат анализа, простым текстом, без Markdown:"))
+  
+  (setq whisper-install-directory (expand-file-name "~/.emacs.d/") ;; Указываем директорию для установки моделей
+        whisper-model "large" ;; Выбираем модель для распознавания (large обеспечивает лучшую точность)
+        whisper-language "ru" ;; Устанавливаем язык распознавания на русский
+        whisper-translate nil ;; Отключаем перевод (оставляем язык оригинала)
+        whisper-quantize nil ;; Не используем квантизацию для улучшения качества
+        whisper-insert-text-at-point t ;; Вставляем распознанный текст в точку курсора
+        whisper-recording-timeout 3600  ;; Задаем максимальное время записи
+        whisper-use-threads (/ (num-processors) 1) ;; Используем все доступные процессоры для ускорения обработки
+        ))
 
 (provide 'про-ии)
 
 ;;; про-ии.el ends here
-

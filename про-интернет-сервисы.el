@@ -191,6 +191,61 @@ Use Firefox if Alt is pressed, Chrome if Shift is pressed."
 
 (global-set-key [mouse-1] 'my-browse-url-at-mouse) ;; Настраиваем левую кнопку мыши
 
+;;;; Загрузка субтитров с Youtube
+
+;; 1. Запрашивает URL видео на YouTube.
+;; 2. Получает список доступных языков субтитров.
+;; 3. Позволяет выбрать язык с помощью =consult=.
+;; 4. Скачивает субтитры и сохраняет их в папку =~/Subtitles/=, создавая её при необходимости.
+
+(require 'consult)
+
+(defun my-download-youtube-subtitles ()
+  "Download subtitles from a YouTube video using yt-dlp with Tor proxy."
+  (interactive)
+  (let* ((url (read-string "Enter YouTube video URL: "))
+         (proxy "--proxy socks5://127.0.0.1:9050")
+         (list-subs-cmd (format "yt-dlp %s --list-subs \"%s\"" proxy url))
+         (subs-output (shell-command-to-string list-subs-cmd))
+         (lang-list (my-parse-yt-dlp-subs-output subs-output))
+         (selected-lang (consult--read lang-list :prompt "Choose subtitle language: "))
+         (subs-directory (expand-file-name "~/Subtitles/"))
+         (download-cmd (format "yt-dlp %s --write-subs --sub-lang %s --skip-download -o \"%s%%(title)s.%%(ext)s\" \"%s\""
+                               proxy selected-lang subs-directory url)))
+    ;; Создаем директорию, если она не существует
+    (unless (file-directory-p subs-directory)
+      (make-directory subs-directory t))
+    ;; Скачиваем субтитры
+    (message "Downloading subtitles...")
+    (let ((exit-code (shell-command download-cmd)))
+      (if (eq exit-code 0)
+          (message "Subtitles downloaded to %s" subs-directory)
+        (message "Failed to download subtitles. Please check the URL and try again.")))))
+
+(defun my-parse-yt-dlp-subs-output (output)
+  "Parse yt-dlp --list-subs OUTPUT and return a list of available subtitle languages."
+  (let ((languages '()))
+    (with-temp-buffer
+      (insert output)
+      (goto-char (point-min))
+      ;; Парсим разделы с доступными субтитрами
+      (while (re-search-forward "^\\[info\\] Available \\(automatic \\)?captions for .*:\n" nil t)
+        ;; Пропускаем заголовок таблицы
+        (forward-line 1)
+        ;; Считываем таблицу субтитров
+        (while (and (not (looking-at "^$"))
+                    (not (eobp)))
+          (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+            (when (string-match "^\\([a-zA-Z0-9-]+\\)[ \t]+" line)
+              (let ((lang-code (match-string 1 line)))
+                (push lang-code languages))))
+          (forward-line 1))))
+    (setq languages (delete-dups languages))
+    (if languages
+        (nreverse languages)
+      (user-error "No subtitles available for this video"))))
+
+
 
 (provide 'про-интернет-сервисы)
 ;;; про-интернет-сервисы.el ends here

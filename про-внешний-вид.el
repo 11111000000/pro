@@ -30,21 +30,48 @@
 
 ;; Настройки для улучшения работы с минибуфером.
 
-(setq-default enable-recursive-minibuffers t)     ; Разрешение рекурсивного открытия минибуферов.
-(setq-default max-mini-window-height nil)          ; Минибуфер может быть любого размера.
+(setq-default enable-recursive-minibuffers t)     ;  рекурсивные минибуферы
+(setq-default max-mini-window-height 0.25)          ; Минибуфер может быть любого размера.
 (setq resize-mini-windows t)                       ; Автоматический размер минибуфера.
 
 (setq message-truncate-lines nil)                  ; Длинные сообщения не обрезаются.
 
 ;; Настройка минималистичного вида минибуфера с иконками.
 
-(use-package taoline
-  :if window-system
-  :after (all-the-icons)
-  :functions (taoline-mode)
-  :init (установить-из :repo "11111000000/taoline")
+;; (use-package taoline
+;;   :if window-system
+;;   :after (all-the-icons)
+;;   :functions (taoline-mode)
+;;   :init (установить-из :repo "11111000000/taoline")
+;;   :config
+;;   (taoline-mode 1))
+
+(require 'time)
+
+(use-package doom-modeline
+  :ensure t
+  :functions (doom-modeline-mode)
   :config
-  (taoline-mode 1))
+  (doom-modeline-mode 1)
+  (display-battery-mode 1)
+  (display-time-mode 1)
+  (setq display-time-format "%Y-%m-%d %H:%M")
+  (setq display-time-default-load-average nil))
+
+(use-package hide-mode-line
+  :ensure t
+  :functions (turn-off-hide-mode-line-mode
+         turn-on-hide-mode-line-mode)
+  :hook (((treemacs-mode
+         eshell-mode shell-mode
+         dired-mode
+         term-mode vterm-mode
+         embark-collect-mode
+         lsp-ui-imenu-mode
+         pdf-annot-list-mode) . turn-on-hide-mode-line-mode)
+         (dired-mode . (lambda()
+                         (and (bound-and-true-p hide-mode-line-mode)
+                              (turn-off-hide-mode-line-mode))))))
 
 ;;;; Иконки
 ;;;;; All The Icons
@@ -112,7 +139,7 @@
   "Хук, срабатывающий после установки темы `load-theme'.")
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
-  "Запускает `after-load-theme-hook'."
+ "Запускает `after-load-theme-hook'."
   (run-hooks 'after-load-theme-hook))  ; Запуск пользовательских хуков после установки темы.
 
 ;;;; Курсор
@@ -195,7 +222,7 @@
 (require 'image-mode)           ; Подключение модуля для работы с изображениями.
 
 (use-package image+
-  :defer t 
+  :defer t
   :ensure t
   :after 'image-mode
   :hook (image-mode . image+)   ; Включение расширенного режима работы с изображениями.

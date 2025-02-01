@@ -11,25 +11,23 @@
   :defines (corfu-map)
   :functions (corfu-mode global-corfu-mode corfu-popupinfo-mode corfu-history-mode)
   :bind (:map corfu-map
-                ("<escape>". corfu-quit)
-                ("<return>" . corfu-insert)
-                ("C-h" . corfu-info-documentation)
-                ("M-l" . corfu-info-location)
-                ("C-n" . corfu-quit)
-                ("C-p" . corfu-quit)
-                ("C-n" . corfu-next)
-                ("C-p" . corfu-previous)
-                ("TAB" . corfu-next)
-                ([tab] . corfu-next)
-                ("S-TAB" . corfu-previous)
-                ([backtab] . corfu-previous))
+              ("<escape>" . corfu-quit)
+              ("<return>" . corfu-insert)
+              ("C-h" . corfu-info-documentation)
+              ("M-l" . corfu-info-location)
+              ("C-n" . corfu-next)
+              ("C-p" . corfu-previous)
+              ("TAB" . corfu-next)
+              ([tab] . corfu-next)
+              ("S-TAB" . corfu-previous)
+              ([backtab] . corfu-previous))
   :custom
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)
-  (corfu-auto nil)
+  (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0)
-  (corfu-popupinfo-delay 0)
+  (corfu-auto-delay 0.2)
+  (corfu-popupinfo-delay 0.5)
   (corfu-min-width 5)
   (corfu-max-width 70)
   (corfu-count 14)
@@ -39,19 +37,18 @@
   (corfu-separator ?\s)
   (corfu-quit-no-match 'separator)
   (corfu-preview-current t)
-  (corfu-preselect 'promt)
-
+  (corfu-preselect 'prompt)
   :config
   (require 'corfu)
   ;; Включен глобальный режим автодополнения
   (global-corfu-mode t)
   (corfu-popupinfo-mode)
   (corfu-history-mode)
-
+  
   (defun в-минибуфере-включать-corfu ()
     "Включать Corfu в минибуфере если Vertico/Mct не активны."
     (unless (or (bound-and-true-p mct--active)
-              (bound-and-true-p vertico--input))
+                (bound-and-true-p vertico--input))
       (setq-local corfu-auto nil)
       (corfu-mode 1)))
 
@@ -84,6 +81,18 @@
 
 (use-package corfu-terminal
   :ensure t)
+
+;;;; Предпросмотр дополнения
+
+(use-package completion-preview
+  :ensure nil
+  :bind (:map completion-preview-active-mode-map
+                ("M-f" . #'completion-preview-insert-word)
+                ("C-M-f" . #'completion-preview-insert-sexp))
+  :custom
+  (completion-preview-minimum-symbol-length 2)
+  :init
+  (global-completion-preview-mode))
 
 (provide 'про-автодополнение)
 ;;; про-автодополнение.el ends here
