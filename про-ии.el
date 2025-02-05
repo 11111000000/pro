@@ -34,7 +34,8 @@
            (gptel-default-mode 'org-mode) ;; Устанавливаем режим по умолчанию для буферов gptel
            (gptel-org-branching-context t) ;; Включаем ветвление контекста в org-mode
            (gptel-api-key 'proxyapi-key) ;; Используем proxyapi-key в качестве ключа API
-           (gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
+           ;;(gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
+           (gptel-proxy "") ;; Устанавливаем прокси-сервер
            (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
            (gptel-backend (gptel-make-openai "ProxyAPI ChatGPT"
                             :protocol "https"

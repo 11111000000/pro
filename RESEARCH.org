@@ -1,8 +1,123 @@
+:PROPERTIES:
+:GPTEL_MODEL: o1-preview
+:GPTEL_BACKEND: ProxyAPI ChatGPT
+:GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
+:GPTEL_BOUNDS: ((476 . 738) (770 . 3114) (3148 . 5349))
+:END:
+
 * Анализ
 
-#+begin_src chatgpt-shell :context 0 :version "o1-preview" :system nil 
-      
+Нужна интерактивная процедура на Emacs Lisp (my-telega-chat-text), которая позволяет выбрать чат или группу telega с помощью consult, и добавляет в буфер *telega-chat-text-output* весь текст всех сообщений (без изображений)
+
+Конечно! Вот реализация интерактивной процедуры =my-telega-chat-text= на Emacs Lisp, которая позволяет выбрать чат или группу в Telega с помощью =consult=, извлекает весь текст всех сообщений (без изображений) и добавляет его в буфер =*telega-chat-text-output*=:
+
+(не работает - устаревшее API)
+
+#+begin_src elisp
+(require 'telega)
+(require 'consult)
+
+(defun my-telega-message-text (msg)
+  "Получить текстовое содержимое сообщения MSG."
+  (let ((content (plist-get msg :content)))
+    (when (string= (plist-get content :@type) "messageText")
+      (plist-get (plist-get content :text) :text))))
+
+(defun my-telega-extract-texts (messages)
+  "Извлечь тексты из списка сообщений MESSAGES."
+  (delq nil
+        (mapcar #'my-telega-message-text messages)))
+
+(defun my-telega-get-all-messages (chat)
+  "Получить все сообщения из чата CHAT."
+  (let ((chat-id (plist-get chat :id))
+        (from-message-id 0) ;; 0 означает последние сообщения
+        (offset 0)
+        (limit 100)
+        (total-messages '()))
+    (catch 'done
+      (while t
+        (let* ((result (telega--getChatHistory chat-id from-message-id offset limit nil))
+               (msgs (plist-get result :messages)))
+          (if (null msgs)
+              (throw 'done nil)
+            (setq total-messages (append total-messages msgs))
+            ;; Устанавливаем from-message-id на id самого старого сообщения
+            (setq from-message-id (plist-get (car (last msgs)) :id))
+            ;; Чтобы получить более старые сообщения, устанавливаем offset в -1
+            (setq offset -1)))))
+    total-messages))
+
+(defun my-telega-chat-text ()
+  "Интерактивная функция для извлечения текста всех сообщений из выбранного чата Telega."
+  (interactive)
+  ;; Получаем список чатов
+  (let* ((chat-candidates
+          (mapcar
+           (lambda (chat)
+             (cons (telega-chat-title chat) chat))
+           (hash-table-values telega--chat-alist)))
+         (chat-title (consult--read
+                      (mapcar #'car chat-candidates)
+                      :prompt "Выберите чат: "))
+         (chat (cdr (assoc chat-title chat-candidates))))
+    ;; Получаем все сообщения из чата
+    (let ((messages (my-telega-get-all-messages chat)))
+      ;; Извлекаем тексты сообщений
+      (let ((texts (my-telega-extract-texts messages)))
+        ;; Добавляем тексты в буфер *telega-chat-text-output*
+        (with-current-buffer (get-buffer-create "*telega-chat-text-output*")
+          (erase-buffer)
+          (dolist (text (nreverse texts))  ;; nreverse для хронологического порядка
+            (insert text "\n\n"))
+          (pop-to-buffer (current-buffer)))))))
 #+end_src
+
+#+RESULTS:
+: my-telega-chat-text
+
+*Объяснение кода:*
+
+- *Функция =my-telega-message-text=*: Извлекает текстовое содержимое из отдельного сообщения, если оно является текстовым сообщением. Она проверяет, является ли тип содержимого =messageText= и возвращает текст.
+
+- *Функция =my-telega-extract-texts=*: Принимает список сообщений и применяет =my-telega-message-text= к каждому из них, возвращая список текстов.
+
+- *Функция =my-telega-get-all-messages=*: Рекурсивно получает все сообщения из заданного чата, используя =telega--getChatHistory=. Она запрашивает сообщения блоками по 100 штук и продолжает до тех пор, пока не получит все сообщения.
+
+- *Функция =my-telega-chat-text=*:
+
+  1. *Выбор чата*: Использует =consult--read= для интерактивного выбора чата из списка доступных чатов в Telega.
+  
+  2. *Получение сообщений*: Вызывает =my-telega-get-all-messages= для получения всех сообщений из выбранного чата.
+  
+  3. *Извлечение текстов*: Использует =my-telega-extract-texts= для получения списка текстовых сообщений.
+  
+  4. *Запись в буфер*: Создает или очищает буфер =*telega-chat-text-output*=, вставляет туда тексты сообщений в хронологическом порядке и отображает буфер пользователю.
+
+*Примечания:*
+
+- *Исключение изображений и других медиа*: Функция =my-telega-message-text= извлекает только текстовые сообщения, игнорируя сообщения с изображениями, видео и т.п.
+
+- *Ограничения Telegram API*: Обратите внимание, что Telegram API может иметь ограничения на количество запросов и количество извлекаемых сообщений за один запрос. В данном коде сообщения запрашиваются блоками по 100 штук.
+
+- *Пакеты =telega= и =consult=*: Убедитесь, что у вас установлены и настроены пакеты =telega= (Telegram клиент для Emacs) и =consult= (для улучшенного взаимодействия с =completing-read=).
+
+*Как использовать:*
+
+1. Скопируйте приведенный код в ваш Emacs init файл или загрузите его в текущую сессию Emacs.
+
+2. Убедитесь, что у вас запущен Telega и вы авторизованы.
+
+3. Вызовите команду =M-x my-telega-chat-text=.
+
+4. Выберите чат или группу из списка предложенных чатов.
+
+5. После выполнения в новом буфере =*telega-chat-text-output*= появится весь текст всех сообщений из выбранного чата.
+
+Надеюсь, это поможет вам решить вашу задачу!
+
+*** 
+
 
 #+RESULTS:
 #+begin_src markdown

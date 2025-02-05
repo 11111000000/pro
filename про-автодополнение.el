@@ -13,6 +13,7 @@
   :bind (:map corfu-map
               ("<escape>" . corfu-quit)
               ("<return>" . corfu-insert)
+              ("SPC" . (lambda () (interactive) (progn (corfu-insert) (corfu-insert-separator))))
               ("C-h" . corfu-info-documentation)
               ("M-l" . corfu-info-location)
               ("C-n" . corfu-next)

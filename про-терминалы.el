@@ -111,7 +111,7 @@
 (defun my-eshell-backspace ()
   "Prevent Backspace from deleting if the cursor is after the prompt."
   (interactive)
-  (if 
+  (if
       (<= (point) (line-beginning-position))
       ;; If the point is at or after the prompt, do nothing
       (message "Cannot delete after the prompt!")
