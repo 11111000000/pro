@@ -98,7 +98,6 @@
 | s-.               | xref-find-definitions-other-window  |
 | C-M-.             | xref-find-definitions-other-window  |
 | C-.               | embark-act                          |
-| C-c .             | embark-act                          |
 | C-c ir            | gptel-rewrite                       |
 | C-c im            | gptel-menu                          |
 | C-c in            | gptel-context-next                  |
@@ -113,7 +112,6 @@
 | C-c iq            | elysium-query                       |
 | C-c iw            | whisper-run                         |
 | C-c ic            | переключить-codeium                 |
-| C-z               | nil                                 |
 | C-c e e           | evedel-create-directive             |
 | C-c e i           | evedel-modify-directive             |
 | C-c e D           | evedel-modify-directive-tag-query   |
@@ -129,6 +127,41 @@
 | C-c e l           | evedel-load-instructions            |
 | C-c e t           | evedel-add-tags                     |
 | C-c e T           | evedel-remove-tags                  |
+| s-i               | nil                                 |
+| s-i s-i           | gptel                               |
+| s-i i             | chatgpt-shell                       |
+| s-i r             | gptel-rewrite                       |
+| s-i m             | gptel-menu                          |
+| s-i n             | gptel-context-next                  |
+| s-i .             | gptel-quick                         |
+| s-i a             | gptel-add                           |
+| s-i f             | gptel-add-file                      |
+| s-i p             | gptel-system-prompt                 |
+| s-i RET           | gptel-send                          |
+| s-i s             | gptel-send                          |
+| s-i k             | gptel-abort                         |
+| s-i g             | gptel-abort                         |
+| s-i q             | elysium-query                       |
+| s-i w             | whisper-run                         |
+| s-i c             | переключить-codeium                 |
+| s-e               | nil                                 |
+| s-e s-e           | evedel-create-directive             |
+| s-e e             | evedel-modify-directive             |
+| s-e i             | evedel-modify-directive             |
+| s-e D             | evedel-modify-directive-tag-query   |
+| s-e P             | evedel-preview-directive-prompt     |
+| s-e RET           | evedel-process-directives           |
+| s-e TAB           | evedel-convert-instructions         |
+| s-e r             | evedel-create-reference             |
+| s-e k             | evedel-delete-instructions          |
+| s-e C-'           | evedel-modify-reference-commentary  |
+| s-e n             | evedel-next-instruction             |
+| s-e p             | evedel-previous-instruction         |
+| s-e s             | evedel-save-instructions            |
+| s-e l             | evedel-load-instructions            |
+| s-e t             | evedel-add-tags                     |
+| s-e T             | evedel-remove-tags                  |
+| C-z               | nil                                 |
 
 ** Клавиши над всеми Xorg приложениями:
 
@@ -229,12 +262,13 @@
 | C-<f6>                  | profiler-start                       |
 | C-<f7>                  | profiler-stop                        |
 | <f6>                    | exwm-floating-toggle-floating        |
-| s-e                     | ellama-ask-about                     |
 | s-:                     | chatgpt-shell-prompt                 |
 | C-c i M-i               | chatgpt-shell                        |
 | C-c ie                  | chatgpt-shell                        |
 | C-c il                  | ellama-chat                          |
 | C-c ii                  | gptel                                |
+| s-i s-i                 | gptel                                |
+| s-i i                   | chatgpt-shell                        |
 | s-a                     | treemacs                             |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
@@ -277,6 +311,8 @@
 #+END_SRC
 
 #+RESULTS:
+
+
 
 
 

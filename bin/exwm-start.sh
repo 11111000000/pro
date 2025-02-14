@@ -22,7 +22,7 @@ xsetroot -cursor_name left_ptr
 export VISUAL=emacsclient
 export EDITOR="$VISUAL"
 
-/usr/local/bin/emacs --daemon
+#/usr/local/bin/emacs --daemon
 
 exec dbus-launch --exit-with-session emacs
 

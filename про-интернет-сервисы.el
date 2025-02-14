@@ -23,7 +23,6 @@
   
   (global-set-key (kbd "C-c C-g") 'use-proxy-toggle-proxies-global))
 
-
 ;; Set the proxy for HTTP and HTTPS
 ;; (setq url-proxy-services
 ;;      '(("no_proxy" . "localhost, 127.0.0.1") ; Not to proxy local addresses

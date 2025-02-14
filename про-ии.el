@@ -14,9 +14,7 @@
 
 ;;;; Настройка OpenAI API ключа
 
-;; Если установлены переменные proxyapi-key и proxyapi-url, используем их
-;; для настройки ключей доступа к OpenAI API через прокси-сервер
-(if (and (boundp 'proxyapi-key) (boundp 'proxyapi-url))
+(if (boundp 'proxyapi-key)
     (progn
       ;; Устанавливаем ключи API для различных пакетов, использующих OpenAI
       (setq-default openai-key proxyapi-key)
@@ -30,22 +28,59 @@
 (use-package gptel
   :ensure t
   :functions (gptel-make-openai)
-  :custom (
-           (gptel-default-mode 'org-mode) ;; Устанавливаем режим по умолчанию для буферов gptel
-           (gptel-org-branching-context t) ;; Включаем ветвление контекста в org-mode
-           (gptel-api-key 'proxyapi-key) ;; Используем proxyapi-key в качестве ключа API
-           ;;(gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
-           (gptel-proxy "") ;; Устанавливаем прокси-сервер
-           (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
-           (gptel-backend (gptel-make-openai "ProxyAPI ChatGPT"
-                            :protocol "https"
-                            :host "api.proxyapi.ru"
-                            :endpoint "/openai/v1/chat/completions"
-                            :stream nil
-                            :key gptel-api-key
-                            :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-                            :models gptel--openai-models)) ;; Настраиваем бэкенд для работы через прокси API
-           )
+  :custom
+  ((gptel-default-mode 'org-mode) ;; Устанавливаем режим по умолчанию для буферов gptel
+   (gptel-org-branching-context t) ;; Включаем ветвление контекста в org-mode
+   (gptel-api-key 'proxyapi-key) ;; Используем proxyapi-key в качестве ключа
+   ;;(gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
+   (gptel-proxy "") ;; Отключаем прокси-сервер
+   (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
+   )
+  :config
+  (gptel-make-openai "Tunnel OpenAI"
+    :protocol "https"
+    :host tunnelai-url
+    :endpoint "/v1/chat/completions"
+    :stream nil
+    :key tunnelai-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models (append '("deepseek-chat" "deepseek-reasoner") gptel--openai-models))
+
+  (gptel-make-openai "Tunnel DeepSeek"
+    :protocol "https"
+    :host tunnelai-url
+    :endpoint "/v1/chat/completions"
+    :stream nil
+    :key tunnelai-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models '("deepseek-chat" "deepseek-reasoner"))
+  
+  (gptel-make-openai "Proxy OpenAI"
+    :protocol "https"
+    :host "api.proxyapi.ru"
+    :endpoint "/openai/v1/chat/completions"
+    :stream nil
+    :key gptel-api-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models (append '("o3-mini") gptel--openai-models))
+
+  (gptel-make-openai "Proxy DeepSeek"
+    :protocol "https"
+    :host "api.proxyapi.ru"
+    :endpoint "/deepseek/chat/completions"
+    :stream nil
+    :key gptel-api-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models '("deepseek-chat" "deepseek-reasoner"))
+
+  (gptel-make-openai "ProxyAPI Anthropic"
+    :protocol "https"
+    :host "api.proxyapi.ru"
+    :endpoint "/anthropic/v1/messages"
+    :stream nil
+    :key gptel-api-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
   :init)
 
 ;;;; GptEl-quick - быстрые запросы к GPT по точке
@@ -54,9 +89,9 @@
 (use-package gptel-quick
   :after gptel
   :custom (
-           (gptel-quick-model :o1-mini) ;; Модель по умолчанию для быстрых запросов
-           (gptel-quick-backend gptel-backend) ;; Используем тот же бэкенд, что и для gptel
-           )
+          (gptel-quick-model :deepseek-reasoner) ;; Модель по умолчанию для быстрых запросов
+          (gptel-quick-backend gptel-backend) ;; Используем тот же бэкенд, что и для gptel
+          )
   :init
   (установить-из :repo "karthink/gptel-quick"))
 
@@ -76,20 +111,20 @@
 (use-package evedel
   :ensure t
   :custom (
-           ;; Определяем роли для различных режимов редактирования
-           (e-descriptive-mode-roles
-            '((emacs-lisp-mode . "an Emacs Lisp programmer")
-              (js-mode         . "a JavaScript programmer")
-              (js-ts-mode      . "a JavaScript programmer")
-              (typescript-ts-mode . "a TypeScript programmer")
-              (typescript-mode . "a TypeScript programmer")
-              (haskell-ts-mode . "a Haskell programmer")
-              (bash-ts-mode    . "a Bash programmer")
-              (c-mode          . "a C programmer")
-              (c++-mode        . "a C++ programmer")
-              (lisp-mode       . "a Common Lisp programmer")
-              (web-mode        . "a web developer")
-              (erlang-mode     . "an Erlang programmer")))))
+          ;; Определяем роли для различных режимов редактирования
+          (e-descriptive-mode-roles
+           '((emacs-lisp-mode . "an Emacs Lisp programmer")
+             (js-mode         . "a JavaScript programmer")
+             (js-ts-mode      . "a JavaScript programmer")
+             (typescript-ts-mode . "a TypeScript programmer")
+             (typescript-mode . "a TypeScript programmer")
+             (haskell-ts-mode . "a Haskell programmer")
+             (bash-ts-mode    . "a Bash programmer")
+             (c-mode          . "a C programmer")
+             (c++-mode        . "a C++ programmer")
+             (lisp-mode       . "a Common Lisp programmer")
+             (web-mode        . "a web developer")
+             (erlang-mode     . "an Erlang programmer")))))
 
 ;;;; ChatGPT Shell - REPL для различных нейросетей
 
@@ -101,24 +136,25 @@
          ;; Привязываем сочетание клавиш C-g для прерывания текущего запроса
          ("C-g" . chatgpt-shell-interrupt))
   :custom (
-           
-           (chatgpt-shell-model-versions '("o1-mini"
-                                           "o1-preview"
-                                           "gpt-4o-mini"
-                                           "gpt-4o"
-                                           "gpt-4-turbo"
-                                           "gpt-4"
-                                           "gpt-3.5-turbo-0125"
-                                           "gemini-1.5-pro"
-                                           "gemini-1.5-flash"
-                                           "claude-3-opus-20240229")) ;; Определяем список версий моделей для использования
-           
-           (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai") ;; Устанавливаем базовый URL для API
-           (dall-e-shell--url "https://api.proxyapi.ru/v1/images/generations") ;; URL для генерации изображений через DALL-E
-           (chatgpt-shell-streaming nil) ;; Отключаем стриминг ответов
-           (chatgpt-shell-transmitted-context-length 0) ;; Устанавливаем длину передаваемого контекста в 0 (без истории)
-           (chatgpt-shell-system-prompt "") ;; Оставляем системный промпт пустым
-           )
+          (chatgpt-shell-model-versions '("o3-mini"
+                                          "o1-mini"
+                                          "o1-preview"
+                                          "gpt-4o-mini"
+                                          "gpt-4o"
+                                          "gpt-4-turbo"
+                                          "gpt-4"
+                                          "gpt-3.5-turbo-0125"
+                                          "gemini-1.5-pro"
+                                          "gemini-1.5-flash"
+                                          "claude-3-opus-20240229")) ;; Определяем список версий моделей для использования
+          
+          (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai") ;; Устанавливаем базовый URL для API
+          (chatgpt-shell-anthropic-api-url-base "https://api.proxyapi.ru/anthropic")
+          (dall-e-shell--url "https://api.proxyapi.ru/openai/v1/images/generations") ;; URL для генерации изображений через DALL-E
+          (chatgpt-shell-streaming nil) ;; Отключаем стриминг ответов
+          (chatgpt-shell-transmitted-context-length 0) ;; Устанавливаем длину передаваемого контекста в 0 (без истории)
+          (chatgpt-shell-system-prompt "") ;; Оставляем системный промпт пустым
+          )
   :config)
 
 ;; Переопределяем функцию приветственного сообщения для shell-maker
@@ -149,7 +185,7 @@
 
   ;; Добавляем шаблон для быстрого вставки блока chatgpt-shell в org-mode
   (add-to-list 'org-structure-template-alist
-               '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
+             '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
 
   ;; Функция для преобразования блоков example в src markdown после выполнения
   (defun my/convert-example-to-src-markdown ()
@@ -203,7 +239,7 @@
     "Disable codeium."
     (interactive)
     (setq completion-at-point-functions
-          (remove #'codeium-completion-at-point completion-at-point-functions)))
+         (remove #'codeium-completion-at-point completion-at-point-functions)))
 
   ;; Функция для переключения состояния codeium
   (defun codeium-toggle ()
@@ -222,8 +258,8 @@
 
   ;; Настраиваем какие API доступны
   (setq codeium-api-enabled
-        (lambda (api)
-          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+       (lambda (api)
+         (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
   ;; Можно добавить дополнительные настройки для конкретных буферов
   ;; Например, для python-mode:
   ;; (add-hook 'python-mode-hook
@@ -244,14 +280,14 @@
   :config
   
   (setq whisper-install-directory (expand-file-name "~/.emacs.d/") ;; Указываем директорию для установки моделей
-        whisper-model "large" ;; Выбираем модель для распознавания (large обеспечивает лучшую точность)
-        whisper-language "ru" ;; Устанавливаем язык распознавания на русский
-        whisper-translate nil ;; Отключаем перевод (оставляем язык оригинала)
-        whisper-quantize nil ;; Не используем квантизацию для улучшения качества
-        whisper-insert-text-at-point t ;; Вставляем распознанный текст в точку курсора
-        whisper-recording-timeout 3600  ;; Задаем максимальное время записи
-        whisper-use-threads (/ (num-processors) 1) ;; Используем все доступные процессоры для ускорения обработки
-        ))
+       whisper-model "large" ;; Выбираем модель для распознавания (large обеспечивает лучшую точность)
+       whisper-language "ru" ;; Устанавливаем язык распознавания на русский
+       whisper-translate nil ;; Отключаем перевод (оставляем язык оригинала)
+       whisper-quantize nil ;; Не используем квантизацию для улучшения качества
+       whisper-insert-text-at-point t ;; Вставляем распознанный текст в точку курсора
+       whisper-recording-timeout 3600  ;; Задаем максимальное время записи
+       whisper-use-threads (/ (num-processors) 1) ;; Используем все доступные процессоры для ускорения обработки
+       ))
 
 (provide 'про-ии)
 

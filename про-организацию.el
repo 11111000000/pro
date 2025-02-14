@@ -314,6 +314,13 @@
           (message "Делания с пометкой DONE были перенесены в %s" archive-file)
         (message "Не найдено задач с пометкой DONE.")))))
 
+(defun org-region-to-markdown (begin end)
+  "Преобразует выделенный регион из Org-mode в Markdown и заменяет его."
+  (interactive "r")
+  (let* ((org-content (buffer-substring-no-properties begin end))
+         (markdown-content (org-export-string-as org-content 'md t nil)))
+    (delete-region begin end)
+    (insert markdown-content)))
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here
