@@ -119,8 +119,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (exwm-enable)
   (require 'exwm-systemtray)
   (exwm-systemtray-mode)
-  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
-  )
+  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg"))
 
 ;;;; Режимы ввода EMACS в приложениях
 

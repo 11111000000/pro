@@ -41,7 +41,7 @@
   (undo-tree-auto-save-history t)
   (undo-tree-history-directory-alist `((".*" . ,(expand-file-name "~/.emacs.d/undo/"))))
   (undo-tree-visualizer-timestamps t)
-  (undo-tree-visualizer-diff nil)
+  (undo-tree-visualizer-diff t)
 
   :bind (("C-M--" . undo-tree-visualize)
          ("C-M-_" . undo-tree-visualize)

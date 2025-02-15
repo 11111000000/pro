@@ -148,8 +148,10 @@
 | s-e s-e           | evedel-create-directive             |
 | s-e e             | evedel-modify-directive             |
 | s-e i             | evedel-modify-directive             |
-| s-e D             | evedel-modify-directive-tag-query   |
-| s-e P             | evedel-preview-directive-prompt     |
+| s-e M-e           | evedel-preview-directive-prompt     |
+| s-e q             | evedel-modify-directive-tag-query   |
+| s-e M-t           | evedel-modify-directive-tag-query   |
+| s-e v             | evedel-preview-directive-prompt     |
 | s-e RET           | evedel-process-directives           |
 | s-e TAB           | evedel-convert-instructions         |
 | s-e r             | evedel-create-reference             |
@@ -311,6 +313,7 @@
 #+END_SRC
 
 #+RESULTS:
+
 
 
 

@@ -35,6 +35,7 @@
    ;;(gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
    (gptel-proxy "") ;; Отключаем прокси-сервер
    (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
+   (gptel-log-level 'info)
    )
   :config
   (gptel-make-openai "Tunnel OpenAI"
@@ -44,7 +45,7 @@
     :stream nil
     :key tunnelai-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("deepseek-chat" "deepseek-reasoner") gptel--openai-models))
+    :models (append '("o3-mini" "o1-preview") gptel--openai-models))
 
   (gptel-make-openai "Tunnel DeepSeek"
     :protocol "https"
@@ -53,7 +54,7 @@
     :stream nil
     :key tunnelai-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("deepseek-chat" "deepseek-reasoner"))
+    :models '("deepseek-chat" "deepseek-r1"))
   
   (gptel-make-openai "Proxy OpenAI"
     :protocol "https"
