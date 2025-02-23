@@ -37,7 +37,7 @@
   (corfu-echo-documentation nil)
   (corfu-separator ?\s)
   (corfu-quit-no-match 'separator)
-  (corfu-preview-current t)
+  (corfu-preview-current nil)
   (corfu-preselect 'prompt)
   :config
   (require 'corfu)
@@ -54,6 +54,8 @@
       (corfu-mode 1)))
 
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
+
+
 
 ;;;; Предпросмотр первого кандидата
 
@@ -85,15 +87,18 @@
 
 ;;;; Предпросмотр дополнения
 
-(use-package completion-preview
-  :ensure nil
-  :bind (:map completion-preview-active-mode-map
-                ("M-f" . #'completion-preview-insert-word)
-                ("C-M-f" . #'completion-preview-insert-sexp))
-  :custom
-  (completion-preview-minimum-symbol-length 2)
-  :init
-  (global-completion-preview-mode))
+;; (use-package completion-preview
+;;   :ensure nil
+;;   :functions (completion-preview-insert-word completion-preview-insert-sexp)
+;;   :bind (:map completion-preview-active-mode-map
+;;                 ("M-f" . #'completion-preview-insert-word)
+;;                 ("C-M-f" . #'completion-preview-insert-sexp))
+;;   :custom
+;;   (completion-preview-minimum-symbol-length 3)
+;;   :init
+;;   (add-hook 'text-mode-hook (lambda () (completion-preview-mode -1)))
+;;   (global-completion-preview-mode))
+
 
 (provide 'про-автодополнение)
 ;;; про-автодополнение.el ends here

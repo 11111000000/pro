@@ -14,6 +14,11 @@
           (history-delete-duplicates t)
           (history-length 300)
           (savehist-autosave-interval 300)
+          (savehist-additional-variables '(search-ring               ;; история поиска (C-s)
+                                           regexp-search-ring        ;; история regexp-поиска
+                                           extended-command-history  ;; история команд M-x
+                                           projectile-project-command-history
+                                           kill-ring))
           (kept-old-versions 25)
           (delete-old-versions t)
           (create-lockfiles nil)

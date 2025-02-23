@@ -16,7 +16,7 @@
      "xrandr" nil
      (concat "xrandr "
             " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
-            " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
+            " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate left "
             (if имя-третьего-монитора (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора) "")))
     (sit-for 1)
     (exwm-randr-refresh)))

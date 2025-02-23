@@ -81,6 +81,7 @@
 | C-c g             | magit-status                        |
 | C-c p y           | prodigy                             |
 | C-c d             | docker                              |
+| C-c u             | undo-tree-visualize                 |
 | C-c y y           | consult-yasnippet                   |
 | C-c y n           | создать-новый-сниппет-со-шпаргалкой |
 | C-c hl            | rainbow-identifiers-mode            |
@@ -311,22 +312,3 @@
 	         (exwm-input-set-key (kbd соч) (intern фун))))
 	     exwm-keys-table)))
 #+END_SRC
-
-#+RESULTS:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -36,6 +36,7 @@
    (gptel-proxy "") ;; Отключаем прокси-сервер
    (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
    (gptel-log-level 'info)
+   (gptel-model "deepseek-chat") ;; Устанавливаем deepseek-chat как модель по умолчанию
    )
   :config
   (gptel-make-openai "Tunnel OpenAI"
@@ -113,6 +114,7 @@
   :ensure t
   :custom (
           ;; Определяем роли для различных режимов редактирования
+          (evedel-empty-tag-query-matches-all nil)
           (e-descriptive-mode-roles
            '((emacs-lisp-mode . "an Emacs Lisp programmer")
              (js-mode         . "a JavaScript programmer")

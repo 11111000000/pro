@@ -239,8 +239,7 @@
 ;;;; Поддержка языка  разметки Markdown
 
 (use-package markdown-mode
-  :defer t
-  :ensure t)
+  :defer t  :ensure t)
 
 ;;;; Вставить имя файла
 

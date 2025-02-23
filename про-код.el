@@ -198,6 +198,9 @@ ARG - backward"
 ;;   :if window-system
 ;;   :ensure t)
 
+(use-package symbol-overlay
+  :ensure t)
+
 ;;;; Форматирование
 
 ;; - `format-all` автоматически форматирует код в различных языках, используя специфичные для них инструменты (например, `black` для Python). Это гарантирует, что код будет выглядеть аккуратно и эстетично.
@@ -345,6 +348,15 @@ ARG - backward"
   :commands flymake-shellcheck-load
   :hook (((bash-ts-mode sh-mode) . flymake-shellcheck-load))
   :init)
+
+;; Заголовок, показывающий, в какой функции или блоке мы находимся при скроллинге
+(use-package topsy
+  :ensure t
+  :hook
+  (prog-mode . topsy-mode)
+  (magit-section-mode . topsy-mode))
+
+
 
 (provide 'про-код)
 ;;; про-код.el ends here

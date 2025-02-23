@@ -70,9 +70,8 @@
   :functions (turn-off-hide-mode-line-mode
          turn-on-hide-mode-line-mode)
   :hook (((treemacs-mode
-         eshell-mode shell-mode
-         dired-mode
-         term-mode vterm-mode
+         eshell-mode
+         shell-mode
          embark-collect-mode
          lsp-ui-imenu-mode
          pdf-annot-list-mode)

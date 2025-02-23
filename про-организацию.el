@@ -268,15 +268,6 @@
   (add-to-list 'org-structure-template-alist
              '("uml" . "src plantuml :file ./diagram.svg")))
 
-
-
-;; (use-package flycheck-plantuml
-;;   :defer t 
-;;   :ensure t
-;;   :functions (flycheck-plantuml-setup)
-;;   :after plantuml-mode
-;;   :config (flycheck-plantuml-setup))
-
 ;;;; Асинхронное выполнение блоков кода
 
 (use-package ob-async
