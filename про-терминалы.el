@@ -30,7 +30,7 @@
   :hook (eshell-mode . tab-line-mode)
   :custom
   (comint-prompt-read-only t)
-  (eshell-prompt-function 'приглашение-eshell)
+  ;;(eshell-prompt-function 'приглашение-eshell)
   (eshell-highlight-prompt nil)
   (eshell-hist-ignoredups t)
   (eshell-cmpl-cycle-completions nil)
@@ -76,22 +76,25 @@
   :ensure t
   :demand t)
 
-(defun приглашение-eshell ()
-  "Настройка приглашения оболочки EShell."
-  (let* ((git-branch-unparsed
-         (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
-        (git-branch
-         (if (string= git-branch-unparsed "")
-             ""
-           (substring git-branch-unparsed 0 -1))))
-    (format "%s %s%s %s\n%s "
-            (all-the-icons-octicon "repo")
-            (car (shrink-path-prompt default-directory))
-            (cdr (shrink-path-prompt default-directory))
-            (unless (string= git-branch "")
-              (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
-            (propertize "❯❯❯" 'face `(:foreground "#33aa33")))))
-
+;; (defun приглашение-eshell ()
+;;   "Настройка приглашения оболочки EShell."
+;;   (let* ((git-branch-unparsed
+;;           (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
+;;          (git-branch
+;;           (if (string= git-branch-unparsed "")
+;;               ""
+;;             (substring git-branch-unparsed 0 -1)))
+;;          (shrunk-path (shrink-path-prompt default-directory))
+;;          (path-car (or (car shrunk-path) ""))
+;;          (path-cdr (or (cdr shrunk-path) "")))
+;;     (format "%s %s%s %s\n%s "
+;;             (all-the-icons-octicon "repo")
+;;             path-car
+;;             path-cdr
+;;             (if (string= git-branch "")
+;;                 ""
+;;               (propertize (concat "[" git-branch "]") 'face '(:inherit font-lock-string-face)))
+;;             (propertize "❯❯❯" 'face '(:foreground "#33aa33")))))
 ;; (use-package eshell-did-you-mean
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
