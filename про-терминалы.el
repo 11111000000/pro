@@ -86,8 +86,8 @@
            (substring git-branch-unparsed 0 -1))))
     (format "%s %s%s %s\n%s "
             (all-the-icons-octicon "repo")
-            (propertize (car (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
-            (propertize (cdr (shrink-path-prompt default-directory)) 'face `(:foreground (face-foreground 'default)))
+            (car (shrink-path-prompt default-directory))
+            (cdr (shrink-path-prompt default-directory))
             (unless (string= git-branch "")
               (propertize (concat "[" git-branch "]") 'face `(:inherit font-lock-string-face)))
             (propertize "❯❯❯" 'face `(:foreground "#33aa33")))))
@@ -119,8 +119,6 @@
     (delete-char -1)))
 
 (define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace)
-
-
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here
