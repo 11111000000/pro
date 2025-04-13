@@ -69,9 +69,9 @@
 (use-package marginalia
   :ensure t
   :functions (marginalia-mode)
-  :custom 
+  :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)) ;; Настройки аннотаций
-  :config 
+  :config
   (marginalia-mode)) ;; Включить режим marginalia
 
 ;;;; Функции на базе автодополнения
@@ -124,15 +124,16 @@
 
 (require 'dired) ;; Подключить модуль dired
 
+(defun искать-по-файлам-отсюда ()
+  "Поиск по файлам от текущего пути." ;; Функция поиска
+  (interactive)  
+  (consult-grep default-directory)) ;; Поиск в текущем каталоге
+
 (use-package consult-ag
   :ensure t
   :after dired
   :functions (consult-ag)
   :config
-  (defun искать-по-файлам-отсюда ()
-    "Поиск по файлам от текущего пути." ;; Функция поиска
-    (interactive) 
-    (consult-ag default-directory)) ;; Поиск в текущем каталоге
 
   ;; Получение маркера в буфере по указанным координатам.
   (defun consult--position-marker (buffer line column)

@@ -79,10 +79,15 @@
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect 3)
+  (eglot-confirm-server-initiated-edits nil) 
   (eglot-events-buffer-size '(:size 2000 :format full))
   (eglot-send-changes-idle-time 0)
   :config
-  
+  (setq-default eglot-workspace-configuration
+                '((haskell
+                   (plugin
+                    (stan
+                     (globalOn . :json-false))))))
   ;; Выключим лог, что увеличивает производительность
   
   (fset #'jsonrpc--log-event #'ignore))
@@ -193,10 +198,10 @@ ARG - backward"
 
 ;; Альтернативный алгоритм подсветки идентификаторов
 
-;; (use-package rainbow-identifiers
-;;   :defer t 
-;;   :if window-system
-;;   :ensure t)
+(use-package rainbow-identifiers
+  :defer t 
+  :if window-system
+  :ensure t)
 
 (use-package symbol-overlay
   :ensure t)

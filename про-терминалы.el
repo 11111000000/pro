@@ -16,6 +16,10 @@
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank)))
 
+(use-package multi-vterm
+  :ensure t
+  :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
+
 ; (use-package capf-autosuggest }
 ;   :ensure t }
 ;   :hook }
@@ -37,7 +41,7 @@
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "docker"))
+  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama"))
   :init
   (add-hook 'eshell-mode-hook (lambda ()
                                (progn

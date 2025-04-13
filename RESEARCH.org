@@ -1,5 +1,5 @@
 :PROPERTIES:
-:GPTEL_MODEL: o1-preview
+:GPTEL_MODEL: o1
 :GPTEL_BACKEND: ProxyAPI ChatGPT
 :GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
 :GPTEL_BOUNDS: ((476 . 738) (770 . 3114) (3148 . 5349))

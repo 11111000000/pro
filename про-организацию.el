@@ -313,5 +313,11 @@
     (delete-region begin end)
     (insert markdown-content)))
 
+(use-package ob-mermaid
+  :ensure t
+  :after org
+  :config
+  (add-to-list 'org-babel-load-languages '(mermaid . t)))
+
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

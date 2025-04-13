@@ -48,7 +48,7 @@
 
 ;;;; URL открывается в текстовом браузере в новой вкладке или в Хроме.
 
-(setq-default browse-url-browser-function 'eww-browse-url
+(setq-default browse-url-browser-function 'browse-url-chrome
               browse-url-new-window-flag t
               browse-url-generic-program "chromium")
 

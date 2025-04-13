@@ -11,7 +11,7 @@
                                         ;(projectile-project-search-path '("~/Проекты/"))
           (projectile-switch-project-action #'projectile-dired))
   :bind (:map projectile-command-map
-                ("ss" . consult-ag))
+                ("ss" . consult-grep))
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
@@ -180,11 +180,19 @@ were part of the capture template definition."
 
 ;;;; Контейнеры
 
+;; (defun my/auto-vterm-copy-mode-for-docker-logs ()
+;;   "Если имя буфера содержит \"docker-container-logs\", активировать vterm-copy-mode."
+;;   (when (and (string-match-p "docker-container-logs" (buffer-name))
+;;           (derived-mode-p 'vterm-mode))
+;;     (vterm-copy-mode)))
+
 (use-package docker
   :defer t 
   :ensure t
   :init
-  :config)
+  :config
+  ;(add-hook 'vterm-mode-hook #'my/auto-vterm-copy-mode-for-docker-logs)
+  )
 
 (use-package dockerfile-mode
   :defer t 

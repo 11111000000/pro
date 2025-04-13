@@ -76,8 +76,7 @@
           (eldoc-box-offset '(-40 50 -70))
           (eldoc-idle-delay 0.3))
   :config
-  (require 'eldoc)
-  (eldoc-box-hover-mode t)
+  (require 'eldoc)  
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   ;; (set-face-attribute 'eldoc-box-border nil :background (face-foreground 'font-lock-comment-face))
   ;; (set-face-attribute 'eldoc-box-body nil :background (face-background 'default) :foreground (face-foreground 'default)  :weight 'normal :italic nil :height 0.9)

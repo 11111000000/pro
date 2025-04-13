@@ -60,6 +60,7 @@
          compilation-mode
          calendar-mode
          chatgpt-shell-mode
+         ;; "^\\*aidermacs.*\\*$" aidermacs-comint-mode
          ;;"^\\*eshell.*\\*$" eshell-mode
          ;;"^\\*shell.*\\*$"  shell-mode
          "^\\*term.*\\*$"   term-mode

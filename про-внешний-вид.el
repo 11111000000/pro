@@ -69,12 +69,14 @@
   :ensure t
   :functions (turn-off-hide-mode-line-mode
          turn-on-hide-mode-line-mode)
-  :hook (((treemacs-mode
-         eshell-mode
-         shell-mode
+  :hook (((
+         treemacs-mode
+         ;;eshell-mode
+         ;;shell-mode
          embark-collect-mode
          lsp-ui-imenu-mode
-         pdf-annot-list-mode)
+         pdf-annot-list-mode
+         )
         . turn-on-hide-mode-line-mode)
          (dired-mode . (lambda()
                          (and (bound-and-true-p hide-mode-line-mode)

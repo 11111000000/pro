@@ -1,44 +1,52 @@
-;;; про-ии.el --- Искусственный Интеллект -*- lexical-binding: t -*-
-;; Автор: Пётр (11111000000@email.com)
+;;; про-ии.el --- Интеграция искусственного интеллекта в Emacs -*- lexical-binding: t; -*-
+
+;; Автор: Пётр <11111000000@email.com>
+;; Версия: 1.0
+;; Keywords: AI, GPT, Codeium, Whisper, ChatGPT
+;; URL: https://example.com/про-ии
 
 ;;; Commentary:
-;; Это файл конфигурации для интеграции различных сервисов искусственного интеллекта
-;; в Emacs.  Здесь настраиваются пакеты для работы с нейросетями, такими как GPT,
-;; Codeium, Whisper и другими.
+;; Этот конфигурационный файл настраивает интеграцию различных сервисов искусственного интеллекта
+;; в Emacs. Здесь подключаются пакеты для работы с нейросетями (GPT, Codeium, Whisper и др.),
+;; а также настраиваются API ключи и параметры для диалога с моделями.
+;;
+;; Перед использованием убедитесь, что переменная `proxyapi-key` определена.
+;;
+;; Чтобы применить данный конфиг, загрузите этот файл в Emacs, например:
+;;   M-x load-file RET путь/до/про-ии.el RET
 
 ;;; Code:
 
-;; Начальная настройка: импорт необходимых функций и пакетов
-(require 'установить-из)  ;; Вспомогательная функция для установки пакетов из репозиториев
-(require 'cape)           ;; Пакет для дополнения кода
+;; Импорт необходимых модулей
+(require 'установить-из)  ;; Функция для установки пакетов из репозиториев
+(require 'cape)           ;; Пакет для автодополнения
 
-;;;; Настройка OpenAI API ключа
+;;;; Настройка API ключей
 
-(if (boundp 'proxyapi-key)
-    (progn
-      ;; Устанавливаем ключи API для различных пакетов, использующих OpenAI
-      (setq-default openai-key proxyapi-key)
-      (setq-default gptel-api-key proxyapi-key)
-      (setq-default chatgpt-shell-openai-key proxyapi-key)
-      (setq-default dall-e-shell-openai-key proxyapi-key)))
+(defvar chutes-api-key nil
+  "API ключ для сервиса Chutes AI.")
 
-;;;; GPTEL - универсальный интерфейс для работы с ИИ
+(when (boundp 'proxyapi-key)
+  (setq-default openai-key proxyapi-key)
+  (setq-default gptel-api-key proxyapi-key)
+  (setq-default chatgpt-shell-openai-key proxyapi-key)
+  (setq-default dall-e-shell-openai-key proxyapi-key)
+  (setenv "OPENAI_API_KEY" proxyapi-key))
 
-;; Настраиваем пакет gptel для общения с моделями GPT внутри Emacs
+;;;; Настройка пакета GPTEL
+
 (use-package gptel
   :ensure t
-  :functions (gptel-make-openai)
+  :functions (gptel-make-openai gptel--get-api-key)
   :custom
-  ((gptel-default-mode 'org-mode) ;; Устанавливаем режим по умолчанию для буферов gptel
-   (gptel-org-branching-context t) ;; Включаем ветвление контекста в org-mode
-   (gptel-api-key 'proxyapi-key) ;; Используем proxyapi-key в качестве ключа
-   ;;(gptel-proxy "socks5h://localhost:9050") ;; Устанавливаем прокси-сервер
-   (gptel-proxy "") ;; Отключаем прокси-сервер
-   (gptel-system-prompt "Ты - большая языковая модель, живущая внутри EMACS, а также специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Ответ выдавай в org-mode, в src_block указывай :file, если известен путь к файлу.") ;; Системный промпт для модели GPT
+  ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
+   (gptel-org-branching-context nil)              ;; Отключить ветвление контекста в org-mode
+   (gptel-api-key 'proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
    (gptel-log-level 'info)
-   (gptel-model "deepseek-chat") ;; Устанавливаем deepseek-chat как модель по умолчанию
-   )
+   (gptel--system-message
+    "Ты — большая языковая модель, живущая в Emacs, и специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Выводи результат в виде блока Org-mode с указанием :file, если известен путь к файлу."))
   :config
+  ;; Создаем несколько бэкендов для gptel
   (gptel-make-openai "Tunnel OpenAI"
     :protocol "https"
     :host tunnelai-url
@@ -46,7 +54,7 @@
     :stream nil
     :key tunnelai-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("o3-mini" "o1-preview") gptel--openai-models))
+    :models (append '("gpt-4.5-preview" "o3-mini" "o1" "o1-mini") gptel--openai-models))
 
   (gptel-make-openai "Tunnel DeepSeek"
     :protocol "https"
@@ -56,7 +64,7 @@
     :key tunnelai-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("deepseek-chat" "deepseek-r1"))
-  
+
   (gptel-make-openai "Proxy OpenAI"
     :protocol "https"
     :host "api.proxyapi.ru"
@@ -64,7 +72,7 @@
     :stream nil
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("o3-mini") gptel--openai-models))
+    :models (append '("o3-mini" "gpt-4.5-preview" "o1" "o1-mini" "o1-pro") gptel--openai-models))
 
   (gptel-make-openai "Proxy DeepSeek"
     :protocol "https"
@@ -83,116 +91,136 @@
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
-  :init)
 
-;;;; GptEl-quick - быстрые запросы к GPT по точке
+  (gptel-make-openai "Chutes"
+    :protocol "https"
+    :host "llm.chutes.ai"
+    :endpoint "/v1/chat/completions"
+    :stream nil
+    :key chutes-api-key
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :models '("deepseek-ai/DeepSeek-V3-0324")))
 
-;; Пакет для быстрого выполнения запросов к GPT на основе текущего положения курсора
+;;;; Настройка gptel-quick для быстрых запросов
+
 (use-package gptel-quick
   :after gptel
-  :custom (
-          (gptel-quick-model :deepseek-reasoner) ;; Модель по умолчанию для быстрых запросов
-          (gptel-quick-backend gptel-backend) ;; Используем тот же бэкенд, что и для gptel
-          )
+  :custom
+  ((gptel-quick-model :deepseek-reasoner)
+   (gptel-quick-backend gptel-backend))
   :init
   (установить-из :repo "karthink/gptel-quick"))
 
-;;;; Elysium - управление окнами для отображения результатов ИИ
+;;;; Настройка Elysium для управления окнами
 
-;; Настраиваем пакет Elysium для управления окнами в Emacs при работе с ИИ
 (use-package elysium
   :ensure t
   :custom
-  (elysium-window-size 0.33) ;; Устанавливаем размер окна для отображения результатов
-  (elysium-window-style 'vertical) ;; Задаем стиль окна (вертикальный или горизонтальный)
-  )
+  (elysium-window-size 0.33)
+  (elysium-window-style 'vertical))
 
-;;;; Evedel - среда разработки с использованием LLM (Large Language Models)
+;;;; Настройка Minuet для автодополнения с GPT
 
-;; Настраиваем пакет evedel для интеграции LLM в процесс разработки
+(use-package minuet
+  :ensure t
+  :defines (minuet-active-mode-map
+            minuet-provider
+            minuet-openai-fim-compatible-options
+            minuet-auto-suggestion-mode
+            minuet-openai-compatible-options
+            minuet-auto-suggestion-throttle-delay
+            minuet-auto-suggestion-debounce-delay
+            minuet-request-timeout)
+  :functions (minuet-complete-with-minibuffer
+              minuet-auto-suggestion-mode
+              minuet-show-suggestion
+              minuet-configure-provider
+              minuet-previous-suggestion
+              minuet-next-suggestion
+              minuet-accept-suggestion
+              minuet-accept-suggestion-line
+              minuet-dismiss-suggestion
+              minuet-set-optional-options)
+  :bind (("s-i y" . minuet-complete-with-minibuffer)
+         ("s-i TAB" . minuet-show-suggestion)
+         ("s-i s-<tab>" . minuet-complete-with-minibuffer)
+         ("s-<tab>" . minuet-show-suggestion)
+         ("s-i s-m" . minuet-configure-provider)
+         :map minuet-active-mode-map
+         ("M-p" . minuet-previous-suggestion)
+         ("M-n" . minuet-next-suggestion)
+         ("RET" . minuet-accept-suggestion)
+         ("C-RET" . minuet-accept-suggestion)
+         ("M-RET" . minuet-accept-suggestion-line)
+         ("C-g" . minuet-dismiss-suggestion)
+         ("M-q" . minuet-dismiss-suggestion)
+         ("s-q" . minuet-dismiss-suggestion)
+         ("M-a" . minuet-accept-suggestion-line)
+         ("M-e" . minuet-dismiss-suggestion))
+  :custom ((minuet-context-window 16000)
+           (minuet-request-timeout 5)
+           (minuet-context-ratio 0.75))
+  :config
+  (plist-put minuet-openai-options :model "o3-mini")
+  (setq minuet-provider 'openai-compatible)
+  (minuet-auto-suggestion-mode -1)
+  (plist-put minuet-openai-compatible-options :end-point (concat "https://" proxyapi-url "/openai/v1/chat/completions"))
+  (plist-put minuet-openai-compatible-options :api-key "OPENAI_API_KEY")
+  (plist-put minuet-openai-compatible-options :model "o3-mini")
+  (minuet-set-optional-options minuet-openai-compatible-options :provider nil)
+  (minuet-set-optional-options minuet-openai-compatible-options :max_tokens nil)
+  (minuet-set-optional-options minuet-openai-compatible-options :max_completion_tokens 512)
+  (minuet-set-optional-options minuet-openai-compatible-options :top_p nil))
+
+;;;; Настройка пакета Evedel для интеграции LLM в процесс разработки
+
 (use-package evedel
   :ensure t
-  :custom (
-          ;; Определяем роли для различных режимов редактирования
-          (evedel-empty-tag-query-matches-all nil)
-          (e-descriptive-mode-roles
-           '((emacs-lisp-mode . "an Emacs Lisp programmer")
-             (js-mode         . "a JavaScript programmer")
-             (js-ts-mode      . "a JavaScript programmer")
-             (typescript-ts-mode . "a TypeScript programmer")
-             (typescript-mode . "a TypeScript programmer")
-             (haskell-ts-mode . "a Haskell programmer")
-             (bash-ts-mode    . "a Bash programmer")
-             (c-mode          . "a C programmer")
-             (c++-mode        . "a C++ programmer")
-             (lisp-mode       . "a Common Lisp programmer")
-             (web-mode        . "a web developer")
-             (erlang-mode     . "an Erlang programmer")))))
+  :custom
+  ((evedel-empty-tag-query-matches-all nil)
+   (e-descriptive-mode-roles
+    '((emacs-lisp-mode . "an Emacs Lisp programmer")
+      (js-mode         . "a JavaScript programmer")
+      (js-ts-mode      . "a JavaScript programmer")
+      (typescript-ts-mode . "a TypeScript programmer")
+      (typescript-mode . "a TypeScript programmer")
+      (haskell-ts-mode . "a Haskell programmer")
+      (bash-ts-mode    . "a Bash programmer")
+      (c-mode          . "a C programmer")
+      (c++-mode        . "a C++ programmer")
+      (lisp-mode       . "a Common Lisp programmer")
+      (web-mode        . "a web developer")
+      (erlang-mode     . "an Erlang programmer")))))
 
-;;;; ChatGPT Shell - REPL для различных нейросетей
+;;;; Настройка chatgpt-shell для REPL с ChatGPT
 
-;; Настраиваем пакет chatgpt-shell для интерактивного общения с моделями ChatGPT
 (use-package chatgpt-shell
   :init (установить-из :repo "xenodium/chatgpt-shell")
-  :bind (
-         :map chatgpt-shell-mode-map
-         ;; Привязываем сочетание клавиш C-g для прерывания текущего запроса
-         ("C-g" . chatgpt-shell-interrupt))
-  :custom (
-          (chatgpt-shell-model-versions '("o3-mini"
-                                          "o1-mini"
-                                          "o1-preview"
-                                          "gpt-4o-mini"
-                                          "gpt-4o"
-                                          "gpt-4-turbo"
-                                          "gpt-4"
-                                          "gpt-3.5-turbo-0125"
-                                          "gemini-1.5-pro"
-                                          "gemini-1.5-flash"
-                                          "claude-3-opus-20240229")) ;; Определяем список версий моделей для использования
-          
-          (chatgpt-shell-api-url-base  "https://api.proxyapi.ru/openai") ;; Устанавливаем базовый URL для API
-          (chatgpt-shell-anthropic-api-url-base "https://api.proxyapi.ru/anthropic")
-          (dall-e-shell--url "https://api.proxyapi.ru/openai/v1/images/generations") ;; URL для генерации изображений через DALL-E
-          (chatgpt-shell-streaming nil) ;; Отключаем стриминг ответов
-          (chatgpt-shell-transmitted-context-length 0) ;; Устанавливаем длину передаваемого контекста в 0 (без истории)
-          (chatgpt-shell-system-prompt "") ;; Оставляем системный промпт пустым
-          )
+  :bind (:map chatgpt-shell-mode-map
+              ("C-g" . chatgpt-shell-interrupt))
+  :custom ((chatgpt-shell-model-versions
+            '("o3-mini" "o1-mini" "o1" "gpt-4o-mini"
+              "gpt-4o" "gpt-4-turbo" "gpt-4" "gpt-3.5-turbo-0125"
+              "gemini-1.5-pro" "gemini-1.5-flash" "claude-3-opus-20240229"))
+           (chatgpt-shell-api-url-base "https://api.proxyapi.ru/openai")
+           (chatgpt-shell-anthropic-api-url-base "https://api.proxyapi.ru/anthropic")
+           (dall-e-shell--url "https://api.proxyapi.ru/openai/v1/images/generations")
+           (chatgpt-shell-streaming nil)
+           (chatgpt-shell-transmitted-context-length 0)
+           (chatgpt-shell-system-prompt ""))
   :config)
 
-;; Переопределяем функцию приветственного сообщения для shell-maker
-
-(require 'shell-maker)
-
-(defun shell-maker-welcome-message (config)
-  "Return a welcome message to be printed using CONFIG."
-  (format
-   "Welcome to %s shell\n\n  Type %s and press %s for details.\n\n"
-   (propertize (shell-maker-config-name config)
-               'font-lock-face 'font-lock-comment-face)
-   (propertize "help" 'font-lock-face 'italic)
-   (shell-maker--propertize-key-binding "-shell-submit" config)))
-
-;;;; Поддержка блоков Org-mode для интеграции с ChatGPT Shell
-
-;; Настраиваем выполнение блоков кода в org-mode с использованием chatgpt-shell
-;; Пример использования:
-;; #+begin_src chatgpt-shell :version "gpt-4o" :system "результат в формате org-mode" :context emacs
+;;;; Настройка ob-chatgpt-shell для Org Babel
 
 (use-package ob-chatgpt-shell
   :ensure t
   :functions (ob-chatgpt-shell-setup)
   :config
-  (require 'ob-chatgpt-shell)
   (ob-chatgpt-shell-setup)
-
-  ;; Добавляем шаблон для быстрого вставки блока chatgpt-shell в org-mode
   (add-to-list 'org-structure-template-alist
-             '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
-
-  ;; Функция для преобразования блоков example в src markdown после выполнения
+               '("gpt" . "src chatgpt-shell :context nil :version \"gpt-4o-mini\" :system nil"))
   (defun my/convert-example-to-src-markdown ()
-    "Convert example blocks to src markdown blocks in results."
+    "Преобразовать блоки примеров в блоки исходного кода markdown в результатах."
     (save-excursion
       (goto-char (point-min))
       (while (search-forward "#+begin_example" nil t)
@@ -200,97 +228,72 @@
       (goto-char (point-min))
       (while (search-forward "#+end_example" nil t)
         (replace-match "#+end_src"))))
-  
-  ;; Добавляем хук для преобразования блоков после выполнения кода
   (add-hook 'org-babel-after-execute-hook 'my/convert-example-to-src-markdown))
 
-;;;; Поддержка локальных нейросетей LLAMA
+;;;; Настройка поддержки LLAMA для локальных моделей
 
-;; Настраиваем пакет ellama для работы с локальными моделями LLAMA
 (use-package ellama
   :ensure t
   :init
   (require 'llm-ollama)
-  
-  (setopt ellama-language "Russian") ;; Устанавливаем язык по умолчанию на русский
-  
+  (setopt ellama-language "Russian")
   (setopt ellama-provider
-          (make-llm-ollama
-           :chat-model "codellama"
-           :embedding-model "codellama")) ;; Настраиваем провайдера для использования модели codellama
-  )
+          (make-llm-ollama :chat-model "codellama"
+                           :embedding-model "codellama")))
 
-;;;; Дополнение кода с использованием нейросети Codeium
+;;;; Настройка Codeium для автодополнения кода
 
-;; Настраиваем пакет codeium для автоматического дополнения кода
 (use-package codeium
   :init (установить-из :repo "Exafunction/codeium.el")
   :functions (codeium-utf8-byte-length codeium-init codeium-completion-at-point)
-  :bind
-  ("C-c <tab>" . codeium-complete)
+  :bind (("C-c <tab>" . codeium-complete))
   :config
-  
-  ;; Функция для включения codeium
   (defun codeium-on ()
-    "Enable codeium."
+    "Включить Codeium."
     (interactive)
     (codeium-init)
     (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
-
-  ;; Функция для отключения codeium
   (defun codeium-off ()
-    "Disable codeium."
+    "Отключить Codeium."
     (interactive)
     (setq completion-at-point-functions
-         (remove #'codeium-completion-at-point completion-at-point-functions)))
-
-  ;; Функция для переключения состояния codeium
+          (remove #'codeium-completion-at-point completion-at-point-functions)))
   (defun codeium-toggle ()
-    "Toggle codeium."
+    "Переключить состояние Codeium."
     (interactive)
     (if (memq #'codeium-completion-at-point completion-at-point-functions)
         (codeium-off)
       (codeium-on)))
-
-  ;; Определяем alias для функции codeium-complete
-  (defalias 'codeium-complete
-    (cape-capf-interactive #'codeium-completion-at-point))
-
-  ;; Отключаем использование диалоговых окон
+  (defalias 'codeium-complete (cape-capf-interactive #'codeium-completion-at-point))
   (setq use-dialog-box nil)
-
-  ;; Настраиваем какие API доступны
   (setq codeium-api-enabled
-       (lambda (api)
-         (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-  ;; Можно добавить дополнительные настройки для конкретных буферов
-  ;; Например, для python-mode:
-  ;; (add-hook 'python-mode-hook
-  ;;           (lambda ()
-  ;;             (setq-local codeium/editor_options/tab_size 4)))
-  )
+        (lambda (api)
+          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion)))))
 
-;;;; Распознавание голоса с помощью Whisper
+;;;; Настройка Whisper для распознавания речи
 
-;; Настраиваем пакет whisper для преобразования речи в текст
-;; Можно использовать для диктовки комментариев или кода
 (use-package whisper
   :init (установить-из :repo "natrys/whisper.el")
-  :bind
-  :custom (
-          (whisper--ffmpeg-input-format "alsa") ;; Настраиваем формат ввода для ffmpeg (используем Alsa)
-          )
+  :custom ((whisper--ffmpeg-input-format "alsa"))
   :config
-  
-  (setq whisper-install-directory (expand-file-name "~/.emacs.d/") ;; Указываем директорию для установки моделей
-       whisper-model "large" ;; Выбираем модель для распознавания (large обеспечивает лучшую точность)
-       whisper-language "ru" ;; Устанавливаем язык распознавания на русский
-       whisper-translate nil ;; Отключаем перевод (оставляем язык оригинала)
-       whisper-quantize nil ;; Не используем квантизацию для улучшения качества
-       whisper-insert-text-at-point t ;; Вставляем распознанный текст в точку курсора
-       whisper-recording-timeout 3600  ;; Задаем максимальное время записи
-       whisper-use-threads (/ (num-processors) 1) ;; Используем все доступные процессоры для ускорения обработки
-       ))
+  (setq whisper-install-directory (expand-file-name "~/.emacs.d/"))
+  (setq whisper-model "large")
+  (setq whisper-language "ru")
+  (setq whisper-translate nil)
+  (setq whisper-quantize nil)
+  (setq whisper-insert-text-at-point t)
+  (setq whisper-recording-timeout 3600)
+  (setq whisper-use-threads (/ (num-processors) 1)))
+
+;;;; Настройка Aidermacs для поддержки AI в редакторе
+
+(use-package aidermacs
+  :ensure t
+  :config (aidermacs-setup-minor-mode)
+  :custom
+  (aidermacs-use-architect-mode t)
+  (aidermacs-show-diff-after-change t)
+  (setq aidermacs-auto-commits nil))
 
 (provide 'про-ии)
 
