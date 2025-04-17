@@ -1,4 +1,4 @@
-;;; про-код-на-lisp-русификация.el --- Русификация Emacs LISP -*- lexical-binding: t -*-
+;;; про-код-на-lisp-русификация.el --- Русификация LISP -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;  Русификация ЛИСП
 ;;; Code:

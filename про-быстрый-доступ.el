@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(require 'projectile)
+
 ;;;; Поиск по файлу
 
 ;; TODO: Проверить маппинг клавиш на конфликты и оптимизировать.
@@ -95,7 +97,7 @@
    ("o" . consult-outline) ;; Работа со структурой документа
    :map help-map
    ("M" . consult-minor-mode-menu)) ;; Доступ к меню минорных режимов
-  :custom 
+  :custom
   ((consult-preview-key "M-.") ;; Клавиша предварительного просмотра
 ;;;; 
    (consult-line-start-from-top t) ;; Начинать поиск сверху
@@ -109,14 +111,14 @@
 ;;;; Дополнение сниппетов
 
 (use-package consult-yasnippet
-  :ensure t) 
+  :ensure t)
 
 ;;;; Поиск по документации (dash)
 
-(use-package consult-dash  
+(use-package consult-dash
   :ensure t
   :defines (consult-dash)
-  :config 
+  :config
   (consult-customize consult-dash
                      :initial (thing-at-point 'symbol))) ;; Начальное значение для поиска по символу
 
@@ -126,7 +128,7 @@
 
 (defun искать-по-файлам-отсюда ()
   "Поиск по файлам от текущего пути." ;; Функция поиска
-  (interactive)  
+  (interactive)
   (consult-grep default-directory)) ;; Поиск в текущем каталоге
 
 (use-package consult-ag
@@ -137,7 +139,7 @@
 
   ;; Получение маркера в буфере по указанным координатам.
   (defun consult--position-marker (buffer line column)
-    "Get marker in BUFFER from LINE and COLUMN." 
+    "Get marker in BUFFER from LINE and COLUMN."
     (when (buffer-live-p buffer) ;; Проверка существования буфера
       (with-current-buffer buffer
         (save-restriction
@@ -156,9 +158,9 @@
 ;;;; Поиск по языковому серверу
 
 ;; (use-package consult-lsp
-;;   :defer t 
-;;   :after (lsp consult) 
-;;   :ensure t 
+;;   :defer t
+;;   :after (lsp consult)
+;;   :ensure t
 ;;   :disabled t)
 
 
@@ -169,5 +171,45 @@
   :ensure t ;; Убедитесь, что пакет будет установлен
   :bind (:map eglot-mode-map ("C-c C-." . #'consult-eglot-symbols))) ;; Привязка для поиска символов
 
+
+;; Функция для более удобного переключения по буферам, с учётом вкладок.
+
+(require 'cl-lib)
+(require 'consult)
+
+(defun pro/consult-buffer ()
+  "Интерактивный выбор буфера с учётом exwm-режима.
+Если буфер уже где-либо отображён, то просто переключаемся на окно с ним.
+Если же буфер не виден, то для буферов в exwm-mode ищем вкладку,
+на которой он может быть показан, а если не находим — открываем его
+в текущем окне. Для остальных буферов просто переключаемся на них."
+  (interactive)
+  (let* ((buf-name (consult--read (mapcar #'buffer-name (buffer-list))
+                                  :prompt "Buffer: "
+                                  :require-match t
+                                  :category 'buffer))
+         (buf (get-buffer buf-name)))
+    ;; Если буфер уже отображается где-либо, сразу выбираем то окно.
+    (if (get-buffer-window buf 'visible)
+        (select-window (get-buffer-window buf 'visible))
+      (if (with-current-buffer buf (derived-mode-p 'exwm-mode))
+          (let* ((orig-tab (+ 1 (tab-bar--current-tab-index)))
+                 (tabs (tab-bar-tabs))
+                 tab-found)
+            ;; Перебираем вкладки, пытаясь найти ту, где буфер виден.
+            (cl-loop for i from 1 to (length tabs) do
+                     (unless (equal i orig-tab)
+                       (tab-bar-select-tab i)
+                       (when (get-buffer-window buf 'visible)
+                         (setq tab-found t)
+                         (cl-return))))
+            ;; Если не нашли, возвращаем исходную вкладку.
+            (unless tab-found
+              (tab-bar-select-tab orig-tab))
+            (switch-to-buffer buf))
+        ;; Для всех остальных буферов просто открываем его в текущем окне.
+        (switch-to-buffer buf)))))
+
+
 (provide 'про-быстрый-доступ) ;; Экспортируем текущий модуль
-;;; про-быстрый-доступ.el ends here
+;;; про-быстрый-доступ.el ends here.

@@ -10,7 +10,7 @@
 
 ;; или /home/az/.guix-profile/bin/gpg
 
-;;;; Используется встроенный в EMACS GPG-агент
+;;;; Используется встроенный GPG-агент
 
 (setenv "GPG_AGENT_INFO" nil)
 

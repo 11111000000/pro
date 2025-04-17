@@ -72,7 +72,7 @@
     :stream nil
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("o3-mini" "gpt-4.5-preview" "o1" "o1-mini" "o1-pro") gptel--openai-models))
+    :models (append '("o3-mini" "gpt-4.5-preview" "o1" "o1-mini" "o1-pro" "dall-e-3") gptel--openai-models))
 
   (gptel-make-openai "Proxy DeepSeek"
     :protocol "https"
@@ -200,7 +200,7 @@
               ("C-g" . chatgpt-shell-interrupt))
   :custom ((chatgpt-shell-model-versions
             '("o3-mini" "o1-mini" "o1" "gpt-4o-mini"
-              "gpt-4o" "gpt-4-turbo" "gpt-4" "gpt-3.5-turbo-0125"
+              "gpt-4o" "gpt-4-turbo" "gpt-4" "gpt-3.5-turbo-0125" "dall-e-3"
               "gemini-1.5-pro" "gemini-1.5-flash" "claude-3-opus-20240229"))
            (chatgpt-shell-api-url-base "https://api.proxyapi.ru/openai")
            (chatgpt-shell-anthropic-api-url-base "https://api.proxyapi.ru/anthropic")

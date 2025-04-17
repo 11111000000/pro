@@ -36,8 +36,8 @@
 | C-a               | к-идентации-или-началу-строки       |
 | C-$               | toggle-truncate-lines               |
 | C-c f             | вставить-имя-файла                  |
-| C-x b             | consult-buffer                      |
-| C-x C-b           | consult-buffer                      |
+| C-x b             | pro/consult-buffer                  |
+| C-x C-b           | pro/consult-buffer                  |
 | C-x M-b           | consult-buffer-other-window         |
 | C-c b             | consult-buffer-other-window         |
 | C-c C-b           | consult-buffer-other-window         |
@@ -184,7 +184,7 @@
 | <XF86TouchpadToggle>    | переключить-тачпад                   |
 | C-c <f4>                | выключить-все-микрофоны              |
 | C-c M-<f4>              | включить-гарнитуру                   |
-| s-b                     | consult-buffer                       |
+| s-b                     | pro/consult-buffer                   |
 | C-s-d                   | delete-window                        |
 | s-h                     | windmove-left                        |
 | s-j                     | windmove-down                        |
@@ -315,4 +315,5 @@
 #+END_SRC
 
 #+RESULTS:
+
 
