@@ -40,7 +40,7 @@
          ("s-o" . buffer-expose-reset))
   :init)
 
-;;;;  Popper - предсказуемые попапы
+;;;; Popper - предсказуемые попапы
 
 (use-package popper
   :ensure t

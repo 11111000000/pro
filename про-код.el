@@ -154,7 +154,7 @@ ARG - backward"
   :ensure t
   :defines (global-highlight-parentheses-mode)
   :custom ((hl-paren-colors
-           `("MediumOrchid2" "MediumAquamarine" "CornflowerBlue" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
+           `( "navajo white" "MediumOrchid2" "CornflowerBlue"  "MediumAquamarine"  ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
              ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
           (hl-paren-background-colors  '(nil nil nil nil nil)))
   :config (global-highlight-parentheses-mode t)
@@ -162,7 +162,7 @@ ARG - backward"
   (add-hook 'after-load-theme-hook
            (lambda ()
              (global-highlight-parentheses-mode -1)
-             (sleep-for 0 100)
+             (sleep-for 1)
              (global-highlight-parentheses-mode t))))
 
 ;;;; Подсветка глубины идентации

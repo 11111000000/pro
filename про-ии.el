@@ -7,11 +7,11 @@
 
 ;;; Commentary:
 ;; Этот конфигурационный файл настраивает интеграцию различных сервисов искусственного интеллекта
-;; в Emacs. Здесь подключаются пакеты для работы с нейросетями (GPT, Codeium, Whisper и др.),
+;; в Emacs.  Здесь подключаются пакеты для работы с нейросетями (GPT, Codeium, Whisper и др.),
 ;; а также настраиваются API ключи и параметры для диалога с моделями.
-;;
+;; 
 ;; Перед использованием убедитесь, что переменная `proxyapi-key` определена.
-;;
+;; 
 ;; Чтобы применить данный конфиг, загрузите этот файл в Emacs, например:
 ;;   M-x load-file RET путь/до/про-ии.el RET
 
@@ -26,6 +26,7 @@
 (defvar chutes-api-key nil
   "API ключ для сервиса Chutes AI.")
 
+;; Если переменная proxyapi-key определена, используем её для настройки ключей API
 (when (boundp 'proxyapi-key)
   (setq-default openai-key proxyapi-key)
   (setq-default gptel-api-key proxyapi-key)
@@ -35,16 +36,22 @@
 
 ;;;; Настройка пакета GPTEL
 
+;; Настройка GPT-сервисов
+
 (use-package gptel
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key)
+  :bind (
+         :map gptel-mode-map
+                ("C-c RET" . gptel-send))
   :custom
   ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
    (gptel-org-branching-context nil)              ;; Отключить ветвление контекста в org-mode
-   (gptel-api-key 'proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
+   (gptel-api-key proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
    (gptel-log-level 'info)
+   (gptel-model 'o3-mini)
    (gptel--system-message
-    "Ты — большая языковая модель, живущая в Emacs, и специалист по Haskell, LISP и функциональному программированию. Отвечай кратко и ёмко. Выводи результат в виде блока Org-mode с указанием :file, если известен путь к файлу."))
+    "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
   ;; Создаем несколько бэкендов для gptel
   (gptel-make-openai "Tunnel OpenAI"
@@ -105,19 +112,18 @@
 
 (use-package gptel-quick
   :after gptel
-  :custom
-  ((gptel-quick-model :deepseek-reasoner)
-   (gptel-quick-backend gptel-backend))
   :init
-  (установить-из :repo "karthink/gptel-quick"))
+  (установить-из :repo "karthink/gptel-quick")
+  (setq gptel-quick-backend gptel-backend)
+  (setq gptel-quick-model 'o3-mini))
 
-;;;; Настройка Elysium для управления окнами
+;; ;;;; Настройка Elysium (WTF)
 
-(use-package elysium
-  :ensure t
-  :custom
-  (elysium-window-size 0.33)
-  (elysium-window-style 'vertical))
+;; (use-package elysium
+;;   :ensure t
+;;   :custom
+;;   (elysium-window-size 0.33)
+;;   (elysium-window-style 'vertical))
 
 ;;;; Настройка Minuet для автодополнения с GPT
 
@@ -155,18 +161,19 @@
          ("C-g" . minuet-dismiss-suggestion)
          ("M-q" . minuet-dismiss-suggestion)
          ("s-q" . minuet-dismiss-suggestion)
-         ("M-a" . minuet-accept-suggestion-line)
-         ("M-e" . minuet-dismiss-suggestion))
+         ("M-a" . minuet-accept-suggestion-line))
   :custom ((minuet-context-window 16000)
-           (minuet-request-timeout 5)
+           (minuet-request-timeout 3)
            (minuet-context-ratio 0.75))
   :config
-  (plist-put minuet-openai-options :model "o3-mini")
-  (setq minuet-provider 'openai-compatible)
+  
+  (plist-put minuet-openai-options :model "gpt-4-turbo")
+  (setopt minuet-provider 'openai-compatible)
   (minuet-auto-suggestion-mode -1)
   (plist-put minuet-openai-compatible-options :end-point (concat "https://" proxyapi-url "/openai/v1/chat/completions"))
   (plist-put minuet-openai-compatible-options :api-key "OPENAI_API_KEY")
-  (plist-put minuet-openai-compatible-options :model "o3-mini")
+  
+  (plist-put minuet-openai-compatible-options :model "gpt-4-turbo")
   (minuet-set-optional-options minuet-openai-compatible-options :provider nil)
   (minuet-set-optional-options minuet-openai-compatible-options :max_tokens nil)
   (minuet-set-optional-options minuet-openai-compatible-options :max_completion_tokens 512)
@@ -282,7 +289,7 @@
   (setq whisper-translate nil)
   (setq whisper-quantize nil)
   (setq whisper-insert-text-at-point t)
-  (setq whisper-recording-timeout 3600)
+  (setq whisper-recording-timeout 500)
   (setq whisper-use-threads (/ (num-processors) 1)))
 
 ;;;; Настройка Aidermacs для поддержки AI в редакторе

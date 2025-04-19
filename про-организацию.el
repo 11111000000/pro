@@ -115,39 +115,38 @@
 
 (setq org-support-shift-select nil)
 
+;; (require 'markdown-mode)
 
-(require 'markdown-mode)
+;; (defun render-org-results-as-markdown ()
+;;   "Render #+RESULTS: example blocks as markdown preview."
+;;   (interactive)
+;;   (save-excursion
+;;     ;; Ищем все блоки #+RESULTS: с последующим #+begin_example ... #+end_example
+;;     (goto-char (point-min))
+;;     (while (re-search-forward "^#\\+RESULTS:\\(?: \\(.*\\)\\)?\n#+begin_example\n\\(\\(?:.\\|\n\\)*?\\)#+end_example" nil t)
+;;       (let* ((params (match-string 1))
+;;             (content (match-string 2))
+;;             (begin (match-beginning 0))
+;;             (end (match-end 0))
+;;             (rendered-content))
+;;         ;; Используем markdown-mode для рендеринга содержимого
+;;         (with-temp-buffer
+;;           (insert content)
+;;           (markdown)
+;;           (setq rendered-content (buffer-string)))
+;;         ;; Создаем оверлей для отображения отрендеренного контента
+;;         (let ((o (ov begin end)))
+;;           (ov-set o 'display rendered-content)
+;;           (ov-set o 'ov-rendered t))))))
 
-(defun render-org-results-as-markdown ()
-  "Render #+RESULTS: example blocks as markdown preview."
-  (interactive)
-  (save-excursion
-    ;; Ищем все блоки #+RESULTS: с последующим #+begin_example ... #+end_example
-    (goto-char (point-min))
-    (while (re-search-forward "^#\\+RESULTS:\\(?: \\(.*\\)\\)?\n#+begin_example\n\\(\\(?:.\\|\n\\)*?\\)#+end_example" nil t)
-      (let* ((params (match-string 1))
-            (content (match-string 2))
-            (begin (match-beginning 0))
-            (end (match-end 0))
-            (rendered-content))
-        ;; Используем markdown-mode для рендеринга содержимого
-        (with-temp-buffer
-          (insert content)
-          (markdown)
-          (setq rendered-content (buffer-string)))
-        ;; Создаем оверлей для отображения отрендеренного контента
-        (let ((ov (ov begin end)))
-          (ov-set ov 'display rendered-content)
-          (ov-set ov 'ov-rendered t))))))
+;; ;; Функция для обновления рендеринга при изменениях
+;; (defun update-org-results-as-markdown ()
+;;   "Update markdown rendering in #+RESULTS: blocks."
+;;   (when (eq major-mode 'org-mode)
+;;     (render-org-results-as-markdown)))
 
-;; Функция для обновления рендеринга при изменениях
-(defun update-org-results-as-markdown ()
-  "Update markdown rendering in #+RESULTS: blocks."
-  (when (eq major-mode 'org-mode)
-    (render-org-results-as-markdown)))
-
-;; Добавляем хук для автоматического обновления рендеринга при сохранении файла
-(add-hook 'after-save-hook 'update-org-results-as-markdown)
+;; ;; Добавляем хук для автоматического обновления рендеринга при сохранении файла
+;; (add-hook 'after-save-hook 'update-org-results-as-markdown)
 
 ;;;; Помодоро
 
@@ -206,19 +205,16 @@
   :init
   
   (setq
-   
    org-auto-align-tags nil
    org-tags-column 0
    org-fold-catch-invisible-edits 'show-and-error
    org-special-ctrl-a/e t
    org-insert-heading-respect-content t
-
-   
    org-hide-emphasis-markers t
    org-pretty-entities t
    org-ellipsis "…"))
 
-;;;; Организация кода
+;;;; Организация кода - аутлайнер для любых файлов
 
 (use-package outshine  
   :ensure t
@@ -229,10 +225,9 @@
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
                 ("C-<return>" . outshine-insert-heading)                
-                ("C-M-i" . nil)
-                ))
+                ("C-M-i" . nil)))
 
-;; Вместо символов комментария показывать уровень вложенности
+;; В коде, вместо символов комментария показывать уровень вложенности
 
 (use-package outshine-bullets
   :defer t 
@@ -268,14 +263,28 @@
   (add-to-list 'org-structure-template-alist
              '("uml" . "src plantuml :file ./diagram.svg")))
 
+;;;; Поддержка Mermaid
+
+(use-package ob-mermaid
+  :ensure t
+  :after org
+  :config
+  (add-to-list 'org-babel-load-languages '(mermaid . t)))
+
 ;;;; Асинхронное выполнение блоков кода
 
 (use-package ob-async
   :ensure t)
 
+;;;; Канбан
+
 (use-package kanban :ensure t)
 
 (use-package org-kanban :ensure t)
+
+
+
+;;;; Полезные функции
 
 (require 'org)
 
@@ -312,12 +321,6 @@
          (markdown-content (org-export-string-as org-content 'md t nil)))
     (delete-region begin end)
     (insert markdown-content)))
-
-(use-package ob-mermaid
-  :ensure t
-  :after org
-  :config
-  (add-to-list 'org-babel-load-languages '(mermaid . t)))
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

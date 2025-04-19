@@ -26,10 +26,10 @@
      (setq exwm-randr-workspace-monitor-plist
            (list 0 имя-встроенного-монитора 1 имя-внешнего-монитора 2 имя-третьего-монитора))
      (exwm-randr-mode t)
+     (add-hook 'exwm-init-hook (lambda ()
+                                (применить-расположение-мониторов)))
      (add-hook 'exwm-randr-screen-change-hook
                'применить-расположение-мониторов)))
-
-(применить-расположение-мониторов)
 
 (provide 'про-мониторы)
 ;;; про-мониторы.el ends here

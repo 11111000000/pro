@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'mule)
+(require 'god-mode)
 
 ;;;; Функция для выключения русского
 
@@ -14,15 +15,16 @@
 ;;;; Режим Бога (всегда Ctrl)
 
 (defun курсор-бога ()
+  "Обновляем курсор."
   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(bar . 3)))
   (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
 
 
 (use-package god-mode
+  :ensure t
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
   :defines (god-local-mode-map god-local-mode)
   :functions (god-mode-all)
-  :ensure t
   :hook (((god-mode-disabled god-mode-enabled) . курсор-бога)
        ;;(god-mode-enabled . restore-input-method)
        (god-mode-enabled . toggle-off-input-method))

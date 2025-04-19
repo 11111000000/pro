@@ -1,5 +1,5 @@
  * Глобальные сочетания клавиш
- ** Клавиши текстового режима
+** Клавиши текстового режима
 
 #+NAME: key-bindings-table
 | Сочетание         | Функция                             |
@@ -135,7 +135,9 @@
 | s-i m             | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
-| s-i a             | gptel-add                           |
+| s-i a             | gptel-aibo                          |
+| s-i t             | gptel-tools                         |
+| s-i b             | gptel-add                           |
 | s-i f             | gptel-add-file                      |
 | s-i p             | gptel-system-prompt                 |
 | s-i RET           | gptel-send                          |
@@ -166,7 +168,7 @@
 | s-e T             | evedel-remove-tags                  |
 | C-z               | nil                                 |
 
- ** Клавиши над всеми Xorg приложениями:
+** Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
 | Сочетание               | Функция                              |
@@ -271,14 +273,14 @@
 | C-c il                  | ellama-chat                          |
 | C-c ii                  | gptel                                |
 | s-i i                   | gptel                                |
-| s-i s-i                 | gptel-menu                           |
+| s-i s-i                 | gptel-aibo                           |
 | s-i M-i                 | chatgpt-shell                        |
-| s-c                     | treemacs                             |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
+| s-c                     | treemacs                             |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 
- ** ДУМАЮ Клавиши для модов
+** ДУМАЮ Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |
@@ -292,28 +294,39 @@
  ** Применение сочетаний
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
-(mapcar
-  (lambda (row)
-   (cl-destructuring-bind (соч фун) row
-     (global-set-key (kbd соч) (intern фун))))
- keys-table)
+;;; про-сочетания-клавиш.el --- Key bindings configuration -*- lexical-binding: t; -*-
+;;; Commentary:
+;; This package sets up custom key bindings for both standard Emacs usage and EXWM.
+;;; Code:
 
-(mapcar
- (lambda (row)
-   (cl-destructuring-bind (соч фун) row
-     (global-set-key (kbd соч) (intern фун))))
- exwm-keys-table)
+(require 'cl-lib)
 
-(if (and window-system (functionp 'exwm-input-set-key))
-    (progn
-        (require 'exwm)
-        (mapcar
-         (lambda (row)
-           (cl-destructuring-bind (соч фун) row
-             (exwm-input-set-key (kbd соч) (intern фун))))
-         exwm-keys-table)))
+;; Устанавливает глобальные привязки клавиш из keys-table.
+(mapc (lambda (row)
+        (cl-destructuring-bind (key func) row
+          (global-set-key (kbd key) (intern func))))
+      keys-table)
+
+;; Устанавливает глобальные привязки клавиш из exwm-keys-table.
+(mapc (lambda (row)
+        (cl-destructuring-bind (key func) row
+          (global-set-key (kbd key) (intern func))))
+      exwm-keys-table)
+
+;; Если запущено в оконной системе и функция exwm-input-set-key доступна, настраивает клавиши EXWM.
+(when (and window-system (functionp 'exwm-input-set-key))
+  (require 'exwm))
+  (mapc (lambda (row)
+          (cl-destructuring-bind (key func) row
+            (exwm-input-set-key (kbd key) (intern func))))
+        exwm-keys-table))
+
+(provide 'про-сочетания-клавиш)
+;;; про-сочетания-клавиш.el ends here
 #+END_SRC
 
 #+RESULTS:
+: про-сочетания-клавиш
+
 
 

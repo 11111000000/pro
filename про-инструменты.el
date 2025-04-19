@@ -8,8 +8,8 @@
 ;;;; Открыть файл с помощью чего-нибудь
 
 (use-package openwith
-  :defer t 
   :ensure t
+  :defer t
   :defines (openwith-associations)
   :functions (openwith-mode)
   :config
@@ -75,7 +75,6 @@
   :ensure t ; only need to install it, embark loads it after consult if found
   :after consult
   :hook (embark-collect-mode . consult-preview-at-point-mode))
-
 
 (provide 'про-инструменты)
 ;;; про-инструменты.el ends here
