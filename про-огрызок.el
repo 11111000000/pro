@@ -4,11 +4,11 @@
 
 (modify-all-frames-parameters '((inhibit-double-buffering . t)))
 
-(use-package exec-path-from-shell
-  :defer t 
-  :ensure t
-  :init
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :defer t 
+;;   :ensure t
+;;   :init
+;;   (exec-path-from-shell-initialize))
 
 (use-package smooth-scroll
   :defer t 

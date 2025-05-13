@@ -10,6 +10,7 @@
 | M-c               | nil                                 |
 | M-t               | nil                                 |
 | M-\               | nil                                 |
+| s-z               | nil                                 |
 | M-f               | viper-forward-word                  |
 | M-b               | viper-backward-word                 |
 | M-j               | scroll-down                         |
@@ -37,7 +38,7 @@
 | C-$               | toggle-truncate-lines               |
 | C-c f             | вставить-имя-файла                  |
 | C-x b             | pro/consult-buffer                  |
-| C-x C-b           | pro/consult-buffer                  |
+| C-x C-b           | consult-buffer                      |
 | C-x M-b           | consult-buffer-other-window         |
 | C-c b             | consult-buffer-other-window         |
 | C-c C-b           | consult-buffer-other-window         |
@@ -130,12 +131,13 @@
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
 | s-i s-i           | gptel                               |
+| s-i i             | gptel                               |
 | s-i i             | chatgpt-shell                       |
 | s-i r             | gptel-rewrite                       |
 | s-i m             | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
-| s-i a             | gptel-aibo                          |
+| s-i a             | gptel-add                           |
 | s-i t             | gptel-tools                         |
 | s-i b             | gptel-add                           |
 | s-i f             | gptel-add-file                      |
@@ -186,7 +188,6 @@
 | <XF86TouchpadToggle>    | переключить-тачпад                   |
 | C-c <f4>                | выключить-все-микрофоны              |
 | C-c M-<f4>              | включить-гарнитуру                   |
-| s-b                     | pro/consult-buffer                   |
 | C-s-d                   | delete-window                        |
 | s-h                     | windmove-left                        |
 | s-j                     | windmove-down                        |
@@ -217,14 +218,14 @@
 | <XF86Back>              | winner-undo                          |
 | <XF86Forward>           | winner-redo                          |
 | <print>                 | скриншот-области                     |
-| s-s                     | consult-grep                         |
+| s-s                     | consult-git-grep                     |
 | s-<print>               | скриншот                             |
 | s-S-s                   | скриншот                             |
 | s-<left>                | shrink-window-horizontally           |
 | s-<right>               | enlarge-window-horizontally          |
 | s-<down>                | shrink-window                        |
 | s-<up>                  | enlarge-window                       |
-| s-z                     | avy-goto-char                        |
+| s-z                     | yaz-transient                        |
 | s-_                     | winner-undo                          |
 | s-M-_                   | winner-redo                          |
 | s-u                     | tab-bar-history-back                 |
@@ -244,7 +245,7 @@
 | C-c p C-p               | projectile-add-known-project         |
 | C-c pp                  | projectile-switch-project            |
 | C-c C-p                 | projectile-switch-project            |
-| C-c ps s                | consult-grep                         |
+| C-c p s s               | consult-git-grep                     |
 | C-x C-1                 | delete-other-windows                 |
 | C-x C-2                 | split-window-below                   |
 | C-x C-3                 | split-window-right                   |
@@ -268,17 +269,19 @@
 | C-<f7>                  | profiler-stop                        |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
+| C-c il                  | ellama-chat                          |
 | C-c i M-i               | chatgpt-shell                        |
 | C-c ie                  | chatgpt-shell                        |
-| C-c il                  | ellama-chat                          |
 | C-c ii                  | gptel                                |
-| s-i i                   | gptel                                |
-| s-i s-i                 | gptel-aibo                           |
-| s-i M-i                 | chatgpt-shell                        |
+| s-i s-i                 | gptel                                |
+| C-c i M-i               | gptel-aibo                           |
+| s-i i                   | gptel-aibo                           |
+| s-i e                   | chatgpt-shell                        |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
 | s-c                     | treemacs                             |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
+| s-b                     | ibuffer                              |
 
 ** ДУМАЮ Клавиши для модов
 
@@ -294,11 +297,6 @@
  ** Применение сочетаний
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
-;;; про-сочетания-клавиш.el --- Key bindings configuration -*- lexical-binding: t; -*-
-;;; Commentary:
-;; This package sets up custom key bindings for both standard Emacs usage and EXWM.
-;;; Code:
-
 (require 'cl-lib)
 
 ;; Устанавливает глобальные привязки клавиш из keys-table.
@@ -313,16 +311,15 @@
           (global-set-key (kbd key) (intern func))))
       exwm-keys-table)
 
+(require 'exwm)
 ;; Если запущено в оконной системе и функция exwm-input-set-key доступна, настраивает клавиши EXWM.
 (when (and window-system (functionp 'exwm-input-set-key))
-  (require 'exwm))
   (mapc (lambda (row)
           (cl-destructuring-bind (key func) row
             (exwm-input-set-key (kbd key) (intern func))))
         exwm-keys-table))
 
 (provide 'про-сочетания-клавиш)
-;;; про-сочетания-клавиш.el ends here
 #+END_SRC
 
 #+RESULTS:

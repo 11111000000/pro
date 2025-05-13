@@ -36,5 +36,16 @@
 
 (setq warning-minimum-level :error)
 
+;;;; Группировать по проекту
+
+(use-package ibuffer-projectile
+  :after (ibuffer projectile)
+  :hook (ibuffer . my/ibuffer-projectile-groups)
+  :config
+  (defun my/ibuffer-projectile-groups ()
+    (ibuffer-projectile-set-filter-groups)
+    (unless (eq ibuffer-sorting-mode 'alphabetic)
+      (ibuffer-do-sort-by-alphabetic))))
+
 (provide 'про-буферы)
 ;;; про-буферы.el ends here

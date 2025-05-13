@@ -4,6 +4,7 @@
 ;;;; Базовые настройки
 
 (load-library "find-lisp")
+(require 'установить-из)
 
 (use-package org
   :bind (:map org-mode-map
@@ -35,7 +36,18 @@
 
 ;;;; Иконки приоритетов
 
-(use-package org-fancy-priorities :ensure t :defer t :hook ((org-mode . org-fancy-priorities-mode)))
+(use-package org-fancy-priorities
+  :ensure t
+  :defer t
+  :hook ((org-mode . org-fancy-priorities-mode))
+  :custom (org-fancy-priorities-list '((?A . "⚡")
+                                 (?B . "⬆")
+                                 (?C . "⬇")
+                                 (?D . "☕")
+                                 (?1 . "⚡")
+                                 (?2 . "⮬")
+                                 (?3 . "⮮")
+                                 )))
 
 ;;;; Иконка свёртки
 
@@ -155,7 +167,7 @@
 (use-package pomodoro :ensure t :defer t)
 
 (use-package org-pomodoro
-  :defer t 
+  :defer t
   :ensure t :defer t
   :custom (
           (org-pomodoro-length 15)
@@ -178,7 +190,7 @@
 (require 'doc-view)
 
 (use-package org-noter
-  :defer t 
+  :defer t
   :ensure t
   :bind (
          :map doc-view-mode-map
@@ -187,7 +199,7 @@
 ;;;; Цветные тэги
 
 (use-package org-rainbow-tags
-  :defer t 
+  :defer t
   :ensure t
   :hook ((org-mode . org-rainbow-tags-mode))
   :init)
@@ -197,7 +209,7 @@
 ;; Современный вид для заголовков и таблиц
 
 (use-package org-modern
-  :defer t 
+  :defer t
   :ensure t
   :custom ((org-modern-star '("●" "▶" "▷" "□" "◆" "◍"))
           (org-modern-hide-stars " "))
@@ -216,7 +228,7 @@
 
 ;;;; Организация кода - аутлайнер для любых файлов
 
-(use-package outshine  
+(use-package outshine
   :ensure t
   :defines (outshine-mode-map)
   :custom ((outshine-startup-folded-p nil))
@@ -224,13 +236,13 @@
        (outline-minor-mode . outshine-mode)
        (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
-                ("C-<return>" . outshine-insert-heading)                
+                ("C-<return>" . outshine-insert-heading)
                 ("C-M-i" . nil)))
 
 ;; В коде, вместо символов комментария показывать уровень вложенности
 
 (use-package outshine-bullets
-  :defer t 
+  :defer t
   :init (установить-из :repo "11111000000/outshine-bullets")
   :hook ((outshine-mode . outshine-bullets-mode))
   :custom (
@@ -241,7 +253,7 @@
 ;;;; Поддержка диаграмм из блоков на UML
 
 (use-package plantuml-mode
-  :defer t 
+  :defer t
   :ensure t
   :mode "\\.plantuml\\'"
   :custom
@@ -279,14 +291,13 @@
 ;;;; Канбан
 
 (use-package kanban :ensure t)
-
 (use-package org-kanban :ensure t)
-
-
 
 ;;;; Полезные функции
 
 (require 'org)
+(require 'ox)
+(require 'outline)
 
 (defun my/org-archive-done-tasks ()
   "Вырезает все записи со статусом DONE и сохраняет их в архивный файл."
@@ -315,12 +326,26 @@
         (message "Не найдено задач с пометкой DONE.")))))
 
 (defun org-region-to-markdown (begin end)
-  "Преобразует выделенный регион из Org-mode в Markdown и заменяет его."
+  "Преобразует выделенный регион BEGIN до END из Org-mode в Markdown и заменяет его."
   (interactive "r")
   (let* ((org-content (buffer-substring-no-properties begin end))
          (markdown-content (org-export-string-as org-content 'md t nil)))
     (delete-region begin end)
     (insert markdown-content)))
+
+(defun pro/org-export-to-html-and-view ()
+  "Export the current Org buffer to HTML, then view it in eww."
+  (interactive)
+  ;; Make sure we have a file-backed buffer and the latest changes are saved
+  (unless buffer-file-name
+    (error "Buffer is not visiting a file"))
+  (save-buffer)
+  ;; Export to HTML; `org-export-to-file' returns the full path
+  (let* ((org-export-with-broken-links t)   ; optional: suppress link warnings
+         (html-file (org-export-to-file
+                      'html
+                      (concat (file-name-sans-extension buffer-file-name) ".html"))))
+    (eww-open-file html-file)))
 
 (provide 'про-организацию)
 ;;; про-организацию.el ends here

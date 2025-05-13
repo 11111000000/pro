@@ -15,7 +15,7 @@
 
 ;;;; ExWM
 
-(setq-default exwm-debug t)
+(setq-default exwm-debug nil)
 
 (defvar сочетания-для-эмуляции
   '(([?\C-b] . left)
@@ -95,6 +95,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
     ;;(exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
     ;; (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
     (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+    (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
     (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
     )
 
@@ -133,7 +134,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :hook ((exwm-init . exim-start))
   :config
   (push (kbd "C-\\") exwm-input-prefix-keys)
-  (push (kbd "s-a") exwm-input-prefix-keys)
   (push (kbd "s-SPC") exwm-input-prefix-keys))
 
 (provide 'про-графическую-среду)
@@ -167,6 +167,51 @@ KEY-BINDINGS - список пар (клавиша функция)"
 ;;   :config
 ;;   ;;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
 ;;   )
+
+;; (require 'exwm)
+;; (require 'exwm-manage)                  ;нужен exwm-manage--close-window
+
+;; (defun my/exwm-close-all-windows ()
+;;   "Попытаться мягко закрыть все внешние X-приложения, управляемые EXWM."
+;;   (interactive)
+;;   (dolist (buf (buffer-list))
+;;     (with-current-buffer buf
+;;       (when (eq major-mode 'exwm-mode)
+;;         ;; WM_DELETE_WINDOW → приложение само завершается
+;;         (exwm-manage--close-window exwm--id)))))
+
+;; (defun my/exwm-running-x-buffers-p ()
+;;   "Есть ли ещё EXWM-буферы (т.е. живые X-клиенты)?"
+;;   (seq-some (lambda (buf)
+;;               (with-current-buffer buf
+;;                 (eq major-mode 'exwm-mode)))
+;;             (buffer-list)))
+
+;; (defun my/exwm-shutdown (&optional force)
+;;   "Мягкое завершение всех X-приложений, затем Emacs, затем poweroff.
+;; Если FORCE не nil, то не задавать вопросов."
+;;   (interactive)
+;;   ;; 1. Закрываем все внешние окна
+;;   (my/exwm-close-all-windows)
+
+;;   ;; 2. Немного ждём; заодно повторяем попытку закрытия «упрямых» клиентов
+;;   (dotimes (_ 10)                       ;≈ 10 секунд максимум
+;;     (when (my/exwm-running-x-buffers-p)
+;;       (sleep-for 1)
+;;       (my/exwm-close-all-windows)))
+
+;;   ;; 3. Сохраняем файлы / выходим из Emacs
+;;   (when (or force
+;;             (yes-or-no-p "Выключить компьютер? "))
+;;     ;; Хук, который сработает уже после выхода Emacs
+;;     (add-hook 'kill-emacs-hook
+;;               (lambda ()
+;;                 ;; можно заменить на "shutdown -h now" или "loginctl poweroff"
+;;                 (start-process "system-shutdown" nil "systemctl" "poweroff")))
+;;     (save-buffers-kill-emacs)))
+
+;; ;; Клавиша быстрого вызова  (Super + Shift + Q, к примеру)
+;; (global-set-key (kbd "s-M-q") #'my/exwm-shutdown)
 
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here

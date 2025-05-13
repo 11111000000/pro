@@ -59,11 +59,11 @@
 ;;   (setq display-time-format "%Y-%m-%d %H:%M")
 ;;   (setq display-time-default-load-average nil))
 
-(use-package telephone-line
-  :ensure t
-  :functions (telephone-line-mode)
-  :init
-  (telephone-line-mode t))
+;; (use-package telephone-line
+;;   :ensure t
+;;   :functions (telephone-line-mode)
+;;   :init
+;;   (telephone-line-mode t))
 
 (use-package hide-mode-line
   :ensure t

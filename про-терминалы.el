@@ -41,7 +41,7 @@
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama"))
+  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm"))
   :init
   (add-hook 'eshell-mode-hook (lambda ()
                                (progn
@@ -126,6 +126,35 @@
     (delete-char -1)))
 
 (define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace)
+
+;;;; Автодополнение npm, включая команды из package.json
+
+(require 'eshell)
+(require 'json)                       ; в <27: (require 'json)
+
+(defun my/npm-scripts ()
+  "Список скриптов из ближайшего package.json."
+  (when-let* ((root (locate-dominating-file default-directory "package.json"))
+              (file (expand-file-name "package.json" root)))
+    (let* ((json-object-type 'alist)  ; если используете json-read-file
+           (pkg   (json-read-file file))
+           (scr   (alist-get 'scripts pkg)))
+      (mapcar #'symbol-name (mapcar #'car scr)))))
+
+;; pcomplete-функция вызывается, когда первая команда — «npm»
+(defun pcomplete/npm ()
+  "Дополнение для npm в Eshell, включая «npm run <script>»."
+  ;; сначала дополняем саму подкоманду npm
+  (pcomplete-here*
+   '("access" "adduser" "audit" "bugs" "cache" "ci" "completion" "config"
+     "dedupe" "deprecate" "doctor" "exec" "explain" "help" "hook" "init"
+     "install" "link" "logout" "ls" "outdated" "owner" "pack" "ping"
+     "prune" "publish" "rebuild" "restart" "root" "run" "search" "set"
+     "star" "start" "stop" "team" "test" "token" "uninstall" "unpublish"
+     "update" "version" "view"))
+  ;; если уже ввели «run», подсказываем скрипты из package.json
+  (when (string= (pcomplete-arg 1) "run")
+    (pcomplete-here* (my/npm-scripts))))
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here

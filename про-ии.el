@@ -23,8 +23,11 @@
 
 ;;;; Настройка API ключей
 
-(defvar chutes-api-key nil
-  "API ключ для сервиса Chutes AI.")
+(defvar tunnelai-url)
+(defvar tunnelai-key)
+(defvar chutes-api-key)
+(defvar proxyapi-url)
+(defvar proxyapi-key)
 
 ;; Если переменная proxyapi-key определена, используем её для настройки ключей API
 (when (boundp 'proxyapi-key)
@@ -40,16 +43,19 @@
 
 (use-package gptel
   :ensure t
-  :functions (gptel-make-openai gptel--get-api-key)
+  :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (
          :map gptel-mode-map
-                ("C-c RET" . gptel-send))
+                ("C-c RET" . gptel-send)
+         
+                )
   :custom
   ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
    (gptel-org-branching-context nil)              ;; Отключить ветвление контекста в org-mode
    (gptel-api-key proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
    (gptel-log-level 'info)
    (gptel-model 'o3-mini)
+   (gptel-aibo--system-message "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode.")
    (gptel--system-message
     "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
@@ -61,7 +67,20 @@
     :stream nil
     :key tunnelai-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("gpt-4.5-preview" "o3-mini" "o1" "o1-mini") gptel--openai-models))
+    :models (append '("gpt-4.5-preview"
+                     "gpt-4.1"
+                     "gpt-4.1-mini"
+                     "gpt-4.1-nano"
+                     "o3-mini"
+                     "o1"
+                     "o1-mini"
+                     "o4-mini"
+                     "o3"
+                     "o3-mini"
+                     "gpt-4o-search-preview"
+                     "gpt-4o-mini-search-preview"
+                     "gpt-4o-audio-preview")
+                   gptel--openai-models))
 
   (gptel-make-openai "Tunnel DeepSeek"
     :protocol "https"
@@ -76,10 +95,29 @@
     :protocol "https"
     :host "api.proxyapi.ru"
     :endpoint "/openai/v1/chat/completions"
-    :stream nil
+    :stream t
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("o3-mini" "gpt-4.5-preview" "o1" "o1-mini" "o1-pro" "dall-e-3") gptel--openai-models))
+    :models (append '(
+                     "gpt-4o-search-preview"
+                     "gpt-4o-mini-search-preview"
+                     "gpt-4.1"
+                     "gpt-4.1-mini"
+                     "gpt-4.1-nano"
+                     "o3"
+                     "o3-mini"
+                     "o4-mini"
+                     "gpt-4.5-preview"
+                     "o1"
+                     "o1-mini"
+                     "o1-pro"
+                     "dall-e-3"
+                     "gpt-4o"
+                     "gpt-4o-mini"
+                     "gpt-4o-audio-preview"
+                     "gpt-4o-mini-audio-preview"
+                     "computer-use-preview"
+                     ) gptel--openai-models))
 
   (gptel-make-openai "Proxy DeepSeek"
     :protocol "https"
@@ -166,7 +204,7 @@
            (minuet-request-timeout 3)
            (minuet-context-ratio 0.75))
   :config
-  
+
   (plist-put minuet-openai-options :model "gpt-4-turbo")
   (setopt minuet-provider 'openai-compatible)
   (minuet-auto-suggestion-mode -1)
@@ -206,7 +244,7 @@
   :bind (:map chatgpt-shell-mode-map
               ("C-g" . chatgpt-shell-interrupt))
   :custom ((chatgpt-shell-model-versions
-            '("o3-mini" "o1-mini" "o1" "gpt-4o-mini"
+           '("o3-mini" "o1-mini" "o1" "gpt-4o-mini" "o3"
               "gpt-4o" "gpt-4-turbo" "gpt-4" "gpt-3.5-turbo-0125" "dall-e-3"
               "gemini-1.5-pro" "gemini-1.5-flash" "claude-3-opus-20240229"))
            (chatgpt-shell-api-url-base "https://api.proxyapi.ru/openai")
