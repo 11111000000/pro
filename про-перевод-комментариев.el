@@ -38,15 +38,16 @@
 ;; ---------------------------------------------------------------------------
 ;; Исправление ошибки "save-current-buffer: Wrong type argument: char-or-string-p, nil"
 ;; Переопределяем макрос gptel--with-buffer-copy, чтобы при отсутствии буфера использовался
-;; текущий буфер (current-buffer), что предотвращает передачу nil вместо ожидаемой строки.
+;; текущий буфер (current-buffer), а при отсутствии имени файла для копии использовалось имя буфера.
 (with-eval-after-load 'gptel
   (when (fboundp 'gptel--with-buffer-copy)
     (fmakunbound 'gptel--with-buffer-copy))
   (defmacro gptel--with-buffer-copy (buffer file coding &rest body)
-    "Fixed version of gptel--with-buffer-copy to avoid nil buffer issues.
-If BUFFER is nil, default to `current-buffer'."
+    "Fixed version of gptel--with-buffer-copy to avoid nil buffer or file issues.
+If BUFFER is nil, default to `current-buffer'.  If FILE is nil, default to the buffer's name."
     `(with-current-buffer (or ,buffer (current-buffer))
-       ,@body)))
+       (let ((file (or ,file (buffer-name))))
+         ,@body))))
 
 (defgroup cct nil
   "Translate code comments with GPTel."
