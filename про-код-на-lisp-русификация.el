@@ -1,22 +1,13 @@
-;;; про-код-на-lisp-русификация.el --- Русификация LISP -*- lexical-binding: t -*-
+;;; russian-lisp-mode.el --- Major mode for Russianификация Emacs LISP -*- lexical-binding: t -*-
 ;;; Commentary:
-;;  Русификация ЛИСП
+;;  Этот мод обеспечивает русификацию Emacs LISP, заменяя стандартные символы на их русские аналоги.
 ;;; Code:
-
-(require 'установить-из)
-
-(use-package prettify-utils
-  :init (установить-из :repo "Ilazki/prettify-utils.el"))
-
-(defun добавить-текущий-символ-в-перевод ()
-  "Добавить текущий символ в перевод."
-  (interactive "P"))
 
 (require 'prettify-utils)
 
-(defun русификация-emacs-lisp ()
-  "Русификация Emacs LISP."
-  (interactive)
+(define-derived-mode russian-lisp-mode emacs-lisp-mode "Russian Lisp"
+  "Major mode for editing RussianIFIED Emacs LISP code.
+This mode sets up prettification for Emacs Lisp symbols using their Russian translations."
   (setq prettify-symbols-alist
         (prettify-utils-generate
          ;; ───── Базовые истины ───────────────────────────────────────────────────
@@ -169,7 +160,7 @@
          ("set-default-coding-systems"      "установить-кодировки-по-умолчанию") ; глобальный переводчик
          ("set-terminal-coding-system"      "установить-кодировку-терминала")  ; говорим с терминалом
          ("set-keyboard-coding-system"      "установить-кодировку-клавиатуры") ; чтоб клавы не каркали
-         ;; ───── Окна и рамки ───────────────────────────────────────────────────
+         ;; ───── Окна и рамки ───────────────────────────────────────────────
          ("window-system"                   "графический-режим")               ; X11 или tty?
          ("window-width"                    "ширина-окна")                     ; меряем форточку
          ("window-list"                     "список-окон")                     ; каталог форточек
@@ -365,8 +356,9 @@
          ))
   (prettify-symbols-mode 1))
 
-(if window-system
-    (add-hook 'emacs-lisp-mode-hook 'русификация-emacs-lisp))
+;;; Automatically use russian-lisp-mode for files with a suitable header.
+;;; You can also manually enable it by M-x russian-lisp-mode.
 
-(provide 'про-код-на-lisp-русификация)
-;;; про-код-на-lisp-русификация.el ends here
+(provide 'russian-lisp-mode)
+
+;;; russian-lisp-mode.el ends here
