@@ -23,6 +23,13 @@
   (haskell-stylish-on-save t)
   (haskell-indentation-layout-offset 4)
   (haskell-indentation-left-offset 4)
+  :bind
+  (:map haskell-mode-map
+        ("C-c C-l" . haskell-process-load-file)
+        ("C-c C-z" . haskell-interactive-switch)
+        ("C-c C-k" . haskell-interactive-mode-clear)
+        ("C-c C-t" . haskell-mode-show-type-at)
+        ("C-c C-i" . haskell-process-do-info))
   :config
 
   (add-to-list 'eglot-server-programs '(haskell-mode "haskell-language-server-wrapper" "--lsp")))
