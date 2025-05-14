@@ -10,6 +10,7 @@
 (require 'загрузить)
 (require 'use-package)
 (require 'установить-из)
+(require 'cct-mode)
 
 ;;;; Синтаксис
 

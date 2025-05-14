@@ -345,7 +345,7 @@ This mode sets up prettification for Emacs Lisp symbols using their Russian tran
          ("run-hooks"                       "дернуть-хуки")                    ; «момент настал»
          ("with-current-buffer-window"      "с-буфер-окном")                   ; временно новый буфер + окно
          ("save-buffer"                     "сохранить-буфер")                 ; Ctrl-S внутри Lisp
-         ("kill-buffer"                     "убить-буфер")                     ; закрываем чаша-буфера
+         ("kill-buffer"                     "убить-буфер")                     ; закрываем буфера
          ("force-mode-line-update"          "заставить-линейку-обновиться")    ; модельная строка под козырёк
          (":height"                         ":высота")                         ; рост шрифта/лица
          ;; ───── Дополнительные важные символы EMacs Lisp ──────────────────────────
@@ -355,9 +355,6 @@ This mode sets up prettification for Emacs Lisp symbols using their Russian tran
          ("read-from-string"                "прочитать-из-строки")             ; познай истинную мудрость, скрытую в строках
          ))
   (prettify-symbols-mode 1))
-
-;;; Automatically use russian-lisp-mode for files with a suitable header.
-;;; You can also manually enable it by M-x russian-lisp-mode.
 
 (provide 'russian-lisp-mode)
 

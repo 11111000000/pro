@@ -316,5 +316,8 @@
 ;;   (selected-window-accent-custom-color nil)
 ;;   (selected-window-accent-mode-style 'subtle))
 
+(use-package prettify-utils
+  :init (установить-из :repo "Ilazki/prettify-utils.el"))
+
 (provide 'про-внешний-вид)  ; Экспортирование конфигурации для использования в других частях Emacs.
 ;;; про-внешний-вид.el ends here

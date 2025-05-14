@@ -160,6 +160,11 @@
   inspector
   :init (установить-из :repo "mmontone/emacs-inspector"))
 
+(load-file "./russian-lisp-mode/russian-lisp-mode.el")
+
+(add-hook 'emacs-lisp-mode-hook #'russian-lisp-mode)
+(add-hook 'lisp-mode-hook #'russian-lisp-mode)
+
 (provide 'про-код-на-lisp)
 ;;; про-код-на-lisp.el ends here
 
