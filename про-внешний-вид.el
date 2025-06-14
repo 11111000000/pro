@@ -27,6 +27,14 @@
 
 (if window-system (scroll-bar-mode -1))          ; Скрыть полосы прокрутки в графическом интерфейсе.
 
+;;;; Горизонтальные разделители между окнами
+
+(when window-system
+  ;; Визуальный разделитель между вертикально разделёнными окнами, если нет modeline
+  (setq window-divider-default-bottom-width 1)   ; Толщина горизонтальной линии
+  (setq window-divider-default-places 'bottom-only) ; Только снизу окна
+  (window-divider-mode 1))
+
 ;;;; Минибуфер
 
 ;; Настройки для улучшения работы с минибуфером.
@@ -39,13 +47,15 @@
 
 ;; Настройка минималистичного вида минибуфера с иконками.
 
-;; (use-package taoline
-;;   :if window-system
-;;   :after (all-the-icons)
-;;   :functions (taoline-mode)
-;;   :init (установить-из :repo "11111000000/taoline")
-;;   :config
-;;   (taoline-mode 1))
+(use-package taoline
+  :if window-system
+  :after (all-the-icons)
+  :functions (taoline-mode)
+  :init (установить-из :repo "11111000000/taoline")
+  :config
+  (setq taoline-right-padding 11)
+  (setq taoline-display-backend 'echo)
+  (taoline-mode t))
 
 (require 'time)
 (display-battery-mode 1)
@@ -156,7 +166,6 @@
 ;; Настройка типа курсора - мигающий прямоугольник с возможностью изменения ширины.
 
 (setq cursor-type '(bar . 3))                 ; Установка курсора
-
 (setq x-stretch-cursor t)                      ; Распространение курсора по высоте символа.
 
 ;; В невыбранных окнах курсор будет полупрозрачным.

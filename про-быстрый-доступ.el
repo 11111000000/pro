@@ -189,8 +189,9 @@
                                   :require-match t
                                   :category 'buffer))
          (buf (get-buffer buf-name)))
-    ;; Если буфер уже отображается где-либо, сразу выбираем то окно.
-    (if (get-buffer-window buf 'visible)
+    ;; Если буфер уже отображается где-либо и это Xorg (exwm-mode) окно — выбираем то окно.
+    (if (and (get-buffer-window buf 'visible)
+             (with-current-buffer buf (derived-mode-p 'exwm-mode)))
         (select-window (get-buffer-window buf 'visible))
       (if (with-current-buffer buf (derived-mode-p 'exwm-mode))
           (let* ((orig-tab (+ 1 (tab-bar--current-tab-index)))

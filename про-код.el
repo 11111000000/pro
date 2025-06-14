@@ -10,7 +10,6 @@
 (require 'загрузить)
 (require 'use-package)
 (require 'установить-из)
-(require 'cct-mode)
 
 ;;;; Синтаксис
 
@@ -234,7 +233,6 @@ ARG - backward"
 
 ;; - `rainbow-mode` позволяет видеть цвета в коде CSS и HTML, что облегчает визуальный контроль за цветами, используемыми в приложении.
 
-
 (use-package rainbow-mode
   :defer t 
   :ensure t
@@ -360,9 +358,18 @@ ARG - backward"
   :ensure t
   :hook
   (prog-mode . topsy-mode)
-  (magit-section-mode . topsy-mode))
+  (magit-section-mode . topsy-mode)
+  :init
+  (defface topsy-header-line
+    '((t :inherit header-line :foreground "gray30"))
+    "Face for the `topsy-mode' header line.
+Should be faint, close to the background color."
+    :group 'topsy)
 
-
+  (defconst topsy-header-line-format
+    '(:eval (list (propertize " " 'display '((space :align-to 0)))
+                  (propertize (or (funcall topsy-fn) "") 'face 'topsy-header-line)))
+    "The header line format used by `topsy-mode'."))
 
 (provide 'про-код)
 ;;; про-код.el ends here

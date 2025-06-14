@@ -38,9 +38,9 @@
   ;; (custom-set-faces '(default ((t (:family "DejaVu Sans Mono" :height 120))))) ;; Для стандартного текста
   ;; (custom-set-faces '(fixed-pitch ((t (:family "DejaVu Sans Mono" :height 0.8))))) ;; Для фиксированного текста
   ;; (custom-set-faces '(variable-pitch ((t (:family "DejaVu Sans" :height 1.0))))) ;; Для переменной ширины текста
-  (custom-set-faces '(default ((t (:family "Source Code Pro" :height 120))))) ;; Для стандартного текста
-  (custom-set-faces '(fixed-pitch ((t (:family "Source Code Pro" :height 0.8))))) ;; Для фиксированного текста
-  (custom-set-faces '(variable-pitch ((t (:family "Noto Sans" :height 1.0))))) ;; Для переменной ширины текста
+  (custom-set-faces '(default ((t (:family "Aporetic Sans Mono" :height 130))))) ;; Для стандартного текста
+  (custom-set-faces '(fixed-pitch ((t (:family "Aporetic Sans Mono" :height 1.0))))) ;; Для фиксированного текста
+  (custom-set-faces '(variable-pitch ((t (:family "Aporetic Sans" :height 1.0))))) ;; Для переменной ширины текста
 
   ; (custom-set-faces '(default ((t (:family "Hack" :height 120))))) ;\;\ Настраиваем шрифт по умолчанию }
   ; (custom-set-faces '(fixed-pitch ((t (:family "Hack" :height 0.8))))) ;\;\ Настраиваем фиксированный шрифт }

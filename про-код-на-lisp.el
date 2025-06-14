@@ -58,7 +58,7 @@
 ;;   )
 
 (use-package flymake-elisp-config
-  :defer t 
+  :defer t
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
   :functions (flymake-elisp-config-global-mode flymake-elisp-config-auto-mode)
   :config
@@ -80,7 +80,7 @@
 ;;;; Форматирование ELISP
 
 (use-package elisp-format
-  :defer t 
+  :defer t
   :ensure t
   ;; :hook
   ;; ((emacs-lisp-mode
@@ -97,7 +97,7 @@
 ;;;; REPL к разным LISP-ам Geiser
 
 (use-package geiser
-  :defer t 
+  :defer t
   :ensure t
   :defines (geiser-mode-start-repl-p)
   :custom
@@ -110,20 +110,20 @@
 ;; Поддержка Geiser специально для Guile Scheme
 
 (use-package geiser-guile
-  :defer t 
+  :defer t
   :ensure t
   :defines (geiser-guile-manual-lookup-nodes)
   :requires geiser
   :config
   ;;(add-to-list 'geiser-guile-load-path "~/Workspace/guix")
   (setq geiser-guile-manual-lookup-nodes
-	   '("guile"
+           '("guile"
          "guix")))
 
 ;;;; Разворачивание макросов
 
 (use-package macrostep
-  :defer t 
+  :defer t
   :ensure t
   :custom-face
   (macrostep-expansion-highlight-face
@@ -160,11 +160,14 @@
   inspector
   :init (установить-из :repo "mmontone/emacs-inspector"))
 
-(load-file "./russian-lisp-mode/russian-lisp-mode.el")
+;;(load-file "./russian-lisp-mode/russian-lisp-mode.el")
 
-(add-hook 'emacs-lisp-mode-hook #'russian-lisp-mode)
-(add-hook 'lisp-mode-hook #'russian-lisp-mode)
+;; (add-hook 'emacs-lisp-mode-hook #'russian-lisp-mode)
+;; (add-hook 'lisp-mode-hook #'russian-lisp-mode)
+
+;; (use-package prettier-elisp
+;;   :init (установить-из :repo "KarimAziev/prettier-elisp")
+;;   :hook ((emacs-lisp-mode . prettier-elisp-mode)))
 
 (provide 'про-код-на-lisp)
 ;;; про-код-на-lisp.el ends here
-

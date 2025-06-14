@@ -1,4 +1,4 @@
-;;; russian-lisp-mode.el --- Major mode for Russianификация Emacs LISP -*- lexical-binding: t -*-
+;;; про-код-на-lisp-по-русски.el --- Major mode for Russianификация Emacs LISP -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;  Этот мод обеспечивает русификацию Emacs LISP, заменяя стандартные символы на их русские аналоги.
 ;;; Code:
@@ -356,6 +356,6 @@ This mode sets up prettification for Emacs Lisp symbols using their Russian tran
          ))
   (prettify-symbols-mode 1))
 
-(provide 'russian-lisp-mode)
+(provide 'про-код-на-lisp-по-русски)
 
 ;;; russian-lisp-mode.el ends here

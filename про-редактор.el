@@ -22,7 +22,7 @@
 ;; Трансляция сочетаний клавиш при включеном русском
 
 (use-package reverse-im
-  :defer t 
+  :defer t
   :ensure t
   :defines (reverse-im-modifiers reverse-im-input-methods)
   :functions (reverse-im-mode)
@@ -42,7 +42,7 @@
 ;; Можно прыгнуть сразу на любой символ, нажав C-z и этот символ
 
 (use-package avy
-  :defer t 
+  :defer t
   :ensure t
   :custom ((avy-background nil)))
 

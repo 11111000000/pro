@@ -15,7 +15,7 @@
 
 ;;;; ExWM
 
-(setq-default exwm-debug nil)
+(setq-default exwm-debug t)
 
 (defvar сочетания-для-эмуляции
   '(([?\C-b] . left)
@@ -40,14 +40,27 @@
 (defun скриншот-области ()
   "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
   (interactive)
-  (async-shell-command
-   "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
+  (let* ((dir (or (and (file-directory-p default-directory) default-directory)
+                  "~"))
+         (default-directory (file-name-as-directory (expand-file-name dir))))
+    (unless (file-directory-p default-directory)
+      (setq default-directory "~"))
+    (start-process-shell-command
+     "scrot-area" nil
+     "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'")))
 
 (defun скриншот ()
   "Получить скриншот."
   (interactive)
   (sit-for 1)
-  (async-shell-command "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'" nil nil))
+  (let* ((dir (or (and (file-directory-p default-directory) default-directory)
+                  "~"))
+         (default-directory (file-name-as-directory (expand-file-name dir))))
+    (unless (file-directory-p default-directory)
+      (setq default-directory "~"))
+    (start-process-shell-command
+     "scrot-full" nil
+     "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'")))
 
 (defmacro exwm-input-set-keys (&rest key-bindings)
   "Макрос для установки клавиш, работающих поверх приложений Xorg.
@@ -55,6 +68,11 @@ KEY-BINDINGS - список пар (клавиша функция)"
   `(dolist (kb ',key-bindings)
      (cl-destructuring-bind (key cmd) kb
        (exwm-input-set-key (kbd key) cmd))))
+
+(require 'exwm-systemtray)
+
+(use-package про-мониторы
+  :after exwm)
 
 (use-package exwm
   :ensure t
@@ -74,11 +92,18 @@ KEY-BINDINGS - список пар (клавиша функция)"
           (exwm-workspace-show-all-buffers t)
           (exwm-layout-show-all-buffers t)
           (exwm-manage-force-tiling nil)
-          (exwm-systemtray-height 16)
+          (exwm-systemtray-background-color 'workspace-background)
+          (exwm-systemtray-height 21)
           (exwm-input-simulation-keys сочетания-для-эмуляции))
 
   :config
+  ;; Запуск EXWM
+  (exwm-enable)
+  (exwm-systemtray-mode)
+  ;; Инициализировать конфигурацию мониторов после запуска EXWM
   ;; Смена имени окна
+  (add-hook 'exwm-init-hook #'про-мониторы-инициализировать)
+  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
   (add-hook 'exwm-update-class-hook
            (lambda ()
              (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
@@ -116,11 +141,7 @@ KEY-BINDINGS - список пар (клавиша функция)"
                                      height 175 x 30 y 30 managed t)))
 
   :init
-  ;; Запуск EXWM
-  (exwm-enable)
-  (require 'exwm-systemtray)
-  (exwm-systemtray-mode)
-  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg"))
+)
 
 ;;;; Режимы ввода EMACS в приложениях
 
@@ -136,10 +157,23 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (push (kbd "C-\\") exwm-input-prefix-keys)
   (push (kbd "s-SPC") exwm-input-prefix-keys))
 
-(provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here
 
-;;;; Редактирование любых полей ввода через EMACS
+;;;; Автоматическое удаление "This window displayed the buffer ‘ *Old buffer ...*’" буферов
+
+;; (defun my/kill-old-buffer-message-buffers ()
+;;   "Automagically kill help-message buffers about dead EXWM windows."
+;;   (dolist (buf (buffer-list))
+;;     (when (and
+;;            (string-match-p
+;;             "This window displayed the buffer ‘ \\*Old buffer .+\\*’\\."
+;;             (with-current-buffer buf (buffer-string)))
+;;            ;; на всякий добавим не более 1000 символов
+;;            (< (buffer-size buf) 1000))
+;;       (kill-buffer buf))))
+
+;; ;; Вариант c хуком посильнее — например после любого переключения буфера:
+;; (add-hook 'buffer-list-update-hook #'my/kill-old-buffer-message-buffers)
 
 (use-package exwm-edit
   :after exwm

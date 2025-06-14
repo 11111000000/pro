@@ -25,6 +25,7 @@
 
 (defvar tunnelai-url)
 (defvar tunnelai-key)
+(defvar tunnelai-backend)
 (defvar chutes-api-key)
 (defvar proxyapi-url)
 (defvar proxyapi-key)
@@ -44,52 +45,47 @@
 (use-package gptel
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
-  :bind (
-         :map gptel-mode-map
-                ("C-c RET" . gptel-send)
-         
-                )
+  :bind (:map gptel-mode-map
+         ("C-c RET" . gptel-send))
   :custom
   ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
-   (gptel-org-branching-context nil)              ;; Отключить ветвление контекста в org-mode
+   (gptel-org-branching-context nil)             ;; Отключить ветвление контекста в org-mode
    (gptel-api-key proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
    (gptel-log-level 'info)
-   (gptel-model 'o3-mini)
-   (gptel-aibo--system-message "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode.")
    (gptel--system-message
-    "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
+   "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
   ;; Создаем несколько бэкендов для gptel
-  (gptel-make-openai "Tunnel OpenAI"
-    :protocol "https"
-    :host tunnelai-url
-    :endpoint "/v1/chat/completions"
-    :stream nil
-    :key tunnelai-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '("gpt-4.5-preview"
-                     "gpt-4.1"
-                     "gpt-4.1-mini"
-                     "gpt-4.1-nano"
-                     "o3-mini"
-                     "o1"
-                     "o1-mini"
-                     "o4-mini"
-                     "o3"
-                     "o3-mini"
-                     "gpt-4o-search-preview"
-                     "gpt-4o-mini-search-preview"
-                     "gpt-4o-audio-preview")
-                   gptel--openai-models))
-
-  (gptel-make-openai "Tunnel DeepSeek"
-    :protocol "https"
-    :host tunnelai-url
-    :endpoint "/v1/chat/completions"
-    :stream nil
-    :key tunnelai-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("deepseek-chat" "deepseek-r1"))
+  (setq tunnelai-backend (gptel-make-openai "TunnelAI"
+                           :protocol "https"
+                           :host tunnelai-url
+                           :endpoint "/v1/chat/completions"
+                           :stream nil
+                           :key tunnelai-key
+                           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+                           :models (append '("gpt-4.5-preview"
+                                             "gpt-4.1"
+                                             "gpt-4.1-mini"
+                                             "gpt-4.1-nano"
+                                             "o3"
+                                             "o3-mini"
+                                             "o1-pro"
+                                             "o1"
+                                             "o1-mini"
+                                             "o4-mini"
+                                             "gpt-4o-search-preview"
+                                             "gpt-4o-mini-search-preview"
+                                             "gpt-4o-audio-preview"
+                                             "gemini-2.5-pro-preview-03-25"
+                                             "gemini-2.5-flash-preview-05-20"
+                                             "gemini-2.5-flash-preview-05-20-thinking"
+                                             "gpt-4.5-preview"
+                                             "deepseek-r1"
+                                             "deepseek-chat"
+                                             "grok-3-mini-beta"
+                                             "grok-3-beta"
+                                             )
+                                           gptel--openai-models)))
 
   (gptel-make-openai "Proxy OpenAI"
     :protocol "https"
@@ -98,8 +94,7 @@
     :stream t
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append '(
-                     "gpt-4o-search-preview"
+    :models (append '("gpt-4o-search-preview"
                      "gpt-4o-mini-search-preview"
                      "gpt-4.1"
                      "gpt-4.1-mini"
@@ -116,17 +111,7 @@
                      "gpt-4o-mini"
                      "gpt-4o-audio-preview"
                      "gpt-4o-mini-audio-preview"
-                     "computer-use-preview"
-                     ) gptel--openai-models))
-
-  (gptel-make-openai "Proxy DeepSeek"
-    :protocol "https"
-    :host "api.proxyapi.ru"
-    :endpoint "/deepseek/chat/completions"
-    :stream nil
-    :key gptel-api-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("deepseek-chat" "deepseek-reasoner"))
+                     "computer-use-preview") gptel--openai-models))
 
   (gptel-make-openai "ProxyAPI Anthropic"
     :protocol "https"
@@ -144,7 +129,13 @@
     :stream nil
     :key chutes-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("deepseek-ai/DeepSeek-V3-0324")))
+    :models '("deepseek-ai/DeepSeek-V3-0324"))
+
+  (setq gptel-backend tunnelai-backend)
+  (setq gptel-model 'gpt-4.1-mini))
+
+(use-package gptel-aibo
+  :ensure t)
 
 ;;;; Настройка gptel-quick для быстрых запросов
 
@@ -153,7 +144,7 @@
   :init
   (установить-из :repo "karthink/gptel-quick")
   (setq gptel-quick-backend gptel-backend)
-  (setq gptel-quick-model 'o3-mini))
+  (setq gptel-quick-model 'gpt-4.1-mini))
 
 ;; ;;;; Настройка Elysium (WTF)
 
@@ -336,8 +327,8 @@
   :ensure t
   :config (aidermacs-setup-minor-mode)
   :custom
-  (aidermacs-use-architect-mode t)
-  (aidermacs-show-diff-after-change t)
+  (aidermacs-use-architect-mode nil)
+  (aidermacs-show-diff-after-change nil)
   (setq aidermacs-auto-commits nil))
 
 (provide 'про-ии)

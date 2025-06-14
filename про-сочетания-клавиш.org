@@ -36,7 +36,7 @@
 | C-%               | forward-or-backward-sexp            |
 | C-a               | к-идентации-или-началу-строки       |
 | C-$               | toggle-truncate-lines               |
-| C-c f             | вставить-имя-файла                  |
+| C-c M-f           | вставить-имя-файла                  |
 | C-x b             | pro/consult-buffer                  |
 | C-x C-b           | consult-buffer                      |
 | C-x M-b           | consult-buffer-other-window         |
@@ -130,7 +130,7 @@
 | C-c e T           | evedel-remove-tags                  |
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
-| s-i s-i           | gptel                               |
+| s-i s-i           | gptel-aibo                          |
 | s-i i             | gptel                               |
 | s-i i             | chatgpt-shell                       |
 | s-i r             | gptel-rewrite                       |
@@ -265,17 +265,19 @@
 | C-x -                   | minimize-window                      |
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
-| C-<f6>                  | profiler-start                       |
-| C-<f7>                  | profiler-stop                        |
+| C-c f                   | nil                                  |
+| C-c fs                  | profiler-start                       |
+| C-c fo                  | profiler-stop                        |
+| C-c fr                  | profiler-report                      |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
 | C-c il                  | ellama-chat                          |
 | C-c i M-i               | chatgpt-shell                        |
 | C-c ie                  | chatgpt-shell                        |
 | C-c ii                  | gptel                                |
-| s-i s-i                 | gptel                                |
+| s-i s-i                 | gptel-aibo                           |
 | C-c i M-i               | gptel-aibo                           |
-| s-i i                   | gptel-aibo                           |
+| s-i i                   | gptel                                |
 | s-i e                   | chatgpt-shell                        |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
 | s-c                     | treemacs                             |
