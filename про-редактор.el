@@ -126,7 +126,8 @@
   :ensure t
   :hook ((man-mode info-mode markdown-mode org-mode) . olivetti-mode)
   :custom ((olivetti-minimum-body-width 80)
-          (olivetti-body-width 80)))
+           (olivetti-body-width 80)
+           (olivetti-style nil)))
 
 ;;;; Закладки
 

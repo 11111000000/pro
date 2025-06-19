@@ -9,8 +9,7 @@
   (condition-case err
       (progn
         (message "%s..." feature)
-        (require feature filename)
-        )
+        (require feature filename))
     (error
      (message "%s %s: \"%s\"" (propertize "Ошибка загрузки" 'face 'highlight) (if filename (format "%s (%s)" feature filename) feature)
             (error-message-string err))

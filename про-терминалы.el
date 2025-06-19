@@ -13,6 +13,7 @@
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command)
                 ("C-\\" . #'toggle-input-method)
+                ("C-c C-t" .#'vterm-copy-mode)
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank)))
 
@@ -48,6 +49,13 @@
                                  (define-key eshell-mode-map "\C-a" 'eshell-bol)
                                  (define-key eshell-mode-map [up] 'previous-line)
                                  (define-key eshell-mode-map [down] 'next-line)))))
+
+(use-package eshell-vterm
+  :ensure t
+  :after eshell
+  :config
+  (eshell-vterm-mode))
+
 
 (defun eshell-here ()
   "Открыть новый буфер Eshell в каталоге текущего буфера."

@@ -60,7 +60,7 @@
                            :protocol "https"
                            :host tunnelai-url
                            :endpoint "/v1/chat/completions"
-                           :stream nil
+                           :stream t
                            :key tunnelai-key
                            :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
                            :models (append '("gpt-4.5-preview"

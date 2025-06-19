@@ -170,7 +170,7 @@
 | s-e T             | evedel-remove-tags                  |
 | C-z               | nil                                 |
 
-** Клавиши над всеми Xorg приложениями:
+** ДЕЛАЮ Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
 | Сочетание               | Функция                              |

@@ -161,19 +161,32 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 ;;;; Автоматическое удаление "This window displayed the buffer ‘ *Old buffer ...*’" буферов
 
-;; (defun my/kill-old-buffer-message-buffers ()
-;;   "Automagically kill help-message buffers about dead EXWM windows."
-;;   (dolist (buf (buffer-list))
-;;     (when (and
-;;            (string-match-p
-;;             "This window displayed the buffer ‘ \\*Old buffer .+\\*’\\."
-;;             (with-current-buffer buf (buffer-string)))
-;;            ;; на всякий добавим не более 1000 символов
-;;            (< (buffer-size buf) 1000))
-;;       (kill-buffer buf))))
+(defun my/kill-old-buffer-message-buffer-maybe ()
+  "Kill buffer if it contains the annoying EXWM dead window message."
+  (when (and
+         (< (buffer-size) 2000)
+         (string-match-p
+          "^This window displayed the buffer ‘"
+          (buffer-string)))
+    (let ((buf (current-buffer)))
+      (when (get-buffer-window buf)
+        (delete-window (get-buffer-window buf)))
+      (kill-buffer buf))))
 
-;; ;; Вариант c хуком посильнее — например после любого переключения буфера:
-;; (add-hook 'buffer-list-update-hook #'my/kill-old-buffer-message-buffers)
+(defun my/kill-old-buffer-message-buffers-in-visible-windows ()
+  "Scan all visible windows. If any shows a 'dead EXWM' message — kill its buffer and close window."
+  (dolist (win (window-list))
+    (let ((buf (window-buffer win)))
+      (when (and
+             (< (buffer-size buf) 2000)
+             (with-current-buffer buf
+               (string-match-p "^This window displayed the buffer ‘" (buffer-string))))
+        (ignore-errors
+          (delete-window win))
+        (kill-buffer buf)))))
+
+;; Удалять служебные буферы (dead EXWM) при любом изменении раскладки окон:
+(add-hook 'window-configuration-change-hook #'my/kill-old-buffer-message-buffers-in-visible-windows)
 
 (use-package exwm-edit
   :after exwm

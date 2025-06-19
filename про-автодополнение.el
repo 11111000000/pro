@@ -26,8 +26,8 @@
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)
   (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 3)
+  (corfu-auto-delay 0.4)
   (corfu-popupinfo-delay 0.5)
   (corfu-min-width 5)
   (corfu-max-width 70)
@@ -54,6 +54,21 @@
       (corfu-mode 1)))
 
   (add-hook 'minibuffer-setup-hook #'в-минибуфере-включать-corfu 1))
+
+(defun pro/disable-ispell-capf ()
+  "Убрать `ispell-completion-at-point' из списка CAPF."
+  (setq-local completion-at-point-functions
+              (remq #'ispell-completion-at-point
+                    completion-at-point-functions)))
+
+;(pro/disable-ispell-capf) ;; выключаем capf+ispell (тормозит)
+(add-hook 'text-mode-hook #'pro/disable-ispell-capf)
+(add-hook 'prog-mode-hook #'pro/disable-ispell-capf) ; если тормозит и в коде
+
+;; Альтернатива:
+;; (with-eval-after-load 'cape
+;;   (add-to-list 'completion-at-point-functions #'cape-dict))
+
 
 
 
