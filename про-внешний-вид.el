@@ -42,7 +42,6 @@
 (setq-default enable-recursive-minibuffers t)     ;  рекурсивные минибуферы
 (setq-default max-mini-window-height 0.25)          ; Минибуфер может быть любого размера.
 (setq resize-mini-windows t)                       ; Автоматический размер минибуфера.
-
 (setq message-truncate-lines nil)                  ; Длинные сообщения не обрезаются.
 
 ;; Настройка минималистичного вида минибуфера с иконками.
@@ -53,8 +52,6 @@
   :functions (taoline-mode)
   :init (установить-из :repo "11111000000/taoline")
   :config
-  (setq taoline-right-padding 11)
-  (setq taoline-display-backend 'echo)
   (taoline-mode t))
 
 (require 'time)

@@ -130,9 +130,9 @@
 | C-c e T           | evedel-remove-tags                  |
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
-| s-i s-i           | gptel-aibo                          |
-| s-i i             | gptel                               |
-| s-i i             | chatgpt-shell                       |
+| s-i s-i           | gptel-menu                          |
+| s-i i             | gptel-aibo                          |
+| s-i o             | gptel                               |
 | s-i r             | gptel-rewrite                       |
 | s-i m             | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
@@ -143,12 +143,15 @@
 | s-i f             | gptel-add-file                      |
 | s-i p             | gptel-system-prompt                 |
 | s-i RET           | gptel-send                          |
-| s-i s             | gptel-send                          |
+| s-i C-<return>    | pro/gptel-send-no-context           |
+| s-i s             | gptel-context-store-save            |
+| s-i l             | gptel-context-store-load            |
 | s-i k             | gptel-abort                         |
 | s-i g             | gptel-abort                         |
 | s-i q             | elysium-query                       |
 | s-i w             | whisper-run                         |
-| s-i c             | переключить-codeium                 |
+| s-i x             | gptel-context-remove-all            |
+| s-i c             | gptel-context-remove-all            |
 | s-e               | nil                                 |
 | s-e s-e           | evedel-create-directive             |
 | s-e e             | evedel-modify-directive             |
@@ -275,9 +278,7 @@
 | C-c i M-i               | chatgpt-shell                        |
 | C-c ie                  | chatgpt-shell                        |
 | C-c ii                  | gptel                                |
-| s-i s-i                 | gptel-aibo                           |
 | C-c i M-i               | gptel-aibo                           |
-| s-i i                   | gptel                                |
 | s-i e                   | chatgpt-shell                        |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
 | s-c                     | treemacs                             |
@@ -296,7 +297,7 @@
   |                | C--       | imagex-sticky-zoom-out         |
   |                | C-=       | imagex-sticky-zoom-in          |
 
- ** Применение сочетаний
+** Применение сочетаний
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
 (require 'cl-lib)

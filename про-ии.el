@@ -46,15 +46,20 @@
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (:map gptel-mode-map
-         ("C-c RET" . gptel-send))
+         ("C-c RET" . gptel-send)
+         ("M-RET"   . pro/gptel-send-no-context))
   :custom
   ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
    (gptel-org-branching-context nil)             ;; Отключить ветвление контекста в org-mode
    (gptel-api-key proxyapi-key)                  ;; Ключ API берётся из proxyapi-key
    (gptel-log-level 'info)
    (gptel--system-message
-   "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
+    "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
+  ;; Подключаем библиотеку gptel-context-store из ./libs
+  (add-to-list 'load-path (expand-file-name "libs" user-emacs-directory))
+  (require 'gptel-context-store)
+
   ;; Создаем несколько бэкендов для gptel
   (setq tunnelai-backend (gptel-make-openai "TunnelAI"
                            :protocol "https"
@@ -132,7 +137,8 @@
     :models '("deepseek-ai/DeepSeek-V3-0324"))
 
   (setq gptel-backend tunnelai-backend)
-  (setq gptel-model 'gpt-4.1-mini))
+  (setq gptel-model 'gpt-4.1-mini)
+
 
 (use-package gptel-aibo
   :ensure t)
@@ -145,6 +151,7 @@
   (установить-из :repo "karthink/gptel-quick")
   (setq gptel-quick-backend gptel-backend)
   (setq gptel-quick-model 'gpt-4.1-mini))
+
 
 ;; ;;;; Настройка Elysium (WTF)
 
