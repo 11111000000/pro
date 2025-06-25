@@ -3,11 +3,13 @@
 ;; Функции для упрощённой настройки Emacs, в том числе быстрая привязка клавиш.
 
 ;;; Code:
-(defun про/добавь-кнопку ()
+(defun про/добавь-кнопку (&optional арг)
   "Быстрое создание глобального биндинга.
 Пользователь вводит сочетание клавиш, выбирает функцию,
-биндинг добавляется в ~/.emacs.d/keys.el."
-  (interactive)
+биндинг добавляется в ~/.emacs.d/keys.el.
+Если вызывать с C-u (универсальный аргумент) — добавляет также
+глобальный exwm-биндинг."
+  (interactive "P")
   ;; 1. Получить клавишу и имя в человеко-читаемом виде
   (let* ((key-vec (read-key-sequence-vector "Введите сочетание клавиш: "))
          (pretty-key (key-description key-vec)))
@@ -35,14 +37,30 @@
                                 obarray 'commandp t))))
            (keys-file (expand-file-name "keys.el" user-emacs-directory))
            (bind-string
-            (format "(global-set-key (kbd \"%s\") '%s)\n" pretty-key fn-symbol)))
+            (format "(global-set-key (kbd \"%s\") '%s)\n" pretty-key fn-symbol))
+           (exwm-bind-string
+            (format "(when (featurep 'exwm-input) (exwm-input-global-set-key (kbd \"%s\") '%s))\n"
+                    pretty-key fn-symbol))
+           (full-bind-string
+            (if арг
+                (concat bind-string exwm-bind-string)
+              bind-string)))
+      ;; Прямо здесь делать глобальную привязку
+      (global-set-key (kbd pretty-key) fn-symbol)
+      ;; Если был универсальный аргумент — пробуем и EXWM привязку
+      (when арг
+        (when (featurep 'exwm-input)
+          (exwm-input-global-set-key (kbd pretty-key) fn-symbol)))
+      ;; Вносим в файл
       (with-temp-buffer
         (when (file-exists-p keys-file)
           (insert-file-contents keys-file))
         (goto-char (point-max))
-        (insert bind-string)
+        (insert full-bind-string)
         (write-region (point-min) (point-max) keys-file))
-      (message "Привязка %s -> %s добавлена в %s" pretty-key fn-symbol keys-file))))
+      (if арг
+          (message "Привязки %s -> %s (и EXWM) добавлены в %s" pretty-key fn-symbol keys-file)
+        (message "Привязка %s -> %s добавлена в %s" pretty-key fn-symbol keys-file)))))
 
 
 ;; Глобальные пользовательские клавиши (keys.el)
