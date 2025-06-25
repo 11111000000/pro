@@ -6,6 +6,7 @@
 ;;; Code:
 
 (require 'установить-из)
+(require 'про-мониторы)
 
 ;;;; Xelb
 
@@ -97,6 +98,9 @@ KEY-BINDINGS - список пар (клавиша функция)"
      (exwm-systemtray-mode)
      ;; Инициализация randr и workspace/monitor settings
      (про-мониторы-инициализировать)
+     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
+     (dotimes (i 3)
+       (exwm-workspace-switch-create i))
      (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
      ;; Смена имени окна
      (add-hook 'exwm-update-class-hook
