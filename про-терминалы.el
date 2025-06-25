@@ -7,6 +7,28 @@
 
 (require 'установить-из)
 
+(defun my/vterm-copy-mode-move-up ()
+  "Включить vterm-copy-mode и сразу перейти на строку выше."
+  (interactive)
+  (unless (bound-and-true-p vterm-copy-mode)
+    (vterm-copy-mode 1))
+  (when (bound-and-true-p vterm-copy-mode)
+    (let ((cmd (or (lookup-key vterm-copy-mode-map (kbd "<up>")) 
+                   (lookup-key vterm-copy-mode-map (kbd "p")))))
+      (cond
+       (cmd (call-interactively cmd))
+       ;; если почему-то невозможно определить биндинг,
+       ;; стандартная команда "previous-line":
+       (t (previous-line))))))
+
+(defun my/vterm-copy-mode-escape ()
+  "Выйти из vterm-copy-mode и перейти к приглашению ввода shell."
+  (interactive)
+  (when (bound-and-true-p vterm-copy-mode)
+    (vterm-copy-mode -1))
+  (when (and (boundp 'vterm--process-marker) vterm--process-marker)
+    (goto-char vterm--process-marker)))
+
 (use-package vterm
   :ensure t
   :functions (vterm-send-next-key vterm-yank)
@@ -17,7 +39,11 @@
                 ("C-q" . #'vterm-send-next-key)
                 ("s-v" . #'vterm-yank)
                 ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
-                ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))))
+                ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
+                ("C-p" . my/vterm-copy-mode-move-up))
+  :config
+  ;; В режиме копирования C-g возвращает в терминал и переводит к вводу
+  (define-key vterm-copy-mode-map (kbd "C-g") #'my/vterm-copy-mode-escape))
 
 (use-package multi-vterm
   :ensure t
@@ -33,7 +59,6 @@
 
 (use-package eshell
   :ensure t
-  :defines (eshell-mode-map)
   :hook (eshell-mode . tab-line-mode)
   :custom
   (comint-prompt-read-only t)
@@ -45,10 +70,18 @@
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
   (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm" "nix"))
-  :init
-  (add-hook 'eshell-mode-hook (lambda ()
-                               (progn
-                                 (define-key eshell-mode-map "\C-a" 'eshell-bol)))))
+  :config
+  (with-eval-after-load 'eshell
+    ;; Fuzzy file completion in eshell with consult
+    (when (require 'consult nil t)
+      (define-key eshell-mode-map (kbd "C-c f") #'consult-find)
+      (define-key eshell-mode-map (kbd "C-c g") #'consult-grep))
+    ;; Move beginning-of-line to after prompt
+    (define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
+
+(eval-after-load 'em-alias
+  '(add-hook 'eshell-mode-hook
+             (lambda () (require 'em-git))))
 
 (use-package eshell-vterm
   :ensure t
@@ -88,25 +121,60 @@
   :ensure t
   :demand t)
 
-;; (defun приглашение-eshell ()
-;;   "Настройка приглашения оболочки EShell."
-;;   (let* ((git-branch-unparsed
-;;           (shell-command-to-string "git rev-parse --abbrev-ref HEAD 2>/dev/null"))
-;;          (git-branch
-;;           (if (string= git-branch-unparsed "")
-;;               ""
-;;             (substring git-branch-unparsed 0 -1)))
-;;          (shrunk-path (shrink-path-prompt default-directory))
-;;          (path-car (or (car shrunk-path) ""))
-;;          (path-cdr (or (cdr shrunk-path) "")))
-;;     (format "%s %s%s %s\n%s "
-;;             (all-the-icons-octicon "repo")
-;;             path-car
-;;             path-cdr
-;;             (if (string= git-branch "")
-;;                 ""
-;;               (propertize (concat "[" git-branch "]") 'face '(:inherit font-lock-string-face)))
-;;             (propertize "❯❯❯" 'face '(:foreground "#33aa33")))))
+;; - Этот промпт показывает:
+;;   - иконку терминала,
+;;   - проект,
+;;   - сокращённую директорию (например =~/prj/foo= → =~/…/foo=),
+;;   - git-ветку с иконкой и цветовой индикацией если есть изменения,
+;;   - ошибку последней команды (или зелёную стрелку если всё ок).
+;; - Использует функции: =all-the-icons-octicon=, =all-the-icons-material=, =shrink-path-prompt=, а также Git и проектные функции.
+
+(defun приглашение-eshell ()
+  "Современное информативное приглашение для Eshell."
+  (let* ((icons t) ; флаг, нужен ли icon (можно выключить если в терминале нет gui)
+         (project (when (fboundp 'project-root)
+                    (when-let* ((pr (ignore-errors (project-current))))
+                      (file-name-nondirectory (directory-file-name (project-root pr))))))
+         (dir     (shrink-path-prompt default-directory))
+         (path-car (or (car dir) ""))
+         (path-cdr (or (cdr dir) ""))
+         (git-root (when (executable-find "git")
+                     (ignore-errors (vc-git-root default-directory))))
+         (git-branch
+          (when git-root
+            (let ((branch (ignore-errors (car (process-lines "git" "-C" git-root "rev-parse" "--abbrev-ref" "HEAD")))))
+              (unless (or (null branch) (string= branch "HEAD"))
+                branch))))
+         (git-dirty?
+          (when git-root
+            (not (string-empty-p (shell-command-to-string (format "git -C %s status --porcelain" git-root))))))
+         (exit-code (if (boundp 'eshell-last-command-status)
+                        eshell-last-command-status 0)))
+    (concat
+     (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈")
+     " "
+     (when project
+       (concat
+        (if icons (all-the-icons-octicon "repo" :height 0.85 :v-adjust 0) "")
+        " "
+        (propertize project 'face 'success)
+        " "))
+     (when path-car (propertize path-car 'face 'bold))
+     (when path-cdr (propertize path-cdr 'face 'shadow))
+     (when git-branch
+       (concat
+        " "
+        (if icons (all-the-icons-octicon "git-branch" :height 0.9 :v-adjust 0) "")
+        (propertize (format " %s" git-branch)
+                    'face (if git-dirty? 'error 'font-lock-string-face))))
+     (if (> exit-code 0)
+         (propertize (format "\n%s " (if icons (all-the-icons-material "error" :height 0.9 :v-adjust -0.2) "✗"))
+                     'face 'error)
+       (propertize "\n❯ " 'face '(:foreground "#44bb44" :weight bold))))))
+
+(setq eshell-prompt-regexp "^❯ ")
+(setq eshell-prompt-function #'приглашение-eshell)
+
 ;; (use-package eshell-did-you-mean
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
@@ -133,7 +201,8 @@
     ;; Otherwise, perform the normal backspace operation
     (delete-char -1)))
 
-(define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace)
+(with-eval-after-load 'eshell
+  (define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace))
 
 ;;;; Автодополнение npm, включая команды из package.json
 

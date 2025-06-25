@@ -1,0 +1,54 @@
+;;; про-малую-механизацию.el --- Настройки малой механизации Emacs  -*- lexical-binding: t -*-
+;;; Commentary:
+;; Функции для упрощённой настройки Emacs, в том числе быстрая привязка клавиш.
+
+;;; Code:
+(defun про/добавь-кнопку ()
+  "Быстрое создание глобального биндинга.
+Пользователь вводит сочетание клавиш, выбирает функцию,
+биндинг добавляется в ~/.emacs.d/keys.el."
+  (interactive)
+  ;; 1. Получить клавишу и имя в человеко-читаемом виде
+  (let* ((key-vec (read-key-sequence-vector "Введите сочетание клавиш: "))
+         (pretty-key (key-description key-vec)))
+    ;; Сообщить, что выбрано
+    (message "Вы выбрали: %s" pretty-key)
+    ;; 2. Переместить курсор в minibuffer (если активен)
+    (when (active-minibuffer-window)
+      (select-window (active-minibuffer-window)))
+    ;; 3. Запросить функцию
+    (let* ((fn-symbol
+            (intern
+             (if (require 'consult nil t)
+                 (consult--read
+                  (let (candidates)
+                    (mapatoms
+                     (lambda (s)
+                       (when (and (commandp s)
+                                  (not (string-prefix-p "mouse" (symbol-name s))))
+                         (push (symbol-name s) candidates))))
+                    candidates)
+                  :prompt (format "Связать функцию с <%s>: " pretty-key)
+                  :require-match t
+                  :category 'command)
+               (completing-read (format "Связать функцию с <%s>: " pretty-key)
+                                obarray 'commandp t))))
+           (keys-file (expand-file-name "keys.el" user-emacs-directory))
+           (bind-string
+            (format "(global-set-key (kbd \"%s\") '%s)\n" pretty-key fn-symbol)))
+      (with-temp-buffer
+        (when (file-exists-p keys-file)
+          (insert-file-contents keys-file))
+        (goto-char (point-max))
+        (insert bind-string)
+        (write-region (point-min) (point-max) keys-file))
+      (message "Привязка %s -> %s добавлена в %s" pretty-key fn-symbol keys-file))))
+
+
+;; Глобальные пользовательские клавиши (keys.el)
+(let ((user-keys-file (expand-file-name "keys.el" user-emacs-directory)))
+  (when (file-exists-p user-keys-file)
+    (load user-keys-file nil t)))
+
+(provide 'про-малую-механизацию)
+;;; про-малую-механизацию.el ends here.
