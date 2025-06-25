@@ -249,7 +249,7 @@
                                    nil (current-buffer) t))
       (buffer-string))))
 
-(with-eval-after-load 'gptel
+;; (with-eval-after-load 'gptel
   ;; (gptel-make-tool
   ;;  :function #'pro/gptel-git-command
   ;;  :name "run_git_command"
@@ -259,7 +259,7 @@
   ;;               :type 'string
   ;;               :description "A valid git command to run, e.g. 'status', 'log --oneline', or 'diff HEAD~1'.")))
 
-   (add-to-list 'gptel-tools (gptel-get-tool "run_git_command")))
+   ;; (add-to-list 'gptel-tools (gptel-get-tool "run_git_command")))
 
 ;;;; Настройка chatgpt-shell для REPL с ChatGPT
 

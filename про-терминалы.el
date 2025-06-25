@@ -35,8 +35,9 @@
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command)
                 ("C-\\" . #'toggle-input-method)
-                ("C-c C-t" .#'vterm-copy-mode)
+                ("C-c C-t" . #'vterm-copy-mode)
                 ("C-q" . #'vterm-send-next-key)
+                ("C-y" . #'vterm-yank)
                 ("s-v" . #'vterm-yank)
                 ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
                 ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
@@ -60,6 +61,8 @@
 (use-package eshell
   :ensure t
   :hook (eshell-mode . tab-line-mode)
+  :bind (("C-a" . beginning-of-line)
+         ("DEL" . my-eshell-backspace))
   :custom
   (comint-prompt-read-only t)
   ;;(eshell-prompt-function 'приглашение-eshell)
@@ -68,27 +71,16 @@
   (eshell-cmpl-cycle-completions nil)
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
-  ;;(eshell-prompt-regexp "❯❯❯ ")
   (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm" "nix"))
   :config
-  (with-eval-after-load 'eshell
-    ;; Fuzzy file completion in eshell with consult
-    (when (require 'consult nil t)
-      (define-key eshell-mode-map (kbd "C-c f") #'consult-find)
-      (define-key eshell-mode-map (kbd "C-c g") #'consult-grep))
-    ;; Move beginning-of-line to after prompt
-    (define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
 
-(eval-after-load 'em-alias
-  '(add-hook 'eshell-mode-hook
-             (lambda () (require 'em-git))))
+  )
 
 (use-package eshell-vterm
   :ensure t
   :after eshell
   :config
   (eshell-vterm-mode))
-
 
 (defun eshell-here ()
   "Открыть новый буфер Eshell в каталоге текущего буфера."
@@ -183,7 +175,7 @@
 (use-package eshell-toggle
   :ensure t
   :custom
-  (eshell-toggle-size-fraction 4)
+  (eshell-toggle-size-fraction 2)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-find-project-root-package 'projectile)
                                         ;(eshell-toggle-find-project-root-package t)
@@ -201,8 +193,7 @@
     ;; Otherwise, perform the normal backspace operation
     (delete-char -1)))
 
-(with-eval-after-load 'eshell
-  (define-key eshell-mode-map (kbd "DEL") 'my-eshell-backspace))
+
 
 ;;;; Автодополнение npm, включая команды из package.json
 

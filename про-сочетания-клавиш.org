@@ -174,7 +174,7 @@
 | s-e T             | evedel-remove-tags                  |
 | C-z               | nil                                 |
 
-** ДЕЛАЮ Клавиши над всеми Xorg приложениями:
+** Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
 | Сочетание               | Функция                              |
@@ -288,7 +288,7 @@
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
 
-** ДУМАЮ Клавиши для модов
+** Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |

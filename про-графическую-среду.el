@@ -72,76 +72,55 @@ KEY-BINDINGS - список пар (клавиша функция)"
 (require 'exwm-systemtray)
 
 (use-package про-мониторы
-  :after exwm)
+  :if window-system)
 
-(use-package exwm
-  :ensure t
-  ;;:init (установить-из :repo "emacs-exwm/exwm")
-  :functions (exwm-input-set-key
-         exwm-workspace-rename-buffer
-         exwm-enable
-         exwm-init
-         exwm-systemtray-mode)
-  :defines (exwm-class-name
-           exwm-manage-configurations
-           exwm-title
-           exwm-input-prefix-keys)
-  :if window-system
-  ;;:hook ((exwm-init . exim-start))
-  :custom ((exwm-workspace-number 3)
-          (exwm-workspace-show-all-buffers t)
-          (exwm-layout-show-all-buffers t)
-          (exwm-manage-force-tiling nil)
-          (exwm-systemtray-background-color 'workspace-background)
-          (exwm-systemtray-height 21)
-          (exwm-input-simulation-keys сочетания-для-эмуляции))
+(defvar про/графика-initialized nil
+  "Флаг, сигнализирующий, что EXWM-окружение уже запущено.")
 
-  :config
-  ;; Запуск EXWM
-  (exwm-enable)
-  (exwm-systemtray-mode)
-  ;; Инициализировать конфигурацию мониторов после запуска EXWM
-  ;; Смена имени окна
-  (add-hook 'exwm-init-hook #'про-мониторы-инициализировать)
-  (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
-  (add-hook 'exwm-update-class-hook
-           (lambda ()
-             (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-  ;; Смена заголовка окна
-  (defun exwm-update-title-hook ()
-    (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+(defun про/старт-графической-среды ()
+  "Единый инициализатор EXWM: сначала применяем xrandr, потом ExWM и system tray."
+  (interactive)
+  (unless про/графика-initialized
+    (setq про/графика-initialized t)
+    (require 'про-мониторы)
+    ;; 1. Выставляем топологию мониторов ДО запуска EXWM
+    (применить-расположение-мониторов)
+    ;; 2. Подождём столько, сколько указано в `про/monitor-refresh-delay`
+    (run-with-timer
+     про/monitor-refresh-delay nil
+   (lambda ()
+     ;; 3. Запускаем EXWM и system tray только после того как все мониторы заведены
+     (require 'exwm)
+     (require 'exwm-systemtray)
+     ;; Запуск EXWM
+     (exwm-enable)
+     (exwm-systemtray-mode)
+     ;; Инициализация randr и workspace/monitor settings
+     (про-мониторы-инициализировать)
+     (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
+     ;; Смена имени окна
+     (add-hook 'exwm-update-class-hook
+               (lambda ()
+                 (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+     ;; Смена заголовка окна
+     (defun exwm-update-title-hook ()
+       (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+     (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+     ;; Глобальные клавиши над всеми приложениями
+     (dotimes (i 9)
+       (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+       (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
+       (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+     (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+     (setq exwm-manage-configurations
+           '(((equal exwm-title "posframe") floating t floating-mode-line nil)
+             ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+              height 175 x 30 y 30 managed t)))
+     ))))
 
-  (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-  
-  ;; Глобальные клавиши над всеми приложениями
-
-  (dotimes (i 9)
-    ;;(if (> i 0)
-    ;;(exwm-input-set-key (kbd (format "s-M-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i))))
-    ;; (exwm-input-set-key (kbd (format "C-s-%d" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
-    (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i)))
-    )
-
-  (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-
-  ;; (exwm-input-set-keys
-  ;;  ("s-M-!" (lambda () (interactive) (exwm-workspace-move-window 1)))
-  ;;  ("s-M-@" (lambda () (interactive) (exwm-workspace-move-window 2)))
-  ;;  ("s-M-#" (lambda () (interactive) (exwm-workspace-move-window 3)))
-  ;;  ("s-M-$" (lambda () (interactive) (exwm-workspace-move-window 4)))
-  ;;  ("s-M-%" (lambda () (interactive) (exwm-workspace-move-window 5)))
-  ;;  ("s-M-^" (lambda () (interactive) (exwm-workspace-move-window 6)))
-  ;;  ("s-M-&" (lambda () (interactive) (exwm-workspace-move-window 7)))
-  ;;  ("s-M-)" (lambda () (interactive) (exwm-workspace-move-window 0))))
-
-  (setq exwm-manage-configurations '(((equal exwm-title "posframe") floating t floating-mode-line nil)
-                                    ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-                                     height 175 x 30 y 30 managed t)))
-
-  :init
-)
+;; Автостарт при запуске Emacs в X-среде, но только в графическом режиме:
+(when window-system
+  (про/старт-графической-среды))
 
 ;;;; Режимы ввода EMACS в приложениях
 

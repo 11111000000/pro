@@ -4,6 +4,16 @@
 
 (require 'exwm-randr)
 
+(defgroup про-мониторы nil
+  "Настройка и управление конфигурацией мониторов под EXWM."
+  :group 'exwm)
+
+(defcustom про/monitor-refresh-delay 0.8
+  "Сколько секунд ждать после вызова xrandr,
+прежде чем отправлять `exwm-randr-refresh`."
+  :type 'number
+  :group 'про-мониторы)
+
 (defvar расположение-монитора 'сверху)
 (defvar имя-встроенного-монитора "eDP-1")
 (defvar имя-внешнего-монитора "HDMI-1")
@@ -20,19 +30,23 @@
             " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
             " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
             (if имя-третьего-монитора (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора) "")))
-    ;; Wait for xrandr to complete, then refresh EXWM
-    (run-with-timer 2 nil #'exwm-randr-refresh)))
+    ;; Подождать указанное время, затем «разбудить» EXWM,
+    ;; если он уже загружен.
+    (run-with-timer
+     про/monitor-refresh-delay
+     nil
+     (lambda ()
+       (when (fboundp 'exwm-randr-refresh)
+         (exwm-randr-refresh))))))
 
 
 (defun про-мониторы-инициализировать ()
-  "Инициализация exwm-randr и применение конфигурации мониторов."
+  "Инициализация exwm-randr и установка workspace мониторных плейлистов."
   (setq exwm-randr-workspace-monitor-plist
         (list 0 имя-встроенного-монитора 1 имя-внешнего-монитора 2 имя-третьего-монитора))
   (exwm-randr-mode t)
-  ;; Применять каждый раз при изменении конфигурации мониторов
-  (add-hook 'exwm-randr-screen-change-hook #'применить-расположение-мониторов)
-  ;; Применить расположение мониторов единожды при инициализации
-  (применить-расположение-мониторов))
+  ;; Смена топологии при изменении состава мониторов
+  (add-hook 'exwm-randr-screen-change-hook #'применить-расположение-мониторов))
 
 (provide 'про-мониторы)
 ;;; про-мониторы.el ends here

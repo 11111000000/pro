@@ -39,7 +39,7 @@
            (bind-string
             (format "(global-set-key (kbd \"%s\") '%s)\n" pretty-key fn-symbol))
            (exwm-bind-string
-            (format "(when (featurep 'exwm-input) (exwm-input-global-set-key (kbd \"%s\") '%s))\n"
+            (format "(when (featurep 'exwm-input) (exwm-input-set-key (kbd \"%s\") '%s))\n"
                     pretty-key fn-symbol))
            (full-bind-string
             (if арг
@@ -50,7 +50,7 @@
       ;; Если был универсальный аргумент — пробуем и EXWM привязку
       (when арг
         (when (featurep 'exwm-input)
-          (exwm-input-global-set-key (kbd pretty-key) fn-symbol)))
+          (exwm-input-set-key (kbd pretty-key) fn-symbol)))
       ;; Вносим в файл
       (with-temp-buffer
         (when (file-exists-p keys-file)
