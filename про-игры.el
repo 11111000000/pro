@@ -15,13 +15,13 @@
 
 ;; Выполение боков вида
 ;; #+begin_src chess :file startpos.svg :notation pgn
-1. e4 e5
-2. d4 d6
-3. dxe5 dxe5
-4. Qxd8 Kxd8
-5. Nf3 f5
-6. Nxe5 fxe4
-#+end_src
+;; 1. e4 e5
+;; 2. d4 d6
+;; 3. dxe5 dxe5
+;; 4. Qxd8 Kxd8
+;; 5. Nf3 f5
+;; 6. Nxe5 fxe4
+;; #+end_src
 
 
 (defun org-babel-execute:chess (body params)

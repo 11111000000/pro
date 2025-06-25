@@ -49,7 +49,7 @@
 | M-s d             | consult-dash                        |
 | C-x y             | consult-yank-from-kill-ring         |
 | <help> a          | consult-apropos                     |
-| s-m               | consult-imenu-multi                 |
+| C-c C-m           | consult-imenu-multi                 |
 | C-j               | next-line                           |
 | C-k               | previous-line                       |
 | M-o               | viper-open-line                     |
@@ -133,8 +133,9 @@
 | s-i s-i           | gptel-menu                          |
 | s-i i             | gptel-aibo                          |
 | s-i o             | gptel                               |
+| s-i s-o           | gptel                               |
 | s-i r             | gptel-rewrite                       |
-| s-i m             | gptel-menu                          |
+| s-i m             | gptel-set-model                     |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
 | s-i a             | gptel-add                           |
@@ -143,7 +144,7 @@
 | s-i f             | gptel-add-file                      |
 | s-i p             | gptel-system-prompt                 |
 | s-i RET           | gptel-send                          |
-| s-i C-<return>    | pro/gptel-send-no-context           |
+| s-i s-<return>    | gptel-send-no-context               |
 | s-i s             | gptel-context-store-save            |
 | s-i l             | gptel-context-store-load            |
 | s-i k             | gptel-abort                         |
@@ -151,7 +152,7 @@
 | s-i q             | elysium-query                       |
 | s-i w             | whisper-run                         |
 | s-i x             | gptel-context-remove-all            |
-| s-i c             | gptel-context-remove-all            |
+| s-i d             | gptel-context-remove-all            |
 | s-e               | nil                                 |
 | s-e s-e           | evedel-create-directive             |
 | s-e e             | evedel-modify-directive             |
@@ -235,7 +236,7 @@
 | s-U                     | tab-bar-history-forward              |
 | C-<f3>                  | battery                              |
 | s-`                     | eshell-toggle                        |
-| s-~                     | multi-vterm-dedicated-toggle         |
+| s-~                     | multi-vterm-project                  |
 | C-c tt                  | eshell-here                          |
 | C-c s                   | scratch-pop                          |
 | C-c l                   | org-store-link                       |
@@ -285,6 +286,8 @@
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
+| s-m                     | popwin:messages                      |
+
 
 ** ДУМАЮ Клавиши для модов
 

@@ -1,66 +1,67 @@
 [[lisp.png]]
 
-* Введение
+* Introduction
 
-Персональное рабочее окружение (ПРО) - это инструмент для разработки и управления задачами, созданный на основе LISP. ПРО настраивается под потребности пользователя, обеспечивая возможность персонализации и гибкости в работе.
+The Personal Working Environment (PWE) is a most excellent implement devised for the purposes of both development and the dignified management of one’s affairs, wrought upon the noble foundation of LISP. The PWE moulds itself unto the needs of its master, affording ample opportunities for the utmost personalisation and flexibility in one’s labours.
 
-* Принципы и функции
+* Principles and Functions
 
-** Гибкая и динамичная настройка рабочего окружения
+** Flexible and Dynamic Arrangement of the Working Environment
 
-   - Возможность мгновенной настройки интерфейса и функционала под текущие задачи с помощью гибкости LISP.
-   - Литературное программирование и самодокументирующийся код.
-   - Модульность, позволяющая легко добавлять новые функции и инструменты.
-   - Глубокие возможности для кастомизации интерфейса и инструментов, создание собственных команд и макросов.
-   - Автоматизация рутинных операций для ускорения выполнения задач.
+   - A prodigious capacity for the instantaneous arrangement of the interface and faculties according to one’s immediate undertakings, by virtue of the boundless flexibility inherent to LISP.
+   - Literary programming and a code, which in itself bears the virtue of self-documentation.
+   - Modularity, bestowing ease of adding new faculties and implements.
+   - Profound capabilities for the customisation of the interface and implements, the creation of one’s own commands and mechanical incantations (macros).
+   - The automation of daily toils, expediting the execution of one's tasks.
 
-** Универсальная платформа для разработки
-   - Поддержка различных языков программирования и фреймворков через модули и расширения.
-   - Интеграция с основными инструментами разработки: системами управления версиями, базами данных, тестированием, контейнеризацией и CI/CD.
-   - Встроенные инструменты для анализа кода, рефакторинга и отладки, совместимые с LSP и DAP.
+** A Universal Platform for Development
+   - Support for various tongues of programming and frameworks through modules and extensions.
+   - Harmonious integration with the most principal implements of development: systems of version control, repositories of data, instruments of testing, containerisation, and the rhythms of Continuous Integration and Delivery.
+   - Implements in-built for the analysis of code, its elegant refactoring and the noble pursuit of debugging, all in compatibility with LSP and DAP.
 
-** Эффективное управление задачами и проектами
-   - Расширенные возможности для планирования, организации задач и проектов
-   - Инструменты для учета времени, ведения заметок и составления графиков.
+** Effective Command of Tasks and Projects
+   - Enhanced possibilities for the planning and proper organisation of affairs and projects.
+   - Implements for the keeping of accounts with respect to time spent, the maintenance of notes, and the drafting of schedules.
 
-** Глубокая интеграция с операционной системой и интернет-сервисами
-   - Управление файловой системой и ресурсами операционной системы прямо из ПРО, обеспечивая единый интерфейс.
-   - Встроенные клиенты для электронной почты, веб-браузера, чтения RSS и мессенджеров, позволяющие централизованное взаимодействие с основными коммуникационными каналами.
-   - Поддержка REST и GraphQL для работы с веб-API и интеграции с внешними сервисами.
+** Deep Connexion with the Operating System and Internet-Services
+   - The governance of the file system and resources of the operating system directly from the PWE, ensuring thus a singularity of interface.
+   - In-built clients for the transmission of mail, for the browsing of the world-wide web, for the reading of public broadsheets (RSS), and for those messengers through which communication is centralised and rendered more convenient.
+   - The support of REST and GraphQL, that one may work with web-based protocols and integrate with the diverse pantheon of external services.
 
-** Автоматизация и скриптинг
-   - Написание и выполнение скриптов на LISP для автоматизации рутинных задач и работы с данными.
-   - Интеграция с внешними программами для запуска и координации рабочих процессов.
-   - Шаблоны для генерации кода и документации, упрощающие работу над новыми проектами.
+** Automation and Scripting
+   - The composition and execution of scripts in the noble tongue of LISP, for the automation of mundane tasks and for the handling of data.
+   - Integration with implements external, such that the orchestration of working processes is both possible and dignified.
+   - Patterns and templates for the generation of both code and documentation, rendering the commencement of new projects an easier burden to bear.
 
-** Искусственный интеллект и машинное обучение
-   - Интеграция с инструментами искусственного интеллекта для анализа данных и генерации кода.
-   - Использование предварительно обученных моделей для распознавания образов и обработки языков без выхода из рабочего окружения.
-   - Встроенные функции для создания и тестирования собственных моделей машинного обучения.
+** Artificial Intelligence and the Study of Mechanical Learning
+   - The integration of implements devoted to the study of artificial intelligence, for the analysis of data and for the generation of code.
+   - The prudent use of previously-trained models, bestowing abilities of pattern recognition and the high art of language processing, all within the tranquil boundaries of the working environment.
+   - In-built faculties for the creation and the trial of one’s own models of machine learning.
 
-** Совместная работа и облачные сервисы
-   - Инструменты для работы с облачными хранилищами, обеспечивающие доступ и обмен файлами.
-   - Удаленный доступ к сервисам и инфраструктуре через SSH и VPN.
+** Collaborative Labour and the Celestial Spheres of the Cloud
+   - Implements for the conduct of business with cloud repositories, to ensure both access and the exchange of documents.
+   - Remote access to services and infrastructure, furnished via the commendable arts of SSH and VPN.
 
-** Контейнеры и виртуализация
-   - Инструменты для управления контейнерами Docker и Kubernetes для развертывания и мониторинга приложений.
-   - Поддержка работы с виртуальными машинами для тестирования приложений в изоляции.
-   - Автоматизация управления виртуальными средами с помощью сценарного управления.
+** Containers and Virtualisation
+   - Implements for the masterful management of Docker and Kubernetes containers, that the deployment and the watching over of applications may proceed apace.
+   - Support for the labour with virtual machines, to enable the testing of applications in solitude and isolation.
+   - The automation of the governance of virtual abodes, with scenarios scripted for such purposes.
 
-** Минимализм и эргономика
-   - Дизайн интерфейса на основе минимализма для повышения продуктивности и комфорта.
-   - Гибкие настройки рабочего пространства под личные предпочтения.
-   - Эффективные средства управления ресурсами для стабильной работы на ограниченном оборудовании.
+** Minimalism and the Pursuit of Ergonomics
+   - An interface conceived upon the noble precepts of minimalism, to augment both productivity and the gentleman’s comfort.
+   - Flexible arrangement of the working space, according to one’s personal inclination.
+   - Efficient means of managing resources, that stable operation might grace even those machines of humble endowment.
 
-** Безопасность и надежность
-   - Инструменты для обеспечения безопасности кода и данных, включая шифрование и хранение учетных данных.
-   - Регулярные обновления для защиты от угроз и уязвимостей.
-     
-** Сообщество, поддержка и экосистема расширений
-   - Открытая экосистема и активное сообщество, предлагающие множество расширений для различных проектов.
-   - Интеграция инструментов анализа и управления версиями в рабочее пространство.
-   - Активное сообщество разработчиков и пользователей, которое постоянно обновляет базу знаний и поддерживает других.
-   - Обширная документация и учебные материалы.
+** Security and Reliability
+   - Implements for the safeguarding of code and data, including the encrypting thereof, and the careful keeping of credentials.
+   - Regular renewal and update, that one may remain ever protected from the invisible menace of threats and vulnerabilities.
+
+** The Community, Support, and the Glorious Ecosystem of Extensions
+   - An open ecosystem and a most active community, proffering a multitude of extensions for affairs of sundry types.
+   - The integration of analytical instruments and the governance of versions within the working environment itself.
+   - A lively society of developers and users, ever fountaining knowledge and mutual support.
+   - Extensive documentation and abundant instructive materials, that the inquirer may always find answer to his or her learned questions.
+
 
 
 

@@ -51,6 +51,8 @@
   :after (all-the-icons)
   :functions (taoline-mode)
   :init (установить-из :repo "11111000000/taoline")
+  :custom
+  (taoline-right-padding 6)
   :config
   (taoline-mode t))
 
@@ -58,36 +60,22 @@
 (display-battery-mode 1)
 (display-time-mode 1)
 
-;; (use-package doom-modeline
+;; (use-package hide-mode-line
 ;;   :ensure t
-;;   :functions (doom-modeline-mode)
-;;   :config
-;;   (doom-modeline-mode 1)
-;;   (setq display-time-format "%Y-%m-%d %H:%M")
-;;   (setq display-time-default-load-average nil))
-
-;; (use-package telephone-line
-;;   :ensure t
-;;   :functions (telephone-line-mode)
-;;   :init
-;;   (telephone-line-mode t))
-
-(use-package hide-mode-line
-  :ensure t
-  :functions (turn-off-hide-mode-line-mode
-         turn-on-hide-mode-line-mode)
-  :hook (((
-         treemacs-mode
-         ;;eshell-mode
-         ;;shell-mode
-         embark-collect-mode
-         lsp-ui-imenu-mode
-         pdf-annot-list-mode
-         )
-        . turn-on-hide-mode-line-mode)
-         (dired-mode . (lambda()
-                         (and (bound-and-true-p hide-mode-line-mode)
-                              (turn-off-hide-mode-line-mode))))))
+;;   :functions (turn-off-hide-mode-line-mode
+;;          turn-on-hide-mode-line-mode)
+;;   :hook (((
+;;          treemacs-mode
+;;          ;;eshell-mode
+;;          ;;shell-mode
+;;          embark-collect-mode
+;;          lsp-ui-imenu-mode
+;;          pdf-annot-list-mode
+;;          )
+;;         . turn-on-hide-mode-line-mode)
+;;          (dired-mode . (lambda()
+;;                          (and (bound-and-true-p hide-mode-line-mode)
+;;                               (turn-off-hide-mode-line-mode))))))
 
 ;;;; Иконки
 ;;;;; All The Icons

@@ -15,7 +15,9 @@
                 ("C-\\" . #'toggle-input-method)
                 ("C-c C-t" .#'vterm-copy-mode)
                 ("C-q" . #'vterm-send-next-key)
-                ("s-v" . #'vterm-yank)))
+                ("s-v" . #'vterm-yank)
+                ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
+                ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))))
 
 (use-package multi-vterm
   :ensure t
@@ -42,13 +44,11 @@
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   ;;(eshell-prompt-regexp "❯❯❯ ")
-  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm"))
+  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm" "nix"))
   :init
   (add-hook 'eshell-mode-hook (lambda ()
                                (progn
-                                 (define-key eshell-mode-map "\C-a" 'eshell-bol)
-                                 (define-key eshell-mode-map [up] 'previous-line)
-                                 (define-key eshell-mode-map [down] 'next-line)))))
+                                 (define-key eshell-mode-map "\C-a" 'eshell-bol)))))
 
 (use-package eshell-vterm
   :ensure t

@@ -56,8 +56,7 @@
    (gptel--system-message
     "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
-  ;; Подключаем библиотеку gptel-context-store из ./libs
-  (add-to-list 'load-path (expand-file-name "libs" user-emacs-directory))
+  ;; Подключаем библиотеку gptel-context-store из .libs рядом с текущим конфигом
   (require 'gptel-context-store)
 
   ;; Создаем несколько бэкендов для gptel
@@ -100,7 +99,7 @@
     :key gptel-api-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models (append '("gpt-4o-search-preview"
-                     "gpt-4o-mini-search-preview"
+                      "gpt-4o-mini-search-preview"
                      "gpt-4.1"
                      "gpt-4.1-mini"
                      "gpt-4.1-nano"
@@ -136,8 +135,8 @@
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("deepseek-ai/DeepSeek-V3-0324"))
 
-  (setq gptel-backend tunnelai-backend)
-  (setq gptel-model 'gpt-4.1-mini)
+  (setq gptel-backend (gptel-get-backend "Proxy OpenAI"))
+  (setq gptel-model 'gpt-4.1))
 
 
 (use-package gptel-aibo
@@ -150,7 +149,7 @@
   :init
   (установить-из :repo "karthink/gptel-quick")
   (setq gptel-quick-backend gptel-backend)
-  (setq gptel-quick-model 'gpt-4.1-mini))
+  (setq gptel-quick-model 'gpt-4.1))
 
 
 ;; ;;;; Настройка Elysium (WTF)
@@ -234,6 +233,33 @@
       (lisp-mode       . "a Common Lisp programmer")
       (web-mode        . "a web developer")
       (erlang-mode     . "an Erlang programmer")))))
+
+;;;; Инструмент gptel-tool: выполнение git-команд в текущем проекте
+
+(defun pro/gptel-git-command (command)
+  "Выполнить git-команду COMMAND в корне текущего проекта.
+Возвращает stdout+stderr для передачи нейросети."
+  (let ((project-root
+         (or (and (fboundp 'project-current)
+                  (cdr (project-current)))
+             default-directory)))
+    (with-temp-buffer
+      (let ((default-directory project-root))
+        (call-process-shell-command (concat "git " command)
+                                   nil (current-buffer) t))
+      (buffer-string))))
+
+(with-eval-after-load 'gptel
+  ;; (gptel-make-tool
+  ;;  :function #'pro/gptel-git-command
+  ;;  :name "run_git_command"
+  ;;  :description "Run any git command in the root of the current project. The argument is a valid git command, e.g. 'status', 'log --oneline', or 'diff HEAD~1'. Returns the raw output of git (stdout and stderr)."
+  ;;  :args (list
+  ;;         (list :name "command"
+  ;;               :type 'string
+  ;;               :description "A valid git command to run, e.g. 'status', 'log --oneline', or 'diff HEAD~1'.")))
+
+   (add-to-list 'gptel-tools (gptel-get-tool "run_git_command")))
 
 ;;;; Настройка chatgpt-shell для REPL с ChatGPT
 
@@ -337,6 +363,24 @@
   (aidermacs-use-architect-mode nil)
   (aidermacs-show-diff-after-change nil)
   (setq aidermacs-auto-commits nil))
+
+;;-------------------------------------------------------------
+;; Выбор модели GPTEL из списка доступных
+(defun gptel-set-model ()
+  "Выбрать текущую модель для gptel в текущем буфере с помощью автодополнения.
+Все модели из текущего `gptel-backend`."
+  (interactive)
+  (require 'gptel)
+  (let* ((backend (if (boundp 'gptel-backend) gptel-backend (default-value 'gptel-backend)))
+         (models (and backend (gptel-backend-models backend)))
+         (model-names (mapcar #'gptel--model-name models))
+         (current (if (symbolp gptel-model) (symbol-name gptel-model) (format "%s" gptel-model)))
+         (choice (completing-read
+                  (format "Модель [%s]: " current)
+                  model-names nil t nil nil current)))
+    (when choice
+      (setq-local gptel-model (intern choice)))
+    (message "gptel-model: %s" gptel-model)))
 
 (provide 'про-ии)
 
