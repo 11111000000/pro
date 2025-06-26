@@ -100,31 +100,38 @@ KEY-BINDINGS - список пар (клавиша функция)"
    (lambda ()
      ;; 3. Запускаем EXWM и system tray только после того как все мониторы заведены
      (require 'exwm)
-
      (require 'exwm-systemtray)
-     ;; Запуск EXWM
-     (exwm-enable)
-     (exwm-systemtray-mode)
-     ;; Инициализация randr и workspace/monitor settings
-     (про-мониторы-инициализировать)
-     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
-     (dotimes (i 3)
-       (exwm-workspace-switch-create i))
-     (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
-     ;; Смена имени окна
-     (add-hook 'exwm-update-class-hook
-               (lambda ()
-                 (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-     ;; Смена заголовка окна
-     (defun exwm-update-title-hook ()
-       (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
-     (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+
      ;; Глобальные клавиши над всеми приложениями
      (dotimes (i 9)
        (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
        (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
        (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
      (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+
+     ;; Запуск EXWM
+     (exwm-enable)
+     (exwm-systemtray-mode)
+
+     ;; Инициализация randr и workspace/monitor settings
+     (про-мониторы-инициализировать)
+
+     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
+     (dotimes (i 3)
+       (exwm-workspace-switch-create i))
+     (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
+
+     ;; Смена имени окна
+     (add-hook 'exwm-update-class-hook
+               (lambda ()
+                 (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+
+     ;; Смена заголовка окна
+     (defun exwm-update-title-hook ()
+       (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+     (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+
+     ;; Специальное управление окнами
      (setq exwm-manage-configurations
            '(((equal exwm-title "posframe") floating t floating-mode-line nil)
              ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
