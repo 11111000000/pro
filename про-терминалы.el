@@ -60,21 +60,20 @@
 
 (use-package eshell
   :ensure t
+  :defines (eshell-mode-map)
   :hook (eshell-mode . tab-line-mode)
-  :bind (("C-a" . beginning-of-line)
+  :bind (:map eshell-mode-map
+         ("C-a" . beginning-of-line)
          ("DEL" . my-eshell-backspace))
   :custom
   (comint-prompt-read-only t)
-  ;;(eshell-prompt-function 'приглашение-eshell)
   (eshell-highlight-prompt nil)
   (eshell-hist-ignoredups t)
   (eshell-cmpl-cycle-completions nil)
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
   (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm" "nix"))
-  :config
-
-  )
+  :config)
 
 (use-package eshell-vterm
   :ensure t
@@ -121,50 +120,63 @@
 ;;   - ошибку последней команды (или зелёную стрелку если всё ок).
 ;; - Использует функции: =all-the-icons-octicon=, =all-the-icons-material=, =shrink-path-prompt=, а также Git и проектные функции.
 
-(defun приглашение-eshell ()
-  "Современное информативное приглашение для Eshell."
-  (let* ((icons t) ; флаг, нужен ли icon (можно выключить если в терминале нет gui)
-         (project (when (fboundp 'project-root)
-                    (when-let* ((pr (ignore-errors (project-current))))
-                      (file-name-nondirectory (directory-file-name (project-root pr))))))
-         (dir     (shrink-path-prompt default-directory))
-         (path-car (or (car dir) ""))
-         (path-cdr (or (cdr dir) ""))
-         (git-root (when (executable-find "git")
-                     (ignore-errors (vc-git-root default-directory))))
-         (git-branch
-          (when git-root
-            (let ((branch (ignore-errors (car (process-lines "git" "-C" git-root "rev-parse" "--abbrev-ref" "HEAD")))))
-              (unless (or (null branch) (string= branch "HEAD"))
-                branch))))
-         (git-dirty?
-          (when git-root
-            (not (string-empty-p (shell-command-to-string (format "git -C %s status --porcelain" git-root))))))
-         (exit-code (if (boundp 'eshell-last-command-status)
-                        eshell-last-command-status 0)))
-    (concat
-     (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈")
-     " "
-     (when project
-       (concat
-        (if icons (all-the-icons-octicon "repo" :height 0.85 :v-adjust 0) "")
-        " "
-        (propertize project 'face 'success)
-        " "))
-     (when path-car (propertize path-car 'face 'bold))
-     (when path-cdr (propertize path-cdr 'face 'shadow))
-     (when git-branch
-       (concat
-        " "
-        (if icons (all-the-icons-octicon "git-branch" :height 0.9 :v-adjust 0) "")
-        (propertize (format " %s" git-branch)
-                    'face (if git-dirty? 'error 'font-lock-string-face))))
-     (if (> exit-code 0)
-         (propertize (format "\n%s " (if icons (all-the-icons-material "error" :height 0.9 :v-adjust -0.2) "✗"))
-                     'face 'error)
-       (propertize "\n❯ " 'face '(:foreground "#44bb44" :weight bold))))))
+(require 'vc-git)  
+(require 'shrink-path)
+(require 'all-the-icons) 
 
-(setq eshell-prompt-regexp "^❯ ")
+(defun приглашение-eshell ()
+  "Минималистичный, быстрый и надёжный промпт Eshell с git проектом и статусом."
+  (let* ((icons t)
+         (default-dir (or (and (stringp default-directory) default-directory) ""))
+         (project (when (fboundp 'project-root)
+                    (ignore-errors
+                      (let ((pr (project-current)))
+                        (when pr
+                          (file-name-nondirectory
+                           (directory-file-name (project-root pr))))))))
+         (dir (ignore-errors (shrink-path-prompt default-dir)))
+         (path-car (or (and dir (car dir)) ""))
+         (path-cdr (or (and dir (cdr dir)) ""))
+         (git-root (ignore-errors
+                     (when (executable-find "git")
+                       (let ((root (vc-git-root default-dir)))
+                         (when root (expand-file-name root)))))))
+    (let* ((git-branch
+            (when git-root
+              (ignore-errors
+                (let ((branch
+                       (car (process-lines "git" "-C" git-root "rev-parse" "--abbrev-ref" "HEAD"))))
+                  (unless (or (null branch) (string= branch "HEAD") (string= branch ""))
+                    branch)))))
+           (git-dirty?
+            (when git-root
+              (ignore-errors
+                (not (string-empty-p
+                      (string-trim
+                       (shell-command-to-string (format "git -C %s status --porcelain" (shell-quote-argument git-root)))))))))
+           (exit-code (if (boundp 'eshell-last-command-status)
+                          eshell-last-command-status 0)))
+      (concat
+       (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈") " "
+       (when project
+         (concat
+          (if icons (all-the-icons-octicon "repo" :height 0.85 :v-adjust 0) "") " "
+          (propertize project 'face 'success) " "))
+       (when path-car (propertize path-car 'face 'bold))
+       (when path-cdr (propertize path-cdr 'face 'shadow))
+       (when (and git-root git-branch)
+         (concat " "
+                 (if icons (all-the-icons-octicon "git-branch" :height 0.9 :v-adjust 0) "")
+                 (propertize (format " %s" git-branch)
+                             'face '(:inherit default :weight bold :background unspecified))
+                 (when git-dirty?
+                   (propertize "*" 'face 'shadow))))
+       (if (> exit-code 0)
+           (propertize
+            (format "\n%s " (if icons (all-the-icons-material "error" :height 0.9 :v-adjust -0.2) "✗"))
+            'face 'error)
+         (propertize "\n❯ " 'face '(:foreground "#44bb44" :weight bold)))))))
+
 (setq eshell-prompt-function #'приглашение-eshell)
 
 ;; (use-package eshell-did-you-mean
@@ -175,7 +187,7 @@
 (use-package eshell-toggle
   :ensure t
   :custom
-  (eshell-toggle-size-fraction 2)
+  (eshell-toggle-size-fraction 3)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-find-project-root-package 'projectile)
                                         ;(eshell-toggle-find-project-root-package t)
@@ -192,8 +204,6 @@
       (message "Cannot delete after the prompt!")
     ;; Otherwise, perform the normal backspace operation
     (delete-char -1)))
-
-
 
 ;;;; Автодополнение npm, включая команды из package.json
 

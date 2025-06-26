@@ -130,12 +130,13 @@
 | C-c e T           | evedel-remove-tags                  |
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
-| s-i s-i           | gptel-menu                          |
-| s-i i             | gptel-aibo                          |
+| s-i i             | gptel                               |
+| s-i s-i           | gptel-aibo                          |
 | s-i o             | gptel                               |
 | s-i s-o           | gptel                               |
 | s-i r             | gptel-rewrite                       |
 | s-i m             | gptel-set-model                     |
+| s-i s-m           | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
 | s-i a             | gptel-add                           |

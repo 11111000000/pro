@@ -52,7 +52,7 @@
   :functions (taoline-mode)
   :init (установить-из :repo "11111000000/taoline")
   :custom
-  (taoline-right-padding 6)
+  (taoline-right-padding 13)
   :config
   (taoline-mode t))
 
