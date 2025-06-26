@@ -1,67 +1,108 @@
 [[lisp.png]]
 
-* Introduction
+* ПРО: Персональное Рабочее Окружение
 
-The Personal Working Environment (PWE) is a most excellent implement devised for the purposes of both development and the dignified management of one’s affairs, wrought upon the noble foundation of LISP. The PWE moulds itself unto the needs of its master, affording ample opportunities for the utmost personalisation and flexibility in one’s labours.
+ПРО — это гибкая система для организации, программирования и автоматизации всех ваших повседневных и творческих задач. Каждый аспект системы адаптируется под индивидуальные рабочие стили: от кода — до управления временем, от ведения заметок до интеграции искусственного интеллекта, от навигации по файловой системе до онлайн-сервисов.
 
-* Principles and Functions
+---
 
-** Flexible and Dynamic Arrangement of the Working Environment
+**Возможности ПРО охватывают:**
+1. **Мгновенную персональную настройку** всей среды — интерфейс, функционал, автоматизация, шаблоны, сочетания клавиш легко меняются с учётом текущих потребностей.
+2. **Естественную интеграцию кода, документации и задач**: все рабочие процессы собраны в одной экосистеме, где код, заметки, таблицы, графики и режимы переплетаются естественно.
+3. **Поддержку большинства современных языков программирования** (C, Python, LISP, JavaScript, Rust и др.) с автоформатированием, статическим анализом, деревьями разбора (Tree Sitter), LSP-серверами, цветовой идентификацией и мгновенной отладкой.
+4. **Организацию проектов и задач**: быстрый доступ к проектным заметкам, TODO, КАНБАН-доски, трекинг времени и событий, планирование встреч и интеграция с календарём.
+5. **Автоматизацию знаний и рутин**: создавайте собственные сценарии с помощью LISP — автоматическая обработка файлов, управление проектом, массовые операции, интеграция внешних скриптов.
+6. **Гибкую работу с интернет-сервисами**: браузер, почта, RSS-ленты, Telegram, облачные хранилища, REST и GraphQL — всё под рукой.
+7. **Встроенные инструменты ИИ и машинного обучения**: общение с языковыми и мультимодальными моделями (ChatGPT, Claude, Codeium), автогенерация кода и текстов, голосовое распознавание (Whisper), интеграция нейросетевых подсказок в рабочий процесс.
+8. **Интеллектуальное автодополнение и обработка текста**: современное словарное дополнение, интеллектуальные подсказки, расширяемая система сниппетов по любым языкам.
+9. **Обширные средства визуализации**: наглядные вкладки, иконки, dired-деревья файлов, мини-карты, красивое отображение таблиц и графиков, современные темы.
+10. **Глубокую интеграцию с системой**: управление устройствами, звуком, сетью, внешними приложениями и процессами, скриншоты, ведение истории и восстановление состояний.
+11. **Механизмы безопасности**: прозрачное шифрование файлов и паролей, хранение секретов, быстрая очистка сессии, гибкая работа с GPG.
+12. **Минимализм и эргономику**: рабочее пространство всегда организовано, нет лишних диалогов, интерфейс упрощён, ресурсопотребление минимальное — даже на старом оборудовании.
+13. **Открытую экосистему расширений**: подключайте новые функции мгновенно, проект поддерживается и развивается активным сообществом энтузиастов.
 
-   - A prodigious capacity for the instantaneous arrangement of the interface and faculties according to one’s immediate undertakings, by virtue of the boundless flexibility inherent to LISP.
-   - Literary programming and a code, which in itself bears the virtue of self-documentation.
-   - Modularity, bestowing ease of adding new faculties and implements.
-   - Profound capabilities for the customisation of the interface and implements, the creation of one’s own commands and mechanical incantations (macros).
-   - The automation of daily toils, expediting the execution of one's tasks.
+---
 
-** A Universal Platform for Development
-   - Support for various tongues of programming and frameworks through modules and extensions.
-   - Harmonious integration with the most principal implements of development: systems of version control, repositories of data, instruments of testing, containerisation, and the rhythms of Continuous Integration and Delivery.
-   - Implements in-built for the analysis of code, its elegant refactoring and the noble pursuit of debugging, all in compatibility with LSP and DAP.
+* Подробнее о ключевых компонентах:
 
-** Effective Command of Tasks and Projects
-   - Enhanced possibilities for the planning and proper organisation of affairs and projects.
-   - Implements for the keeping of accounts with respect to time spent, the maintenance of notes, and the drafting of schedules.
+**Настройка & Автоматизация**
 
-** Deep Connexion with the Operating System and Internet-Services
-   - The governance of the file system and resources of the operating system directly from the PWE, ensuring thus a singularity of interface.
-   - In-built clients for the transmission of mail, for the browsing of the world-wide web, for the reading of public broadsheets (RSS), and for those messengers through which communication is centralised and rendered more convenient.
-   - The support of REST and GraphQL, that one may work with web-based protocols and integrate with the diverse pantheon of external services.
+- Переназначаем практически любой аспект — от глобальных клавиш и макросов до уникальных визуальных тем, размеров шрифтов, поведения окон, действий мыши.
+- "Добавь кнопку": мгновенное создание новых сочетаний клавиш от любого действия с автосохранением в ваш конфиг.
+- Автоматизация рабочих циклов: сценарии, запуск приложений, выполнение внешних команд, интеграция с системными служебными программами.
+- Динамическое раскрытие и сворачивание информации (outline, folding), генераторы шаблонов, автоформатирование кода.
 
-** Automation and Scripting
-   - The composition and execution of scripts in the noble tongue of LISP, for the automation of mundane tasks and for the handling of data.
-   - Integration with implements external, such that the orchestration of working processes is both possible and dignified.
-   - Patterns and templates for the generation of both code and documentation, rendering the commencement of new projects an easier burden to bear.
+**Код и Разработка**
 
-** Artificial Intelligence and the Study of Mechanical Learning
-   - The integration of implements devoted to the study of artificial intelligence, for the analysis of data and for the generation of code.
-   - The prudent use of previously-trained models, bestowing abilities of pattern recognition and the high art of language processing, all within the tranquil boundaries of the working environment.
-   - In-built faculties for the creation and the trial of one’s own models of machine learning.
+- Единая точка входа для кода разных языков: автодетекция, агрессивное и автоматическое выравнивание, цветовая аудентификация идентификаторов, folded- и structural editing.
+- Поддержка LSP/eglot: переименование, быстрый переход по проекту, пуш-диагностика и автоматическая проверка синтаксиса.
+- Управление проектами и версиями: интеграция с Git (magit, blamer, diff-hl, timemachine), Docker, CI/CD, Kanban для задач.
+- Быстрый поиск, автозамена, многокурсорность, мини-карта навигации, структурный просмотр кода (imenu, org, outline).
 
-** Collaborative Labour and the Celestial Spheres of the Cloud
-   - Implements for the conduct of business with cloud repositories, to ensure both access and the exchange of documents.
-   - Remote access to services and infrastructure, furnished via the commendable arts of SSH and VPN.
+**Текст и Заметки**
 
-** Containers and Virtualisation
-   - Implements for the masterful management of Docker and Kubernetes containers, that the deployment and the watching over of applications may proceed apace.
-   - Support for the labour with virtual machines, to enable the testing of applications in solitude and isolation.
-   - The automation of the governance of virtual abodes, with scenarios scripted for such purposes.
+- Встроенная поддержка Org-mode: заметки, TODO-листы, планировщик встреч, встроенный редактор диаграмм (plantuml, mermaid), скрытие/раскрытие блоков, inline-изображения.
+- Быстрая конвертация областей текста между Markdown, Org и кодом.
+- Расширяемая коллекция сниппетов по всем основным языкам.
+- Интегрированные инструменты проверки орфографии и автодополнение естественного языка.
 
-** Minimalism and the Pursuit of Ergonomics
-   - An interface conceived upon the noble precepts of minimalism, to augment both productivity and the gentleman’s comfort.
-   - Flexible arrangement of the working space, according to one’s personal inclination.
-   - Efficient means of managing resources, that stable operation might grace even those machines of humble endowment.
+**Онлайн-сервисы и внешние устройства**
 
-** Security and Reliability
-   - Implements for the safeguarding of code and data, including the encrypting thereof, and the careful keeping of credentials.
-   - Regular renewal and update, that one may remain ever protected from the invisible menace of threats and vulnerabilities.
+- Мессенджеры (Telegram), почта, RSS-ридер.
+- Встроенный REST-клиент для тестирования API, SQL-консоль.
+- Управление внешними экранами, аудиоустройствами, bluetooth — всё через обычные команды.
 
-** The Community, Support, and the Glorious Ecosystem of Extensions
-   - An open ecosystem and a most active community, proffering a multitude of extensions for affairs of sundry types.
-   - The integration of analytical instruments and the governance of versions within the working environment itself.
-   - A lively society of developers and users, ever fountaining knowledge and mutual support.
-   - Extensive documentation and abundant instructive materials, that the inquirer may always find answer to his or her learned questions.
+**ИИ и голосовые инструменты**
 
+- Прямой диалог с языковыми моделями: GPT (через разные провайдеры и эндпоинты), Claude, Gemini, локальные Ollama-модели.
+- Встроенное голосовое управление: автоматический запуск распознавания речи (Whisper), быстрое преобразование речи-текст в любом месте системы.
+- AI-инструменты в редакторе: генерация кода, автоматическое исправление ошибок контекстно, вставка и переписывание готовых текстов.
+- Контекстное сохранение, экспорт и импорт историй, интеграция с проектными заметками и кодовыми файлами.
 
+**Внешний вид, эргономика, мультимедиа**
 
+- Адаптивные темы, “ночной” режимы терминалов и оболочек, крупные иконки, поддержка красивых моноширных и variable-pitch-шрифтов.
+- Просмотр и редактирование изображений, PDF, офисных файлов, встроенные мини-игры (шахматы и прочее).
+- Специальные режимы для чтения, показа календаря, полноценная поддержка китайского и других языков.
 
+---
+
+* Быстрый старт
+
+1. **Клонируйте/скачайте проект и добавьте путь**:
+
+   #+begin_src lisp
+   (add-to-list 'load-path "~/ПРО")
+   #+end_src
+
+2. **Загрузите пример запуска**:
+   #+begin_src lisp
+   (require 'пример-init)
+   #+end_src
+
+3. **Редактируйте/дополняйте свою конфигурацию в отдельных файлах**. Всё разделено по смыслу (код, окна, организация, цвет, автодополнение, интеграция с ИИ и т.д.)
+
+---
+
+* Разделы и файлы
+
+Функциональность организована в независимые модули с “говорящими” именами:
+
+- `про-код-на-lisp.el`, `про-код-на-javascript.el`, ..., — языковые окружения с настройками, автодополнением, скриптами, отладкой и форматированием.
+- `про-организацию.el`, `про-файлы-и-папки.el`, `про-терминалы.el`, — файловая навигация, dired, дерево проектов, терминалы и консоли с кастомной цветовой схемой.
+- `про-ии.el`, — интеграция искусственного интеллекта, быстрый доступ к моделям, планировщик и автодополнение.
+- `про-внешний-вид.el`, `про-шрифты.el`, — темы, иконки, гибкая адаптация интерфейса.
+- `про-историю.el`, `про-менеджер-пакетов.el`, — автоматизация установки, сохранение истории, Undo-tree.
+- `пример-init.el`, `пример-early-init.el`, — примеры точек входа, которые можно использовать как шаблон.
+
+---
+
+* Философия
+
+ПРО — это не просто набор настроек, а полноценное рабочее пространство, где автоматизация не ограничивается языковыми расширениями или удобствами интерфейса: здесь в центре — ваш способ мышления, ваша методология продуктивности.
+
+Каждый модуль можно включать и выключать отдельно, переписывать или расширять под свои задачи — всё открыто, прозрачно и легко масштабируется.
+
+Главное — не забывайте: **работа — это не страдания**, а творчество и исследование. Пусть ваша система становится соратником в работе и исследованиях!
+
+---
