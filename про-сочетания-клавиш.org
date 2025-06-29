@@ -44,6 +44,7 @@
 | C-c C-b           | consult-buffer-other-window         |
 | C-x C-t           | выбрать-контакт-в-телеге            |
 | S-s-<iso-lefttab> | tab-bar-switch-to-prev-tab          |
+| s-<tab>           | tab-bar-switch-to-next-tab          |
 | M-s s             | consult-line                        |
 | M-s M-s           | consult-line-multi                  |
 | M-s d             | consult-dash                        |
@@ -331,5 +332,4 @@
 #+RESULTS:
 : про-сочетания-клавиш
 
-
-
+** 

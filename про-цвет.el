@@ -10,6 +10,11 @@
 
 ;;; Code:
 
+;; КРИТИЧЕСКИ ВАЖНО: Вызываем как можно раньше, ДО use-package, чтобы не мигал фон.
+(condition-case nil
+    (load-theme 'tao-yin t)
+  (error)) ;; если вдруг пакет не установлен — не падаем, просто продолжим
+
 (require 'загрузить)
 
 (defun tao-palette ()

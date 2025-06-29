@@ -108,9 +108,9 @@ were part of the capture template definition."
 ;;;; Система контроля версий Git
 
 (use-package magit
-  :defer t 
-  :after transient
   :ensure t
+  :defer t
+  :after transient
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
           (magit-after-save-refresh-buffers t))
   :init
@@ -120,11 +120,10 @@ were part of the capture template definition."
 ;; Кто это сделал?
 
 (use-package blamer
-  :defer t 
   :ensure t
+  :defer t
   :bind (("C-c M-i" . blamer-show-commit-info)
 	     ("C-c M-b" . blamer-mode))
-  :defer t
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 10)
@@ -175,8 +174,8 @@ were part of the capture template definition."
 ;;;; Автоматизация проекта
 
 (use-package prodigy
-  :defer t 
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;;;; Контейнеры
 
@@ -219,8 +218,8 @@ were part of the capture template definition."
 ;;;; Поддержка Gitlab
 
 (use-package gitlab
-  :defer t 
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; (use-package lab
 ;;   :init (установить-из :repo "isamert/lab.el"))

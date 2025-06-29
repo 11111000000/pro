@@ -5,6 +5,7 @@
 
 (use-package dashboard
   :ensure t
+  :defer t
   :defines (dashboard-mode-map)
   :bind (
          ("<f5>" . dashboard-refresh-buffer)

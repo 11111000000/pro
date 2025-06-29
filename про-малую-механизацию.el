@@ -63,10 +63,6 @@
         (message "Привязка %s -> %s добавлена в %s" pretty-key fn-symbol keys-file)))))
 
 
-;; Глобальные пользовательские клавиши (keys.el)
-(let ((user-keys-file (expand-file-name "keys.el" user-emacs-directory)))
-  (when (file-exists-p user-keys-file)
-    (load user-keys-file nil t)))
 
 (provide 'про-малую-механизацию)
 ;;; про-малую-механизацию.el ends here.

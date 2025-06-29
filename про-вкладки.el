@@ -4,7 +4,7 @@
 ;;; Code:
 ;;;;  Верхний уровень вкладок
 
-;; Использование пакета powerline для улучшения отображения строки состояния.
+;; Использование пакета powerline для оформления (TODO - вытащить только глифы)
 (use-package powerline
   :ensure t)
 
@@ -159,19 +159,19 @@
   
   (defvar высота-tab-line 20)
 
-  (custom-set-faces
-   '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil))))
-   '(tab-line-tab ((t (:inherit 'default :foreground "#555555" :height 120 :box nil ))))
-   '(tab-line-tab-current ((t (:inherit 'default :height 120 :box nil))))
-   '(tab-line-tab-inactive ((t (:foreground "#333333" :background "#aaaaaa" :height 1.0 :box nil))))
-   '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888")))))
+  ;; (custom-set-faces
+  ;;  '(tab-line ((t (:height 1.0 :box nil :underline nil :overline nil :strike-through nil))))
+  ;;  '(tab-line-tab ((t (:inherit 'default :foreground "#555555" :height 120 :box nil ))))
+  ;;  '(tab-line-tab-current ((t (:inherit 'default :height 120 :box nil))))
+  ;;  '(tab-line-tab-inactive ((t (:foreground "#333333" :background "#aaaaaa" :height 1.0 :box nil))))
+  ;;  '(tab-line-tab-inactive-alternate ((t (:height 1.0 :box nil :background "#888888")))))
 
   (require 'powerline)
   
   (defun формат-имени-вкладки-tab-line (buffer &optional _buffers)
-    (powerline-render (list (powerline-wave-right 'tab-line nil высота-tab-line)
+    (powerline-render (list (powerline-wave-right 'tab-line nil (+ 1 высота-tab-line))
                             (format "%s" (buffer-name buffer))
-                            (powerline-wave-left nil 'tab-line высота-tab-line))))
+                            (powerline-wave-left nil 'tab-line (+ 1 высота-tab-line)))))
 
   (setq tab-line-tab-name-function #'формат-имени-вкладки-tab-line)
 

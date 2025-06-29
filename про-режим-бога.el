@@ -19,7 +19,6 @@
   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box '(bar . 3)))
   (if (or god-local-mode buffer-read-only) (hl-line-mode 1) (hl-line-mode -1)))
 
-
 (use-package god-mode
   :ensure t
   :if window-system ;; в консоли отключено, потому что курсоор не меняет цвет
@@ -36,6 +35,7 @@
          :map god-local-mode-map
          ("C-\\" . nil)
          ("i" . god-local-mode)
+         ("`" . self-insert-command)
          ("RET" . (lambda () (interactive)))
          ("j" . next-line)
          ("k" . previous-line)
@@ -75,8 +75,7 @@
   (global-set-key (kbd "C-<f1>") help-map)
   (global-set-key (kbd "C-h") help-map)
 
-
-  (god-mode-all)
+  ;(god-mode-all)
   (курсор-бога))
 
 (provide 'про-режим-бога)

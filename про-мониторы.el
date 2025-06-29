@@ -30,23 +30,21 @@
             " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
             " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
             (if имя-третьего-монитора (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора) "")))
-    ;; Подождать указанное время, затем «разбудить» EXWM,
-    ;; если он уже загружен.
-    (run-with-timer
-     про/monitor-refresh-delay
-     nil
-     (lambda ()
-       (when (fboundp 'exwm-randr-refresh)
-         (exwm-randr-refresh))))))
+    ;; СИНХРОННО вызываем exwm-randr-refresh только если включен exwm-randr-mode
+    (when (and (fboundp 'exwm-randr-refresh)
+               (bound-and-true-p exwm-randr-mode))
+      (exwm-randr-refresh))))
 
 
 (defun про-мониторы-инициализировать ()
-  "Инициализация exwm-randr и установка workspace мониторных плейлистов."
-  (exwm-randr-mode t)
+  "Только установка workspace<->monitor привязки и хук пересборки xrandr.
+
+exwm-randr-mode и xrandr запускаются вне этой функции!"
   (setq exwm-randr-workspace-monitor-plist
-        (list 0 имя-встроенного-монитора 1 имя-внешнего-монитора 2 имя-третьего-монитора))
-  (применить-расположение-мониторов)
-  ;; Смена топологии при изменении состава мониторов
+        (list 0 имя-встроенного-монитора
+              1 имя-внешнего-монитора
+              2 имя-третьего-монитора))
+  ;; Смена топологии при изменении состава мониторов – только xrandr!
   (add-hook 'exwm-randr-screen-change-hook #'применить-расположение-мониторов))
 
 (provide 'про-мониторы)

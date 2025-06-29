@@ -7,7 +7,7 @@
 
 (require 'установить-из)
 
-(defun my/kill-buffer-and-window ()
+(defun pro/kill-buffer-and-window ()
   "Закрыть текущий буфер и окно, если оно не единственное."
   (interactive)
   (let ((buf (current-buffer))
@@ -18,7 +18,7 @@
         (delete-window win)
         (kill-buffer buf)))))
 
-(defun my/vterm-copy-mode-move-up ()
+(defun pro/vterm-lint-mode-move-up ()
   "Включить vterm-copy-mode и сразу перейти на строку выше."
   (interactive)
   (unless (bound-and-true-p vterm-copy-mode)
@@ -32,7 +32,7 @@
        ;; стандартная команда "previous-line":
        (t (previous-line))))))
 
-(defun my/vterm-copy-mode-escape ()
+(defun pro/vterm-copy-mode-escape ()
   "Выйти из vterm-copy-mode и перейти к приглашению ввода shell."
   (interactive)
   (when (bound-and-true-p vterm-copy-mode)
@@ -40,27 +40,118 @@
   (when (and (boundp 'vterm--process-marker) vterm--process-marker)
     (goto-char vterm--process-marker)))
 
+(defun pro/vterm-copy-mode-move-M-up ()
+  "Выйти из vterm-copy-mode и отправить терминалу <up> (Meta-p в copy-mode делает перемещение в истории терминала)."
+  (interactive)
+  (when (bound-and-true-p vterm-copy-mode)
+    (vterm-copy-mode -1))
+  (when (fboundp 'vterm-send-key)
+    (vterm-send-key "<up>")))
+
+(defun pro/vterm-interrupt ()
+  "Send C-c as an interrupt in vterm, always."
+  (interactive)
+  (when (eq major-mode 'vterm-mode)
+    (vterm-send-key "c" nil nil t)))
+
+
 (use-package vterm
   :ensure t
   :functions (vterm-send-next-key vterm-yank)
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command)
                 ("C-\\" . #'toggle-input-method)
+                ("C-c C-c" . pro/vterm-interrupt)
                 ("C-c C-t" . #'vterm-copy-mode)
                 ("C-q" . #'vterm-send-next-key)
                 ("C-y" . #'vterm-yank)
                 ("s-v" . #'vterm-yank)
                 ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
                 ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
-                ("C-p" . my/vterm-copy-mode-move-up)
-                ("s-q" . my/kill-buffer-and-window))
+                ("C-p" . pro/vterm-line-mode-move-up)
+                ;; "M-p" для vterm-copy-mode настроим в :config ниже!
+                ("s-q" . kill-current-buffer))
   :config
   ;; В режиме копирования C-g возвращает в терминал и переводит к вводу
-  (define-key vterm-copy-mode-map (kbd "C-g") #'my/vterm-copy-mode-escape))
+  (define-key vterm-copy-mode-map (kbd "C-g") #'pro/vterm-copy-mode-escape)
+  ;; В режиме copy-mode: M-p — вернуться в терминал и послать <up>
+  (define-key vterm-copy-mode-map (kbd "M-p") #'pro/vterm-copy-mode-move-M-up))
 
 (use-package multi-vterm
   :ensure t
   :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
+
+(defun pro/vterm-project-or-here ()
+  "В проекте — multi-vterm-project, вне проекта — ровно один vterm на директорию через popper (toggle!)."
+  (interactive)
+  (require 'popper)
+  (let ((proj (ignore-errors (project-current))))
+    (if proj
+        (multi-vterm-project)
+      (let* ((dir (expand-file-name default-directory))
+             ;; ищем существующий vterm буфер с подходящим default-directory
+             (existing
+              (cl-find-if
+               (lambda (buf)
+                 (and (eq (buffer-local-value 'major-mode buf) 'vterm-mode)
+                      (string= (expand-file-name
+                                (buffer-local-value 'default-directory buf)) dir)))
+               (buffer-list)))
+             ;; есть ли popup-окно popper _именно_ с этим буфером?
+             (popup-win (and existing
+                             (cl-find-if
+                              (lambda (win)
+                                (and (eq (window-buffer win) existing)
+                                     (window-parameter win 'popper-window)))
+                              (window-list)))))
+        (cond
+         ;; Если мы прямо сейчас в этом буфере и он в popper-окне — закрыть "сам себя"
+         ;; Если уже открыт vterm для текущей папки и мы в нём находимся, то просто закрываем окно
+         ((and existing
+               (eq (current-buffer) existing)
+               (window-parameter (selected-window) 'popper-window))
+          (delete-window (selected-window))
+          (cl-return-from pro/vterm-project-or-here nil))
+
+         ;; Если popup видно в другом окне — тоже его закрыть
+         ((and popup-win (eq (window-buffer popup-win) existing))
+          (delete-window popup-win))
+
+         (existing
+          ;; Буфер есть, показать его как popper popup
+          (let ((display-buffer-overriding-action
+                 '((display-buffer-reuse-window display-buffer-pop-up-window)
+                   . ((window-height . popper-window-height)))))
+            (pop-to-buffer existing)
+            (when (featurep 'popper) (popper-open-latest))))
+
+         (t
+          ;; Нет vterm — создаём, но НЕ pop-to-buffer Messages! Ожидаем реальный vterm, только потом popup
+          (let ((default-directory dir))
+            (let ((inhibit-message t)) (vterm))) ;; подавим лишние сообщения, для надёжности
+          ;; Запускаем polling (ожидание появления настоящего vterm буфера, не Messages!)
+          (let ((retries 20)) ; ждать примерно 2 сек (20 * 0.1)
+            (cl-labels
+                ((wait-vterm ()
+                  (let ((buf (cl-find-if
+                              (lambda (buf)
+                                (and (eq (buffer-local-value 'major-mode buf) 'vterm-mode)
+                                     (string= (expand-file-name
+                                               (buffer-local-value 'default-directory buf)) dir)))
+                              (buffer-list))))
+                    (cond
+                     (buf
+                      (let ((display-buffer-overriding-action
+                             '((display-buffer-reuse-window display-buffer-pop-up-window)
+                               . ((window-height . popper-window-height)))))
+                        (pop-to-buffer buf)
+                        (when (featurep 'popper) (popper-open-latest))))
+                     ((> retries 0)
+                      (setq retries (1- retries))
+                      (run-with-timer 0.1 nil #'wait-vterm))
+                     ;; если не дождались vterm — ничего не делать: пусть функция тихо завершится
+                     ))))
+              (wait-vterm)))))))))
 
 ; (use-package capf-autosuggest }
 ;   :ensure t }
@@ -68,19 +159,34 @@
 ;   (eshell-mode capf-autosuggest-mode) }
 ;    (comint-mode capf-autosuggest-mode)) }
 
+;; Быстрый запуск терминала для текущей директории/проекта:
+;; (global-set-key (kbd "s-~") #'pro/vterm-project-or-here)
+;; для EXWM:
+;; (exwm-input-set-key (kbd "s-~") #'pro/vterm-project-or-here)
+
 ;; Цветовая схема tab-line специально для Eshell
 
-(defun my/eshell-tabline-colors ()
+(defun pro/eshell-tabline-colors ()
   "Меняет только текущую вкладку tab-line в Eshell: чёрный фон, белый текст, жирный."
   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil))
   )
 
 ;; Оболочка Emacs Shell
+(defun pro/eshell-corfu-dark ()
+  "Dark popup for corfu in Eshell."
+  (face-remap-add-relative 'corfu-default
+                           :background "#181818" :foreground "#eeeeee")
+  (face-remap-add-relative 'corfu-current
+                           :background "#333333" :foreground "#ffffbb" :weight 'bold)
+  (face-remap-add-relative 'corfu-border
+                           :background "#181818"))
 
-(defun my/eshell-dark-theme ()
+
+
+(defun pro/eshell-dark-theme ()
   "Сделать буфер Eshell максимально похожим на терминал: чёрный фон, терминальные ansi-цвета, без fringes."
-  ;; Очистить ansi-color-process-output из ГЛОБАЛЬНОГО и buffer-local фильтров, если где-либо была добавлена:
+  ;; Очистить ansi-color-process-output из ГЛОБАЛЬНОГО и buffer-local фильтров, если где-либо была добавлена:  
   (setq eshell-output-filter-functions
         (remove 'ansi-color-process-output eshell-output-filter-functions))
   (setq-local eshell-output-filter-functions
@@ -100,29 +206,71 @@
   (setq-local ansi-term-color-vector
               [terminal "#000000" "#ff5555" "#50fa7b" "#f1fa8c"
                         "#bd93f9" "#ff79c6" "#8be9fd" "#bbbbbb"])
-  ;; При необходимости можно подправить основные eshell faces для ls/прочего —
-  ;; но для честной терминальной эмуляции их можно не менять!
-  ;; Правильная раскраска ansi — только через preoutput filter!
+
+  ;; Явно задаём цвета для eshell-syntax-highlighting (чтобы соответствовали терминальным цветам).
+  (set-face-attribute 'eshell-syntax-highlighting-alias-face nil
+                      :foreground "#bd93f9" :weight 'bold) ; яркий синий
+  (set-face-attribute 'eshell-syntax-highlighting-builtin-command-face nil
+                      :foreground "#50fa7b" :weight 'bold) ; зелёный
+  (set-face-attribute 'eshell-syntax-highlighting-command-substitution-face nil
+                      :foreground "#ff79c6" :slant 'italic) ; пурпурный курсив
+  (set-face-attribute 'eshell-syntax-highlighting-comment-face nil
+                      :foreground "#bbbbbb" :slant 'italic) ; светло-серый
+  (set-face-attribute 'eshell-syntax-highlighting-default-face nil
+                      :foreground "#cccccc") ; дефолт (чуточку светлее для команд)
+  (set-face-attribute 'eshell-syntax-highlighting-delimiter-face nil
+                      :foreground "#f1fa8c") ; жёлтый
+  (set-face-attribute 'eshell-syntax-highlighting-directory-face nil
+                      :foreground "#8be9fd" :weight 'bold) ; бирюзовый (голубой)
+  (set-face-attribute 'eshell-syntax-highlighting-envvar-face nil
+                      :foreground "#ff79c6" :weight 'bold) ; пурпурный
+  (set-face-attribute 'eshell-syntax-highlighting-file-arg-face nil
+                      :foreground "#eeeeee") ; почти белый
+  (set-face-attribute 'eshell-syntax-highlighting-invalid-face nil
+                      :foreground "#ff5555" :background "#000000" :weight 'bold) ; ярко-красный
+  (set-face-attribute 'eshell-syntax-highlighting-lisp-function-face nil
+                      :foreground "#bd93f9") ; синий/фиолетовый
+  (set-face-attribute 'eshell-syntax-highlighting-option-face nil
+                      :foreground "#f1fa8c") ; жёлтый
+  (set-face-attribute 'eshell-syntax-highlighting-shell-command-face nil
+                      :foreground "#50fa7b" :weight 'bold) ; зелёный для команд
+  (set-face-attribute 'eshell-syntax-highlighting-string-face nil
+                      :foreground "#f1fa8c") ; жёлтые строки
+
   (add-to-list 'eshell-preoutput-filter-functions #'ansi-color-apply)
-  ;; Убираем fringes у окна (для красоты)
+
   (when (get-buffer-window)
-    (set-window-fringes (get-buffer-window) 0 0 nil))
-  ;; На всякий случай: если буфер показывается позже, повторим обрезку fringes
+    (set-window-fringes (get-buffer-window) 0 0 nil)
+    (set-window-margins (get-buffer-window) 0 0))
+  
   (add-hook 'window-configuration-change-hook
             (lambda ()
-              (when (eq major-mode 'eshell-mode)
-                (set-window-fringes (get-buffer-window) 0 0 nil)))
-            nil t))
+              (when (and (eq major-mode 'eshell-mode)
+                         (get-buffer-window))
+                (set-window-fringes (get-buffer-window) 0 0 nil)
+                (set-window-margins (get-buffer-window) 0 0)))
+            nil t)
+  
+  ;; (add-hook 'window-configuration-change-hook
+  ;;           (lambda ()
+  ;;             (when (eq major-mode 'eshell-mode)
+  ;;               (set-window-fringes (get-buffer-window) 0 0 nil)
+  ;;               (set-window-margins (get-buffer-window) 0 0)))
+  ;;           nil t)
+  )
+
 (require 'esh-mode)
+
 (use-package eshell
   :ensure t
   :hook ((eshell-mode . tab-line-mode)
-         (eshell-mode . my/eshell-dark-theme)
-         (eshell-mode . my/eshell-tabline-colors))
+         (eshell-mode . pro/eshell-dark-theme)
+         (eshell-mode . pro/eshell-corfu-dark)
+         (eshell-mode . pro/eshell-tabline-colors))
   :bind (:map eshell-mode-map
          ("C-a" . beginning-of-line)
          ("DEL" . my-eshell-backspace)
-         ("s-q" . my/kill-buffer-and-window))
+         ("s-q" . pro/kill-buffer-and-window))
   :custom
   (comint-prompt-read-only t)
   (eshell-highlight-prompt nil)
@@ -232,11 +380,14 @@
                              'face 'font-lock-type-face)
                  (when git-dirty?
                    (propertize "*" 'face 'default))))
-       (if (> exit-code 0)
-           (propertize
-            (format "\n%s " (if icons (all-the-icons-material "error" :height 0.9 :v-adjust -0.2) "✗"))
-            'face 'error)
-         (propertize "\n❯ " 'face '(:foreground "#44bb44" :weight bold)))))))
+       (let ((prompt-color (if (> exit-code 0) "#bb7744" "#44bb44")))
+         (set-face-foreground 'eshell-prompt prompt-color)
+         (set-face-attribute 'eshell-prompt nil :weight 'bold)
+         (concat
+          "\n"
+          (propertize
+           "❯ "
+           'face 'eshell-prompt)))))))
 
 (setq eshell-prompt-function #'приглашение-eshell)
 
@@ -244,6 +395,29 @@
 ;;   :init
 ;;   (eshell-did-you-mean-setup)
 ;;   :ensure t)
+
+;;;; Красивый баннер для Eshell со сведениями о системе
+
+;; Функция формирует баннер (ВОЗВРАЩАЕТ СТРОКУ)
+(defun pro/eshell-system-banner-string ()
+  "Вернуть красивый баннер с информацией о системе для вывода в Eshell."
+  (let* ((user (user-login-name))
+         (host (system-name))
+         (os   (capitalize (symbol-name system-type)))
+         (emacs-version-string (format "Emacs %s" emacs-version))
+         (time (format-time-string "%Y-%m-%d %H:%M:%S"))
+         (line (make-string 58 ?─)))
+    (concat
+     "\n"
+     (format "  👤 %s   🖥 %s   💻 %s   ⏰ %s\n" user host os time)
+     (format "  %s\n" emacs-version-string)
+     "  " line "\n\n"
+     )))
+
+;; Настраиваем переменную, как это ожидает модуль em-banner
+(setq eshell-banner-message '(pro/eshell-system-banner-string))
+
+;; Не требуется отдельная функция eshell-banner-message – eshell сам вызывает функцию из переменной
 
 (use-package eshell-toggle
   :ensure t
@@ -271,7 +445,7 @@
 (require 'eshell)
 (require 'json)                       ; в <27: (require 'json)
 
-(defun my/npm-scripts ()
+(defun pro/npm-scripts ()
   "Список скриптов из ближайшего package.json."
   (when-let* ((root (locate-dominating-file default-directory "package.json"))
               (file (expand-file-name "package.json" root)))
@@ -293,7 +467,7 @@
      "update" "version" "view"))
   ;; если уже ввели «run», подсказываем скрипты из package.json
   (when (string= (pcomplete-arg 1) "run")
-    (pcomplete-here* (my/npm-scripts))))
+    (pcomplete-here* (pro/npm-scripts))))
 
 (provide 'про-терминалы)
 ;;; про-терминалы.el ends here

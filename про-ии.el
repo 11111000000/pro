@@ -46,8 +46,9 @@
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (:map gptel-mode-map
-         ("C-c RET" . gptel-send)
-         ("M-RET"   . pro/gptel-send-no-context))
+         ("C-c RET"      . gptel-send)
+         ("M-RET"        . pro/gptel-send-no-context)
+         ("C-c M-RET"    . pro/gptel-aibo-no-context))
   :custom
   ((gptel-default-mode 'org-mode)                ;; Режим по умолчанию для gptel
    (gptel-org-branching-context nil)             ;; Отключить ветвление контекста в org-mode
@@ -56,6 +57,18 @@
    (gptel--system-message
     "Ты — большая языковая модель, живущая в Emacs под Linux Debian bookworm. Отвечай в виде Org-mode."))
   :config
+  ;; Реализация отправки в aibo без контекста: C-c M-RET
+  (defun pro/gptel-aibo-no-context ()
+    "Отправить в aibo без контекста (gptel-use-context = nil, через gptel-aibo-send)."
+    (interactive)
+    (let ((gptel-use-context nil))
+      (gptel-aibo-send)))
+  
+  (defun pro/gptel-send-no-context ()
+    "Отправить в aibo без контекста (gptel-use-context = nil, через gptel-aibo-send)."
+    (interactive)
+    (let ((gptel-use-context nil))
+      (gptel-send)))
   ;; Подключаем библиотеку gptel-context-store из .libs рядом с текущим конфигом
   (require 'gptel-context-store)
 
@@ -138,7 +151,6 @@
   (setq gptel-backend (gptel-get-backend "Proxy OpenAI"))
   (setq gptel-model 'gpt-4.1))
 
-
 (use-package gptel-aibo
   :ensure t)
 
@@ -185,7 +197,6 @@
   :bind (("s-i y" . minuet-complete-with-minibuffer)
          ("s-i TAB" . minuet-show-suggestion)
          ("s-i s-<tab>" . minuet-complete-with-minibuffer)
-         ("s-<tab>" . minuet-show-suggestion)
          ("s-i s-m" . minuet-configure-provider)
          :map minuet-active-mode-map
          ("M-p" . minuet-previous-suggestion)

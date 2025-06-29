@@ -84,8 +84,8 @@
 ;;;; Дерево
 
 (use-package treemacs
-  :defer t 
   :ensure t
+  :defer t
   :functions (treemacs-follow-mode treemacs-filewatch-mode treemacs-select-window
                               treemacs-fringe-indicator-mode treemacs-git-mode
                               treemacs-hide-gitignored-files-mode treemacs-icons-dired-mode)
@@ -169,16 +169,16 @@
 ;;;; Дерево для проектов
 
 (use-package treemacs-projectile
-  :defer t 
-  :after (treemacs projectile)
-  :ensure t)
+  :ensure t
+  :defer t
+  :after (treemacs projectile))
 
 ;;;; Дерево для Git
 
 (use-package treemacs-magit
-  :defer t 
-  :after (treemacs magit)
-  :ensure t)
+  :ensure t
+  :defer t
+  :after (treemacs magit))
 
 ;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
 ;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
@@ -189,7 +189,8 @@
   :defer t  :ensure t)
 
 (use-package dired-toggle-sudo
-  :defer t  :ensure t)
+  :ensure t
+  :defer t)
 
 (provide 'про-файлы-и-папки)
 ;; Local Variables:

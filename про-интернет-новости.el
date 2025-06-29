@@ -5,8 +5,8 @@
 ;;;; Elfeed
 
 (use-package elfeed
-  :defer t
   :ensure t
+  :defer t
   :defines (elfeed-feeds elfeed-search-filter)
                                         ;:hook ((elfeed-search-mode . variable-pitch-mode)))
   :config

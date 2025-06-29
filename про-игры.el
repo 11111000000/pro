@@ -11,7 +11,9 @@
   :commands (chess-game-mode chess-board-mode chess-board)
   :config)
 
-(use-package pygn-mode :ensure t)
+(use-package pygn-mode
+  :ensure t
+  :defer t)
 
 ;; Выполение боков вида
 ;; #+begin_src chess :file startpos.svg :notation pgn

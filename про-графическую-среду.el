@@ -16,14 +16,14 @@
 
 ;;;; ExWM
 
-(setq-default exwm-debug nil)
+(setq-default exwm-debug t)
 
 (setq-default exwm-workspace-number 3)
 (setq-default exwm-workspace-show-all-buffers t)
 (setq-default exwm-layout-show-all-buffers t)
 (setq-default exwm-manage-force-tiling nil)
-(setq-default exwm-systemtray-background-color 'workspace-background)
-(setq-default exwm-systemtray-height 21)
+(setq-default exwm-systemtray-background-color "#222222")
+(setq-default exwm-systemtray-height 24)
 
 (defvar сочетания-для-эмуляции
   '(([?\C-b] . left)
@@ -44,7 +44,6 @@
     ([?\C-y] . ?\C-v)
     ;; search
     ([?\C-s] . ?\C-f)))
-(setq-default exwm-input-simulation-keys сочетания-для-эмуляции)
 
 (defun скриншот-области ()
   "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
@@ -83,78 +82,75 @@ KEY-BINDINGS - список пар (клавиша функция)"
 (use-package про-мониторы
   :if window-system)
 
+;; Временный контроль: логируем параметры embedder window system tray
+
 (defvar про/графика-initialized nil
   "Флаг, сигнализирующий, что EXWM-окружение уже запущено.")
 
 (defun про/старт-графической-среды ()
-  "Единый инициализатор EXWM: сначала применяем xrandr, потом ExWM и system tray."
+  "Единый инициализатор EXWM: правильный порядок запуска RandR/EXWM."
   (interactive)
   (unless про/графика-initialized
     (setq про/графика-initialized t)
     (require 'про-мониторы)
-    ;; 1. Выставляем топологию мониторов ДО запуска EXWM
+    ;; 1. Сначала xrandr — применить физ.раскладку мониторов
     (применить-расположение-мониторов)
-    ;; 2. Подождём столько, сколько указано в `про/monitor-refresh-delay`
-    (run-with-timer
-     про/monitor-refresh-delay nil
-   (lambda ()
-     ;; 3. Запускаем EXWM и system tray только после того как все мониторы заведены
-     (require 'exwm)
-     (require 'exwm-systemtray)
+    ;; 2. Подождать немного после применения xrandr
+    (sleep-for про/monitor-refresh-delay)
+        ;; 3. exwm-randr-mode включается ДО EXWM!
+    (when (fboundp 'exwm-randr-mode)
+      (exwm-randr-mode t))
+    ;; 4. workspace<->monitor (RandR plist)
+    (про-мониторы-инициализировать)
+    ;; 5. Запускаем EXWM только после этого
+    (require 'exwm)
+    ;; Глобальные клавиши над всеми приложениями
+    (dotimes (i 9)
+      (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+      (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
+      (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
+    
+    (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
 
-     ;; Глобальные клавиши над всеми приложениями
-     (dotimes (i 9)
-       (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-       (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
-       (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
-     (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+    (setq exwm-input-simulation-keys сочетания-для-эмуляции)
+    (push ?\C-\\ exwm-input-prefix-keys)
+    
+    (exwm-wm-mode 1)
+    ;; System tray и XIM запускаются через хуки (ниже)
+    (exwm-systemtray-mode t)
+    (exwm-xim-mode t)
 
-     ;; Запуск EXWM
-     (exwm-enable)
-     (exwm-systemtray-mode)
 
-     ;; Инициализация randr и workspace/monitor settings
-     (про-мониторы-инициализировать)
 
-     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
-     (dotimes (i 3)
-       (exwm-workspace-switch-create i))
-     (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
+    ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
+    (dotimes (i 3)
+      (exwm-workspace-switch-create i))
+    (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
 
-     ;; Смена имени окна
-     (add-hook 'exwm-update-class-hook
-               (lambda ()
-                 (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+    ;; Смена имени окна
+    (add-hook 'exwm-update-class-hook
+              (lambda ()
+                (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
 
-     ;; Смена заголовка окна
-     (defun exwm-update-title-hook ()
-       (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
-     (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+    ;; Смена заголовка окна
+    (defun exwm-update-title-hook ()
+      (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+    (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
 
-     ;; Специальное управление окнами
-     (setq exwm-manage-configurations
-           '(((equal exwm-title "posframe") floating t floating-mode-line nil)
-             ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-              height 175 x 30 y 30 managed t)))
-     ))))
+    ;; Специальное управление окнами
+    (setq exwm-manage-configurations
+          '(((equal exwm-title "posframe") floating t floating-mode-line nil)
+            ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+             height 175 x 30 y 30 managed t)))))
 
 ;; Автостарт при запуске Emacs в X-среде, но только в графическом режиме:
 (when window-system
   (про/старт-графической-среды))
 
+
 ;;;; Режимы ввода EMACS в приложениях
 
 ;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
-;; exim позволяет использовать стандартные режимы ввода EMACS во всех приложениях Xorg
-
-(use-package exim
-  :init (установить-из :repo "ch11ng/exim")
-  :after exwm
-  :if window-system
-  :hook ((exwm-init . exim-start))
-  :config
-  (push (kbd "C-\\") exwm-input-prefix-keys)
-  (push (kbd "s-SPC") exwm-input-prefix-keys))
 
 ;;; про-графическую-среду.el ends here
 

@@ -4,7 +4,6 @@
 ;;; Здесь описываются различные настройки для улучшения интерфейса и внешнего вида в Emacs.
 ;;; Code:
 
-(require 'use-package)
 (require 'установить-из)
 
 ;;;; Общий вид
@@ -17,15 +16,11 @@
 
 ;; Скрытие панели инструментов и меню для упрощения интерфейса в графических средах.
 
-(if window-system
-    (tool-bar-mode -1))                            ; Скрыть панель инструментов.
+;; Скрыть скроллинг
+(scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
 
-(if window-system
-    (menu-bar-mode -1))                            ; Скрыть меню.
-
-;; Скрытие полосы прокрутки для более чистого интерфейса.
-
-(if window-system (scroll-bar-mode -1))          ; Скрыть полосы прокрутки в графическом интерфейсе.
+;; tool-bar-mode, menu-bar-mode и scroll-bar-mode отключаются в early-init.el через default-frame-alist
 
 ;;;; Горизонтальные разделители между окнами
 
@@ -46,15 +41,15 @@
 
 ;; Настройка минималистичного вида минибуфера с иконками.
 
-(use-package taoline
+(use-package shaoline
   :if window-system
   :after (all-the-icons)
-  :functions (taoline-mode)
-  :init (установить-из :repo "11111000000/taoline")
+  :functions (shaoline-mode)
+  :init (установить-из :repo "11111000000/shaoline")
   :custom
-  (taoline-right-padding 13)
+  (shaoline-right-padding 13)
   :config
-  (taoline-mode t))
+  (shaoline-mode t))
 
 (require 'time)
 (display-battery-mode 1)
