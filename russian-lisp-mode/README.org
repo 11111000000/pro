@@ -60,4 +60,4 @@ Or manually:
 
 ** License
 
-GPLv3. See the file russian-lisp-mode.el for copyright and details.
+Peter Kosov <11111000000@email.com> GPLv3. See the file russian-lisp-mode.el for copyright and details.
