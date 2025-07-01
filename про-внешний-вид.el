@@ -312,6 +312,7 @@
 
 ;; Современный tabs/tab-bar с красивым оформлением.
 (use-package pro-tabs
+  :init (установить-из :repo "11111000000/pro-tabs")
   :commands (pro-tabs-mode pro-tabs-open-new-tab pro-tabs-close-tab-and-buffer)
   :custom
   (pro-tabs-enable-icons t) ; если нужно, настройте здесь параметры
