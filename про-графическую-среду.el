@@ -22,8 +22,8 @@
 (setq-default exwm-workspace-show-all-buffers t)
 (setq-default exwm-layout-show-all-buffers t)
 (setq-default exwm-manage-force-tiling nil)
-(setq-default exwm-systemtray-background-color "#222222")
-(setq-default exwm-systemtray-height 24)
+(setq-default exwm-systemtray-background-color 'default)
+(setq-default exwm-systemtray-height 22)
 
 (defvar сочетания-для-эмуляции
   '(([?\C-b] . left)
@@ -79,9 +79,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
 (require 'exwm-systemtray)
 
-(use-package про-мониторы
-  :if window-system)
-
 ;; Временный контроль: логируем параметры embedder window system tray
 
 (defvar про/графика-initialized nil
@@ -119,8 +116,6 @@ KEY-BINDINGS - список пар (клавиша функция)"
     ;; System tray и XIM запускаются через хуки (ниже)
     (exwm-systemtray-mode t)
     (exwm-xim-mode t)
-
-
 
     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
     (dotimes (i 3)
@@ -219,8 +214,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
   (dolist (buf (buffer-list))
     (with-current-buffer buf
       (when (eq major-mode 'exwm-mode)
-        ;; WM_DELETE_WINDOW → приложение само завершается
-        (exwm-manage--close-window exwm--id)))))
+        ;; Каждое kill-buffer вызовет нужную WM_DELETE_WINDOW/close через EXWM
+        (kill-buffer buf)))))
 
 (defun my/exwm-running-x-buffers-p ()
   "Есть ли ещё EXWM-буферы (т.е. живые X-клиенты)?"

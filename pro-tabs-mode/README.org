@@ -1,0 +1,75 @@
+* pro-tabs
+
+**pro-tabs** — современный и настраиваемый мод для красивых, удобных  вкладок с иконками в Emacs.
+
+** Возможности
+
+- Красивая отрисовка tab-bar и tab-line с поддержкой иконок (all-the-icons)
+- Компактный вид, без ненужных кнопок New/Close (по умолчанию)
+- Волнообразные (wave) XPM-разделители между вкладками
+- Одна клавиша — один tab (s-1 ... s-9, s-0)
+- Удобная интеграция с vterm и telega
+- Быстрое закрытие буфера и вкладки одной командой
+- Все основные параметры настраиваемы через M-x customize-group RET pro-tabs RET
+
+** Быстрый старт
+
+1. Установите зависимость `all-the-icons`:
+
+   M-x package-install RET all-the-icons RET
+
+2. Скопируйте `pro-tabs.el` в любой каталог из вашего `load-path`.
+
+3. Добавьте в ваш init-файл:
+
+   #+begin_src emacs-lisp
+   (require 'pro-tabs)
+   (pro-tabs-mode 1)
+   #+end_src
+
+4. Опционально настройте переменные через `M-x customize-group RET pro-tabs`.
+
+** Основные команды
+
+- `M-x pro-tabs-mode` — включить/выключить мод.
+- `M-x pro-tabs-open-new-tab` — открыть новую вкладку с dashboard (если есть dashboard).
+- `M-x pro-tabs-close-tab-and-buffer` — закрыть текущий буфер и вкладку.
+
+** Настраиваемые переменные
+
+- `pro-tabs-enable-icons` (t/nil): включить или выключить иконки.
+- `pro-tabs-max-tab-name-length`: максимальная длина имени вкладки.
+- `pro-tabs-tab-bar-height`: высота таб-бара.
+- `pro-tabs-tab-line-height`: высота tab-line.
+
+Меняйте их через customize или обычным `setq` до `(pro-tabs-mode 1)`.
+
+** Автотесты
+
+Для запуска тестов откройте Emacs, загрузите пакет (или находясь в каталоге с pro-tabs):
+
+1. Откройте файл `pro-tabs-test.el` и выполните:
+#+begin_src 
+   M-x ert RET pro-tabs- RET
+#+end_src
+  чтобы увидеть список всех тестов pro-tabs.
+
+   Или из Lisp:
+
+   #+begin_src 
+   (ert 'pro-tabs-enable-disable)
+   #+end_src
+
+** Требования
+
+- Emacs 27.1+
+- [all-the-icons](https://github.com/domtronn/all-the-icons.el)
+
+** Лицензия
+
+MIT
+
+---
+
+Автор: Peter Kosov
+Ссылки: https://github.com/11111000000/pro-tabs

@@ -62,7 +62,18 @@
           (message "Привязки %s -> %s (и EXWM) добавлены в %s" pretty-key fn-symbol keys-file)
         (message "Привязка %s -> %s добавлена в %s" pretty-key fn-symbol keys-file)))))
 
-
+(defun md-to-org (input-file output-file)
+  "Конвертировать INPUT-FILE (markdown) в OUTPUT-FILE (org) с помощью pandoc."
+  (interactive
+   (list
+    (read-file-name "Markdown файл: " nil nil t ".md")
+    (read-file-name "Org файл: " nil nil nil ".org")))
+  (let ((cmd (format "pandoc -f markdown -t org %s -o %s"
+                     (shell-quote-argument (expand-file-name input-file))
+                     (shell-quote-argument (expand-file-name output-file)))))
+    (if (= 0 (shell-command cmd))
+        (message "Конвертация завершена: %s" output-file)
+      (error "Ошибка конвертации!"))))
 
 (provide 'про-малую-механизацию)
 ;;; про-малую-механизацию.el ends here.

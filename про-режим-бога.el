@@ -75,7 +75,7 @@
   (global-set-key (kbd "C-<f1>") help-map)
   (global-set-key (kbd "C-h") help-map)
 
-  ;(god-mode-all)
+  (god-mode-all)
   (курсор-бога))
 
 (provide 'про-режим-бога)

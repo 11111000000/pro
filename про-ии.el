@@ -17,6 +17,169 @@
 
 ;;; Code:
 
+;; ---------- Кастомизируемая таблица цен за токены ----------
+(defcustom pro-gptel-model-pricing-alist
+  '(
+    ;; --- Anthropic ---
+    (claude-sonnet-4-20250514         :input 0.7344   :output 3.672)
+    (claude-opus-4-20250514           :input 3.672    :output 18.36)
+    (claude-3-sonnet-20240229         :input 0.7344   :output 3.672)
+    (claude-3-opus-20240229           :input 3.672    :output 18.36)
+    (claude-3-haiku-20240307          :input 0.0612   :output 0.306)
+    (claude-3-7-sonnet-20250219       :input 0.7344   :output 3.672)
+    (claude-3-5-sonnet-20241022       :input 0.7344   :output 3.672)
+    (claude-3-5-sonnet-20240620       :input 0.7344   :output 3.672)
+    (claude-3-5-haiku-20241022        :input 0.2448   :output 1.224)
+
+    ;; --- DeepSeek ---
+    (deepseek-reasoner                :input 0.13464  :output 0.53611)
+    (deepseek-chat                    :input 0.06610  :output 0.26928)
+
+    ;; --- Google Gemini ---
+    (gemini-2.5-pro-preview-06-05     :input 0.306    :output 2.448)
+    (gemini-2.5-pro-preview-06-05-200k :input 0.612   :output 3.672)
+    (gemini-2.5-pro-preview-05-06     :input 0.306    :output 2.448)
+    (gemini-2.5-pro-preview-05-06-200k :input 0.612   :output 3.672)
+    (gemini-2.5-pro-preview-03-25     :input 0.306    :output 2.448)
+    (gemini-2.5-pro-preview-03-25-200k :input 0.612   :output 3.672)
+    (gemini-2.5-pro                   :input 0.306    :output 2.448)
+    (gemini-2.5-pro-200k              :input 0.612    :output 3.672)
+    (gemini-2.5-flash-preview-05-20   :input 0.03672  :output 0.14688)
+    (gemini-2.5-flash-preview-05-20-audio :input 0.2448 :output 0.8568) ; размышления — output
+    (gemini-2.5-flash-preview-04-17   :input 0.03672  :output 0.14688)
+    (gemini-2.5-flash-preview-04-17-audio :input 0.2448 :output 0.8568)
+    (gemini-2.5-flash-lite-preview-06-17 :input 0.02448 :output 0.1224)
+    (gemini-2.5-flash-lite-preview-06-17-audio :input 0.09792 :output 0.1224)
+    (gemini-2.5-flash                 :input 0.07344  :output 0.612)
+    (gemini-2.5-flash-audio           :input 0.2448   :output 0.612)
+    (gemini-2.0-flash-lite            :input 0.01836  :output 0.07344)
+    (gemini-2.0-flash                 :input 0.02448  :output 0.09792)
+    (gemini-2.0-flash-audio           :input 0.17136  :output 0.09792)
+    (gemini-1.5-pro                   :input 0.8568   :output 1.7136)
+    (gemini-1.5-pro-128k              :input 2.5704   :output 5.1408)
+    (gemini-1.5-flash                 :input 0.01836  :output 0.07344)
+
+    ;; --- OpenAI ---
+    (o4-mini-2025-04-16               :input 0.26928  :output 1.07712)
+    (o3-pro-2025-06-10                :input 2.4      :output 9.6)
+    (o3-mini-2025-01-31               :input 0.26928  :output 1.07712)
+    (o3-2025-04-16                    :input 0.576    :output 1.6)
+    (o1-pro-2025-03-19                :input 15.3     :output 76.5)
+    (o1-preview-2024-09-12            :input 2.55     :output 7.65)
+    (o1-mini-2024-09-12               :input 0.7344   :output 1.53)
+    (o1-2024-12-17                    :input 2.55     :output 7.65)
+    (gpt-4o-search-preview-2025-03-11             :input 0.612    :output 2.448)
+    (gpt-4o-mini-search-preview-2025-03-11        :input 0.03672  :output 0.14688)
+    (gpt-4o-mini-audio-preview-2024-12-17-audio   :input 2.448    :output 4.896)
+    (gpt-4o-mini-2024-07-18                       :input 0.03672  :output 0.14688)
+    (gpt-4o-audio-preview-2024-12-17-audio        :input 24.48    :output 48.96)
+    (gpt-4o-audio-preview-2024-10-01-audio        :input 24.48    :output 48.96)
+    (gpt-4o-64k-output-alpha                      :input 1.4688   :output 4.4064)
+    (gpt-4o-2024-11-20                            :input 0.612    :output 2.448)
+    (gpt-4o-2024-08-06                            :input 0.612    :output 2.448)
+    (gpt-4o-2024-05-13                            :input 1.224    :output 3.672)
+    (gpt-4.5-preview-2025-02-27                   :input 8.5      :output 25.5)
+    (gpt-4.1-nano-2025-04-14                      :input 0.02448  :output 0.09792)
+    (gpt-4.1-mini-2025-04-14                      :input 0.09792  :output 0.39168)
+    (gpt-4.1-2025-04-14                           :input 0.4896   :output 1.9584)
+    (gpt-4-turbo-2024-04-09                       :input 2.448    :output 7.344)
+    (gpt-4-32k-0613                               :input 14.688   :output 29.376)
+    (gpt-4-1106-preview                           :input 2.448    :output 7.344)
+    (gpt-4-0613                                   :input 7.191    :output 14.688)
+    (gpt-4-0125-preview                           :input 2.448    :output 7.344)
+    (gpt-3.5-turbo-16k-0613                       :input 0.731    :output 0.9775)
+    (gpt-3.5-turbo-1106                           :input 0.255    :output 0.51)
+    (gpt-3.5-turbo-0613                           :input 0.3655   :output 0.493)
+    (gpt-3.5-turbo-0125                           :input 0.1224   :output 0.3672)
+    (computer-use-preview-2025-03-11              :input 0.51     :output 1.224)
+    (codex-mini-latest                            :input 0.26928  :output 1.07712)
+
+    ;; --- Генерация изображений (пример записи, если требуется) ---
+    ;; (gpt-image-1-medium-1024x1024 :input 10.2)
+    ;; (gpt-image-1-medium-1024x1536 :input 15.3)
+    ;; (gpt-image-1-low-1024x1024    :input 2.55)
+    ;; (dall-e-3 :input 9.79)
+    ;; --- ТТС и прочее (пример, если захотите учесть для estimate) ---
+    ;; (tts-1-hd :input 7.344)
+    ;; (whisper-1 :input 1.47)
+    )
+  "Alist: (MODEL . (:input RUB/1k-tokens :output RUB/1k-tokens)), цены за токены для расходов в рублях.
+Значения указаны для 1000 токенов. Можно настраивать через customize."
+  :type '(alist :key-type symbol :value-type (plist :key-type symbol :value-type number))
+  :group 'gptel)
+
+(defcustom pro-gptel-currency-rate 1.0
+  "Курс пересчёта если тарифы указаны не в рублях. Обычно 1.0 (=рубли).
+Если указаны в долларах, можно поставить тут курс."
+  :type 'number
+  :group 'gptel)
+
+(defvar-local pro-gptel-last-cost-rub nil
+  "Последняя рассчитанная стоимость токенов для gptel-mode, в рублях (float).
+Используется для отображения в header-line.")
+
+(defun pro-gptel-model-pricing (model)
+  "Вернуть plist вида (:input ... :output ...) для модели MODEL.
+Если точного совпадения нет, ищет модель по началу строки (префиксу)."
+  (let* ((name (if (symbolp model) (symbol-name model) model)))
+    (or
+     (cdr (assoc (intern name) pro-gptel-model-pricing-alist))
+     (let ((match (seq-find (lambda (x)
+                              (string-prefix-p name (symbol-name (car x))))
+                            pro-gptel-model-pricing-alist)))
+       (and match (cdr match))))))
+
+(defun pro-gptel-estimate-cost (n-in n-out model)
+  "Прикинуть стоимость по количеству токенов N-IN (prompt), N-OUT (response) и модели MODEL.
+Возвращает float рублей (с учётом pro-gptel-currency-rate)."
+  (let* ((pricing (pro-gptel-model-pricing model))
+         (in (or (plist-get pricing :input) 0))
+         (out (or (plist-get pricing :output) 0)))
+    (* pro-gptel-currency-rate
+       (+ (* (/ (float n-in) 1000) in)
+          (* (/ (float n-out) 1000) out)))))
+
+;;;; Подключение трекинга стоимости токенов для gptel-mode
+
+(defun pro-gptel--tokens-from-info (start end &optional model)
+  "Точный подсчет токенов: вызывает tiktoken через внешний скрипт.
+Если не найден скрипт ~/bin/tiktoken-counter.py — возвращает оценку по символам."
+  (let* ((text (buffer-substring-no-properties start end))
+         (tmpfile (make-temp-file "tik-tok-txt-"))
+         (script (or (executable-find "tiktoken-counter.py")
+                     (expand-file-name "~/.local/bin/tiktoken-counter.py")))
+         (model (or model "gpt-4"))
+         tokens)
+    (with-temp-file tmpfile (insert text))
+    (if (and (file-exists-p script) (file-executable-p script))
+        (setq tokens
+              (string-to-number
+               (with-temp-buffer
+                 (call-process script tmpfile t nil model)
+                 (buffer-string))))
+      ;; fallback: по символам
+      (setq tokens (round (/ (length text) 3.5))))
+    (delete-file tmpfile)
+    (max 1 tokens)))
+
+(defun pro-gptel-post-response-cost (beg end)
+  "Вычислить стоимость последнего ответа GPT и сохранить её в `pro-gptel-last-cost-rub`.
+Хук для `gptel-post-response-functions`, срабатывает только в `gptel-mode`.
+Показывает стоимость в echo area и *Messages*."
+  (when (and (bound-and-true-p gptel-mode) (> end beg))
+    (let* ((buf (current-buffer))
+           (response-len (pro-gptel--tokens-from-info beg end))
+           (prompt-tokens (pro-gptel--tokens-from-info (point-min) beg))
+           (model (if (boundp 'gptel-model) gptel-model 'unknown))
+           (cost (pro-gptel-estimate-cost prompt-tokens response-len model)))
+      (setq-local pro-gptel-last-cost-rub cost)
+      (message "Стоимость запроса: ≈%.2f₽ (модель: %s, prompt: %d токенов, response: %d токенов)"
+               cost model prompt-tokens response-len))))
+
+(add-hook 'gptel-post-response-functions #'pro-gptel-post-response-cost)
+
+;; Теперь стоимость выводится только в *Messages*
+
 ;; Импорт необходимых модулей
 (require 'установить-из)  ;; Функция для установки пакетов из репозиториев
 (require 'cape)           ;; Пакет для автодополнения
@@ -119,6 +282,7 @@
                      "o3"
                      "o3-mini"
                      "o4-mini"
+                     "o4-mini-high"
                      "gpt-4.5-preview"
                      "o1"
                      "o1-mini"

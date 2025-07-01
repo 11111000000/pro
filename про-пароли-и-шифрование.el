@@ -23,7 +23,7 @@
 
 ;; это простой текстовый файл *.authinfo*, зашифрованый GPG2:
 
-;;(setq auth-sources '("~/.authinfo.gpg"))
+;; (setq auth-sources '("~/.authinfo.gpg"))
 
 ;;;; Прозрачное шифрование файлов
 

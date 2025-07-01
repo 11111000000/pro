@@ -1,0 +1,63 @@
+* russian-lisp-mode
+
+"Russified" prettification for Emacs Lisp: see your favorite Lisp code in Russian!
+
+** What is it?
+
+This minor mode replaces common Emacs Lisp symbols with their Russian lookalikes or humorous translations – visually, without changing your code.
+
+For example, in a buffer with =russian-lisp-mode= enabled:
+
+#+begin_src emacs-lisp
+(setq t nil)
+#+end_src
+
+will appear as:
+
+#+begin_example
+(поставить да нет)
+#+end_example
+
+– but your code is not changed, only prettified!
+
+** Installation
+
+1. Install the =prettify-utils= package (from MELPA).
+2. Download =russian-lisp-mode.el= (from [[https://github.com/11111000000/russian-lisp-mode][the GitHub repository]]) and put it in your load-path.
+
+** Usage
+
+With =use-package=:
+
+#+begin_src emacs-lisp
+(use-package russian-lisp-mode
+  :load-path "russian-lisp-mode/"
+  :hook ((emacs-lisp-mode . russian-lisp-mode)))
+#+end_src
+
+Or manually:
+
+#+begin_src emacs-lisp
+(require 'russian-lisp-mode)
+(add-hook 'emacs-lisp-mode-hook #'russian-lisp-mode)
+#+end_src
+
+** Features
+
+- Russifies many built-in symbols: t, nil, if, let, list, defun, lambda and hundreds more!
+- Does NOT change your source code: only prettifies appearance.
+- Easy to enable/disable per buffer.
+
+** Requirements
+
+- Emacs 26.1+
+- [[https://github.com/Ilazki/prettify-utils.el][prettify-utils]] (available in MELPA)
+
+** Links
+
+- [[https://github.com/11111000000/russian-lisp-mode][Project homepage on GitHub]]
+- prettify-utils: https://github.com/Ilazki/prettify-utils.el
+
+** License
+
+GPLv3. See the file russian-lisp-mode.el for copyright and details.

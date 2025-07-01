@@ -69,18 +69,17 @@
 
 ;;;; Документация по языку во всплывающем окне
 
-(use-package eldoc-box  
+(use-package eldoc-box
   :ensure t
   :functions (eldoc-box-hover-mode)
   :bind (("M-/" . eldoc-box-help-at-point)) ;; TODO: Перенести в org
   :custom ((eldoc-idle-delay 0.2)
           (eldoc-box-offset '(-40 50 -70))
-          (eldoc-idle-delay 0.3))
+          (eldoc-idle-delay 1.0))
   :config
-  (require 'eldoc)  
+  (require 'eldoc)
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-  (eldoc-box-hover-mode)
-  )
+  (eldoc-box-hover-mode))
 
 ;;;; Статистика нажатий
 

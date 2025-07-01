@@ -204,7 +204,7 @@
 | s-K                     | buf-move-up                          |
 | s-L                     | buf-move-right                       |
 | s-R                     | rename-buffer                        |
-| s-t                     | открыть-новую-вкладку                |
+| s-t                     | pro-tabs-open-new-tab                |
 | s-T                     | tab-bar-undo-close-tab               |
 | s-r                     | tab-bar-rename-tab                   |
 | s-N                     | tab-bar-move-tab                     |
@@ -212,7 +212,7 @@
 | s-n                     | tab-bar-switch-to-next-tab           |
 | s-p                     | tab-bar-switch-to-prev-tab           |
 | s-w                     | tab-bar-close-tab                    |
-| s-W                     | закрыть-вкладку-и-буфер              |
+| s-W                     | pro-tabs-close-tab-and-buffer        |
 | s-d                     | treemacs                             |
 | s-x                     | app-launcher-run-app                 |
 | s-M-h                   | split-window-horizontally            |
@@ -237,8 +237,8 @@
 | s-u                     | tab-bar-history-back                 |
 | s-U                     | tab-bar-history-forward              |
 | C-<f3>                  | battery                              |
-| s-`                     | eshell-toggle                        |
-| s-~                     | multi-vterm-project                  |
+| s-~                     | eshell-toggle                        |
+| s-`                     | multi-vterm-project                  |
 | C-c tt                  | eshell-here                          |
 | C-c s                   | scratch-pop                          |
 | C-c l                   | org-store-link                       |

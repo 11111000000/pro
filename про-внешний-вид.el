@@ -47,7 +47,7 @@
   :functions (shaoline-mode)
   :init (установить-из :repo "11111000000/shaoline")
   :custom
-  (shaoline-right-padding 13)
+  (shaoline-right-padding 16)
   :config
   (shaoline-mode t))
 
@@ -307,6 +307,19 @@
 
 (use-package prettify-utils
   :init (установить-из :repo "Ilazki/prettify-utils.el"))
+
+;;;; Вкладки: pro-tabs
+
+;; Современный tabs/tab-bar с красивым оформлением.
+(use-package pro-tabs
+  :commands (pro-tabs-mode pro-tabs-open-new-tab pro-tabs-close-tab-and-buffer)
+  :custom
+  (pro-tabs-enable-icons t) ; если нужно, настройте здесь параметры
+  ;; (pro-tabs-max-tab-name-length 25)
+  ;; (pro-tabs-tab-bar-height 18)
+  ;; (pro-tabs-tab-line-height 20)
+  :config
+  (pro-tabs-mode 1))
 
 (provide 'про-внешний-вид)  ; Экспортирование конфигурации для использования в других частях Emacs.
 ;;; про-внешний-вид.el ends here

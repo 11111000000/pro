@@ -1,16 +1,50 @@
-;;; russian-lisp-mode.el --- Major mode for Russianификация Emacs LISP -*- lexical-binding: t -*-
+;;; russian-lisp-mode.el --- Russian "russified" prettification for Emacs Lisp -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2024 Peter Kosov
+
+;; Author: Peter Kosov <11111000000@email.com>
+;; URL: https://github.com/11111000000/russian-lisp-mode
+;; Version: 0.1
+;; Package-Requires: ((emacs "26.1") (prettify-utils "1.0"))
+;; Keywords: lisp, russian, localization, pretty
+
 ;;; Commentary:
-;;  Этот мод обеспечивает русификацию Emacs LISP, заменяя стандартные символы на их русские аналоги.
+
+;; This package provides a "Russified" prettification for Emacs Lisp,
+;; replacing common Emacs Lisp symbols with their Russian lookalikes or translations.
+;;
+;; Just enable `russian-lisp-mode` in any Emacs Lisp buffer to enjoy the localized symbol prettification.
+;;
+;; Example:
+;;
+;;   (setq t nil)
+;;
+;; In Russian Lisp mode, "t" and "nil" will visually appear as "да" and "нет".
+;;
+;; This mode is read-only: it only changes the appearance of code, not its actual semantics.
+;;
+;; Depends on: prettify-utils (available in MELPA)
+;;
+;; To use:
+;;   (require 'russian-lisp-mode)
+;;   (add-hook 'emacs-lisp-mode-hook #'russian-lisp-mode)
+;;
+;; Contributions and suggestions welcome!
+
 ;;; Code:
 
 (require 'prettify-utils)
 
 (define-derived-mode russian-lisp-mode emacs-lisp-mode "Russian Lisp"
-  "Major mode for editing RussianIFIED Emacs LISP code.
-This mode sets up prettification for Emacs Lisp symbols using their Russian translations."
+  "Major mode for \"Russified\" prettification of Emacs Lisp code.
+When enabled, this mode visually replaces common Emacs Lisp symbols
+(such as t/nil) with their Russian translations, for fun and improved readability 
+for Russian speakers.
+
+Only the appearance is changed; the code's semantics remain untouched."
   (setq prettify-symbols-alist
         (prettify-utils-generate
-         ;; ───── Базовые истины ───────────────────────────────────────────────────
+         ;; Basic truths (t/nil) prettification
          ("t"                               "да")                              ; лампочка истинности зажглась
          ("nil"                             "нет")                             ; бездна пустоты шепнула «0»
          ;; ───── Коллекции ───────────────────────────────────────────────────────
