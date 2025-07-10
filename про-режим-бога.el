@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'mule)
-(require 'god-mode)
 
 ;;;; Функция для выключения русского
 

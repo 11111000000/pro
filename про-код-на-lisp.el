@@ -160,9 +160,9 @@
   inspector
   :init (установить-из :repo "mmontone/emacs-inspector"))
 
-(use-package russian-lisp-mode
-  :load-path "russian-lisp-mode/"
-  :hook ((emacs-lisp-mode . russian-lisp-mode)))
+;; (use-package russian-lisp-mode
+;;   :load-path "russian-lisp-mode/"
+;;   :hook ((emacs-lisp-mode . russian-lisp-mode)))
 
 ;; (use-package prettier-elisp
 ;;   :init (установить-из :repo "KarimAziev/prettier-elisp")

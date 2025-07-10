@@ -176,6 +176,8 @@
 
 (require 'cl-lib)
 (require 'consult)
+(require 'recentf)
+(require 'seq)
 
 (defun pro/consult-buffer ()
   "Интерактивный выбор буфера с учётом exwm-режима.
@@ -211,6 +213,66 @@
         ;; Для всех остальных буферов просто открываем его в текущем окне.
         (switch-to-buffer buf)))))
 
+(defun pro/consult-buffer-or-recentf ()
+  "Показывает буферы и recentf-файлы в одном списке.
+- Буферы идут первыми, затем — недавно открытые файлы (список recentf).
+- Если выбран буфер — стандартное переключение.
+- Если выбран недавний файл — открывает его."
+  (interactive)
+  (recentf-mode 1)
+  (let* ((buffers (mapcar #'buffer-name (consult--buffer-query :sort 'visibility)))
+         (recent (seq-filter
+                  (lambda (f)
+                    (not (get-buffer f)))    ;; исключить уже открытые буферы
+                  recentf-list))
+         (sources
+          `(( :name "Buffers"
+               :narrow ?b
+               :category buffer
+               :items ,buffers)
+            ( :name "Recent Files"
+               :narrow ?r
+               :category file
+               :items ,recent)))
+         (result (consult--multi sources
+                                 :prompt "Buffer or Recentf: "
+                                 :require-match t
+                                 :history 'consult--buffer-history
+                                 :sort nil)))
+    (cond
+     ;; Если буфер с таким именем есть — работаем с ним как с буфером
+     ((and (stringp result) (get-buffer result))
+      (let ((buf (get-buffer result)))
+        (if (and (get-buffer-window buf 'visible)
+                 (with-current-buffer buf (derived-mode-p 'exwm-mode)))
+            (select-window (get-buffer-window buf 'visible))
+          (if (with-current-buffer buf (derived-mode-p 'exwm-mode))
+              (let* ((orig-tab (+ 1 (tab-bar--current-tab-index)))
+                     (tabs (tab-bar-tabs))
+                     tab-found)
+                (cl-loop for i from 1 to (length tabs) do
+                         (unless (equal i orig-tab)
+                           (tab-bar-select-tab i)
+                           (when (get-buffer-window buf 'visible)
+                             (setq tab-found t)
+                             (cl-return))))
+                ;; Если не нашли, возвращаем исходную вкладку.
+                (unless tab-found
+                  (tab-bar-select-tab orig-tab))
+                (switch-to-buffer buf))
+            (switch-to-buffer buf)))))
+     ;; Если строка — возможно путь к файлу
+     ((and (stringp result) (file-exists-p result))
+      (find-file result))
+     ;; Если nil ― ничего не выбрано
+     ((null result)
+      (message "Ничего не выбрано."))
+     ;; Если тип результата не строка — возможно, consult--multi вернул структуру (ошибка или экспериментальный кейс)
+     ((not (stringp result))
+      (message "Выбор не является допустимой строкой, возможно, ошибка источника: %S" (type-of result)))
+     ;; Неизвестная ситуация — оставлено для отладки
+     (t
+      (message "Неизвестный выбор: %S" result)))))
 
 (provide 'про-быстрый-доступ) ;; Экспортируем текущий модуль
 ;;; про-быстрый-доступ.el ends here.

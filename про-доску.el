@@ -3,6 +3,8 @@
 ;;; Code:
 ;;; Дашборд
 
+(require 'all-the-icons)
+
 (use-package dashboard
   :ensure t
   :defer t

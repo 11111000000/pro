@@ -120,7 +120,8 @@ KEY-BINDINGS - список пар (клавиша функция)"
     ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
     (dotimes (i 3)
       (exwm-workspace-switch-create i))
-    (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
+
+    ;; (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
 
     ;; Смена имени окна
     (add-hook 'exwm-update-class-hook
@@ -134,14 +135,26 @@ KEY-BINDINGS - список пар (клавиша функция)"
 
     ;; Специальное управление окнами
     (setq exwm-manage-configurations
-          '(((equal exwm-title "posframe") floating t floating-mode-line nil)
+          `(
+            ;; Blueman Applet/Manager — всегда не floating и видимы изначально
+            ((or (string= exwm-class-name "Blueman-manager")
+                 (string= exwm-class-name "Blueman-applet")
+                 (and exwm-title (string-match "blueman" exwm-title)))
+             floating nil
+             managed t)
+
+            ;; posframe — прятать и делать floating
+            ((equal exwm-title "posframe") floating t floating-mode-line nil)
+
+            ;; chromebug 
             ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-             height 175 x 30 y 30 managed t)))))
+             height 175 x 30 y 30 managed t)
+           ))))
+
 
 ;; Автостарт при запуске Emacs в X-среде, но только в графическом режиме:
 (when window-system
   (про/старт-графической-среды))
-
 
 ;;;; Режимы ввода EMACS в приложениях
 

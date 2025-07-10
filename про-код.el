@@ -361,10 +361,9 @@ ARG - backward"
   (magit-section-mode . topsy-mode)
   :init
   (defface topsy-header-line
-    '((t :inherit header-line :foreground "gray30"))
-    "Face for the `topsy-mode' header line.
-Should be faint, close to the background color."
-    :group 'topsy)
+  '((t :inherit default :foreground "gray40"))
+  "Face for the `topsy-mode' header line.")
+  
 
   (defconst topsy-header-line-format
     '(:eval (list (propertize " " 'display '((space :align-to 0)))

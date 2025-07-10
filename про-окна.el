@@ -47,8 +47,8 @@
   :after (projectile)
   :custom (popper-window-height 20)
   :bind (("s-,"   . popper-toggle)
-         ("s-]"   . popper-cycle)
-         ("s-["   . popper-cycle-backwards)
+         ("s-]"   . nil)
+         ("s-["   . nil)
          ("s-/" . popper-toggle-type))
   :init
   (setq popper-group-function #'popper-group-by-projectile)

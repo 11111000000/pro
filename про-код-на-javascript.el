@@ -47,7 +47,8 @@
   :ensure t
   :functions (nvm-use)
   :init
-  (nvm-use "18"))
+  ;;(nvm-use "18")
+  )
 
 (use-package nvm
   :ensure t

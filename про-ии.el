@@ -209,7 +209,8 @@
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (:map gptel-mode-map
-         ("C-c RET"      . gptel-send)
+              ("C-c RET"      . gptel-send)
+              ("C-c C-<return>"      . gptel-send)
          ("M-RET"        . pro/gptel-send-no-context)
          ("C-c M-RET"    . pro/gptel-aibo-no-context))
   :custom
@@ -316,7 +317,11 @@
   (setq gptel-model 'gpt-4.1))
 
 (use-package gptel-aibo
-  :ensure t)
+  :ensure t
+  :bind (:map gptel-aibo-mode-map
+              ("C-c RET"      . gptel-aibo-send)
+              ("C-c C-<return>"      . gptel-aibo-send)
+              ("C-c M-RET"    . pro/gptel-aibo-no-context)))
 
 ;;;; Настройка gptel-quick для быстрых запросов
 

@@ -18,13 +18,13 @@
         (delete-window win)
         (kill-buffer buf)))))
 
-(defun pro/vterm-lint-mode-move-up ()
+(defun pro/vterm-line-mode-move-up ()
   "Включить vterm-copy-mode и сразу перейти на строку выше."
   (interactive)
   (unless (bound-and-true-p vterm-copy-mode)
     (vterm-copy-mode 1))
   (when (bound-and-true-p vterm-copy-mode)
-    (let ((cmd (or (lookup-key vterm-copy-mode-map (kbd "<up>")) 
+    (let ((cmd (or (lookup-key vterm-copy-mode-map (kbd "<up>"))
                    (lookup-key vterm-copy-mode-map (kbd "p")))))
       (cond
        (cmd (call-interactively cmd))
@@ -58,6 +58,7 @@
 (use-package vterm
   :ensure t
   :functions (vterm-send-next-key vterm-yank)
+  :hook ((vterm-mode . tab-line-mode))
   :bind (:map vterm-mode-map
                 ("M-v" . scroll-up-command)
                 ("C-\\" . #'toggle-input-method)
@@ -65,6 +66,7 @@
                 ("C-c C-t" . #'vterm-copy-mode)
                 ("C-q" . #'vterm-send-next-key)
                 ("C-y" . #'vterm-yank)
+                ("s-`" . #'delete-window)
                 ("s-v" . #'vterm-yank)
                 ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
                 ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
@@ -79,79 +81,12 @@
 
 (use-package multi-vterm
   :ensure t
+  :bind (:map vterm-mode-map
+              ("s-t" . multi-vterm))
   :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
 
-(defun pro/vterm-project-or-here ()
-  "В проекте — multi-vterm-project, вне проекта — ровно один vterm на директорию через popper (toggle!)."
-  (interactive)
-  (require 'popper)
-  (let ((proj (ignore-errors (project-current))))
-    (if proj
-        (multi-vterm-project)
-      (let* ((dir (expand-file-name default-directory))
-             ;; ищем существующий vterm буфер с подходящим default-directory
-             (existing
-              (cl-find-if
-               (lambda (buf)
-                 (and (eq (buffer-local-value 'major-mode buf) 'vterm-mode)
-                      (string= (expand-file-name
-                                (buffer-local-value 'default-directory buf)) dir)))
-               (buffer-list)))
-             ;; есть ли popup-окно popper _именно_ с этим буфером?
-             (popup-win (and existing
-                             (cl-find-if
-                              (lambda (win)
-                                (and (eq (window-buffer win) existing)
-                                     (window-parameter win 'popper-window)))
-                              (window-list)))))
-        (cond
-         ;; Если мы прямо сейчас в этом буфере и он в popper-окне — закрыть "сам себя"
-         ;; Если уже открыт vterm для текущей папки и мы в нём находимся, то просто закрываем окно
-         ((and existing
-               (eq (current-buffer) existing)
-               (window-parameter (selected-window) 'popper-window))
-          (delete-window (selected-window))
-          (cl-return-from pro/vterm-project-or-here nil))
+(require 'seq)
 
-         ;; Если popup видно в другом окне — тоже его закрыть
-         ((and popup-win (eq (window-buffer popup-win) existing))
-          (delete-window popup-win))
-
-         (existing
-          ;; Буфер есть, показать его как popper popup
-          (let ((display-buffer-overriding-action
-                 '((display-buffer-reuse-window display-buffer-pop-up-window)
-                   . ((window-height . popper-window-height)))))
-            (pop-to-buffer existing)
-            (when (featurep 'popper) (popper-open-latest))))
-
-         (t
-          ;; Нет vterm — создаём, но НЕ pop-to-buffer Messages! Ожидаем реальный vterm, только потом popup
-          (let ((default-directory dir))
-            (let ((inhibit-message t)) (vterm))) ;; подавим лишние сообщения, для надёжности
-          ;; Запускаем polling (ожидание появления настоящего vterm буфера, не Messages!)
-          (let ((retries 20)) ; ждать примерно 2 сек (20 * 0.1)
-            (cl-labels
-                ((wait-vterm ()
-                  (let ((buf (cl-find-if
-                              (lambda (buf)
-                                (and (eq (buffer-local-value 'major-mode buf) 'vterm-mode)
-                                     (string= (expand-file-name
-                                               (buffer-local-value 'default-directory buf)) dir)))
-                              (buffer-list))))
-                    (cond
-                     (buf
-                      (let ((display-buffer-overriding-action
-                             '((display-buffer-reuse-window display-buffer-pop-up-window)
-                               . ((window-height . popper-window-height)))))
-                        (pop-to-buffer buf)
-                        (when (featurep 'popper) (popper-open-latest))))
-                     ((> retries 0)
-                      (setq retries (1- retries))
-                      (run-with-timer 0.1 nil #'wait-vterm))
-                     ;; если не дождались vterm — ничего не делать: пусть функция тихо завершится
-                     ))))
-              (wait-vterm)))))))))
 
 ; (use-package capf-autosuggest }
 ;   :ensure t }
@@ -159,18 +94,13 @@
 ;   (eshell-mode capf-autosuggest-mode) }
 ;    (comint-mode capf-autosuggest-mode)) }
 
-;; Быстрый запуск терминала для текущей директории/проекта:
-;; (global-set-key (kbd "s-~") #'pro/vterm-project-or-here)
-;; для EXWM:
-;; (exwm-input-set-key (kbd "s-~") #'pro/vterm-project-or-here)
-
 ;; Цветовая схема tab-line специально для Eshell
 
-(defun pro/eshell-tabline-colors ()
-  "Меняет только текущую вкладку tab-line в Eshell: чёрный фон, белый текст, жирный."
-  (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
-  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil))
-  )
+;; (defun pro/eshell-tabline-colors ()
+;;   "Меняет только текущую вкладку tab-line в Eshell: чёрный фон, белый текст, жирный."
+;;   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
+;;   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil))
+;;   )
 
 ;; Оболочка Emacs Shell
 (defun pro/eshell-corfu-dark ()
@@ -266,11 +196,13 @@
   :hook ((eshell-mode . tab-line-mode)
          (eshell-mode . pro/eshell-dark-theme)
          (eshell-mode . pro/eshell-corfu-dark)
-         (eshell-mode . pro/eshell-tabline-colors))
+         ;; (eshell-mode . pro/eshell-tabline-colors)
+         )
   :bind (:map eshell-mode-map
          ("C-a" . beginning-of-line)
          ("DEL" . my-eshell-backspace)
-         ("s-q" . pro/kill-buffer-and-window))
+         ("s-q" . pro/kill-buffer-and-window)
+         ("s-t" . eshell-here))
   :custom
   (comint-prompt-read-only t)
   (eshell-highlight-prompt nil)
@@ -278,7 +210,13 @@
   (eshell-cmpl-cycle-completions nil)
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history (quote always))
-  (eshell-visual-commands '("vi" "vim" "screen" "tmux" "top" "htop" "less" "more" "lynx" "links" "ncftp" "mutt" "pine" "tin" "trn" "elm" "changelog-ai.sh" "changelog-ai-new.sh" "ollama" "npm" "nix"))
+  (eshell-visual-commands '("vi" "vim" "screen"
+                            "tmux" "top" "htop"
+                            "less" "more" "lynx"
+                            "links" "ncftp" "mutt"
+                            "pine" "tin" "trn"
+                            "elm" "changelog-ai.sh" "changelog-ai-new.sh"
+                            "ollama" "npm" "nix"))
   :config)
 
 (use-package eshell-vterm
@@ -363,7 +301,7 @@
            (exit-code (if (boundp 'eshell-last-command-status)
                           eshell-last-command-status 0)))
       (concat
-       (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈") " "
+       " " (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈") " "
        (when path-car (propertize path-car 'face 'bold))
        (when path-cdr (propertize path-cdr 'face 'default))
        (when project
@@ -386,7 +324,7 @@
          (concat
           "\n"
           (propertize
-           "❯ "
+           " ❯ "
            'face 'eshell-prompt)))))))
 
 (setq eshell-prompt-function #'приглашение-eshell)
@@ -409,7 +347,7 @@
          (line (make-string 58 ?─)))
     (concat
      "\n"
-     (format "  👤 %s   🖥 %s   💻 %s   ⏰ %s\n" user host os time)
+     (format "  👤 %s   ⭐ %s   💻 %s   ⏰ %s\n" user host os time)
      (format "  %s\n" emacs-version-string)
      "  " line "\n\n"
      )))

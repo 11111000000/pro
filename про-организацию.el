@@ -123,6 +123,10 @@
    ;;(http . t)
    (shell . t)))
 
+;; Выводить C-c C-c текстом (а не таблицей)
+
+(setq org-babel-default-header-args '((:results . "output")))
+
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
 (setq org-support-shift-select nil)

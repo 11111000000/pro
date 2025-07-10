@@ -47,7 +47,7 @@
   :functions (shaoline-mode)
   :init (установить-из :repo "11111000000/shaoline")
   :custom
-  (shaoline-right-padding 16)
+  (shaoline-right-padding 10)
   :config
   (shaoline-mode t))
 
@@ -124,7 +124,7 @@
            (lambda ()
              (treemacs-icons-dired-mode -1)  ; Отключение иконок после смены темы.
              (sleep-for 0)
-             (treemacs-icons-dired-mode 1)))) ; Включение иконок после небольшой задержки.
+             (treemacs-icons-dired-mode 1))))
 
 ;;;;; Иконки для ibuffer
 
@@ -311,9 +311,40 @@
 ;;;; Вкладки: pro-tabs
 
 ;; Современный tabs/tab-bar с красивым оформлением.
+(defun pro/tab-line-close-tab ()
+  "Close the current tab shown by `tab-line-mode'.
+
+If more than one tab is present in the current window just kill
+the current buffer so the neighbouring tab becomes visible.
+When the current tab is the only one left, kill the buffer and
+close the window as well."
+  (interactive)
+  (let ((win (selected-window)))
+    (if (> (length (tab-line-tabs-window-buffers)) 1)
+        ;; There are other tabs – just kill the current buffer.
+        (kill-buffer (window-buffer win))
+      ;; Last tab in this window – kill buffer and remove window.
+      (progn
+        (kill-buffer (window-buffer win))
+        (when (window-live-p win)
+          (delete-window win))))))
+
+(require 'seq)
+
+
+
 (use-package pro-tabs
   :init (установить-из :repo "11111000000/pro-tabs")
   :commands (pro-tabs-mode pro-tabs-open-new-tab pro-tabs-close-tab-and-buffer)
+  :bind (:map tab-line-mode-map
+              ("s-n" . tab-line-switch-to-next-tab)
+              ("s-p" . tab-line-switch-to-prev-tab)
+              ("s-w" . pro/tab-line-close-tab)
+              :map tab-bar-mode-map
+              ("s-n" . tab-bar-switch-to-next-tab)
+              ("s-p" . tab-bar-switch-to-prev-tab)
+              ("s-w" . tab-bar-close-tab)
+              )  
   :custom
   (pro-tabs-enable-icons t) ; если нужно, настройте здесь параметры
   ;; (pro-tabs-max-tab-name-length 25)

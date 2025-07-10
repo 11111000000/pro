@@ -1,6 +1,7 @@
 ;;; про-файлы-и-папки.el --- Файлы и папки -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; Конфигурация списков файлов и деревьев
+;;; 
 ;;; Code:
 
 (require 'use-package)
@@ -30,6 +31,8 @@
   (ls-lisp-dirs-first t)
   (ls-lisp-use-insert-directory-program nil)
   (dired-dwim-target t)
+  (insert-directory-program "gls")
+  (dired-use-ls-dired t)
   (dired-auto-revert-buffer t)
   (global-auto-revert-non-file-buffers t)
   (dired-hide-details-hide-symlink-targets nil)
@@ -38,13 +41,12 @@
 
   )
 
-(use-package async-await
-  :defer t 
-  :ensure t
-  :functions (dired-async-mode)
-  :init
-  (autoload 'dired-async-mode "dired-async.el" nil t)
-  (dired-async-mode 1))
+;; (use-package async-await
+;;   :ensure t
+;;   :functions (dired-async-mode)
+;;   :init
+;;   (autoload 'dired-async-mode "dired-async.el" nil t)
+;;   (dired-async-mode 1))
 
 ;;;; Функция выполнить команду в выбранных файлах
 

@@ -305,6 +305,7 @@
 
 #+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
 (require 'cl-lib)
+(require 'exwm)
 
 ;; Устанавливает глобальные привязки клавиш из keys-table.
 (mapc (lambda (row)
@@ -318,7 +319,6 @@
           (global-set-key (kbd key) (intern func))))
       exwm-keys-table)
 
-(require 'exwm)
 ;; Если запущено в оконной системе и функция exwm-input-set-key доступна, настраивает клавиши EXWM.
 (when (and window-system (functionp 'exwm-input-set-key))
   (mapc (lambda (row)
@@ -332,4 +332,4 @@
 #+RESULTS:
 : про-сочетания-клавиш
 
-** 
+* 
