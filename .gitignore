@@ -1,6 +1,8 @@
-bin/env
-.aider*
-zai.conf
-про-сочетания-клавиш.el
-.yaz
-.session.org
+*.elc
+auto-save-list/
+undo/
+history/
+.history
+*~
+.cache/
+seeds/

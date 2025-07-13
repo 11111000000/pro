@@ -1,0 +1,114 @@
+#+TITLE: PRO2 DAO: Воспроизводимый Путь Дао на базе Emacs+Guix+EXWM
+#+AUTHOR: Команда PRO2 DAO
+#+LANGUAGE: ru
+
+* Быстрый старт установки
+
+** 1. Клонирование репозитория
+
+#+BEGIN_SRC shell
+git clone https://your-git-host/your-user/pro2.git ~/pro2
+cd ~/pro2
+#+END_SRC
+
+или воспользуйтесь скриптом:
+
+#+BEGIN_SRC shell
+curl -fsSL https://your-git-host/your-user/pro2-install.sh | bash
+#+END_SRC
+
+** 2. Запуск Emacs в reproducible-окружении
+
+- Guix:
+
+  #+BEGIN_SRC shell
+  guix shell -m manifest.scm -- emacs --init-directory ./pro2/.emacs.d
+  #+END_SRC
+
+- Nix:
+
+  #+BEGIN_SRC shell
+  nix develop nix/manifest.nix -c emacs --init-directory ./pro2/.emacs.d
+  #+END_SRC
+
+- Без Guix/Nix (если нет):
+
+  Установите зависимости вручную (см. manifest.scm/manifest.nix) и запустите:
+
+  #+BEGIN_SRC shell
+  emacs --init-directory ./pro2/.emacs.d
+  #+END_SRC
+
+* Интеграция с DM (Display Manager) для EXWM
+
+** Способ 1: Через ~/.xsession или ~/.xinitrc
+
+Поместите в файл строку:
+
+#+BEGIN_SRC shell
+exec emacs --init-directory ~/pro2/.emacs.d
+#+END_SRC
+
+** Способ 2: Desktop-файл для DM (LightDM/GDM/SDDM)
+
+1. Создайте папку (если ещё не существует):
+
+   #+BEGIN_SRC shell
+   mkdir -p ~/.local/share/xsessions
+   #+END_SRC
+
+2. Создайте файл ~/.local/share/xsessions/pro2-exwm.desktop и вставьте:
+
+#+BEGIN_SRC conf-unix
+[Desktop Entry]
+Name=PRO2 EXWM (Emacs)
+Comment=Emacs EXWM Session
+Exec=emacs --init-directory $HOME/pro2/.emacs.d
+Type=Application
+DesktopNames=EXWM
+#+END_SRC
+
+3. На экране входа выберите "PRO2 EXWM (Emacs)"
+
+* Удалённое и локальное обновление
+
+- Обновить репозиторий и guix окружение:
+  #+BEGIN_SRC shell
+  cd ~/pro2 && git pull
+  guix pull && guix shell -m manifest.scm -- emacs --init-directory ./pro2/.emacs.d
+  #+END_SRC
+
+- Для расширения: добавляйте .el файлы в папку seeds/.
+
+* Быстрые действия / Org-FAQ
+
+| Клавиша   | Функция       | Описание                                             |
+|-----------+---------------+------------------------------------------------------|
+| C-c s     | Seeds обзор   | Список всех seeds с кратким описанием                |
+| C-c h     | Диагностика   | Диагностика reproducibility и чистоты                |
+| C-c x     | Уборка        | Удаление устаревших seeds, чистка undo/history       |
+| C-c o     | Main Org      | Открыть главный org-файл                             |
+| <f11>     | Zen mode      | Дзен-режим (полноэкранный, без mode-line)            |
+| C-c g     | Guix restart  | Перезапуск Emacs через guix shell                   |
+| C-c n     | Nix restart   | Перезапуск Emacs через nix develop                  |
+| C-c e     | Env info      | Краткая информация о текущем окружении               |
+| C-c r     | Recent files  | Быстрый доступ к истории файлов (consult-recent-file)|
+
+Все биндинги настраиваются через seeds/про-keymap.el.
+
+* Troubleshooting / FAQ
+
+- **EXWM не стартует?**  
+  Убедитесь, что запускаете Emacs как оконный менеджер (см. выше)  
+  и exwm присутствует в manifest.
+
+- **Как добавить пакет?**  
+  В Guix — добавьте в manifest.scm, затем обновите окружение.  
+  В Nix — в packages [] в nix/manifest.nix.  
+
+- **Как расширять функциональность?**  
+  Функции расширяются только через файлы в seeds/ — новый seed = новая возможность.
+
+* Дао: Не навязывай лишнего, используй только необходимое, наслаждайся путём.
+
+---
