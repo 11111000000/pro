@@ -16,9 +16,9 @@
                 ("C-c C-p" . nil))
   :custom ((org-log-done nil)
           ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-          (org-todo-keywords '((sequence "НАДО" "ДУМАЮ" "ДЕЛАЮ" "|" "ГОТОВО")))
-          (org-not-done-keywords '("TODO" "НАДО" "ДУМАЮ" "ДЕЛАЮ"))
-          (org-done-keywords '("DONE" "ГОТОВО" "ЕСТЬ" "ОТМЕНА" "ПЕРЕДАЛ")))
+          (org-todo-keywords '((sequence "TODO" "THINK" "DOING" "|" "DONE")))
+          (org-not-done-keywords '("TODO" "THINK" "DOING"))
+          (org-done-keywords '("DONE" "CANCEL" "DELEGATED")))
   :config
   (require 'org-compat)
   (require 'org-tempo)

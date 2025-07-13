@@ -11,6 +11,10 @@
   ;; Можно добавить дополнительные настройки тут.
   )
 
+(use-package envrc
+     :ensure t
+     :config
+     (envrc-global-mode))
 
 ;; (when (file-exists-p "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh")
 ;;      (setenv "NIX_PROFILES"

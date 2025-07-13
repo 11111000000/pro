@@ -86,7 +86,7 @@
   :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
 
 (require 'seq)
-
+(require 'eshell)
 
 ; (use-package capf-autosuggest }
 ;   :ensure t }
@@ -200,7 +200,7 @@
          )
   :bind (:map eshell-mode-map
          ("C-a" . beginning-of-line)
-         ("DEL" . my-eshell-backspace)
+         ("DEL" . pro/eshell-backspace)
          ("s-q" . pro/kill-buffer-and-window)
          ("s-t" . eshell-here))
   :custom
@@ -264,9 +264,21 @@
 ;;   - ошибку последней команды (или зелёную стрелку если всё ок).
 ;; - Использует функции: =all-the-icons-octicon=, =all-the-icons-material=, =shrink-path-prompt=, а также Git и проектные функции.
 
+
+(defun pro/eshell-backspace ()
+  "Prevent Backspace from deleting if the cursor is after the prompt."
+  (interactive)
+  (if
+      (<= (point) (line-beginning-position))
+      ;; If the point is at or after the prompt, do nothing
+      (message "Cannot delete after the prompt!")
+    ;; Otherwise, perform the normal backspace operation
+    (delete-char -1)))
+
+
 (require 'vc-git)  
 (require 'shrink-path)
-(require 'all-the-icons) 
+(require 'all-the-icons)
 
 (defun приглашение-eshell ()
   "Минималистичный, быстрый и надёжный промпт Eshell с git проектом и статусом."
@@ -347,7 +359,7 @@
          (line (make-string 58 ?─)))
     (concat
      "\n"
-     (format "  👤 %s   ⭐ %s   💻 %s   ⏰ %s\n" user host os time)
+     (format "  👤 %s  ⭐ %s  💻 %s  ⏰ %s\n" user host os time)
      (format "  %s\n" emacs-version-string)
      "  " line "\n\n"
      )))
@@ -368,15 +380,6 @@
   (eshell-toggle-run-command nil)
   (eshell-toggle-init-function #'eshell-toggle-init-eshell))
 
-(defun my-eshell-backspace ()
-  "Prevent Backspace from deleting if the cursor is after the prompt."
-  (interactive)
-  (if
-      (<= (point) (line-beginning-position))
-      ;; If the point is at or after the prompt, do nothing
-      (message "Cannot delete after the prompt!")
-    ;; Otherwise, perform the normal backspace operation
-    (delete-char -1)))
 
 ;;;; Автодополнение npm, включая команды из package.json
 

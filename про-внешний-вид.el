@@ -49,6 +49,7 @@
   :custom
   (shaoline-right-padding 10)
   :config
+  (setq battery-status-function 'battery-linux-sysfs)
   (shaoline-mode t))
 
 (require 'time)
@@ -77,12 +78,13 @@
 
 ;; Подключение библиотеки для использования иконок в интерфейсе.
 
-(use-package all-the-icons
-  :if window-system
-  :custom
-  (all-the-icons-scale-factor 1)                   ; Настройка масштаба иконок.
-  (all-the-icons-default-adjust 0)                 ; Настройка размещения иконок.
-  :ensure t)
+;; (use-package all-the-icons
+;;   :ensure t
+;;   :if window-system
+;;   :custom
+;;   (all-the-icons-scale-factor 1)                   ; Настройка масштаба иконок.
+;;   (all-the-icons-default-adjust 0)                 ; Настройка размещения иконок.
+;;   )
 
 ;;;;; Иконки для автодополнения
 
@@ -331,8 +333,6 @@ close the window as well."
 
 (require 'seq)
 
-
-
 (use-package pro-tabs
   :init (установить-из :repo "11111000000/pro-tabs")
   :commands (pro-tabs-mode pro-tabs-open-new-tab pro-tabs-close-tab-and-buffer)
@@ -343,8 +343,7 @@ close the window as well."
               :map tab-bar-mode-map
               ("s-n" . tab-bar-switch-to-next-tab)
               ("s-p" . tab-bar-switch-to-prev-tab)
-              ("s-w" . tab-bar-close-tab)
-              )  
+              ("s-w" . tab-bar-close-tab))  
   :custom
   (pro-tabs-enable-icons t) ; если нужно, настройте здесь параметры
   ;; (pro-tabs-max-tab-name-length 25)
