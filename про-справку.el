@@ -79,12 +79,12 @@
   :config
   (require 'eldoc)
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-  (eldoc-box-hover-mode))
+  (eldoc-box-hover-mode -1))
 
 ;;;; Статистика нажатий
 
 (use-package keyfreq
-  :defer t 
+  :defer t
   :ensure t
   :functions (keyfreq-mode keyfreq-autosave-mode)
   :config

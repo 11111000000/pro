@@ -1,14 +1,33 @@
-;;; про-терминалы.el --- Терминалы -*- lexical-binding: t -*-
+;;; про-терминалы.el --- Современная работа с терминалами и Eshell -*- lexical-binding: t -*-
+;; 
+;; Этот файл предоставляет удобную, функциональную и стильную настройку работы с терминалами в Emacs
+;; - vterm: полноценный терминал с яркими сочетаниями клавиш, быстрым копированием и вставкой
+;; - multi-vterm: легкое открытие новых вкладок/окон терминала
+;; - eshell: интегрированная оболочка Emacs с красивым внешним видом и умным автодополнением
+;; - Современный tab-line/tab-bar иконки, продуманное поведение с фокусом и цветами
+;; - Красивый промпт и баннер, Git-интеграция, npm-автодополнение, вспомогательные функции
+;;
 ;;; Commentary:
-
-;; Конфигурация терминалов
+;; Здесь настраиваются терминалы: функции управления окнами, копирования, работы с Eshell,
+;; автодополнение команд (в том числе по npm-скриптам), а также оформление — цвета, иконки, табы и промпты.
 
 ;;; Code:
 
+;;;; Базовые требования
 (require 'установить-из)
+(require 'seq)
+(require 'eshell)
+(require 'vc-git)
+(require 'shrink-path)
+(require 'all-the-icons)
+(require 'esh-mode)
+(require 'eshell)
+(require 'json)
+
+;;;;= Общие вспомогательные функции =;;;;;
 
 (defun pro/kill-buffer-and-window ()
-  "Закрыть текущий буфер и окно, если оно не единственное."
+  "Закрыть текущий буфер и окно, если оно не единственное в этом фрейме."
   (interactive)
   (let ((buf (current-buffer))
         (win (selected-window)))
@@ -18,8 +37,36 @@
         (delete-window win)
         (kill-buffer buf)))))
 
+;;;;= VTerm: современный быстрый терминал =;;;;;
+
+(use-package vterm
+  :ensure t
+  :functions (vterm-send-next-key vterm-yank)
+  :hook ((vterm-mode . tab-line-mode))
+  :bind (:map vterm-mode-map
+              ;; Основные бинды для управления терминалом
+              ("M-v" . scroll-up-command)
+              ("C-\\" . #'toggle-input-method)
+              ("C-c C-c" . pro/vterm-interrupt)
+              ("C-c C-t" . #'vterm-copy-mode)
+              ("C-q" . #'vterm-send-next-key)
+              ("C-y" . #'vterm-yank)
+              ("s-`" . #'delete-window)
+              ("s-v" . #'vterm-yank)
+              ;; Перемещение по истории терминала:
+              ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
+              ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
+              ;; Быстрый переход в copy-mode и навигация по экрану терминала:
+              ("C-p" . pro/vterm-line-mode-move-up)
+              ("s-q" . kill-current-buffer))
+  :config
+  ;; В режиме копирования C-g: вернуться к приглашению ввода
+  (define-key vterm-copy-mode-map (kbd "C-g") #'pro/vterm-copy-mode-escape)
+  ;; Выйти из copy-mode и отправить <up> – прокрутка в истории терминала:
+  (define-key vterm-copy-mode-map (kbd "M-p") #'pro/vterm-copy-mode-move-M-up))
+
 (defun pro/vterm-line-mode-move-up ()
-  "Включить vterm-copy-mode и сразу перейти на строку выше."
+  "Войти в `vterm-copy-mode` и подняться на одну строку вверх (или стандартно вызвать `previous-line`)."
   (interactive)
   (unless (bound-and-true-p vterm-copy-mode)
     (vterm-copy-mode 1))
@@ -28,12 +75,10 @@
                    (lookup-key vterm-copy-mode-map (kbd "p")))))
       (cond
        (cmd (call-interactively cmd))
-       ;; если почему-то невозможно определить биндинг,
-       ;; стандартная команда "previous-line":
        (t (previous-line))))))
 
 (defun pro/vterm-copy-mode-escape ()
-  "Выйти из vterm-copy-mode и перейти к приглашению ввода shell."
+  "Выйти из `vterm-copy-mode` и перейти к приглашению терминала."
   (interactive)
   (when (bound-and-true-p vterm-copy-mode)
     (vterm-copy-mode -1))
@@ -41,7 +86,7 @@
     (goto-char vterm--process-marker)))
 
 (defun pro/vterm-copy-mode-move-M-up ()
-  "Выйти из vterm-copy-mode и отправить терминалу <up> (Meta-p в copy-mode делает перемещение в истории терминала)."
+  "Выйти из `vterm-copy-mode` и передать терминалу <up> для листания истории."
   (interactive)
   (when (bound-and-true-p vterm-copy-mode)
     (vterm-copy-mode -1))
@@ -49,35 +94,13 @@
     (vterm-send-key "<up>")))
 
 (defun pro/vterm-interrupt ()
-  "Send C-c as an interrupt in vterm, always."
+  "Передать явный сигнал прерывания (C-c) в vterm."
   (interactive)
   (when (eq major-mode 'vterm-mode)
     (vterm-send-key "c" nil nil t)))
 
 
-(use-package vterm
-  :ensure t
-  :functions (vterm-send-next-key vterm-yank)
-  :hook ((vterm-mode . tab-line-mode))
-  :bind (:map vterm-mode-map
-                ("M-v" . scroll-up-command)
-                ("C-\\" . #'toggle-input-method)
-                ("C-c C-c" . pro/vterm-interrupt)
-                ("C-c C-t" . #'vterm-copy-mode)
-                ("C-q" . #'vterm-send-next-key)
-                ("C-y" . #'vterm-yank)
-                ("s-`" . #'delete-window)
-                ("s-v" . #'vterm-yank)
-                ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
-                ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
-                ("C-p" . pro/vterm-line-mode-move-up)
-                ;; "M-p" для vterm-copy-mode настроим в :config ниже!
-                ("s-q" . kill-current-buffer))
-  :config
-  ;; В режиме копирования C-g возвращает в терминал и переводит к вводу
-  (define-key vterm-copy-mode-map (kbd "C-g") #'pro/vterm-copy-mode-escape)
-  ;; В режиме copy-mode: M-p — вернуться в терминал и послать <up>
-  (define-key vterm-copy-mode-map (kbd "M-p") #'pro/vterm-copy-mode-move-M-up))
+;;;;= Multi-vterm: несколько вкладок терминала =;;;;;
 
 (use-package multi-vterm
   :ensure t
@@ -85,119 +108,89 @@
               ("s-t" . multi-vterm))
   :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
 
-(require 'seq)
-(require 'eshell)
 
-; (use-package capf-autosuggest }
-;   :ensure t }
-;   :hook }
-;   (eshell-mode capf-autosuggest-mode) }
-;    (comint-mode capf-autosuggest-mode)) }
+;;;;= Eshell — стильно, удобно и мощно =;;;;;
 
-;; Цветовая схема tab-line специально для Eshell
+;;= Цветовая схема вкладок для Eshell (см. также про-внешний-вид.el) =;;
+(defun pro/eshell-tabline-colors ()
+  "Сделать текущую вкладку tab-line в Eshell черной с белым акцентом."
+  (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
+  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil)))
 
-;; (defun pro/eshell-tabline-colors ()
-;;   "Меняет только текущую вкладку tab-line в Eshell: чёрный фон, белый текст, жирный."
-;;   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
-;;   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil))
-;;   )
-
-;; Оболочка Emacs Shell
+;;= Темный pop-up Corfu для мини-окон автодополнения в Eshell =;;
 (defun pro/eshell-corfu-dark ()
-  "Dark popup for corfu in Eshell."
-  (face-remap-add-relative 'corfu-default
-                           :background "#181818" :foreground "#eeeeee")
-  (face-remap-add-relative 'corfu-current
-                           :background "#333333" :foreground "#ffffbb" :weight 'bold)
-  (face-remap-add-relative 'corfu-border
-                           :background "#181818"))
+  "Организует темное всплывающее окно Corfu в Eshell."
+  (face-remap-add-relative 'corfu-default :background "#181818" :foreground "#eeeeee")
+  (face-remap-add-relative 'corfu-current :background "#333333" :foreground "#ffffbb" :weight 'bold)
+  (face-remap-add-relative 'corfu-border  :background "#181818"))
 
-
-
+;;= Темная терминальная цветовая схема для Eshell =;;
 (defun pro/eshell-dark-theme ()
-  "Сделать буфер Eshell максимально похожим на терминал: чёрный фон, терминальные ansi-цвета, без fringes."
-  ;; Очистить ansi-color-process-output из ГЛОБАЛЬНОГО и buffer-local фильтров, если где-либо была добавлена:  
-  (setq eshell-output-filter-functions
-        (remove 'ansi-color-process-output eshell-output-filter-functions))
-  (setq-local eshell-output-filter-functions
-              (remove 'ansi-color-process-output eshell-output-filter-functions))
-  ;; Черный фон и светлый текст (face-remap default и eshell faces для более яркого ввода)
+  "Оформляет Eshell: черный фон, терминальные цвета, убирает отступы и поля."
+  ;; Удаляем лишние фильтры на всякий случай:
+  (setq eshell-output-filter-functions (remove 'ansi-color-process-output eshell-output-filter-functions))
+  (setq-local eshell-output-filter-functions (remove 'ansi-color-process-output eshell-output-filter-functions))
   (face-remap-add-relative 'default :background "#000000" :foreground "#cccccc")
   (face-remap-add-relative 'eshell '(:foreground "#eeeeee"))
   (when (facep 'eshell-input)
     (face-remap-add-relative 'eshell-input '(:foreground "#eeeeee")))
-  ;; Сделать команду тоже ярко-серой (если face существует в данной версии)
   (when (facep 'eshell-syntax-highlighting-builtin-command-face)
     (face-remap-add-relative 'eshell-syntax-highlighting-builtin-command-face '(:foreground "#eeeeee")))
-  ;; Настраиваем ansi/term-colors локально для терминального эффекта
+  ;; Локальные терминальные цвета
   (setq-local ansi-color-names-vector
               ["#000000" "#ff5555" "#50fa7b" "#f1fa8c"
                "#bd93f9" "#ff79c6" "#8be9fd" "#bbbbbb"])
   (setq-local ansi-term-color-vector
               [terminal "#000000" "#ff5555" "#50fa7b" "#f1fa8c"
                         "#bd93f9" "#ff79c6" "#8be9fd" "#bbbbbb"])
-
-  ;; Явно задаём цвета для eshell-syntax-highlighting (чтобы соответствовали терминальным цветам).
+  ;; Высококонтрастные лица подсветки синтаксиса (если пакет активирован)
   (set-face-attribute 'eshell-syntax-highlighting-alias-face nil
-                      :foreground "#bd93f9" :weight 'bold) ; яркий синий
+                      :foreground "#bd93f9" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-builtin-command-face nil
-                      :foreground "#50fa7b" :weight 'bold) ; зелёный
+                      :foreground "#50fa7b" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-command-substitution-face nil
-                      :foreground "#ff79c6" :slant 'italic) ; пурпурный курсив
+                      :foreground "#ff79c6" :slant 'italic)
   (set-face-attribute 'eshell-syntax-highlighting-comment-face nil
-                      :foreground "#bbbbbb" :slant 'italic) ; светло-серый
+                      :foreground "#bbbbbb" :slant 'italic)
   (set-face-attribute 'eshell-syntax-highlighting-default-face nil
-                      :foreground "#cccccc") ; дефолт (чуточку светлее для команд)
+                      :foreground "#cccccc")
   (set-face-attribute 'eshell-syntax-highlighting-delimiter-face nil
-                      :foreground "#f1fa8c") ; жёлтый
+                      :foreground "#f1fa8c")
   (set-face-attribute 'eshell-syntax-highlighting-directory-face nil
-                      :foreground "#8be9fd" :weight 'bold) ; бирюзовый (голубой)
+                      :foreground "#8be9fd" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-envvar-face nil
-                      :foreground "#ff79c6" :weight 'bold) ; пурпурный
+                      :foreground "#ff79c6" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-file-arg-face nil
-                      :foreground "#eeeeee") ; почти белый
+                      :foreground "#eeeeee")
   (set-face-attribute 'eshell-syntax-highlighting-invalid-face nil
-                      :foreground "#ff5555" :background "#000000" :weight 'bold) ; ярко-красный
+                      :foreground "#ff5555" :background "#000000" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-lisp-function-face nil
-                      :foreground "#bd93f9") ; синий/фиолетовый
+                      :foreground "#bd93f9")
   (set-face-attribute 'eshell-syntax-highlighting-option-face nil
-                      :foreground "#f1fa8c") ; жёлтый
+                      :foreground "#f1fa8c")
   (set-face-attribute 'eshell-syntax-highlighting-shell-command-face nil
-                      :foreground "#50fa7b" :weight 'bold) ; зелёный для команд
+                      :foreground "#50fa7b" :weight 'bold)
   (set-face-attribute 'eshell-syntax-highlighting-string-face nil
-                      :foreground "#f1fa8c") ; жёлтые строки
-
+                      :foreground "#f1fa8c")
+  ;; АNSI-цвета для вывода:
   (add-to-list 'eshell-preoutput-filter-functions #'ansi-color-apply)
-
+  ;; Скрываем фринжи и отступы
   (when (get-buffer-window)
     (set-window-fringes (get-buffer-window) 0 0 nil)
     (set-window-margins (get-buffer-window) 0 0))
-  
   (add-hook 'window-configuration-change-hook
             (lambda ()
               (when (and (eq major-mode 'eshell-mode)
                          (get-buffer-window))
                 (set-window-fringes (get-buffer-window) 0 0 nil)
                 (set-window-margins (get-buffer-window) 0 0)))
-            nil t)
-  
-  ;; (add-hook 'window-configuration-change-hook
-  ;;           (lambda ()
-  ;;             (when (eq major-mode 'eshell-mode)
-  ;;               (set-window-fringes (get-buffer-window) 0 0 nil)
-  ;;               (set-window-margins (get-buffer-window) 0 0)))
-  ;;           nil t)
-  )
-
-(require 'esh-mode)
+            nil t))
 
 (use-package eshell
   :ensure t
   :hook ((eshell-mode . tab-line-mode)
          (eshell-mode . pro/eshell-dark-theme)
-         (eshell-mode . pro/eshell-corfu-dark)
-         ;; (eshell-mode . pro/eshell-tabline-colors)
-         )
+         (eshell-mode . pro/eshell-corfu-dark))
   :bind (:map eshell-mode-map
          ("C-a" . beginning-of-line)
          ("DEL" . pro/eshell-backspace)
@@ -209,22 +202,16 @@
   (eshell-hist-ignoredups t)
   (eshell-cmpl-cycle-completions nil)
   (eshell-cmpl-ignore-case t)
-  (eshell-ask-to-save-history (quote always))
+  (eshell-ask-to-save-history 'always)
   (eshell-visual-commands '("vi" "vim" "screen"
                             "tmux" "top" "htop"
                             "less" "more" "lynx"
                             "links" "ncftp" "mutt"
                             "pine" "tin" "trn"
                             "elm" "changelog-ai.sh" "changelog-ai-new.sh"
-                            "ollama" "npm" "nix"))
-  :config)
+                            "ollama" "npm" "nix")))
 
-(use-package eshell-vterm
-  :ensure t
-  :after eshell
-  :config
-  (eshell-vterm-mode))
-
+;;= Быстрая Eshell из текущей папки =;;
 (defun eshell-here ()
   "Открыть новый буфер Eshell в каталоге текущего буфера."
   (interactive)
@@ -233,55 +220,33 @@
                                default-directory)))
     (eshell t)))
 
-;; Подсветка синтаксиса в Eshell
+;;= Правильный Backspace: не удалять приглашение =;;
+(defun pro/eshell-backspace ()
+  "Запретить удаление prompt в Eshell."
+  (interactive)
+  (if (<= (point) (line-beginning-position))
+      (message "Cannot delete after the prompt!")
+    (delete-char -1)))
+
+;;= Подключение современных подсказок в Eshell =;;
+(use-package eshell-vterm
+  :ensure t
+  :after eshell
+  :config (eshell-vterm-mode))
 
 (use-package eshell-syntax-highlighting
   :init (установить-из :repo "akreisher/eshell-syntax-highlighting")
   :functions (eshell-syntax-highlighting-global-mode)
-  :config
-  (eshell-syntax-highlighting-global-mode 1))
-
-;;Предпросмотр а-ля в Plan9
-
-;; (use-package em-smart
-;;   :ensure t
-;;   :custom
-;;   (eshell-where-to-jump 'begin)
-;;   (eshell-review-quick-commands nil)
-;;   (eshell-smart-space-goes-to-end t))
-
-;; Сокращалка путей
+  :config (eshell-syntax-highlighting-global-mode 1))
 
 (use-package shrink-path
   :ensure t
   :demand t)
 
-;; - Этот промпт показывает:
-;;   - иконку терминала,
-;;   - проект,
-;;   - сокращённую директорию (например =~/prj/foo= → =~/…/foo=),
-;;   - git-ветку с иконкой и цветовой индикацией если есть изменения,
-;;   - ошибку последней команды (или зелёную стрелку если всё ок).
-;; - Использует функции: =all-the-icons-octicon=, =all-the-icons-material=, =shrink-path-prompt=, а также Git и проектные функции.
-
-
-(defun pro/eshell-backspace ()
-  "Prevent Backspace from deleting if the cursor is after the prompt."
-  (interactive)
-  (if
-      (<= (point) (line-beginning-position))
-      ;; If the point is at or after the prompt, do nothing
-      (message "Cannot delete after the prompt!")
-    ;; Otherwise, perform the normal backspace operation
-    (delete-char -1)))
-
-
-(require 'vc-git)  
-(require 'shrink-path)
-(require 'all-the-icons)
+;;;;= Современный Eshell Prompt с проектами, git и иконками =;;;;;
 
 (defun приглашение-eshell ()
-  "Минималистичный, быстрый и надёжный промпт Eshell с git проектом и статусом."
+  "Быстрый и красивый промпт Eshell: иконка+путь+проект+git-ветка+статус."
   (let* ((icons t)
          (default-dir (or (and (stringp default-directory) default-directory) ""))
          (project (when (fboundp 'project-root)
@@ -293,10 +258,9 @@
          (dir (ignore-errors (shrink-path-prompt default-dir)))
          (path-car (or (and dir (car dir)) ""))
          (path-cdr (or (and dir (cdr dir)) ""))
-         (git-root (ignore-errors
-                     (when (executable-find "git")
-                       (let ((root (vc-git-root default-dir)))
-                         (when root (expand-file-name root)))))))
+         (git-root (ignore-errors (when (executable-find "git")
+                                    (let ((root (vc-git-root default-dir)))
+                                      (when root (expand-file-name root)))))))
     (let* ((git-branch
             (when git-root
               (ignore-errors
@@ -341,16 +305,10 @@
 
 (setq eshell-prompt-function #'приглашение-eshell)
 
-;; (use-package eshell-did-you-mean
-;;   :init
-;;   (eshell-did-you-mean-setup)
-;;   :ensure t)
+;;;;= Красивый баннер (welcome-screen) в Eshell =;;;;;
 
-;;;; Красивый баннер для Eshell со сведениями о системе
-
-;; Функция формирует баннер (ВОЗВРАЩАЕТ СТРОКУ)
 (defun pro/eshell-system-banner-string ()
-  "Вернуть красивый баннер с информацией о системе для вывода в Eshell."
+  "Сформировать баннер с информацией о пользователе/системе для Eshell."
   (let* ((user (user-login-name))
          (host (system-name))
          (os   (capitalize (symbol-name system-type)))
@@ -361,13 +319,11 @@
      "\n"
      (format "  👤 %s  ⭐ %s  💻 %s  ⏰ %s\n" user host os time)
      (format "  %s\n" emacs-version-string)
-     "  " line "\n\n"
-     )))
+     "  " line "\n\n")))
 
-;; Настраиваем переменную, как это ожидает модуль em-banner
 (setq eshell-banner-message '(pro/eshell-system-banner-string))
 
-;; Не требуется отдельная функция eshell-banner-message – eshell сам вызывает функцию из переменной
+;;;;= Быстрое переключение с хоть какого окна в Eshell =;;;;;
 
 (use-package eshell-toggle
   :ensure t
@@ -375,40 +331,28 @@
   (eshell-toggle-size-fraction 2)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-find-project-root-package 'projectile)
-                                        ;(eshell-toggle-find-project-root-package t)
   (eshell-toggle-default-directory "~")
   (eshell-toggle-run-command nil)
   (eshell-toggle-init-function #'eshell-toggle-init-eshell))
 
-
-;;;; Автодополнение npm, включая команды из package.json
-
-(require 'eshell)
-(require 'json)                       ; в <27: (require 'json)
+;;;;= Умное автодополнение npm-скриптов для Eshell =;;;;;
 
 (defun pro/npm-scripts ()
-  "Список скриптов из ближайшего package.json."
+  "Вернуть список скриптов из package.json ближайшего проекта."
   (when-let* ((root (locate-dominating-file default-directory "package.json"))
               (file (expand-file-name "package.json" root)))
-    (let* ((json-object-type 'alist)  ; если используете json-read-file
-           (pkg   (json-read-file file))
-           (scr   (alist-get 'scripts pkg)))
+    (let* ((json-object-type 'alist)
+           (pkg (json-read-file file))
+           (scr (alist-get 'scripts pkg)))
       (mapcar #'symbol-name (mapcar #'car scr)))))
 
-;; pcomplete-функция вызывается, когда первая команда — «npm»
 (defun pcomplete/npm ()
-  "Дополнение для npm в Eshell, включая «npm run <script>»."
-  ;; сначала дополняем саму подкоманду npm
-  (pcomplete-here*
-   '("access" "adduser" "audit" "bugs" "cache" "ci" "completion" "config"
-     "dedupe" "deprecate" "doctor" "exec" "explain" "help" "hook" "init"
-     "install" "link" "logout" "ls" "outdated" "owner" "pack" "ping"
-     "prune" "publish" "rebuild" "restart" "root" "run" "search" "set"
-     "star" "start" "stop" "team" "test" "token" "uninstall" "unpublish"
-     "update" "version" "view"))
-  ;; если уже ввели «run», подсказываем скрипты из package.json
-  (when (string= (pcomplete-arg 1) "run")
-    (pcomplete-here* (pro/npm-scripts))))
+  "Пользовательская функция автодополнения для npm: подсказывать скрипты из package.json."
+  (pcomplete-here
+   (delete-dups
+    (append (list "install" "test" "start" "run" "dev" "build" "version" "help")
+            (pro/npm-scripts)))))
 
 (provide 'про-терминалы)
+
 ;;; про-терминалы.el ends here

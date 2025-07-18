@@ -125,7 +125,7 @@
 
 ;; Выводить C-c C-c текстом (а не таблицей)
 
-(setq org-babel-default-header-args '((:results . "output")))
+(setq org-babel-default-header-args '((:results . "value")))
 
 ;; Выделение шифтом отключено, т.к. шифт используется для управления статусом
 
@@ -214,8 +214,9 @@
 
 (use-package org-modern
   :defer t
+  :if window-system
   :ensure t
-  :custom ((org-modern-star '("●" "▶" "▷" "□" "◆" "◍"))
+  :custom ((org-modern-star '("●" "▶" "◆" "▷" "□" "◍"))
           (org-modern-hide-stars " "))
   :hook ((org-mode . org-modern-mode))
   :init

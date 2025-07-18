@@ -142,7 +142,7 @@
 | s-i .             | gptel-quick                         |
 | s-i a             | gptel-add                           |
 | s-i t             | gptel-tools                         |
-| s-i b             | gptel-add                           |
+| s-i b             | pro/gptel-switch-backend            |
 | s-i f             | gptel-add-file                      |
 | s-i p             | gptel-system-prompt                 |
 | s-i RET           | gptel-send                          |
@@ -231,7 +231,7 @@
 | s-<right>               | enlarge-window-horizontally          |
 | s-<down>                | shrink-window                        |
 | s-<up>                  | enlarge-window                       |
-| s-z                     | yaz-transient                        |
+| s-z                     | nil                                  |
 | s-_                     | winner-undo                          |
 | s-M-_                   | winner-redo                          |
 | s-u                     | tab-bar-history-back                 |
@@ -330,6 +330,7 @@
 #+END_SRC
 
 #+RESULTS:
+: про-сочетания-клавиш
 : про-сочетания-клавиш
 
 * 

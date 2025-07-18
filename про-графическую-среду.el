@@ -1,204 +1,152 @@
-;;; про-графическую-среду.el --- Оконный менеджер ExWM  -*- lexical-binding: t -*-
+;;; про-графическую-среду.el --- Оконный менеджер ExWM со всем окружением -*- lexical-binding: t -*-
 ;;; Commentary:
 
-;; EXWM - Emacs X Window Manager, тайловый оконный менеджер
+;; Настройка Emacs X Window Manager: мультимониторная работа, ярлыки, системный трей,
+;; автоматизация EXWM, мягкое завершение работы и дополнительные функции (скриншоты и пр).
+;;
+;; Опорные зависимости: xelb, exwm, exwm-edit, exwm-mff
+;;
+;; Поддержка русского языка, комментарии подробно поясняют назначение блоков.
 
 ;;; Code:
+
+;;;; Зависимости
 
 (require 'установить-из)
 (require 'про-мониторы)
 
-;;;; Xelb
+;;;; Подсистема X (xelb)
 
 (use-package xelb
   :ensure t
   :if window-system)
 
-;;;; ExWM
+;;;; EXWM — главный оконный менеджер
 
-(setq-default exwm-debug t)
+(use-package exwm
+  :ensure t
+  :if window-system
+  :defer t
+  :init
+  (setq exwm-debug t
+        exwm-workspace-number         3
+        exwm-workspace-show-all-buffers t
+        exwm-layout-show-all-buffers   t
+        exwm-manage-force-tiling      nil
+        exwm-systemtray-background-color 'default
+        exwm-systemtray-height         22)
+  :config
 
-(setq-default exwm-workspace-number 3)
-(setq-default exwm-workspace-show-all-buffers t)
-(setq-default exwm-layout-show-all-buffers t)
-(setq-default exwm-manage-force-tiling nil)
-(setq-default exwm-systemtray-background-color 'default)
-(setq-default exwm-systemtray-height 22)
+  ;; --- Клавиатурные эмуляции стандартных перемещений/редактирования в X приложениях
+  (defvar exwm-input-simulation-keys
+    '(([?\C-b] . left)
+      ([?\M-b] . C-left)
+      ([?\C-f] . right)
+      ([?\M-f] . C-right)
+      ([?\C-p] . up)
+      ([?\C-n] . down)
+      ([?\C-a] . home)
+      ([?\C-e] . end)
+      ([?\M-v] . prior)
+      ([?\C-v] . next)
+      ([?\C-d] . ?\C-x)
+      ([?\M-d] . (C-S-right delete))
+      ;; cut/paste.
+      ([?\M-y] . ?\C-c)
+      ([?\M-w] . ?\C-c)
+      ([?\C-y] . ?\C-v)
+      ;; search
+      ([?\C-s] . ?\C-f))
+    "Сочетания клавиш, переотправляемых X приложениям для эмуляции behavior Emacs.")
 
-(defvar сочетания-для-эмуляции
-  '(([?\C-b] . left)
-    ([?\M-b] . C-left)
-    ([?\C-f] . right)
-    ([?\M-f] . C-right)
-    ([?\C-p] . up)
-    ([?\C-n] . down)
-    ([?\C-a] . home)
-    ([?\C-e] . end)
-    ([?\M-v] . prior)
-    ([?\C-v] . next)
-    ([?\C-d] . ?\C-x)
-    ([?\M-d] . (C-S-right delete))
-    ;; cut/paste.
-    ([?\M-y] . ?\C-c)
-    ([?\M-w] . ?\C-c)
-    ([?\C-y] . ?\C-v)
-    ;; search
-    ([?\C-s] . ?\C-f)))
+  ;; --- Удобный макрос для глобальных горячих клавиш EXWM
+  (defmacro exwm-input-set-keys (&rest key-bindings)
+    "Установить горячие клавиши EXWM (глобально поверх X приложений).
+KEY-BINDINGS — список пар (\"клавиша\" функция)."
+    `(dolist (kb ',key-bindings)
+       (cl-destructuring-bind (key cmd) kb
+         (exwm-input-set-key (kbd key) cmd))))
 
-(defun скриншот-области ()
-  "Получить скриншот области и скопировать полученое изоббражение в буфер обмена."
-  (interactive)
-  (let* ((dir (or (and (file-directory-p default-directory) default-directory)
-                  "~"))
-         (default-directory (file-name-as-directory (expand-file-name dir))))
-    (unless (file-directory-p default-directory)
-      (setq default-directory "~"))
-    (start-process-shell-command
-     "scrot-area" nil
-     "scrot -s '/home/az/Скриншоты/%Y-%m-%d_%H.%M.%S.png' -e 'copyq write image/png - < $f && copyq select 0'")))
+  ;; --- Стартовая инициализация EXWM. Выполняется только один раз!
+  (defvar про/графика-initialized nil
+    "Истина, если графическая среда уже инициализирована.")
 
-(defun скриншот ()
-  "Получить скриншот."
-  (interactive)
-  (sit-for 1)
-  (let* ((dir (or (and (file-directory-p default-directory) default-directory)
-                  "~"))
-         (default-directory (file-name-as-directory (expand-file-name dir))))
-    (unless (file-directory-p default-directory)
-      (setq default-directory "~"))
-    (start-process-shell-command
-     "scrot-full" nil
-     "scrot '/home/az/Скриншоты/%Y-%m-%d-%H-%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'")))
+  (defun про/старт-графической-среды ()
+    "Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
+    (interactive)
+    (unless про/графика-initialized
+      (setq про/графика-initialized t)
+      ;; -- 1. Физическое размещение мониторов (xrandr)
+      (require 'про-мониторы)
+      (применить-расположение-мониторов)
+      ;; -- 2. Пауза, чтобы применились новые настройки дисплея
+      (sleep-for про/monitor-refresh-delay)
+      ;; -- 3. Включить RandR режим EMACS (до EXWM)
+      (when (fboundp 'exwm-randr-mode)
+        (exwm-randr-mode t))
+      ;; -- 4. Инициализация сопоставлений workspace <-> monitor
+      (про-мониторы-инициализировать)
+      ;; -- 5. Запустить собственно EXWM
+      (require 'exwm)
+      ;; -- 6. Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
+      (dotimes (i 9)
+        (exwm-input-set-key (kbd (format "s-<f%d>" i))
+                            `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+        (exwm-input-set-key (kbd (format "S-s-<f%d>" i))
+                            `(lambda () (interactive) (message ">%d" ,i)))
+        (exwm-input-set-key (kbd (format "s-%d" i))
+                            `(lambda () (interactive) (tab-bar-select-tab ,i))))
+      (exwm-input-set-key (kbd "s-<f10>")
+                          `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+      (setq exwm-input-simulation-keys exwm-input-simulation-keys)
+      (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
+      (exwm-wm-mode 1)
+      ;; -- 7. Системный трей и XIM/импорт ввода
+      (exwm-systemtray-mode t)
+      (exwm-xim-mode t)
+      ;; -- 8. Принудительная активация всех workspace, чтобы EXWM их закрепил за мониторами
+      (dotimes (i exwm-workspace-number)
+        (exwm-workspace-switch-create i))
+      ;; -- 9. Хуки для красивых имён окон
+      (add-hook 'exwm-update-class-hook
+                (lambda ()
+                  (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+      (defun exwm-update-title-hook ()
+        (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+      (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+      ;; -- 10. Конфигурация специальных окон и поведение floating
+      (setq exwm-manage-configurations
+            `(
+              ;; Blueman Applet/Manager — не floating и управляются
+              ((or (string= exwm-class-name "Blueman-manager")
+                   (string= exwm-class-name "Blueman-applet")
+                   (and exwm-title (string-match "blueman" exwm-title)))
+               floating nil
+               managed t)
+              ;; posframe — floating окно без mode line
+              ((equal exwm-title "posframe") floating t floating-mode-line nil)
+              ;; chromebug — спец. размеры и fixed позиция
+              ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+               height 175 x 30 y 30 managed t)
+              )))
+    )
 
-(defmacro exwm-input-set-keys (&rest key-bindings)
-  "Макрос для установки клавиш, работающих поверх приложений Xorg.
-KEY-BINDINGS - список пар (клавиша функция)"
-  `(dolist (kb ',key-bindings)
-     (cl-destructuring-bind (key cmd) kb
-       (exwm-input-set-key (kbd key) cmd))))
+  ;; -- Автоматический запуск, только если не консоль
+  (when window-system
+    (про/старт-графической-среды)))
 
+;;;; Дополнительные возможности EXWM
+
+;; -- Системный трей (иконки в панели)
 (require 'exwm-systemtray)
 
-;; Временный контроль: логируем параметры embedder window system tray
-
-(defvar про/графика-initialized nil
-  "Флаг, сигнализирующий, что EXWM-окружение уже запущено.")
-
-(defun про/старт-графической-среды ()
-  "Единый инициализатор EXWM: правильный порядок запуска RandR/EXWM."
-  (interactive)
-  (unless про/графика-initialized
-    (setq про/графика-initialized t)
-    (require 'про-мониторы)
-    ;; 1. Сначала xrandr — применить физ.раскладку мониторов
-    (применить-расположение-мониторов)
-    ;; 2. Подождать немного после применения xrandr
-    (sleep-for про/monitor-refresh-delay)
-        ;; 3. exwm-randr-mode включается ДО EXWM!
-    (when (fboundp 'exwm-randr-mode)
-      (exwm-randr-mode t))
-    ;; 4. workspace<->monitor (RandR plist)
-    (про-мониторы-инициализировать)
-    ;; 5. Запускаем EXWM только после этого
-    (require 'exwm)
-    ;; Глобальные клавиши над всеми приложениями
-    (dotimes (i 9)
-      (exwm-input-set-key (kbd (format "s-<f%d>" i)) `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-      (exwm-input-set-key (kbd (format "S-s-<f%d>" 1)) `(lambda () (interactive) (message ">%d" ,i)))
-      (exwm-input-set-key (kbd (format "s-%d" i)) `(lambda () (interactive) (tab-bar-select-tab ,i))))
-    
-    (exwm-input-set-key (kbd "s-<f10>") `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-
-    (setq exwm-input-simulation-keys сочетания-для-эмуляции)
-    (push ?\C-\\ exwm-input-prefix-keys)
-    
-    (exwm-wm-mode 1)
-    ;; System tray и XIM запускаются через хуки (ниже)
-    (exwm-systemtray-mode t)
-    (exwm-xim-mode t)
-
-    ;; Принудительно активируем каждый workspace, чтобы EXWM закрепил их за мониторами
-    (dotimes (i 3)
-      (exwm-workspace-switch-create i))
-
-    ;; (start-process "gnome-keyring-daemon" "*gnome-keyring-daemon*" "gnome-keyring-daemon" "--start"  "--components=pkcs11,ssh,gpg")
-
-    ;; Смена имени окна
-    (add-hook 'exwm-update-class-hook
-              (lambda ()
-                (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-
-    ;; Смена заголовка окна
-    (defun exwm-update-title-hook ()
-      (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
-    (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-
-    ;; Специальное управление окнами
-    (setq exwm-manage-configurations
-          `(
-            ;; Blueman Applet/Manager — всегда не floating и видимы изначально
-            ((or (string= exwm-class-name "Blueman-manager")
-                 (string= exwm-class-name "Blueman-applet")
-                 (and exwm-title (string-match "blueman" exwm-title)))
-             floating nil
-             managed t)
-
-            ;; posframe — прятать и делать floating
-            ((equal exwm-title "posframe") floating t floating-mode-line nil)
-
-            ;; chromebug 
-            ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-             height 175 x 30 y 30 managed t)
-           ))))
-
-
-;; Автостарт при запуске Emacs в X-среде, но только в графическом режиме:
-(when window-system
-  (про/старт-графической-среды))
-
-;;;; Режимы ввода EMACS в приложениях
-
-;; В EMACS по-умолчанию раскладка переключается сочетанием C-\
-
-;;; про-графическую-среду.el ends here
-
-;;;; Автоматическое удаление "This window displayed the buffer ‘ *Old buffer ...*’" буферов
-
-(defun my/kill-old-buffer-message-buffer-maybe ()
-  "Kill buffer if it contains the annoying EXWM dead window message."
-  (when (and
-         (< (buffer-size) 2000)
-         (string-match-p
-          "^This window displayed the buffer ‘"
-          (buffer-string)))
-    (let ((buf (current-buffer)))
-      (when (get-buffer-window buf)
-        (delete-window (get-buffer-window buf)))
-      (kill-buffer buf))))
-
-(defun my/kill-old-buffer-message-buffers-in-visible-windows ()
-  "Scan all visible windows. If any shows a 'dead EXWM' message — kill its buffer and close window."
-  (dolist (win (window-list))
-    (let ((buf (window-buffer win)))
-      (when (and
-             (< (buffer-size buf) 2000)
-             (with-current-buffer buf
-               (string-match-p "^This window displayed the buffer ‘" (buffer-string))))
-        (ignore-errors
-          (delete-window win))
-        (kill-buffer buf)))))
-
-;; Удалять служебные буферы (dead EXWM) при любом изменении раскладки окон:
-(add-hook 'window-configuration-change-hook #'my/kill-old-buffer-message-buffers-in-visible-windows)
-
+;; -- Встроенный редактор для внешних текстовых полей
 (use-package exwm-edit
   :after exwm
   :if window-system
-  :ensure t
-  :config)
+  :ensure t)
 
-;;;; Курсор мыши следует за окном в фокусе
-
+;; -- Курсоp мыши автоматически следует за фокусом окна
 (use-package exwm-mff
   :after exwm
   :if window-system
@@ -207,61 +155,105 @@ KEY-BINDINGS - список пар (клавиша функция)"
   :init
   (exwm-mff-mode t))
 
-;; (use-package exwm-firefox
-;;   :if window-system
-;;   :ensure t)
+;;;; Утилиты: Скриншоты
 
-;; (use-package exwm-background
-;;   :init
-;;   (установить-из :repo "pestctrl/exwm-background")
-;;   :config
-;;   ;;(start-process-shell-command "xcompmgr" nil "xcompmgr -c")
-;;   )
+(defun скриншот-области ()
+  "Снять скриншот выделенной области и отправить в буфер обмена (copyq).
+Сохраняет файлы в ~/Скриншоты/"
+  (interactive)
+  (let ((dir "~/Скриншоты/"))
+    (unless (file-directory-p dir)
+      (make-directory dir t))
+    (start-process-shell-command
+     "scrot-area" nil
+     (format "scrot -s '%s%%Y-%%m-%%d_%%H.%%M.%%S.png' -e 'copyq write image/png - < $f && copyq select 0'"
+             dir))))
 
-;; (require 'exwm)
-;; (require 'exwm-manage)                  ;нужен exwm-manage--close-window
+(defun скриншот ()
+  "Сделать скриншот всего экрана и отправить в copyq.
+Сохраняет файлы в ~/Скриншоты/"
+  (interactive)
+  (sit-for 1)
+  (let ((dir "~/Скриншоты/"))
+    (unless (file-directory-p dir)
+      (make-directory dir t))
+    (start-process-shell-command
+     "scrot-full" nil
+     (format "scrot '%s%%Y-%%m-%%d-%%H-%%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'"
+             dir))))
+
+;;;; Очистка служебных буферов EXWM ("dead window")
+
+(defun my/kill-old-buffer-message-buffer-maybe ()
+  "Если буфер содержит служебное сообщение EXWM о dead window — закрыть его."
+  (when (and (< (buffer-size) 2000)
+             (string-match-p "^This window displayed the buffer ‘"
+                             (buffer-string)))
+    (let ((buf (current-buffer)))
+      (when (get-buffer-window buf)
+        (delete-window (get-buffer-window buf)))
+      (kill-buffer buf))))
+
+(defun my/kill-old-buffer-message-buffers-in-visible-windows ()
+  "Проверить все окна, закрыть буфер, если это служебное сообщение о dead window."
+  (dolist (win (window-list))
+    (let ((buf (window-buffer win)))
+      (when (and
+             (< (buffer-size buf) 2000)
+             (with-current-buffer buf
+               (string-match-p "^This window displayed the buffer ‘" (buffer-string))))
+        (ignore-errors (delete-window win))
+        (kill-buffer buf)))))
+
+;; -- Удалять служебные буферы при каждом изменении конфигурации окон
+(add-hook 'window-configuration-change-hook
+          #'my/kill-old-buffer-message-buffers-in-visible-windows)
+
+;;;; Мягкое завершение X окружения/Emacs/компьютера "в одну кнопку"
 
 (defun my/exwm-close-all-windows ()
-  "Попытаться мягко закрыть все внешние X-приложения, управляемые EXWM."
+  "Закрыть все внешние X-приложения, управляемые EXWM."
   (interactive)
   (dolist (buf (buffer-list))
     (with-current-buffer buf
       (when (eq major-mode 'exwm-mode)
-        ;; Каждое kill-buffer вызовет нужную WM_DELETE_WINDOW/close через EXWM
+        ;; Каждое kill-buffer вызовет WM_DELETE_WINDOW/close через EXWM
         (kill-buffer buf)))))
 
 (defun my/exwm-running-x-buffers-p ()
-  "Есть ли ещё EXWM-буферы (т.е. живые X-клиенты)?"
+  "Есть ли ещё активные EXWM-буферы (живые X-клиенты)?"
   (seq-some (lambda (buf)
               (with-current-buffer buf
                 (eq major-mode 'exwm-mode)))
             (buffer-list)))
 
 (defun my/exwm-shutdown (&optional force)
-  "Мягкое завершение всех X-приложений, затем Emacs, затем poweroff.
-Если FORCE не nil, то не задавать вопросов."
+  "Мягко завершить все X-приложения, потом Emacs, затем выключить компьютер.
+Если FORCE — не спрашивать подтверждения."
   (interactive)
-  ;; 1. Закрываем все внешние окна
   (my/exwm-close-all-windows)
-
-  ;; 2. Немного ждём; заодно повторяем попытку закрытия «упрямых» клиентов
-  (dotimes (_ 10)                       ;≈ 10 секунд максимум
+  (dotimes (_ 10) ;; 10 попыток с паузой
     (when (my/exwm-running-x-buffers-p)
       (sleep-for 1)
       (my/exwm-close-all-windows)))
-
-  ;; 3. Сохраняем файлы / выходим из Emacs
-  (when (or force
-            (yes-or-no-p "Выключить компьютер? "))
-    ;; Хук, который сработает уже после выхода Emacs
+  (when (or force (yes-or-no-p "Выключить компьютер? "))
     (add-hook 'kill-emacs-hook
               (lambda ()
-                ;; можно заменить на "shutdown -h now" или "loginctl poweroff"
                 (start-process "system-shutdown" nil "systemctl" "poweroff")))
     (save-buffers-kill-emacs)))
 
-;; Клавиша быстрого вызова  (Super + Shift + Q, к примеру)
+;; -- Универсальное сочетание для выключения (Super + Alt(M) + q)
 (global-set-key (kbd "s-M-q") #'my/exwm-shutdown)
+
+;;;; Блокировка случайных Ctrl/Shift+мышь (чтобы не было неожиданных меню)
+
+(dolist (mod '([C-down-mouse-1] [C-mouse-1]
+               [C-down-mouse-2] [C-mouse-2]
+               [C-down-mouse-3] [C-mouse-3]
+               [S-down-mouse-1] [S-mouse-1]
+               [S-down-mouse-2] [S-mouse-2]
+               [S-down-mouse-3] [S-mouse-3]))
+  (global-set-key mod #'ignore))
 
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here
