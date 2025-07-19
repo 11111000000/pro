@@ -32,35 +32,33 @@
 
 ;;;; 1. Таблица цен по токенам (чтобы считать траты, удобно сравнивать и планировать)
 (defcustom pro-gptel-model-pricing-alist
-  '(
-    ;; === Anthropic ===
-    (claude-sonnet-4-20250514         :input 0.7344   :output 3.672)
-    (claude-opus-4-20250514           :input 3.672    :output 18.36)
-    (claude-3-sonnet-20240229         :input 0.7344   :output 3.672)
-    (claude-3-opus-20240229           :input 3.672    :output 18.36)
-    (claude-3-haiku-20240307          :input 0.0612   :output 0.306)
-    (claude-3-7-sonnet-20250219       :input 0.7344   :output 3.672)
-    (claude-3-5-sonnet-20241022       :input 0.7344   :output 3.672)
-    (claude-3-5-sonnet-20240620       :input 0.7344   :output 3.672)
-    (claude-3-5-haiku-20241022        :input 0.2448   :output 1.224)
-    ;; === DeepSeek ===
-    (deepseek-reasoner                :input 0.13464  :output 0.53611)
-    (deepseek-chat                    :input 0.06610  :output 0.26928)
-    ;; === Google Gemini ===
-    (gemini-2.5-pro-preview-06-05     :input 0.306    :output 2.448)
-    ... ; смело добавляйте новые модели в этот список!
-    ;; === OpenAI ===
-    (o4-mini-2025-04-16               :input 0.26928  :output 1.07712)
-    ...
-    ;; === (Пример) генерация изображений или TTS/Audio — задавайте :input без :output
-    ;; (gpt-image-1-medium-1024x1024 :input 10.2)
-    ;; (tts-1-hd :input 7.344)
-    ;; (whisper-1 :input 1.47)
-   )
+  'nil
   "Alist с ценами за токены: (MODEL . (:input RUB/1k-токенов :output RUB/1k-токенов))
 Цены по 1000 токенов, для рублевой оценки (можно скорректировать через customize)."
   :type '(alist :key-type symbol :value-type (plist :key-type symbol :value-type number))
   :group 'gptel)
+
+(defun pro-gptel-load-pricing-from-org ()
+  "Load model pricing from `ai-model-prices.org' into `pro-gptel-model-pricing-alist'."
+  (let ((file (expand-file-name "~/pro/ai-model-prices.org"))
+        (alist nil))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (search-forward "| Модель ")
+      (forward-line 2)
+      (while (re-search-forward "^|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|$" nil t)
+        (let ((model (string-trim (match-string 1)))
+              (input (string-to-number (string-trim (match-string 2))))
+              (output (string-to-number (string-trim (match-string 3)))))
+          (unless (string-empty-p model)
+            (push (cons (intern (replace-regexp-in-string "\\." "-" model))
+                        (list :input (/ (float input) 1000)
+                              :output (/ (float output) 1000)))
+                  alist))))
+      (setq pro-gptel-model-pricing-alist (nreverse alist)))))
+
+(pro-gptel-load-pricing-from-org)
 
 (defcustom pro-gptel-currency-rate 1.0
   "Курс пересчёта тарифов, если не в рублях (обычно 1.0 = рубли).
@@ -76,13 +74,14 @@
 (defun pro-gptel-model-pricing (model)
   "Получить plist (:input :output ...) для модели MODEL (символ или строка).
 Если нет точного совпадения, попробует подобрать по префиксу."
-  (let* ((name (if (symbolp model) (symbol-name model) model)))
+  (let* ((name (if (symbolp model) (symbol-name model) model))
+         (name (replace-regexp-in-string "\\." "-" name)))
     (or
      (cdr (assoc (intern name) pro-gptel-model-pricing-alist))
      (let ((match (seq-find (lambda (x)
                               (and (consp x)
                                    (symbolp (car x))
-                                   (string-prefix-p name (symbol-name (car x)))))
+                                   (string-prefix-p (symbol-name (car x)) name)))
                             pro-gptel-model-pricing-alist)))
        (and match (cdr match)))
      )))
@@ -267,6 +266,26 @@
 ;; Автодополнение от AI (Cape — в пару к corfu/completion-at-point)
 ;; Можно добавить в свой `completion-at-point-functions`
 ;; (add-hook 'text-mode-hook (lambda () (add-to-list (make-local-variable 'completion-at-point-functions) #'cape-gptel)))
+
+;;;; 7. Генерация git commit-сообщений через GPTel, ProxyAPI и gptel-commit
+
+(use-package gptel-commit
+  :after gptel
+  :load-path "/your/path/to/gptel-commit/" ;; <--- исправьте путь при необходимости!
+  :init
+  ;; Переиспользовать основной backend, но всегда явно требовать нужную модель
+  (defun pro-gptel-commit-select-backend ()
+    (if (boundp 'gptel-proxyapi-backend)
+        gptel-proxyapi-backend
+      gptel-backend))
+  :custom
+  (gptel-commit-backend (pro-gptel-commit-select-backend))
+  (gptel-commit-stream t)
+  :config
+  ;; Использовать gpt-4.1 для генерации коммитов вне зависимости от модели по умолчанию в backend 
+  (setq gptel-commit-prompt
+        (concat gptel-commit-prompt "\n\n[Model: gpt-4.1]\n\nТребование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, включая строку-описание и список файлов), затем ниже — точно то же сообщение на английском. Не добавляй ничего лишнего, кроме двух вариантов: Русский сверху, английский внизу."))
+  :commands (gptel-commit gptel-commit-rationale))
 
 (provide 'про-ии)
 

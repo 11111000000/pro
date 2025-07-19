@@ -23,7 +23,7 @@
   :custom (major-mode-remap-alist
           ;; - `major-mode-remap-alist` устанавливает соответствие между стандартными режимами редактирования
           ;; и их версиями на базе `tree-sitter`.
-          '((c-mode          . c-ts-mode)
+           '((c-mode          . c-ts-mode)
             (c++-mode        . c++-ts-mode)
             (cmake-mode      . cmake-ts-mode)
             (conf-toml-mode  . toml-ts-mode)
