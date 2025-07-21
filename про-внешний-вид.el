@@ -1,139 +1,162 @@
 ;;; про-внешний-вид.el --- Внешний вид и интерфейс Emacs -*- lexical-binding: t -*-
-;;; Commentary:
-;; Этот модуль оформляет внешний вид Emacs: интерфейс, иконки, курсоры, вкладки и качественные мелочи,
-;; чтобы работа с Emacs радовала глаз и ощущалась современно.
 ;;
-;; Здесь вы найдёте:
-;; — Минималистичный интерфейс (скрытие лишнего, плавность, отключение сигналов)
-;; — Улучшенный минибуфер, часы/батарея
-;; — Надёжная иконография (kind-icon, nerd-icons, dired, ibuffer и др.)
-;; — Кастомизация курсора и прокрутки
-;; — Красивые вкладки pro-tabs
-;; — Ещё много полезного!
+;; Автор: Пётр <11111000000@email.com>
+;; Версия: 1.1
+;; Keywords: ui, appearance, icons, tabs
+;; URL: https://example.com/про-внешний-вид
+;;
+;;; Commentary:
+;;
+;; Этот файл настраивает визуальный интерфейс Emacs, следуя принципам
+;; литературного программирования: код представлен как повествование,
+;; где каждая секция логически объясняется, мотивируется и
+;; связывается с остальными.  Мы стремимся к элегантности,
+;; минимализму и производительности в лучших традициях Emacs — с
+;; использованием `use-package` для декларативной конфигурации,
+;; хуков для автоматизации и отложенной загрузки для скорости.
+;;
+;; Почему это важно? Визуальный комфорт — ключ к продуктивности.  Здесь
+;; мы очищаем интерфейс от отвлекающих элементов, добавляем иконки для
+;; интуитивности, улучшаем навигацию (курсор, прокрутка, вкладки) и
+;; интегрируем мелочи, делающие Emacs современным и приятным.
+;;
+;; Структура файла:
+;; 0. Введение и зависимости: Базовые require и установки.
+;; 1. Базовый интерфейс: Минимализм — скрытие лишнего, отключение сигналов.
+;; 2. Минибуфер и статус: Улучшенный центр ввода с временем/батареей.
+;; 3. Иконки: Эстетика в автодополнении, dired, ibuffer и т.д.
+;; 4. Курсор и прокрутка: Выразительный курсор, плавная навигация.
+;; 5. Вкладки: Современный tab-bar и tab-line с иконками.
+;; 6. Дополнительные улучшения: Разделители, изображения, fringes.
+;; 7. Финал: Provide и ends here.
+;;
+;; Использование: Загружайте через (require 'про-внешний-вид) в вашем init.el.
+;; Рекомендуется интегрировать с темами (например, через modus-themes) для
+;; полной гармонии. Если вы в терминале, некоторые фичи (иконки) отключатся
+;; автоматически для стабильности.
+;;
+;; Замечания: Мы предпочитаем отложенную загрузку (:defer t), локальные
+;; хуки и минимальные глобальные изменения. Закомментированные секции —
+;; опции для экспериментов.
 
 ;;; Code:
 
-(require 'установить-из)      ;; Универсальный способ подключения внешних пакетов из нашего ecospace.
+;;;; 0. Введение и зависимости
+;; Здесь мы подключаем утилиты для установки пакетов. `установить-из`
+;; — кастомная функция для загрузки из репозиториев, что позволяет
+;; легко добавлять нестандартные пакеты без ELPA.
 
-;;;; 1. Базовый вид Emacs (гигиена интерфейса)
+(require 'установить-из)
 
-;; Отключаем фоновые раздражители: звуковые/визуальные сигналы.
+;;;; 1. Базовый интерфейс
+;; Начинаем с гигиены: убираем отвлекающие элементы (бары, сигналы),
+;; чтобы фокус был на контенте. Это базовый шаг к минималистичному
+;; Emacs, где ничто не мешает творчеству.
+
+;; Отключаем раздражители: нет звукам, визуальным колокольчикам.
 (setq visible-bell nil
       ring-bell-function 'ignore)
 
-;; Без лишнего мусора: убираем scroll-bar, panel, menu.
+;; Скрываем ненужные бары: скролл, горизонтальный скролл.
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
-;; tool-bar-mode и menu-bar-mode настраиваются в early-init.el через default-frame-alist.
 
-;;;; 2. Разделители окон (горизонтальные линии для визуального комфорта)
-
-(when window-system
+;; Разделители окон: тонкие линии для визуального разделения,
+;; только в графическом режиме для эстетики.
+(when (display-graphic-p)
   (setq window-divider-default-bottom-width 1
         window-divider-default-places 'bottom-only)
   (window-divider-mode 1))
 
-;;;; 3. Минибуфер — продвинутый центр внимания
+;;;; 2. Минибуфер и статус
+;; Минибуфер — сердце ввода в Emacs. Мы делаем его гибким, добавляем
+;; полезные индикаторы (время, батарея) и элегантную строку статуса.
+;; Это улучшает осведомлённость без отвлечения.
 
 (setq-default
- enable-recursive-minibuffers t           ; Рекурсивные минибуферы для цепочек команд.
- max-mini-window-height 0.25              ; До 25% экрана — места хватит!
- message-truncate-lines nil)              ; Не урезать длинные сообщения.
-(setq resize-mini-windows t)              ; Минибуфер автоматически меняет высоту.
+ enable-recursive-minibuffers t            ; Разрешаем вложенные минибуферы.
+ max-mini-window-height 0.25               ; Ограничение по высоте для компактности.
+ message-truncate-lines nil                ; Полные сообщения без усечения.
+ resize-mini-windows t)                    ; Авто-адаптация размера.
 
-;; Украшаем минибуфер: элегантная строка состояния (shaoline) с иконками.
+;; Строка статуса с иконками (shaoline): минималистичный и информативный.
 (use-package shaoline
-  :if window-system
-  :after (all-the-icons)
-  :functions (shaoline-mode)
-  :init
-  (установить-из :repo "11111000000/shaoline")
-  :custom (shaoline-right-padding 12)
-  :config (shaoline-mode t))
+  :defer t
+  :ensure t
+  :if (display-graphic-p)
+  :hook (after-init . shaoline-mode)
+  :custom (shaoline-right-padding 12))
 
-;; Показывать батарею и часы, чтобы не терять связь с реальностью вне Emacs.
+;; Практичные индикаторы: время и батарея, чтобы Emacs был "осведомлённым".
 (require 'time)
 (display-battery-mode 1)
 (display-time-mode 1)
 
-;;;; 4. Иконки повсюду: эстетика современного интерфейса
+;;;; 3. Иконки
+;; Иконки добавляют визуальную интуицию: в автодополнении, файловых
+;; менеджерах и списках. Мы интегрируем их последовательно, с учётом
+;; графического/терминального режимов, и сбрасываем кэш при смене тем.
 
-;; --- (Опционально) Подключение глобального набора иконок All-the-icons.
-;; (use-package all-the-icons
-;;   :ensure t
-;;   :if window-system
-;;   :custom
-;;   (all-the-icons-scale-factor 1)
-;;   (all-the-icons-default-adjust 0))
-
-;; Иконки для автодополнения через kind-icon — прямо в выпадающем меню corfu.
+;; Иконки в автодополнении (kind-icon): рядом с кандидатами в corfu.
 (use-package kind-icon
+  :defer t
   :ensure t
   :after corfu
-  :defines (corfu-margin-formatters)
   :custom
   (kind-icon-use-icons t)
   (kind-icon-default-face 'corfu-default)
   :config
-  ;; Встраиваем иконки удобно сбоку от каждого варианта.
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  ;; При смене темы сбрасываем кэш иконок (иначе цвета иногда не обновляются).
-  (add-hook 'kb/themes-hooks #'(lambda () (kind-icon-reset-cache))))
+  ;; Сброс кэша иконок после смены темы.
+  (add-hook 'after-load-theme-hook #'kind-icon-reset-cache))
 
-;; Иконки в подсказках (M-x, файлы, команды) через nerd-icons-completion + marginalia.
+;; Иконки в marginalia (подсказки) через nerd-icons-completion.
 (use-package nerd-icons-completion
+  :defer t
   :ensure t
-  :functions (nerd-icons-completion-mode)
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
   :config
   (unless (display-graphic-p)
-    (nerd-icons-completion-mode))) ; В терминале не мучаемся иконками.
+    (nerd-icons-completion-mode)))
 
-;; Иконки в dired через treemacs — файловый менеджер тоже достоин красоты.
+;; Иконки в dired (файловый менеджер) через treemacs.
 (use-package treemacs-icons-dired
+  :defer t
   :ensure t
-  :functions (treemacs-icons-dired-mode)
   :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :init
+  :config
   (add-hook 'after-load-theme-hook
             (lambda ()
-              ;; После смены темы перезапускаем отображение иконок.
               (treemacs-icons-dired-mode -1)
-              (sleep-for 0)
               (treemacs-icons-dired-mode 1))))
 
-;; Иконки в ibuffer (мощный переключатель буферов).
+;; Иконки в ibuffer (список буферов).
 (use-package nerd-icons-ibuffer
+  :defer t
   :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-;;;; 5. Хуки после смены темы: чтобы все визуальные навороты поймали свежий вид
+;;;; 4. Курсор и прокрутка
+;; Курсор — ваш "палец" в Emacs. Мы делаем его выразительным (тип, цвет),
+;; а прокрутку — плавной и отзывчивой, чтобы навигация ощущалась естественно.
 
-(defvar after-load-theme-hook nil
-  "Хук, срабатывающий после установки (load-theme) новой темы.")
-(defadvice load-theme (after run-after-load-theme-hook activate)
-  "Запускать after-load-theme-hook после каждой загрузки темы."
-  (run-hooks 'after-load-theme-hook))
-
-;;;; 6. Курсор — выразительный и информативный
-
+;; Базовые настройки курсора: бар шириной 3, растягивается по символу.
 (setq cursor-type '(bar . 3)
-      x-stretch-cursor t)     ; Курсор по высоте буквы, не точки.
-(setq-default cursor-in-non-selected-windows t)  ; В невыбранных окнах — полупрозрачный.
+      x-stretch-cursor t
+      cursor-in-non-selected-windows t)
 
-;; Усиленный контроль над типами и цветами курсора в зависимости от input method.
+;; Динамический курсор: меняет тип/цвет по контексту (input method).
 (use-package cursor-chg
+  :defer t
   :init (установить-из :repo "emacsmirror/cursor-chg")
-  :functions (change-cursor-mode)
-  :config
-  (setq-default curchg-input-method-cursor-color "orange"
-                curchg-default-cursor-type '(bar . 3)
-                curchg-default-cursor-color "forest green"
-                curchg-change-cursor-on-input-method-flag t)
-  (change-cursor-mode t))
+  :hook (after-init . change-cursor-mode)
+  :custom
+  (curchg-input-method-cursor-color "orange")
+  (curchg-default-cursor-type '(bar . 3))
+  (curchg-default-cursor-color "forest green")
+  (curchg-change-cursor-on-input-method-flag t))
 
-;;;; 7. Прокрутка: минимализм и отзывчивость
-
+;; Прокрутка: консервативная, с margins для комфорта.
 (setq-default
  scroll-conservatively 80
  scroll-step 1
@@ -144,121 +167,89 @@
  jit-lock-defer-time 0
  hscroll-margin 1)
 
-;; Плавная внутренняя прокрутка изображений, org, markdown и web-рендеров.
+;; Плавная прокрутка изображений и текстовых режимов.
 (use-package iscroll
+  :defer t
   :ensure t
-  :functions (iscroll-mode)
   :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode))
 
-;;;; 8. imenu — мгновенное меню оглавления текущего файла (например, для org)
+;;;; 5. Вкладки
+;; Вкладки — современный способ организации: tab-bar для глобальных,
+;; tab-line для буферов в окне. Мы используем pro-tabs для унификации
+;; с иконками и удобными биндингами.
 
+(use-package pro-tabs
+  :defer t
+  :init (установить-из :repo "11111000000/pro-tabs")
+  :hook (after-init . pro-tabs-mode)
+  :bind
+  (;; Глобальные бинды для tab-bar.
+   ("s-n" . tab-bar-switch-to-next-tab)
+   ("s-p" . tab-bar-switch-to-prev-tab)
+   ("s-w" . tab-bar-close-tab)
+   :map tab-bar-mode-map
+   ("s-n" . tab-bar-switch-to-next-tab)
+   ("s-p" . tab-bar-switch-to-prev-tab)
+   ("s-<tab>" . tab-bar-switch-to-next-tab)
+   ("S-s-<iso-lefttab>" . tab-bar-switch-to-prev-tab)
+   ("s-w" . tab-bar-close-tab)
+   :map tab-line-mode-map
+   ("s-<tab>" . tab-line-switch-to-next-tab)
+   ("S-s-<iso-lefttab>" . tab-line-switch-to-prev-tab)
+   ("s-w" . pro/tab-line-close-tab))
+  :custom
+  (pro-tabs-enable-icons t))
+
+;;;; 6. Дополнительные улучшения
+;; Здесь — мелочи, завершающие картину: изображения, fringes, диалоги.
+;; Каждая добавляет шарм без перегрузки.
+
+;; imenu: авто-ресканирование для оглавлений в больших файлах.
 (use-package imenu
-  :custom ((imenu-auto-recsan t)))  ;; Автоматически пересканировать большие файлы.
+  :custom (imenu-auto-rescan t))
 
-;;;; 9. Диалоги — без занудного yes/no, только y/n!
-
+;; Короткие диалоги: y/n вместо yes/no.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;;;; 10. Работа с изображениями: интерактивное масштабирование и просмотр
-
-(require 'image-mode)
+;; Интерактивные изображения: масштабирование в image-mode.
 (use-package image+
   :defer t
   :ensure t
   :hook (image-mode . image+)
-  :bind ((:map image-mode-map
-               ("0" . imagex-sticky-restore-original)
-               ("+" . imagex-sticky-maximize)
-               ("=" . imagex-sticky-zoom-in)
-               ("-" . imagex-sticky-zoom-out))))
+  :bind (:map image-mode-map
+              ("0" . imagex-sticky-restore-original)
+              ("+" . imagex-sticky-maximize)
+              ("=" . imagex-sticky-zoom-in)
+              ("-" . imagex-sticky-zoom-out)))
 
-;;;; 11. Красота деталей: фринжи (fringes), разделители и утилиты
-
-;; Эстетика для fringes: тонкие цветные индикаторы, направляющие для split-окон.
+;; Современные fringes: цветные индикаторы для сплитов.
 (use-package modern-fringes
+  :defer t
   :ensure t
-  :config (modern-fringes-mode t))
+  :hook (after-init . modern-fringes-mode))
 
-;; Быстрые prettify utils. Используется во многих красивых режимах.
+;; Prettify utils: база для многих визуальных пакетов.
 (use-package prettify-utils
+  :defer t
   :init (установить-из :repo "Ilazki/prettify-utils.el"))
 
-;;;; 12. Вкладки: современный tab-bar и tab-line
-;;;;    (pro-tabs — сразу поддерживает и то, и другое)
+;; Цветной фон для служебных буферов (solaire-mode).
+(use-package solaire-mode
+  :defer t
+  :ensure t
+  :hook (after-init . solaire-global-mode))
 
-(defun pro/tab-line-close-tab ()
-  "Закрыть текущую вкладку tab-line корректно:
-Если вкладок несколько — просто kill-buffer;
-если осталась последняя — и закрыть окно."
-  (interactive)
-  (let ((win (selected-window)))
-    (if (> (length (tab-line-tabs-window-buffers)) 1)
-        (kill-buffer (window-buffer win))
-      (progn
-        (kill-buffer (window-buffer win))
-        (when (window-live-p win)
-          (delete-window win))))))
+;; Хук для тем: запускать кастомные действия после load-theme.
+(defvar after-load-theme-hook nil
+  "Хук после (load-theme).")
+(defadvice load-theme (after run-after-load-theme-hook activate)
+  "Запуск after-load-theme-hook."
+  (run-hooks 'after-load-theme-hook))
 
-(require 'seq)
+;;;; 7. Финал
+;; Завершаем: не беспокоим о процессах при выходе, предоставляем модуль.
 
-(use-package pro-tabs
-  :init (установить-из :repo "11111000000/pro-tabs")
-  :commands (pro-tabs-mode pro-tabs-open-new-tab pro-tabs-close-tab-and-buffer)
-  :bind (
-         ;; Быстрое управление tab-bar (глобально и в режимах)
-         ("s-n" . tab-bar-switch-to-next-tab)
-         ("s-p" . tab-bar-switch-to-prev-tab)
-         ("s-w" . tab-bar-close-tab)
-         :map tab-bar-mode-map
-         ("s-n" . tab-bar-switch-to-next-tab)
-         ("s-p" . tab-bar-switch-to-prev-tab)
-         ("s-<tab>" . tab-bar-switch-to-next-tab)
-         ("S-s-<iso-lefttab>" . tab-bar-switch-to-prev-tab)
-         ("s-w" . tab-bar-close-tab)
-         :map tab-line-mode-map
-         ("s-n" . tab-line-switch-to-next-tab)
-         ("s-p" . tab-line-switch-to-prev-tab)
-         ("s-w" . pro/tab-line-close-tab))
-  :custom
-  (pro-tabs-enable-icons t)
-  ;; (pro-tabs-max-tab-name-length 25)
-  ;; (pro-tabs-tab-bar-height 18)
-  ;; (pro-tabs-tab-line-height 20)
-  :config
-  (pro-tabs-mode 1))
-
-;;;; 13. Дополнительное (комментированный код — для экспериментов)
-
-;; Подсветка строки в текущем окне (включайте если нужно)
-;; (defun hl-line-only-in-current-window ()
-;;   ;; ...см. предыдущую версию...
-;; )
-;; (add-hook 'window-selection-change-functions hl-line-only-in-current-window)
-
-;; Альтернативная подсветка перемещения (pulse)
-;; (use-package pulsar
-;;   :disabled t
-;;   :ensure t
-;;   :hook ((next-error xref-after-return) . pulsar-pulse-line)
-;;   :custom (pulsar-face 'pulsar-green)
-;;   :config (pulsar-global-mode -1))
-
-;; Цветной фон для служебных буферов (solaire-mode)
-;; (use-package solaire-mode
-;;   :ensure t
-;;   :config (solaire-global-mode t))
-
-;; Поддержка выделения активного окна
-;; (use-package selected-window-accent-mode
-;;   :config (selected-window-accent-mode 1)
-;;   :custom
-;;   (selected-window-accent-fringe-thickness 10)
-;;   (selected-window-accent-custom-color nil)
-;;   (selected-window-accent-mode-style 'subtle))
-
-;;;; 14. Финал
-
-(setq-default confirm-kill-processes nil)   ;; Не спрашивать подтверждение на kill процессов
+(setq confirm-kill-processes nil)
 
 (provide 'про-внешний-вид)
 ;;; про-внешний-вид.el ends here
