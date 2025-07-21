@@ -129,6 +129,14 @@
 (use-package eglot-hierarchy
   :init (установить-из :repo "dolmens/eglot-hierarchy"))
 
+;; Поддержка Nix в Eglot: для языков, где сервер из Nix, проверка и запуск через nix-shell.
+(add-hook 'eglot-ensure-hook
+          (lambda ()
+            (when (and (file-exists-p "shell.nix") (executable-find "nix-shell"))
+              (setq-local eglot-server-programs
+                          (append eglot-server-programs
+                                  '((prog-mode . ("nix-shell" "--run" "default-lsp-server"))))))))
+
 ;;;; 3. Скобки и пары
 ;; Раздел для работы со скобками: подсветка, навигация, автопары
 ;; и выделение глубины. Это улучшает читаемость сложного кода.

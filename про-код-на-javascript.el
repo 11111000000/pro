@@ -106,7 +106,14 @@
   (let ((node-version "18.20.4"))
     (if (nvm--version-installed? node-version)
         (nvm-use node-version)
-      (message "Node version %s is not installed." node-version))))
+      (message "Node version %s is not installed." node-version)))
+  :config
+  ;; Поддержка Nix: приоритетно использовать Node из Nix, если доступен.
+  (when (executable-find "nix-shell")
+    (add-hook 'js-ts-mode-hook
+              (lambda ()
+                (when (file-exists-p "shell.nix")
+                  (setq-local exec-path (cons (expand-file-name "~/.nix-profile/bin") exec-path)))))))
 
 ;;;; 4. Документация
 ;; JSDoc для вставки шаблонов документации. Закомментировано по умолчанию,

@@ -73,7 +73,10 @@
         ("C-c C-i" . haskell-process-do-info))  ; Инфо о символе в REPL.
   :config
   ;; Интеграция Eglot с Haskell Language Server (HLS) для полной LSP-поддержки.
-  (add-to-list 'eglot-server-programs '(haskell-mode "haskell-language-server-wrapper" "--lsp")))
+  (add-to-list 'eglot-server-programs '(haskell-mode "haskell-language-server-wrapper" "--lsp"))
+  ;; Поддержка Nix: использовать nix-shell для HLS, если есть shell.nix.
+  (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
+    (add-to-list 'eglot-server-programs '(haskell-mode . ("nix-shell" "-p" "haskell-language-server" "--" "haskell-language-server-wrapper" "--lsp")))))
 
 ;;;; 2. REPL и интерактивность
 ;; Haskell — язык с REPL-культурой, поэтому interactive-haskell-mode связывает
@@ -91,6 +94,11 @@
   (:map haskell-mode-map
         ("C-c C-z" . haskell-interactive-switch)  ; Переключение в REPL-буфер.
         ("C-c C-k" . haskell-interactive-mode-clear)))  ; Очистка REPL.
+  :config
+  ;; Поддержка Nix: если есть shell.nix, запускать REPL через nix-shell.
+  (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
+    (setq haskell-process-wrapper-function
+          (lambda (args) (append (list "nix-shell" ".") (list "--run" (haskell-session-name (haskell-session)))))))
 
 ;;;; 3. Форматирование и стиль
 ;; Чистый код — ключ к поддержке Haskell. Здесь мы настраиваем форматтеры

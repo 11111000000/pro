@@ -168,7 +168,13 @@
   :ensure t
   :requires geiser
   :config
-  (setq geiser-guile-manual-lookup-nodes '("guile" "guix")))
+  (setq geiser-guile-manual-lookup-nodes '("guile" "guix"))
+  ;; Поддержка Nix: запуск Guile через nix-shell, если есть shell.nix с Guix/Nix.
+  (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
+    (setq geiser-guile-binary "nix-shell --run guile")))
+
+;; Поддержка Nix для Emacs Lisp: envrc для загрузки Nix-окружения в проектах с Lisp.
+;; (Глобальный envrc уже есть, но здесь локально для lisp-mode, если нужно специфично).
 
 ;;;; 6. Макросы и расширения
 ;; Макросы — мощь Lisp. Здесь инструменты для разворачивания и визуализации,
