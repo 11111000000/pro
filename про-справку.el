@@ -79,7 +79,7 @@
   :config
   (require 'eldoc)
   (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-  (eldoc-box-hover-mode -1))
+  (eldoc-box-hover-mode t))
 
 ;;;; Статистика нажатий
 

@@ -136,7 +136,7 @@
 | s-i o             | gptel                               |
 | s-i s-o           | gptel                               |
 | s-i r             | gptel-rewrite                       |
-| s-i m             | gptel-set-model                     |
+| s-i m             | gptel-menu                          |
 | s-i s-m           | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
@@ -330,7 +330,5 @@
 #+END_SRC
 
 #+RESULTS:
-: про-сочетания-клавиш
-: про-сочетания-клавиш
 
 * 
