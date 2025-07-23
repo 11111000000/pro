@@ -131,12 +131,12 @@
 | C-c e T           | evedel-remove-tags                  |
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
-| s-i i             | gptel                               |
+| s-i i             | gptel-menu                          |
 | s-i s-i           | gptel-aibo                          |
 | s-i o             | gptel                               |
 | s-i s-o           | gptel                               |
 | s-i r             | gptel-rewrite                       |
-| s-i m             | gptel-menu                          |
+| s-i m             | pro/gptel-switch-model              |
 | s-i s-m           | gptel-menu                          |
 | s-i n             | gptel-context-next                  |
 | s-i .             | gptel-quick                         |
@@ -330,5 +330,7 @@
 #+END_SRC
 
 #+RESULTS:
+: про-сочетания-клавиш
+: про-сочетания-клавиш
 
 * 

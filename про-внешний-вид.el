@@ -161,20 +161,23 @@
 (use-package pro-tabs
   :defer t
   :init (установить-из :repo "11111000000/pro-tabs")
-  :hook (after-init . pro-tabs-mode)
   :bind (;; Глобальные бинды для tab-bar.
          ("s-n" . tab-bar-switch-to-next-tab)
          ("s-p" . tab-bar-switch-to-prev-tab)
          ("s-w" . tab-bar-close-tab)
-         :map tab-bar-mode-map ("s-n" . tab-bar-switch-to-next-tab)
+         :map tab-bar-mode-map
+         ("s-n" . tab-bar-switch-to-next-tab)
          ("s-p" . tab-bar-switch-to-prev-tab)
          ("s-<tab>" . tab-bar-switch-to-next-tab)
          ("S-s-<iso-lefttab>" . tab-bar-switch-to-prev-tab)
          ("s-w" . tab-bar-close-tab)
          :map tab-line-mode-map ("s-<tab>" . tab-line-switch-to-next-tab)
          ("S-s-<iso-lefttab>" . tab-line-switch-to-prev-tab)
-         ("s-w" . pro/tab-line-close-tab))
-  :custom (pro-tabs-enable-icons t))
+         ("C-w" . pro/tab-line-close-tab))
+  :custom (pro-tabs-enable-icons t)
+  :init
+  (pro-tabs-mode 1)
+  )
 
 ;;;; 6. Дополнительные улучшения
 ;; Здесь — мелочи, завершающие картину: изображения, fringes, диалоги.

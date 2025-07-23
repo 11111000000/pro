@@ -1,15 +1,15 @@
-;;; пример-init.el --- Пример init.el  -*- lexical-binding: t -*-
+;;; init.el --- Пример init.el  -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;; Этот файл можно скопировать в ~/.emacs.d/init.el
 ;; или подключить прямо из него так:
 ;; ;;; ~/emacs.d/init.el
-;; (add-to-list 'load-path "~/Добро")
+;; (add-to-list 'load-path "~/pro")
 ;; (require 'пример-init)
 
 ;;; Code:
 
-(add-to-list 'load-path "~/ПРО")
+(add-to-list 'load-path "~/pro")
 
 (require 'загрузить)
 
@@ -49,4 +49,4 @@
 
 (загрузить-org (expand-file-name "~/pro/про-сочетания-клавиш.org"))
 
-;;; пример-init.el ends here.
+;;; init.el ends here.

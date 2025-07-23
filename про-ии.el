@@ -22,7 +22,7 @@
 ;; Перед использованием:
 ;;  - Задайте переменную `proxyapi-key` в вашем приватном файле или .emacs (ее подхватят все API).
 ;;  - Рекомендуется установить tiktoken-counter.py (для точного подсчета токенов любой модели).
-;;  
+;;
 ;; Загружайте файл: M-x load-file RET путь/до/про-ии.el RET
 
 ;;; Code:
@@ -166,7 +166,7 @@
    (gptel-org-branching-context nil)             ;; Без автосоздания новых веток в org
    (gptel-api-key proxyapi-key)                  ;; API-key централизованный
    (gptel-log-level 'info)
-   (gptel--system-message 
+   (gptel--system-message
     "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode."))
   :config
   ;; Реализация быстрой отправки без контекста (M-RET)
@@ -187,20 +187,20 @@
   ;; --- Прокси Туннель (например, самостоятельный API proxy на своем сервере) ---
   (setq tunnelai-backend
         (gptel-make-openai "AI Tunnel"
-         :protocol "https"
-         :host tunnelai-url
-         :endpoint "/v1/chat/completions"
-         :stream t
-         :key tunnelai-key
-         :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-         :models (append
-                  '("gpt-4.5-preview" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
-                    "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-                    "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-                    "gpt-4o-audio-preview" "gemini-2.5-pro-preview-03-25"
-                    "gemini-2.5-flash-preview-05-20"
-                    "deepseek-r1" "deepseek-chat" "grok-3-mini-beta" "grok-4")
-                  gptel--openai-models)))
+          :protocol "https"
+          :host tunnelai-url
+          :endpoint "/v1/chat/completions"
+          :stream t
+          :key tunnelai-key
+          :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+          :models (append
+                   '("gpt-4.5-preview" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
+                     "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
+                     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
+                     "gpt-4o-audio-preview" "gemini-2.5-pro-preview-03-25"
+                     "gemini-2.5-flash-preview-05-20"
+                     "deepseek-r1" "deepseek-chat" "grok-3-mini-beta" "grok-4")
+                   gptel--openai-models)))
 
   ;; --- ProxyAPI: центральный публичный российский прокси разных AI ---
   (gptel-make-openai "Proxy OpenAI"
@@ -240,7 +240,7 @@
   (setq gptel-backend (gptel-get-backend "AI Tunnel"))
   (setq gptel-model 'gpt-4.1))
 
-;;;; 5. Быстрое меню интерактивного переключения backend через consult/completing-read
+;;;; 5. Быстрое меню интерактивного переключения backend/model через consult/completing-read
 
 (defun pro/gptel-switch-backend ()
   "Интерактивный выбор и активация `gptel-backend` среди всех известных бэкендов (через consult/completing-read)."
@@ -260,6 +260,47 @@
         (setq gptel-backend (gptel-get-backend choice))
         (message "Переключено на backend: %s" choice)
         (force-mode-line-update t)))))
+
+(defun pro/gptel-switch-model ()
+  "Интерактивный выбор и активация модели из списка всех доступных моделей с описаниями (через consult)."
+  (interactive)
+  (require 'gptel)
+  (require 'consult)
+  ;; Собираем все модели из всех бэкендов
+  (let* ((models-alist (cl-loop
+                        for (name . backend) in gptel--known-backends
+                        nconc (cl-loop for model in (gptel-backend-models backend)
+                                       collect (let* ((model-name (gptel--model-name model))
+                                                      (full-name (concat (string-trim-right name) ":" model-name))
+                                                      (desc (or (get model :description) ""))
+                                                      (item (list :name name :model model :desc desc)))
+                                                 (cons full-name item)))))
+         (current-backend-name (and (boundp 'gptel-backend) (gptel-backend-name gptel-backend)))
+         (current-model (and (boundp 'gptel-model) (gptel--model-name gptel-model)))
+         (initial (concat current-backend-name ":" current-model)))
+    (let* ((candidates (mapcar #'car models-alist))
+           (annotate (lambda (cand)
+                       (let* ((item (cdr (assoc cand models-alist)))
+                              (desc (plist-get item :desc)))
+                         (when (and desc (not (string-empty-p desc)))
+                           (concat " — " desc)))))
+           (choice (consult--read
+                    candidates
+                    :prompt "Выберите модель (бэкенд:модель): "
+                    :require-match t
+                    :history 'pro/gptel-model-history
+                    :initial initial
+                    :annotate annotate
+                    :category 'gptel-model)))
+      (when choice
+        (let* ((item (cdr (assoc choice models-alist)))
+               (backend-name (plist-get item :name))
+               (model (plist-get item :model))
+               (backend (gptel-get-backend backend-name)))
+          (setq gptel-backend backend)
+          (setq gptel-model model)
+          (message "Переключено на модель: %s (бэкенд: %s)" (gptel--model-name model) backend-name)
+          (force-mode-line-update t))))))
 
 ;;;; 6. Друзья-расширения: хуки, автозагрузка, расширения других пакетов (Cape и др.)
 
@@ -282,7 +323,7 @@
   (gptel-commit-backend (pro-gptel-commit-select-backend))
   (gptel-commit-stream t)
   :config
-  ;; Использовать gpt-4.1 для генерации коммитов вне зависимости от модели по умолчанию в backend 
+  ;; Использовать gpt-4.1 для генерации коммитов вне зависимости от модели по умолчанию в backend
   (setq gptel-commit-prompt
         (concat gptel-commit-prompt "\n\n[Model: gpt-4.1]\n\nТребование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, включая строку-описание и список файлов), затем ниже — точно то же сообщение на английском. Не добавляй ничего лишнего, кроме двух вариантов: Русский сверху, английский внизу."))
   :commands (gptel-commit gptel-commit-rationale))
