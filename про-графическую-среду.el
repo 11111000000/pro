@@ -16,7 +16,7 @@
 ;;
 ;; Почему это важно? EXWM превращает Emacs в полноценный оконный менеджер, интегрируя
 ;; X-приложения напрямую в буферы, что даёт унифицированный интерфейс для кода, документов
-;; и внешних программ. Здесь мы фокусируемся на мультимониторной поддержке, клавиатурных
+;; и внешних программ.  Здесь мы фокусируемся на мультимониторной поддержке, клавиатурных
 ;; ярлыках, системном трее, автоматизации и утилитах (скриншоты, мягкое завершение),
 ;; с акцентом на стабильность и удобство.
 ;;
@@ -29,7 +29,6 @@
 ;; 5. Утилиты: Скриншоты и очистка служебных буферов.
 ;; 6. Мягкое завершение: Закрытие окон и выключение системы.
 ;; 7. Блокировка случайных событий: Игнор ненужных комбо мыши.
-;; 8. Финал: Provide и ends here.
 ;;
 ;; Использование: Загружайте через (require 'про-графическую-среду) в вашем init.el.
 ;; Рекомендуется интегрировать с про-мониторы для мультимониторов. Закомментированные
@@ -100,63 +99,71 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
   "Истина, если графическая среда уже инициализирована.")
 
 (defun про/старт-графической-среды ()
-"Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
-(interactive)
-(unless про/графика-initialized
-  (setq про/графика-initialized t)
-  ;; -- 1. Физическое размещение мониторов (xrandr)
-  (require 'про-мониторы)
-  (применить-расположение-мониторов)
-  ;; -- 2. Пауза, чтобы применились новые настройки дисплея
-  (sleep-for про/monitor-refresh-delay)
-  ;; -- 3. Включить RandR режим EMACS (до EXWM)
-  (when (fboundp 'exwm-randr-mode)
-    (exwm-randr-mode t))
-  ;; -- 4. Инициализация сопоставлений workspace <-> monitor
-  (про-мониторы-инициализировать)
-  ;; -- 5. Запустить собственно EXWM
-  (require 'exwm)
-  ;; -- 6. Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
-  (dotimes (i 9)
-    (exwm-input-set-key (kbd (format "s-<f%d>" i))
-                        `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-    (exwm-input-set-key (kbd (format "S-s-<f%d>" i))
-                        `(lambda () (interactive) (message ">%d" ,i)))
-    (exwm-input-set-key (kbd (format "s-%d" i))
-                        `(lambda () (interactive) (tab-bar-select-tab ,i))))
-  (exwm-input-set-key (kbd "s-<f10>")
-                      `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-  (setq exwm-input-simulation-keys exwm-input-simulation-keys)
-  (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
-  (exwm-wm-mode 1)
-  ;; -- 7. Системный трей и XIM/импорт ввода
-  (exwm-systemtray-mode t)
-  (exwm-xim-mode t)
-  ;; -- 8. Принудительная активация всех workspace, чтобы EXWM их закрепил за мониторами
-  (dotimes (i exwm-workspace-number)
-    (exwm-workspace-switch-create i))
-  ;; -- 9. Хуки для красивых имён окон
-  (add-hook 'exwm-update-class-hook
-            (lambda ()
-              (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-  (defun exwm-update-title-hook ()
-    (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
-  (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-  ;; -- 10. Конфигурация специальных окон и поведение floating
-  (setq exwm-manage-configurations
-        `(
-          ;; Blueman Applet/Manager — не floating и управляются
-          ((or (string= exwm-class-name "Blueman-manager")
-               (string= exwm-class-name "Blueman-applet")
-               (and exwm-title (string-match "blueman" exwm-title)))
-           floating nil
-           managed t)
-          ;; posframe — floating окно без mode line
-          ((equal exwm-title "posframe") floating t floating-mode-line nil)
-          ;; chromebug — спец. размеры и fixed позиция
-          ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-           height 175 x 30 y 30 managed t)
-          ))))
+  "Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
+  (interactive)
+  (unless про/графика-initialized
+    (setq про/графика-initialized t)
+    ;; -- 1. Физическое размещение мониторов (xrandr)
+    (require 'про-мониторы)
+    (применить-расположение-мониторов)
+    ;; -- 2. Пауза, чтобы применились новые настройки дисплея
+    (sleep-for про/monitor-refresh-delay)
+    ;; -- 3. Включить RandR режим EMACS (до EXWM)
+    (when (fboundp 'exwm-randr-mode)
+      (exwm-randr-mode t))
+    ;; -- 4. Инициализация сопоставлений workspace <-> monitor
+    (про-мониторы-инициализировать)
+    ;; -- 5. Запустить собственно EXWM
+    (require 'exwm)
+    ;; -- 6. Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
+    (dotimes (i 9)
+      (exwm-input-set-key (kbd (format "s-<f%d>" i))
+                          `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+      (exwm-input-set-key (kbd (format "S-s-<f%d>" i))
+                          `(lambda () (interactive) (message ">%d" ,i)))
+      (exwm-input-set-key (kbd (format "s-%d" i))
+                          `(lambda () (interactive) (tab-bar-select-tab ,i))))
+    (exwm-input-set-key (kbd "s-<f10>")
+                        `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+    (setq exwm-input-simulation-keys exwm-input-simulation-keys)
+    (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
+    (exwm-wm-mode 1)
+    ;; -- 7. Системный трей и XIM/импорт ввода
+    (exwm-systemtray-mode t)
+    (exwm-xim-mode t)
+    ;; -- 8. Принудительная активация всех workspace, чтобы EXWM их закрепил за мониторами
+    (dotimes (i exwm-workspace-number)
+      (exwm-workspace-switch-create i))
+    ;; -- 9. Хуки для красивых имён окон
+    (add-hook 'exwm-update-class-hook
+              (lambda ()
+                (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+    (defun exwm-update-title-hook ()
+      (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+    (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+    ;; -- 10. Конфигурация специальных окон и поведение floating
+    (setq exwm-manage-configurations
+          `(
+            ;; Blueman Applet/Manager — не floating и управляются
+            ((or (string= exwm-class-name "Blueman-manager")
+                 (string= exwm-class-name "Blueman-applet")
+                 (and exwm-title (string-match "blueman" exwm-title)))
+             floating nil
+             managed t)
+            ;; posframe — floating окно без mode line
+            ((equal exwm-title "posframe") floating t floating-mode-line nil)
+            ;; chromebug — спец. размеры и fixed позиция
+            ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+             height 175 x 30 y 30 managed t)
+            ))
+    ;; -- 11. Копипаста
+    (require 'xclip)
+    (xclip-mode 1)
+
+    ))
+
+(use-package xclip
+  :ensure t)
 
 (use-package exwm
   :ensure t
@@ -304,9 +311,6 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
                [S-down-mouse-2] [S-mouse-2]
                [S-down-mouse-3] [S-mouse-3]))
   (global-set-key mod #'ignore))
-
-;;;; 8. Финал
-;; Завершаем модуль, предоставляя его для require в других файлах.
 
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here

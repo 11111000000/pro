@@ -42,11 +42,11 @@
 
   ;; Set correct Python interpreter
   (setq pyvenv-post-activate-hooks
-       (list (lambda ()
-               (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
+        (list (lambda ()
+                (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
   (setq pyvenv-post-deactivate-hooks
-       (list (lambda ()
-               (setq python-shell-interpreter "python3"))))))
+        (list (lambda ()
+                (setq python-shell-interpreter "python3"))))))
 
 ;;;; 2. Auto-virtualenv
 ;; Auto-virtualenv автоматически обнаруживает и активирует venv в проектах,
@@ -69,9 +69,6 @@
   :config
   (envrc-global-mode))
 
-;;;; 4. Финал
-;; Завершаем модуль.
 
 (provide 'про-код-на-python)
 ;;; про-код-на-python.el ends here
-

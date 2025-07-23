@@ -36,7 +36,7 @@
 ;; Мы загружаем его отложенно, чтобы не нагружать запуск.
 
 (use-package rust-mode
-  :defer t 
+  :defer t
   :ensure t)
 
 ;;;; 2. Rustic
@@ -45,16 +45,13 @@
 ;; в проектах с shell.nix, обеспечивая воспроизводимость окружения.
 
 (use-package rustic
-  :defer t 
+  :defer t
   :ensure t
   :config
   ;; Поддержка Nix: использовать nix-shell для cargo, если shell.nix существует.
   (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
     (setq rustic-cargo-wrapper-function
           (lambda (cmd) (list "nix-shell" "--run" cmd)))))
-
-;;;; 3. Финал
-;; Завершаем модуль, предоставляя его для require.
 
 (provide 'про-код-на-rust)
 ;;; про-код-на-rust.el ends here

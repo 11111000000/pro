@@ -84,7 +84,7 @@
 (use-package expand-region
   :defer t
   :ensure t
-  ;:hook ((prog-mode text-mode) . er/expand-region)  ;; Авто-включение в ключевых режимах.
+                                        ;:hook ((prog-mode text-mode) . er/expand-region)  ;; Авто-включение в ключевых режимах.
   :defines (expand-region-contract-fast-key expand-region-reset-fast-key)
   :custom (expand-region-subword-enabled t)
   :config
@@ -132,8 +132,8 @@
   :ensure t
   :hook ((man-mode info-mode markdown-mode org-mode) . olivetti-mode) ;; Авто для чтения.
   :custom
-  (olivetti-minimum-body-width 80)   ;; Минимальная ширина для комфортного чтения.
-  (olivetti-body-width 80)           ;; Стандартная ширина.
+  (olivetti-minimum-body-width 120)   ;; Минимальная ширина для комфортного чтения.
+  (olivetti-body-width 100)           ;; Стандартная ширина.
   (olivetti-style nil))              ;; Без лишних отступов.
 
 ;;;; === Закладки и переносы ===

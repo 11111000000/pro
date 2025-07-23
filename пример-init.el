@@ -47,9 +47,6 @@
 (загрузить 'про-ии)
 (загрузить 'про-справку)
 
-(org-babel-load-file (expand-file-name "~/ПРО/сочетания-клавиш.org"))
-(delete-file (expand-file-name "~/ПРО/сочетания-клавиш.el"))
-
-(load-file (expand-file-name "~/Zyfra/Zyfra.el"))
+(загрузить-org (expand-file-name "~/pro/про-сочетания-клавиш.org"))
 
 ;;; пример-init.el ends here.

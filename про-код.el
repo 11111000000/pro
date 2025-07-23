@@ -3,7 +3,7 @@
 ;; Автор: Пётр <11111000000@email.com>
 ;; Версия: 1.1
 ;; Keywords: programming, treesit, eglot, formatting
-;; URL: 
+;; URL:
 ;;
 ;;; Commentary:
 ;;
@@ -66,7 +66,7 @@
      (python-mode . python-ts-mode)
      (sh-mode . bash-ts-mode)
      (typescript-mode . typescript-ts-mode))))
-  ;; Ничего дополнительного не требуется; Emacs берёт на себя.
+;; Ничего дополнительного не требуется; Emacs берёт на себя.
 
 ;;;;; 1.2 Автоматическая установка парсеров
 ;; =treesit-auto= упрощает: автоматически устанавливает и применяет
@@ -181,7 +181,7 @@ With prefix ARG, do it that many times; negative for backward."
   :defines (global-highlight-parentheses-mode)
   :custom
   (hl-paren-colors
-   '("navajo white" "MediumOrchid2" "CornflowerBlue" "MediumAquamarine"
+   `("navajo white" "MediumOrchid2" "CornflowerBlue" "MediumAquamarine"
      ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
      ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
   (hl-paren-background-colors '(nil nil nil nil nil))
@@ -222,7 +222,7 @@ With prefix ARG, do it that many times; negative for backward."
   :config
   (add-to-list 'color-identifiers:modes-alist
                '(js-ts-mode "" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)"
-                 (nil font-lock-variable-name-face tree-sitter-hl-face:variable))))
+                            (nil font-lock-variable-name-face tree-sitter-hl-face:variable))))
 
 ;;;;; 4.2 Альтернативная подсветка идентификаторов
 (use-package rainbow-identifiers
@@ -329,8 +329,8 @@ With prefix ARG, do it that many times; negative for backward."
   :ensure t
   :hook ((web-mode tsx-ts-mode typescript-ts-mode) . emmet-mode)
   :defines (emmet-indent-after-insert emmet-indentation
-            emmet-expand-jsx-className? emmet-move-cursor-between-quotes
-            emmet-self-closing-tag-style emmet-jsx-major-modes)
+                                      emmet-expand-jsx-className? emmet-move-cursor-between-quotes
+                                      emmet-self-closing-tag-style emmet-jsx-major-modes)
   :config
   (setq emmet-indent-after-insert nil
         emmet-indentation 2

@@ -35,7 +35,7 @@ URxvt.shading: 0.5
 URxvt.transparent: true
 URxvt.inheritPixmap: true
 URxvt.depth: 32
-Xmessage*font: xft:Fira Code:size=13:autohint=true:antialias=true
+Xmessage*font: xft:Aporetic Sans Mono:size=13:autohint=true:antialias=true
 Xmessage*background: #3c3c3c
 Xmessage*foreground: #c2c2c2
 Xmessage*form.*.shapeStyle: rectangle
@@ -44,9 +44,9 @@ Xmessage*Scrollbar.borderWidth: 0
 Xmessage*Buttons: Quit
 Xmessage*defaultButton: Quit
 Xmessage*international: true
-Emacs.font: Iosevka 12
+Emacs.font: Aporetic Sans Mono 12
 Emacs.fullscreen: maximized
-Emacs.menuBar: 1
+Emacs.menuBar: 0
 Emacs.toolBar: 0
 Emacs.verticalScrollBars: off
 Emacs.FontBackend: xft
