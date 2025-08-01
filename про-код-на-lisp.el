@@ -1,124 +1,137 @@
-;;; про-код-на-lisp.el --- Поддержка Lisp в Emacs -*- lexical-binding: t; -*-
+;;; про-код-на-lisp.el --- Поддержка Lisp в Emacs + мудрость SICP/HTDP -*- lexical-binding: t; -*-
 ;;
 ;; Автор: Пётр <11111000000@email.com>
-;; Версия: 1.2
-;; Keywords: lisp, elisp, geiser, macrostep, formatting
+;; Версия: 2.1
+;; Keywords: lisp, elisp, scheme, cl, geiser, sly, macro, sicp, htdp
 ;; URL: https://example.com/про-код-на-lisp
 ;;
 ;;; Commentary:
 ;;
-;; Этот файл настраивает поддержку Lisp в Emacs, следуя принципам литературного
-;; программирования: код представлен как повествование, где каждая
-;; секция мотивируется, объясняется и логически связывается с остальными. Мы
-;; стремимся к элегантности, минимализму и производительности в лучших традициях
-;; Emacs — с использованием `use-package` для декларативной конфигурации, хуков
-;; для автоматизации и отложенной загрузки для скорости.
+;;  «Programs must be written for people to read, and only incidentally for
+;;   machines to execute.»                                          — SICP
 ;;
-;; Почему это важно? Lisp — это язык Emacs.  Здесь мы фокусируемся на Emacs Lisp как
-;; основном диалекте, добавляя инструменты для отладки, форматирования и REPL для
-;; других Lisp-ов, делая Emacs мощным IDE.
+;;  «The essence of Lisp is the fact that programs are data.  The rest is
+;;   just parentheses.»                                              — McCarthy
 ;;
-;; Структура файла:
-;; 0. Введение и зависимости: Базовые require и утилиты.
-;; 1. Базовые функции: Выполнение кода в регионах и буферах.
-;; 2. Настройки Emacs Lisp: Биндинги, печать и оптимизации.
-;; 3. Отладка и инспекция: Инструменты для поиска ошибок и анализа объектов.
-;; 4. Форматирование: Автоматическое выравнивание кода.
-;; 5. REPL и диалекты: Geiser для разных Lisp-ов.
-;; 6. Макросы и расширения: Разворачивание и оверлеи результатов.
-;; 7. Финал: Provide и ends here.
+;;  Коан:
+;;    Ученик: «Учитель, у меня лишняя закрывающая скобка. Что делать?»
+;;    Мастер  : «Добавь ещё одну форму и назови её макросом».
 ;;
-;; Использование: Загружайте через (require 'про-код-на-lisp) в вашем init.el.
-;; Рекомендуется интегрировать с Eglot для LSP (если нужно). Закомментированные
-;; секции — опции для экспериментов (например, альтернативные форматтеры).
+;;  Этот файл — попытка собрать лучшую лисп-практику из SICP, HTDP, «On Lisp»,
+;;  koans и фольклора, упаковать её в Emacs-конфиг и остаться при этом
+;;  минималистами.  Стараемся:
 ;;
-;; Замечания: Мы предпочитаем отложенную загрузку (:defer t), локальные бинды
-;; и минимальные глобальные изменения. Для конфликтов — проверяйте remap.
-
+;;  • Ничего не грузить зря  (use-package :defer t).
+;;  • Избегать глобального мусора (имена на русском, чтоб не конфликтовать).
+;;  • Давать REPL-опыт первого класса (eval, инспекция, helper-буферы).
+;;  • Поддерживать сразу несколько диалектов (Elisp, Scheme, Common Lisp).
+;;  • Добавлять крупицы мудрости в комментариях, чтобы конфиг читался как
+;;    книга о Лиспе.
+;;
+;;  Структура:
+;;   0.  Введение и зависимости.
+;;   1.  Базовые eval-команды.
+;;   2.  Emacs Lisp (биндинги, печать, оптимизации).
+;;   3.  Отладка, инспекция, документация.
+;;   4.  Форматирование.
+;;   5.  REPL и диалекты (Scheme/CL).
+;;   6.  Структурное редактирование и макросы.
+;;   7.  «Мини-SICP» — полезные комбинаторы и примеры.
+;;
+;;  Подключайте через (require 'про-код-на-lisp) из init.el.
+;;
 ;;; Code:
 
 ;;;; 0. Введение и зависимости
-;; Здесь мы подключаем базовые пакеты. `use-package` обеспечивает модульность,
-;; а `установить-из` — удобную установку из репозиториев. Это основа: без них
-;; дальнейшие секции не смогут работать декларативно.
-
 (require 'use-package)
-(require 'установить-из)
+(require 'установить-из)          ; локальный хелпер для straight/quelpa/…
+(require 'cl-lib)                 ; cl-macros нужны «Мини-SICP»
 
-;;;; 1. Базовые функции
-;; Начинаем с сущностного: выполнения кода. Lisp — это REPL-ориентированный язык,
-;; поэтому удобное выполнение регионов или буферов — ключ к продуктивности. Мы
-;; определяем функции, которые связывают интерактивные команды с eval, учитывая
-;; регион и деактивацию метки.
+;;;; 1. Базовые eval-команды
+(defun выполнить-регион-или-буфер ()
+  "Eval активный регион или весь буфер.
+Философия REPL: изменения должны тестироваться мгновенно."
+  (interactive)
+  (if (use-region-p)
+      (progn (eval-region (region-beginning) (region-end))
+             (deactivate-mark))
+    (перевыполнить-буфер)))
 
-(defun выполнить-регион-или-буфер () "Выполнить регион (если активен) или весь буфер.
-Это упрощает отладку: быстрый eval без копирования в scratch." (interactive)
-(if (use-region-p)
-    (progn (eval-region (region-beginning)
-                        (region-end))
-           (deactivate-mark))
-  (перевыполнить-буфер)))
+(defun перевыполнить-буфер ()
+  "Eval всех верхнеуровневых форм в текущем буфере.
+Идеально для org-babel/literate конфигов."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((last-point -1)
+          (cur-point (point)))
+      (while (and (< (point) (point-max))
+                  (/= last-point cur-point))
+        (when (ignore-errors (progn (forward-sexp) t))
+          (eval-defun nil))
+        (setq last-point cur-point)
+        (setq cur-point (point))))))
 
-(defun перевыполнить-буфер () "Перевыполнить все формы в буфере с помощью `eval-defun'.
-Верхнеуровневые формы оцениваются заново, включая `defvar' и `defcustom',
-что полезно для конфигурационных файлов Emacs." (interactive)
-(save-excursion (goto-char (point-min))
-                (while (not (eobp))
-                  (forward-sexp)
-                  (eval-defun nil))))
-
-;;;; 2. Настройки Emacs Lisp
-;; Emacs Lisp — диалект для расширения Emacs. Здесь мы настраиваем биндинги для
-;; выполнения, параметры печати выражений и оптимизации. Это связывает базовые
-;; функции с режимом, делая работу с elisp естественной.
-
+;;;; 2. Emacs Lisp: биндинги, печать, оптимизации
 (use-package emacs
   :defer t
-  :bind (:map emacs-lisp-mode-map ("C-c C-c" . выполнить-регион-или-буфер)
-              ("C-x M-e" . eval-print-last-sexp)))
+  :bind (:map emacs-lisp-mode-map
+              ("C-c C-c" . выполнить-регион-или-буфер)
+              ("C-x M-e" . eval-print-last-sexp)
+              ("C-c C-k" . перевыполнить-буфер)))
 
-;;;;; 2.1 Печать выражений
-;; Увеличиваем лимиты для eval-expression-print, чтобы вывод был полным в
-;; сложных структурах данных — это помогает в отладке без усечения.
-(setq eval-expression-print-level 15)
-(setq eval-expression-print-length 30)
+(setq eval-expression-print-level 20   ; не усекать дип-структуры
+      eval-expression-print-length 50)
 
-;;;;; 2.2 Оптимизация хвостовой рекурсии
-;; Tco преобразует хвостовую рекурсию в циклы, избегая переполнения стека —
-;; критично для функционального стиля в Lisp.
-(use-package tco
+;; Хвостовая рекурсия   (when you need loops but stay pure)
+(use-package tco      :defer t :ensure t)
+
+;; async/await в Elisp   («Расслабься и дождись промиса»)
+(use-package async-await :defer t :ensure t)
+
+;;;; 3. Отладка, инспекция, документация
+;;  «Секрет Лиспа — в системе разработки»  — поэтому инструменты важны.
+
+;;; 3.1 Helpful + elisp-demos  — describe-* на стероидах
+(use-package helpful
+  :ensure t
+  :bind (([remap describe-function] . helpful-callable)
+         ([remap describe-variable] . helpful-variable)
+         ([remap describe-symbol]   . helpful-symbol)
+         ([remap describe-command] . helpful-command))
+  :custom (helpful-max-buffers 7))
+
+(use-package elisp-demos
+  :ensure t
+  :after helpful
+  :config (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+
+;;; 3.2 elisp-refs  — поиск где символ используется (grep без grep)
+(use-package elisp-refs
+  :defer t
+  :ensure t
+  :commands (elisp-refs-function elisp-refs-macro elisp-refs-special))
+
+;;; 3.3 zeal-at-point / dash-docs  — оффлайн-доки (CLHS, R5RS…)
+(use-package zeal-at-point
+  :defer t
+  :ensure t
+  :commands zeal-at-point
+  :custom (zeal-at-point-docset-alist '(("emacs-lisp-mode" . ("elisp" "clhs"))
+                                        ("lisp-mode"       . ("clhs"))
+                                        ("scheme-mode"     . ("r5rs" "guile")))))
+
+(use-package dash-docs
   :defer t
   :ensure t)
 
-;;;;; 2.3 Асинхронные функции
-;; Async-await добавляет промисы и await, упрощая асинхронный код в Emacs Lisp —
-;; полезно для пакетов с сетевыми запросами.
-(use-package async-await
-  :defer t
-  :ensure t)
+;;; 3.4 Inspector (древо любого объекта)
+(use-package inspector :defer t :ensure t)
 
-;;;; 3. Отладка и инспекция
-;; Отладка — это искусство: здесь мы добавляем инструменты для поиска багов,
-;; инспекции объектов и проверки синтаксиса. Это логическое продолжение секции 1,
-;; где выполнение может выявить ошибки, требующие анализа.
+;;; 3.5 Bug-hunter (бинд не ставим, чтобы не тормозило)
+(use-package bug-hunter :defer t :ensure t)
 
-;;;;; 3.1 Автоматическое тестирование конфига
-;; Bug-hunter тестирует init.el на ошибки, запуская секции по порядку —
-;; неоценимо для больших конфигураций, но отключено по умолчанию для скорости.
-(use-package bug-hunter
-  :defer t
-  :ensure t)
-
-;;;;; 3.2 Инспектор объектов
-;; Inspector предоставляет интерактивный просмотр Lisp-объектов, как в REPL —
-;; связывает с печатью выражений из секции 2.
-(use-package inspector
-  :defer t
-  :ensure t)
-
-;;;;; 3.3 Проверка синтаксиса
-;; Flymake-elisp-config добавляет flymake для elisp, проверяя синтаксис на лету —
-;; интегрируется с Eglot для полной LSP-поддержки.
+;;; 3.6 Flymake для elisp
 (use-package fly
   :defer t
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
@@ -127,70 +140,76 @@
   (flymake-elisp-config-auto-mode))
 
 ;;;; 4. Форматирование
-;; Чистый код — читаемый код. Здесь мы настраиваем форматтеры для elisp,
-;; чтобы автоматически выравнивать отступы и стиль — это завершает цикл
-;; написания и выполнения из предыдущих секций.
-
-;; (use-package elisp-format
-;; :defer t
-;; :ensure t
-;; :hook (emacs-lisp-mode . (lambda ()
-;; (add-hook 'before-save-hook #'elisp-format-buffer nil t))))
-
 (use-package format-all
   :defer t
   :ensure t
   :hook (emacs-lisp-mode . format-all-mode))
 
-;;;; 5. REPL и диалекты
-;; REPL — сердце Lisp. Geiser предоставляет унифицированный REPL для разных
-;; имплементаций (Guile, Racket и т.д.), расширяя Emacs за пределы elisp.
-
+;;;; 5. REPL и другие диалекты
+;;; 5.1 Scheme → Geiser
 (use-package geiser
   :defer t
   :ensure t
   :custom (geiser-default-implementation 'guile)
   (geiser-active-implementations '(guile))
-  (geiser-implementations-alist '(((regexp "\\.scm$") guile)))
   (geiser-mode-start-repl-p nil))
 
 (use-package geiser-guile
   :defer t
   :ensure t
   :requires geiser
-  :config (setq geiser-guile-manual-lookup-nodes '("guile" "guix"))
-  ;; Поддержка Nix: запуск Guile через nix-shell, если есть shell.nix с Guix/Nix.
-  (when (and (executable-find "nix-shell")
-             (file-exists-p "shell.nix"))
+  :config
+  (setq geiser-guile-manual-lookup-nodes '("guile" "guix"))
+  (when (and (file-exists-p "shell.nix") (executable-find "nix-shell"))
     (setq geiser-guile-binary "nix-shell --run guile")))
 
-;; Поддержка Nix для Emacs Lisp: envrc для загрузки Nix-окружения в проектах с Lisp.
-;; (Глобальный envrc уже есть, но здесь локально для lisp-mode, если нужно специфично).
+;;; 5.2 Common Lisp → Sly
+(use-package sly
+  :defer t
+  :ensure t
+  :custom (sly-lisp-implementations '((sbcl ("sbcl") :coding-system utf-8-unix)))
+  :hook (sly-mode . sly-editing-mode))
 
-;;;; 6. Макросы и расширения
-;; Макросы — мощь Lisp. Здесь инструменты для разворачивания и визуализации,
-;; плюс оверлеи результатов eval — это углубляет отладку из секции 3.
+(use-package sly-quicklisp :after sly :ensure t)
+(use-package sly-macrostep :after sly :ensure t)
 
+;;;; 6. Структурное редактирование и макросы
+;;  «Когда я вижу лишний слой скобок, я испытываю духовную радость» — неизвестный лиспер.
+
+;; ;;; 6.1 Lispy  — редактируй s-expr как список, а не текст
+;; (use-package lispy
+;;   :ensure t
+;;   :hook ((emacs-lisp-mode lisp-interaction-mode ielm-mode scheme-mode lisp-mode) . lispy-mode)
+;;   :custom (lispy-teleport-global nil))
+
+;;; 6.2 Paredit (иногда хочется классики)
+(use-package paredit
+  :ensure t
+  :hook ((scheme-mode lisp-mode) . paredit-mode))
+
+;;; 6.3 Lispyville — evil-keybindings поверх Lispy (опционально)
+;; (use-package lispyville
+;;   :after lispy
+;;   :ensure t
+;;   :hook (lispy-mode . lispyville-mode))
+
+;;; 6.4 Rainbow-delimiters — уровень вложенности как радуга
+(use-package rainbow-delimiters :ensure t :hook (prog-mode . rainbow-delimiters-mode))
+
+;;; 6.5 Macrostep — пошаговый expand
 (use-package macrostep
   :defer t
   :ensure t
-  :custom-face (macrostep-expansion-highlight-face ((t (:inherit default
-                                                                 :extend t
-                                                                 :background ,(face-attribute 'default
-                                                                                              :background)))))
   :bind (:map emacs-lisp-mode-map ("C-c >" . macrostep-expand)
               ("C-c <" . macrostep-collapse)
               :map lisp-interaction-mode-map ("C-c >" . macrostep-expand)
               ("C-c <" . macrostep-collapse)))
 
-(use-package eros
-  :defer t
-  :ensure t
-  :functions (eros-mode)
-  :config (eros-mode t))
+;;; 6.6 Eros — вывод результата прямо в буфере
+(use-package eros  :defer t :ensure t :config (eros-mode 1))
 
-;;;; 7. Финал
-;; Завершаем модуль, предоставляя его для require в других файлах.
+;;   «Пишите код, чтобы его было легко читать; если вам скучно, вставьте шутку,
+;;    но так, чтобы компилятору было всё равно» — мануфактура лиспа, 2023.
 
 (provide 'про-код-на-lisp)
 ;;; про-код-на-lisp.el ends here

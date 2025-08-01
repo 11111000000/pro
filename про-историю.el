@@ -45,18 +45,18 @@
   :functions (no-littering-expand-var-file-name no-littering-expand-etc-file-name no-littering-theme-backups)
   :config
   ;; Ставим backup'ы и history-файлы в аккуратные подпапки, используя no-littering
-  (setq 
+  (setq
    history-length 300
    savehist-autosave-interval 300
    savehist-additional-variables
-    '(search-ring
-      regexp-search-ring
-      extended-command-history
-      projectile-project-command-history
-      kill-ring
-      compile-command
-      file-name-history
-      shell-command-history)
+   '(search-ring
+     regexp-search-ring
+     extended-command-history
+     projectile-project-command-history
+     kill-ring
+     compile-command
+     file-name-history
+     shell-command-history)
    kept-old-versions 25
    delete-old-versions t
    create-lockfiles nil
@@ -82,7 +82,10 @@
   (undo-tree-visualizer-diff t)
   :bind (("C-M--" . undo-tree-visualize)
          ("C-M-_" . undo-tree-visualize)
-         ("M-u"   . undo-tree-visualize))
+         ("M-u"   . undo-tree-visualize)
+         ;; Классические бинды для undo/redo:
+         ("C-_"   . undo-tree-undo)
+         ("M-_"   . undo-tree-redo))
   :config
   (global-undo-tree-mode 1)
   (defun про-историю/очистить-undo ()
@@ -292,6 +295,40 @@
 --------------------------------------------------------
 © П.К.
 ")))
+
+;;;; 9. Transient меню — быстрое меню команд истории
+
+(use-package transient
+  :ensure t)
+
+(transient-define-prefix про-историю/transient ()
+  "Меню команд Emacs истории: undo, redo, layout, kill-ring, снимки."
+  ["История и восстановление"
+   ("u" "Машина времени (undo-tree/vundo)" про-историю/quick-time-machine)
+   ("e" "Последняя правка" goto-last-change)
+   ("j" "Предыдущий курсор" goto-last-point)
+   ("b" "Открыть изменённые буферы" про-историю/показать-все-изменённые-буферы)
+   ("s" "Восстановить последнюю сессию" про-историю/restore-last-session)
+   ]
+  ["Очистки"
+   ("U" "Очистить undo текущего буфера" про-историю/очистить-undo)
+   ("F" "Удалить все undo-файлы" про-историю/удалить-все-undo-файлы)
+   ]
+  ["Сессия/снимки"
+   ("q" "Сохранить снимок окна" про-историю/сохранить-снимок-буфера)
+   ("Q" "Восстановить снимок окна" про-историю/восстановить-снимок-буфера)
+   ]
+  ["Kill-ring"
+   ("k" "Сохранить kill-ring" про-историю/kill-ring-save-to-file)
+   ("K" "Восстановить kill-ring" про-историю/kill-ring-restore-from-file)
+   ]
+  ["Другое"
+   ("h" "Eco Help — справка" про-историю/eco-help)
+   ("m" "Открыть меню-список (completing-read)" про-историю/меню)
+   ])
+
+;; Рекомендуемый хоткей:
+;; (global-set-key (kbd "C-c M-h") #'про-историю/transient)
 
 ;;;; 9. Горячие клавиши (рекомендуемые)
 ;; Можно настроить свои:

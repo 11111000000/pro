@@ -27,8 +27,9 @@
 ;; 3. Иконки: Эстетика в автодополнении, dired, ibuffer и т.д.
 ;; 4. Курсор и прокрутка: Выразительный курсор, плавная навигация.
 ;; 5. Вкладки: Современный tab-bar и tab-line с иконками.
-;; 6. Дополнительные улучшения: Разделители, изображения, fringes.
-;; 7. Финал: Provide и ends here.
+;; 6. Интеграция с текстовым режимом: Подключение TTY оптимизаций.
+;; 7. Дополнительные улучшения: Разделители, изображения, fringes.
+;; 8. Финал: Provide и ends here.
 ;;
 ;; Использование: Загружайте через (require 'про-внешний-вид) в вашем init.el.
 ;; Рекомендуется интегрировать с темами (например, через modus-themes) для
@@ -72,19 +73,22 @@
 ;; Это улучшает осведомлённость без отвлечения.
 
 (setq-default enable-recursive-minibuffers t            ; Разрешаем вложенные минибуферы.
-              max-mini-window-height 0.25               ; Ограничение по высоте для компактности.
+              max-mini-window-height 0.33               ; Ограничение по высоте для компактности.
               message-truncate-lines nil                ; Полные сообщения без усечения.
               resize-mini-windows t)                    ; Авто-адаптация размера.
 
 ;; Строка статуса с иконками (shaoline): минималистичный и информативный.
+(add-to-list 'load-path "/home/az/.emacs.d/elpa/shaoline/lisp")
+
 (use-package shaoline
-  :defer t
   :ensure t
-  :if (display-graphic-p)
-  :hook (after-init . shaoline-mode)
+  :init (установить-из :repo "11111000000/shaoline")
   :custom
-  (shaoline-right-padding 17)
-  (shaoline-always-visible t))
+  (shaoline-debug t)
+  (shaoline-mode-strategy 'yang)
+  (shaoline-right-margin 17)
+  (shaoline-enable-dynamic-segments t)
+  :hook (after-init . shaoline-mode))
 
 (require 'time)
 
@@ -93,39 +97,41 @@
 ;; менеджерах и списках. Мы интегрируем их последовательно, с учётом
 ;; графического/терминального режимов, и сбрасываем кэш при смене тем.
 
-;; Иконки в автодополнении (kind-icon): рядом с кандидатами в corfu.
-(use-package kind-icon
-  :defer t
-  :ensure t
-  :after corfu
-  :custom (kind-icon-use-icons t)
-  (kind-icon-default-face 'corfu-default)
-  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  ;; Сброс кэша иконок после смены темы.
-  (add-hook 'after-load-theme-hook #'kind-icon-reset-cache))
+;; Иконки загружаем только в графическом режиме для стабильности.
+(when (display-graphic-p)
 
-;; Иконки в marginalia (подсказки) через nerd-icons-completion.
-(use-package nerd-icons-completion
-  :defer t
-  :ensure t
-  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
-  :config (unless (display-graphic-p)
-            (nerd-icons-completion-mode)))
+  ;; Иконки в автодополнении (kind-icon): рядом с кандидатами в corfu.
+  (use-package kind-icon
+    :defer t
+    :ensure t
+    :after corfu
+    :custom (kind-icon-use-icons t)
+    (kind-icon-default-face 'corfu-default)
+    :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+    ;; Сброс кэша иконок после смены темы.
+    (add-hook 'after-load-theme-hook #'kind-icon-reset-cache))
 
-;; Иконки в dired (файловый менеджер) через treemacs.
-(use-package treemacs-icons-dired
-  :defer t
-  :ensure t
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :config (add-hook 'after-load-theme-hook (lambda ()
-                                             (treemacs-icons-dired-mode -1)
-                                             (treemacs-icons-dired-mode 1))))
+  ;; Иконки в marginalia (подсказки) через nerd-icons-completion.
+  (use-package nerd-icons-completion
+    :defer t
+    :ensure t
+    :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
+    :config (nerd-icons-completion-mode))
 
-;; Иконки в ibuffer (список буферов).
-(use-package nerd-icons-ibuffer
-  :defer t
-  :ensure t
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+  ;; Иконки в dired (файловый менеджер) через treemacs.
+  (use-package treemacs-icons-dired
+    :defer t
+    :ensure t
+    :hook (dired-mode . treemacs-icons-dired-enable-once)
+    :config (add-hook 'after-load-theme-hook (lambda ()
+                                               (treemacs-icons-dired-mode -1)
+                                               (treemacs-icons-dired-mode 1))))
+
+  ;; Иконки в ibuffer (список буферов).
+  (use-package nerd-icons-ibuffer
+    :defer t
+    :ensure t
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode)))
 
 ;;;; 4. Курсор и прокрутка
 ;; Курсор — ваш "палец" в Emacs. Мы делаем его выразительным (тип, цвет),
@@ -134,24 +140,29 @@
 ;; Базовые настройки курсора: бар шириной 3, растягивается по символу.
 (setq cursor-type '(bar . 3) x-stretch-cursor t cursor-in-non-selected-windows t)
 
-;; Динамический курсор: меняет тип/цвет по контексту (input method).
-(use-package cursor-chg
-  :defer t
-  :init (установить-из :repo "emacsmirror/cursor-chg")
-  :hook (after-init . change-cursor-mode)
-  :custom (curchg-input-method-cursor-color "orange")
-  (curchg-default-cursor-type '(bar . 3))
-  (curchg-default-cursor-color "forest green")
-  (curchg-change-cursor-on-input-method-flag t))
+;; Динамический курсор: меняет тип/цвет по контексту (только для GUI).
+(when (display-graphic-p)
+  (use-package cursor-chg
+    :defer t
+    :init (установить-из :repo "emacsmirror/cursor-chg")
+    :hook (after-init . change-cursor-mode)
+    :custom (curchg-input-method-cursor-color "orange")
+    (curchg-default-cursor-type '(bar . 3))
+    (curchg-default-cursor-color "forest green")
+    (curchg-change-cursor-on-input-method-flag t)))
 
 ;; Прокрутка: консервативная, с margins для комфорта.
 (setq-default scroll-conservatively 80 scroll-step 1 scroll-margin 5 hscroll-step 1 auto-window-vscroll nil fast-but-imprecise-scrolling t jit-lock-defer-time 0 hscroll-margin 1)
 
-;; Плавная прокрутка изображений и текстовых режимов.
+;; Плавная прокрутка: особенно эффективна в GUI режиме.
 (use-package iscroll
   :defer t
   :ensure t
-  :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode))
+  :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode)
+  :config
+  ;; В TTY режиме используем более простые настройки прокрутки
+  (unless (display-graphic-p)
+    (setq iscroll-preserve-screen-position t)))
 
 ;;;; 5. Вкладки
 ;; Вкладки — современный способ организации: tab-bar для глобальных,
@@ -159,7 +170,6 @@
 ;; с иконками и удобными биндингами.
 
 (use-package pro-tabs
-  :defer t
   :init (установить-из :repo "11111000000/pro-tabs")
   :bind (;; Глобальные бинды для tab-bar.
          ("s-n" . tab-bar-switch-to-next-tab)
@@ -174,12 +184,21 @@
          :map tab-line-mode-map ("s-<tab>" . tab-line-switch-to-next-tab)
          ("S-s-<iso-lefttab>" . tab-line-switch-to-prev-tab)
          ("C-w" . pro/tab-line-close-tab))
-  :custom (pro-tabs-enable-icons t)
+  :custom
+  ;; Иконки включаем только в графическом режиме
+  (pro-tabs-enable-icons (display-graphic-p))
   :init
-  (pro-tabs-mode 1)
-  )
+  (pro-tabs-mode 1))
 
-;;;; 6. Дополнительные улучшения
+;; ;;;; 6. Интеграция с текстовым режимом
+;; ;; Подключаем специализированные настройки для TTY режима.
+;; ;; Отдельный модуль про-текстовый-режим обрабатывает все терминальные
+;; ;; особенности, оставляя этот файл сфокусированным на GUI элементах.
+
+;; (when (not (display-graphic-p))
+;;   (require 'про-текстовый-режим nil t))
+
+;;;; 7. Дополнительные улучшения
 ;; Здесь — мелочи, завершающие картину: изображения, fringes, диалоги.
 ;; Каждая добавляет шарм без перегрузки.
 
@@ -190,36 +209,53 @@
 ;; Короткие диалоги: y/n вместо yes/no.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Интерактивные изображения: масштабирование в image-mode.
-(use-package image+
-  :ensure t
-  :bind (:map image-mode-map ("0" . imagex-sticky-restore-original)
-              ("+" . imagex-sticky-maximize)
-              ("=" . imagex-sticky-zoom-in)
-              ("-" . imagex-sticky-zoom-out)))
+;; GUI-специфичные улучшения: изображения, fringes, визуальные эффекты.
+(when (display-graphic-p)
 
-;; Современные fringes: цветные индикаторы для сплитов.
-(use-package modern-fringes
-  :defer t
-  :ensure t
-  :hook (after-init . modern-fringes-mode))
+  ;; Интерактивные изображения: масштабирование в image-mode.
+  (use-package image+
+    :ensure t
+    :bind (:map image-mode-map ("0" . imagex-sticky-restore-original)
+                ("+" . imagex-sticky-maximize)
+                ("=" . imagex-sticky-zoom-in)
+                ("-" . imagex-sticky-zoom-out)))
 
-;; Prettify utils: база для многих визуальных пакетов.
-(use-package prettify-utils
-  :defer t
-  :init (установить-из :repo "Ilazki/prettify-utils.el"))
+  ;; Современные fringes: цветные индикаторы для сплитов.
+  (use-package modern-fringes
+    :defer t
+    :ensure t
+    :hook (after-init . modern-fringes-mode))
 
-;; Цветной фон для служебных буферов (solaire-mode).
-(use-package solaire-mode
-  :defer t
-  :ensure t
-  :hook (after-init . solaire-global-mode))
+  ;; Prettify utils: база для многих визуальных пакетов.
+  (use-package prettify-utils
+    :defer t
+    :init (установить-из :repo "Ilazki/prettify-utils.el"))
+
+  ;; Цветной фон для служебных буферов (только в GUI).
+  (use-package solaire-mode
+    :defer t
+    :ensure t
+    :hook (after-init . solaire-global-mode)))
+
+;; Универсальные визуальные улучшения для всех режимов.
+
+;; Новое: показывать относительные номера строк в буферах с кодом.
+(use-package display-line-numbers
+  :hook (prog-mode . display-line-numbers-mode)
+  :custom
+  (display-line-numbers-type 'relative)
+  (display-line-numbers-width-start t))
+
+(when (display-graphic-p)
+  ;; Базовая поддержка изображений везде
+  (setq image-animate-loop t))
 
 ;; Хук для тем: запускать кастомные действия после load-theme.
+;;;;
 (defvar after-load-theme-hook nil "Хук после (load-theme).")
 (defadvice load-theme (after run-after-load-theme-hook activate) "Запуск after-load-theme-hook." (run-hooks 'after-load-theme-hook))
 
-;;;; 7. Финал
+;;;; 8. Финал
 ;; Завершаем: не беспокоим о процессах при выходе, предоставляем модуль.
 
 (setq confirm-kill-processes nil)

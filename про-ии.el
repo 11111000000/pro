@@ -167,7 +167,7 @@
    (gptel-api-key proxyapi-key)                  ;; API-key централизованный
    (gptel-log-level 'info)
    (gptel--system-message
-    "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode."))
+    "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode, любые списки выдавай org-заголовками следующего уровня."))
   :config
   ;; Реализация быстрой отправки без контекста (M-RET)
   (defun pro/gptel-send-no-context ()
@@ -197,9 +197,9 @@
                    '("gpt-4.5-preview" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
                      "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
                      "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-                     "gpt-4o-audio-preview" "gemini-2.5-pro-preview-03-25"
-                     "gemini-2.5-flash-preview-05-20"
-                     "deepseek-r1" "deepseek-chat" "grok-3-mini-beta" "grok-4")
+                     "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
+                     "claude-sonnet-4" "claude-opus-4" "llama-4-maverick"
+                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "grok-3-mini-beta" "grok-4")
                    gptel--openai-models)))
 
   ;; --- ProxyAPI: центральный публичный российский прокси разных AI ---

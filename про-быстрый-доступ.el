@@ -229,43 +229,32 @@
             (switch-to-buffer buf))
         (switch-to-buffer buf)))))
 
-(defun pro/consult-buffer-or-recentf ()
-  "Выбор буфера или recentf-файла в едином списке через Consult-multi."
+(defun pro/consult-buffer-other-window ()
+  "Открыть буфер из consult-buffer в новом окне с чередующимся разделением.
+Объединяет открытые буферы с недавними файлами через consult-buffer.
+Чередует разделение: справа → снизу → справа → снизу..."
   (interactive)
-  (recentf-mode 1)
-  (let* ((buffers (mapcar #'buffer-name (consult--buffer-query :sort 'visibility)))
-         (recent (seq-filter (lambda (f) (not (get-buffer f))) recentf-list))
-         (sources `((:name "Buffers" :narrow ?b :category buffer :items ,buffers)
-                    (:name "Recent Files" :narrow ?r :category file :items ,recent)))
-         (result (consult--multi sources
-                                 :prompt "Buffer or Recentf: "
-                                 :require-match t
-                                 :history 'consult--buffer-history
-                                 :sort nil)))
-    (cond
-     ((and (stringp result) (get-buffer result))
-      (let ((buf (get-buffer result)))
-        (if (and (get-buffer-window buf 'visible)
-                 (with-current-buffer buf (derived-mode-p 'exwm-mode)))
-            (select-window (get-buffer-window buf 'visible))
-          (if (with-current-buffer buf (derived-mode-p 'exwm-mode))
-              (let* ((orig-tab (1+ (tab-bar--current-tab-index)))
-                     (tabs (tab-bar-tabs))
-                     tab-found)
-                (cl-loop for i from 1 to (length tabs) do
-                         (unless (= i orig-tab)
-                           (tab-bar-select-tab i)
-                           (when (get-buffer-window buf 'visible)
-                             (setq tab-found t)
-                             (cl-return))))
-                (unless tab-found
-                  (tab-bar-select-tab orig-tab))
-                (switch-to-buffer buf))
-            (switch-to-buffer buf)))))
-     ((and (stringp result) (file-exists-p result)) (find-file result))
-     ((null result) (message "Ничего не выбрано."))
-     ((not (stringp result)) (message "Ошибка: выбор не строка: %S" (type-of result)))
-     (t (message "Неизвестный выбор: %S" result)))))
+  (let* ((window-count (length (window-list)))
+         ;; Определяем тип разделения: нечётное количество окон = справа, чётное = снизу
+         (split-right-p (= 1 (% window-count 2)))
+         target-window)
+
+    ;; Создаём новое окно
+    (setq target-window
+          (if split-right-p
+              (split-window-right)  ; Справа при нечётном количестве окон
+            (split-window-below)))  ; Снизу при чётном количестве окон
+
+    ;; Переходим в новое окно
+    (select-window target-window)
+
+    ;; Запускаем consult-buffer (автоматически включает recentf)
+    (call-interactively #'consult-buffer)))
+
+
+;; ;; Биндинги для удобного использования (опционально)
+;; (global-set-key (kbd "C-x b") #'pro/consult-buffer)
+;; (global-set-key (kbd "C-x C-b") #'pro/consult-buffer-other-window)
 
 (provide 'про-быстрый-доступ)
 ;;; про-быстрый-доступ.el ends here

@@ -362,8 +362,5 @@ With prefix ARG, do it that many times; negative for backward."
                   (propertize (or (funcall topsy-fn) "") 'face 'topsy-header-line)))
     "The header line format used by =topsy-mode'."))
 
-;;;; 8. Финал
-;; Завершаем модуль стандартным provide.
-
 (provide 'про-код)
 ;;; про-код.el ends here

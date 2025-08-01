@@ -53,23 +53,26 @@
   :init
   (setq popper-group-function #'popper-group-by-projectile)
   (setq popper-reference-buffers
-       '("\\*Messages\\*"
-         "Output\\*$"
-         shell-command-mode
-         help-mode
-         compilation-mode
-         calendar-mode
-         chatgpt-shell-mode
-         ;; "^\\*aidermacs.*\\*$" aidermacs-comint-mode
-         ;;"^\\*eshell.*\\*$" eshell-mode
-         ;;"^\\*shell.*\\*$"  shell-mode
-         "^\\*term.*\\*$"   term-mode
-         "^\\*vterm.*\\*$"  vterm-mode
-         ))
+        '("\\*Messages\\*"
+          "Output\\*$"
+          shell-command-mode
+          help-mode
+          compilation-mode
+          calendar-mode
+          chatgpt-shell-mode
+          ;; "^\\*aidermacs.*\\*$" aidermacs-comint-mode
+          ;;"^\\*eshell.*\\*$" eshell-mode
+          ;;"^\\*shell.*\\*$"  shell-mode
+          "^\\*term.*\\*$"
+          term-mode
+          "^\\*vterm.*\\*$"
+          vterm-mode
+          "^\\*nixos-log\\*$"
+          ))
   (popper-mode +1)
   (popper-echo-mode +1)
   (add-to-list 'display-buffer-alist
-             (cons "\\*Async.*" (cons #'display-buffer-no-window nil)))
+               (cons "\\*Async.*" (cons #'display-buffer-no-window nil)))
   )
 
 ;; (use-package popwin
@@ -135,10 +138,10 @@
 (use-package ace-window
   :ensure t
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-            aw-char-position 'left
-            aw-ignore-current nil
-            aw-leading-char-style 'char
-            aw-scope 'frame))
+              aw-char-position 'left
+              aw-ignore-current nil
+              aw-leading-char-style 'char
+              aw-scope 'frame))
 
 (provide 'про-окна)
 ;;; про-окна.el ends here

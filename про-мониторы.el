@@ -27,9 +27,9 @@
     (start-process-shell-command
      "xrandr" nil
      (concat "xrandr "
-            " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
-            " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
-            (if имя-третьего-монитора (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора) "")))
+             " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
+             " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
+             (if имя-третьего-монитора (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора) "")))
     ;; СИНХРОННО вызываем exwm-randr-refresh только если включен exwm-randr-mode
     (when (and (fboundp 'exwm-randr-refresh)
                (bound-and-true-p exwm-randr-mode))

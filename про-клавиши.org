@@ -1,5 +1,4 @@
- * Глобальные сочетания клавиш
-** Клавиши текстового режима
+* Клавиши текстового режима
 
 #+NAME: key-bindings-table
 | Сочетание         | Функция                             |
@@ -38,7 +37,8 @@
 | C-$               | toggle-truncate-lines               |
 | C-c M-f           | вставить-имя-файла                  |
 | C-x b             | pro/consult-buffer                  |
-| C-x C-b           | consult-buffer                      |
+| C-x C-b           | pro/consult-buffer-other-window     |
+| C-x r             | consult-recent-file                 |
 | C-x M-b           | consult-buffer-other-window         |
 | C-c b             | consult-buffer-other-window         |
 | C-c C-b           | consult-buffer-other-window         |
@@ -131,7 +131,7 @@
 | C-c e T           | evedel-remove-tags                  |
 | s-a               | aidermacs-transient-menu            |
 | s-i               | nil                                 |
-| s-i i             | gptel-menu                          |
+| s-i i             | gptel                               |
 | s-i s-i           | gptel-aibo                          |
 | s-i o             | gptel                               |
 | s-i s-o           | gptel                               |
@@ -175,8 +175,11 @@
 | s-e t             | evedel-add-tags                     |
 | s-e T             | evedel-remove-tags                  |
 | C-z               | nil                                 |
+| C-c n             | про/пересобрать-nix                 |
+| C-c k             | про/перезагрузить-клавиши           |
 
-** Клавиши над всеми Xorg приложениями:
+
+* Клавиши над всеми Xorg приложениями:
 
 #+NAME: exwm-key-bindings-table
 | Сочетание               | Функция                              |
@@ -272,8 +275,8 @@
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
 | C-c f                   | nil                                  |
-| C-c fs                  | profiler-start                       |
-| C-c fo                  | profiler-stop                        |
+| C-c ff                  | profiler-start                       |
+| C-c fs                  | profiler-stop                        |
 | C-c fr                  | profiler-report                      |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
@@ -284,13 +287,19 @@
 | C-c i M-i               | gptel-aibo                           |
 | s-i e                   | chatgpt-shell                        |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
-| s-c                     | treemacs                             |
+| s-c                     | nil                                  |
+| s-c s                   | скринкаст                            |
+| s-c o                   | скринкаст-стоп                       |
 | C-c C-'                 | exwm-edit--compose-minibuffer        |
 | C-c '                   | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
+| C-c n                   | про/пересобрать-nix                  |
+| C-c k                   | про/перезагрузить-клавиши            |
 
-** Клавиши для модов
+
+
+* Клавиши для модов
 
   #+NAME: modes-key-bindings-table
   | Мод            | Сочетание | Функция                        |
@@ -301,36 +310,3 @@
   |                | C--       | imagex-sticky-zoom-out         |
   |                | C-=       | imagex-sticky-zoom-in          |
 
-** Применение сочетаний
-
-#+BEGIN_SRC emacs-lisp :var keys-table=key-bindings-table exwm-keys-table=exwm-key-bindings-table
-(require 'cl-lib)
-(require 'exwm)
-
-;; Устанавливает глобальные привязки клавиш из keys-table.
-(mapc (lambda (row)
-        (cl-destructuring-bind (key func) row
-          (global-set-key (kbd key) (intern func))))
-      keys-table)
-
-;; Устанавливает глобальные привязки клавиш из exwm-keys-table.
-(mapc (lambda (row)
-        (cl-destructuring-bind (key func) row
-          (global-set-key (kbd key) (intern func))))
-      exwm-keys-table)
-
-;; Если запущено в оконной системе и функция exwm-input-set-key доступна, настраивает клавиши EXWM.
-(when (and window-system (functionp 'exwm-input-set-key))
-  (mapc (lambda (row)
-          (cl-destructuring-bind (key func) row
-            (exwm-input-set-key (kbd key) (intern func))))
-        exwm-keys-table))
-
-(provide 'про-сочетания-клавиш)
-#+END_SRC
-
-#+RESULTS:
-: про-сочетания-клавиш
-: про-сочетания-клавиш
-
-* 

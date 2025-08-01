@@ -4,6 +4,40 @@
 ;;; Дашборд
 
 (require 'all-the-icons)
+(require 'calendar)
+(require 'holidays)
+(require 'lunar)
+
+(defun про-доску/футер (&optional _)
+  "Вернуть красивый футер: дата/время, праздник и фаза луны (иконка).
+_ — игнорируемый аргумент, нужен для совместимости с dashboard."
+  (let* ((now (current-time))
+         (date-str (format-time-string "%H:%M, %d %B %Y (%a)" now)) ; пример: 15:12, 5 июня 2024 (Ср)
+         ;; Получить праздники (calendar/holidays)
+         (cal-date (calendar-current-date))
+         (holidays-today
+          (let ((hs (calendar-check-holidays cal-date)))
+            (and hs (mapconcat #'identity hs ", "))))
+         ;; Лунная фаза
+         (moon-icons ["🌑" "🌒" "🌓" "🌔" "🌕" "🌖" "🌗" "🌘"])
+         ;; moon phase: robust, use integer date, as in shaoline
+         (moon-idx
+          (let* ((abs-now (float (calendar-absolute-from-gregorian cal-date)))
+                 (synodic-month 29.530588853)
+                 (next-new (lunar-new-moon-on-or-after abs-now))
+                 (prev-new (- next-new synodic-month))
+                 (age (- abs-now prev-new)))
+            (mod (floor (* age (/ 8.0 synodic-month))) 8)))
+         (moon (if (and (integerp moon-idx) (<= 0 moon-idx) (< moon-idx 8))
+                   (aref moon-icons moon-idx)
+                 "☾")))
+    (concat
+     moon
+     "  "
+     (if holidays-today
+         (concat holidays-today " • ")
+       "")
+     date-str)))
 
 (use-package dashboard
   :ensure t
@@ -48,13 +82,16 @@
        (lambda (&rest _) (browse-url "homepage")))
       ("⚑" nil "Show flags"
        (lambda (&rest _) (message "flag")) error))))
-  (dashboard-footer-messages '("Сообщение в футере"))
+  ;; --- Красивый футер с датой, праздником и луной ---
+
+  (dashboard-footer-messages (list (про-доску/футер)))
   (dashboard-footer-icon (if window-system (all-the-icons-octicon "dashboard"
-                                                               :height 1.1
-                                                               :v-adjust -0.05
-                                                               :face 'font-lock-keyword-face) "."))
+                                                                  :height 1.1
+                                                                  :v-adjust -0.05
+                                                                  :face 'font-lock-keyword-face) "."))
   :init
-  (dashboard-refresh-buffer))
+  ;;(dashboard-refresh-buffer)
+  )
 
 (provide 'про-доску)
 ;;; про-доску.el ends here
