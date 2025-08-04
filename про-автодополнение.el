@@ -140,6 +140,19 @@
   :ensure t
   :hook (after-init . corfu-terminal-mode))  ; Включаем глобально после init.
 
+;; В GUI-сессиях подключаем corfu-posframe, чтобы всплывающее окно
+;; корректно позиционировалось на текущем мониторе. Child-frames GTK
+;; иногда «прыгают» на первичный дисплей — posframe решает эту проблему.
+;; (use-package corfu-posframe
+;;   :if window-system
+;;   :ensure t
+;;   :after corfu
+;;   :hook (corfu-mode . corfu-posframe-mode)
+;;   :custom
+;;   ;; Дополнительные параметры кадра — регулируйте при желании.
+;;   (corfu-posframe-parameters '((left-fringe  . 4)
+;;                                (right-fringe . 4))))
+
 ;;;; 6. Опциональные расширения
 ;; Здесь закомментированные опции: оверлей первого кандидата и предпросмотр
 ;; дополнения. Они могут быть полезны для экспериментов, но отключены по умолчанию

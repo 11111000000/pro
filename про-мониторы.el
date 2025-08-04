@@ -8,7 +8,7 @@
   "Настройка и управление конфигурацией мониторов под EXWM."
   :group 'exwm)
 
-(defcustom про/monitor-refresh-delay 0.8
+(defcustom про/monitor-refresh-delay 1
   "Сколько секунд ждать после вызова xrandr,
 прежде чем отправлять `exwm-randr-refresh`."
   :type 'number

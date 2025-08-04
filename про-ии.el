@@ -136,9 +136,9 @@
 ;;;; 3. Настроить переменные API/ключей и окружение
 
 ;; Объявление некоторых переменных бэкендов; могут быть определены в другом приватном файле:
-(defvar tunnelai-url)
-(defvar tunnelai-key)
-(defvar tunnelai-backend)
+(defvar aitunnel-url)
+(defvar aitunnel-key)
+(defvar aitunnel-backend)
 (defvar chutes-api-key)
 (defvar proxyapi-url)
 (defvar proxyapi-key)
@@ -185,13 +185,13 @@
 
   ;; Создаем разнообразие бэкендов (вы делаете свой AI-пул по вкусу)
   ;; --- Прокси Туннель (например, самостоятельный API proxy на своем сервере) ---
-  (setq tunnelai-backend
+  (setq aitunnel-backend
         (gptel-make-openai "AI Tunnel"
           :protocol "https"
-          :host tunnelai-url
+          :host aitunnel-url
           :endpoint "/v1/chat/completions"
           :stream t
-          :key tunnelai-key
+          :key aitunnel-key
           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
           :models (append
                    '("gpt-4.5-preview" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
@@ -311,21 +311,30 @@
 ;;;; 7. Генерация git commit-сообщений через GPTel, ProxyAPI и gptel-commit
 
 (use-package gptel-commit
+  :ensure t
   :after gptel
-  :load-path "/your/path/to/gptel-commit/" ;; <--- исправьте путь при необходимости!
   :init
   ;; Переиспользовать основной backend, но всегда явно требовать нужную модель
   (defun pro-gptel-commit-select-backend ()
-    (if (boundp 'gptel-proxyapi-backend)
-        gptel-proxyapi-backend
-      gptel-backend))
+    "Всегда возвращает `aitunnel-backend` для `gptel-commit`."
+    aitunnel-backend)
   :custom
   (gptel-commit-backend (pro-gptel-commit-select-backend))
   (gptel-commit-stream t)
+  :bind (:map with-editor-mode-map
+              ("C-c i RET" . gptel-commit)
+              ("C-c C-<return>" . gptel-commit))
   :config
   ;; Использовать gpt-4.1 для генерации коммитов вне зависимости от модели по умолчанию в backend
   (setq gptel-commit-prompt
-        (concat gptel-commit-prompt "\n\n[Model: gpt-4.1]\n\nТребование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, включая строку-описание и список файлов), затем ниже — точно то же сообщение на английском. Не добавляй ничего лишнего, кроме двух вариантов: Русский сверху, английский внизу."))
+        (concat gptel-commit-prompt "\n\n[Model: gpt-4.1]\n\nТребование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, включая строку-описание и список файлов), отвечающую на впрос 'Что было сделано?', затем ниже — точно то же сообщение на английском. Не добавляй ничего лишнего, кроме двух вариантов: Русский сверху, английский внизу."))
+
+  ;; Гарантируем использование модели `gpt-4.1` при генерации коммит-сообщений,
+  ;; не затрагивая глобальный выбор модели для остальных запросов.
+  (advice-add 'gptel-commit--generate-message :around
+              (lambda (orig-fun &rest args)
+                (let ((gptel-model 'gpt-4.1))
+                  (apply orig-fun args))))
   :commands (gptel-commit gptel-commit-rationale))
 
 (provide 'про-ии)

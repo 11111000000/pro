@@ -140,7 +140,7 @@
 (use-package desktop
   :ensure nil
   :custom
-  ;; (desktop-save-mode t) ;; раскомментируйте, если хотите полный restore
+  (desktop-save-mode t) ;; включаем полный restore даже после аварийного выхода
   (desktop-path (list user-emacs-directory))
   (desktop-auto-save-timeout 600)
   (desktop-restore-eager 8))

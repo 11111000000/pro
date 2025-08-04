@@ -3,7 +3,7 @@
 ;; Автор: Пётр <11111000000@email.com>
 ;; Версия: 1.1
 ;; Keywords: exwm, window-manager, desktop, multi-monitor
-;; URL: https://example.com/про-графическую-среду
+;; URL: ttps://example.com/про-графическую-среду
 ;;
 ;;; Commentary:
 ;;
@@ -149,7 +149,7 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
           exwm-workspace-number         3
           exwm-workspace-show-all-buffers t
           exwm-layout-show-all-buffers   t
-          exwm-manage-force-tiling      t
+          exwm-manage-force-tiling      nil
           exwm-systemtray-background-color 'default
           exwm-systemtray-height         22)
     :config

@@ -86,7 +86,7 @@
   :custom
   (shaoline-debug t)
   (shaoline-mode-strategy 'yang)
-  (shaoline-right-margin 17)
+  (shaoline-with-tray t)
   (shaoline-enable-dynamic-segments t)
   :hook (after-init . shaoline-mode))
 
@@ -187,8 +187,9 @@
   :custom
   ;; Иконки включаем только в графическом режиме
   (pro-tabs-enable-icons (display-graphic-p))
+  :hook ((after-init-hook . pro-tabs-mode))
   :init
-  (pro-tabs-mode 1))
+  (tab-bar-mode t))
 
 ;; ;;;; 6. Интеграция с текстовым режимом
 ;; ;; Подключаем специализированные настройки для TTY режима.
@@ -243,7 +244,7 @@
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)
   :custom
-  (display-line-numbers-type 'relative)
+  (display-line-numbers-type t)
   (display-line-numbers-width-start t))
 
 (when (display-graphic-p)
