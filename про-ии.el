@@ -1,80 +1,144 @@
-;;; про-ии.el --- Интеграция искусственного интеллекта в Emacs -*- lexical-binding: t; -*-
+;;; про-ии.el --- Интеграция современных AI-сервисов в Emacs (GPTEL, ProxyAPI, Anthropic, DeepSeek и др.) -*- lexical-binding: t; -*-
 ;;
 ;; Автор: Пётр <11111000000@email.com>
-;; Версия: 1.0
+;; Версия: 1.1
 ;; Keywords: AI, GPT, Codeium, Whisper, ChatGPT
 ;; URL: https://example.com/про-ии
+;; Package-Requires: ((emacs "28.1") (use-package "2.4") (gptel "0") (consult "1.7") (cape "0"))
 ;;
 ;;; Commentary:
-;; Конфиг для глубокой интеграции современных AI-сервисов (GPT, Anthropic, DeepSeek, Gemini и др.) в Emacs.
-;; Позволяет работать с нейросетями, трекать стоимость в рублях, быстро переключать backend/model,
-;; удобно использовать org, получать аудио/картинки и многое другое прямо в удобном редакторе.
 ;;
-;; Кратко по секциям:
-;;  0. Зависимости и пакеты
-;;  1. Кастомная и расширяемая таблица цен за токены (цены для разных моделей; все в рублях)
-;;  2. Калькуляция стоимости запроса и трекинг расходов
-;;  3. API-ключи и настройка переменных окружения
-;;  4. Настройка пакета gptel и backend’ов (OpenAI, Proxyapi, Anthropic, DeepSeek и т.д.)
-;;  5. Быстрое переключение backend/model через интерактивные команды
-;;  6. Другое: хуки, локальные функции, расширения
+;; Этот файл — целостная, структурированная и сопровождаемая конфигурация
+;; «литературного» вида для глубокой интеграции AI в Emacs на базе пакета GPTEL:
+;;
+;; Что умеет конфигурация:
+;; - Создаёт пул backend’ов и моделей (OpenAI-совместимых и проксированных).
+;; - Даёт удобные интерактивные команды для переключения backend/model.
+;; - Отслеживает стоимость запросов (рубли), грузит прайс из org-таблицы.
+;; - Точное или приближённое измерение токенов (через tiktoken-counter.py или эвристику).
+;; - Централизованная настройка ключей, переменных окружения и заполнение их по умолчанию.
+;; - Расширения: интеграция с gptel-commit, возможность отправки без контекста (stateless).
+;;
+;; Кратко по разделам:
+;;  0. Введение, зависимости и базовые группы настроек
+;;  1. Таблица цен за токены (рубли), загрузка из Org и поиск тарифа модели
+;;  2. Калькуляция стоимости и подсчёт токенов (точный и эвристический)
+;;  3. Ключи API и окружение (централизация)
+;;  4. Настройка GPTEL и пул backend’ов (AI Tunnel, ProxyAPI: OpenAI/Anthropic, Chutes/DeepSeek)
+;;  5. Интерактивные команды переключения backend/model (с Consult или fallback)
+;;  6. Расширения: CAPE, хуки, пример интеграции (без включения по умолчанию)
+;;  7. Генерация commit-сообщений с gptel-commit (стратегия — всегда gpt-4.1, stateless)
 ;;
 ;; Перед использованием:
-;;  - Задайте переменную `proxyapi-key` в вашем приватном файле или .emacs (ее подхватят все API).
-;;  - Рекомендуется установить tiktoken-counter.py (для точного подсчета токенов любой модели).
+;; - Настройте переменную =proxyapi-key= в приватном месте (она разойдётся по всем API).
+;; - Рекомендуется установить tiktoken-counter.py (для точного подсчёта токенов любой модели).
+;; - При необходимости уточните путь к org-файлу с ценами в переменной
+;;   =pro-gptel-pricing-org-file= (см. ниже). Если файла нет — будет использована пустая таблица.
 ;;
-;; Загружайте файл: M-x load-file RET путь/до/про-ии.el RET
-
+;; Загрузка:
+;; - M-x load-file RET путь/до/про-ии.el RET
+;;
+;; Полезные интерактивные команды:
+;; - M-x pro/gptel-switch-backend — быстрое переключение backend.
+;; - M-x pro/gptel-switch-model  — быстрое переключение модели (с подсказкой бэкенда).
+;; - M-x pro-gptel-load-pricing-from-org — принудительно перечитать org-прайс.
+;; - M-x gptel-send, M-x pro/gptel-send-no-context — отправка запросов (c контекстом/без).
+;;
 ;;; Code:
-;;;; 0. Импорт зависимостей, utility-скриптов и прогреваем окружение
-(require 'установить-из)  ;; Универсальная функция установки пакетов из репозиториев.
-(require 'cape)           ;; CAPE — дополнение автодополнения и AI-подсказок.
 
-;;;; 1. Таблица цен по токенам (чтобы считать траты, удобно сравнивать и планировать)
+;;;; 0. Введение, зависимости и базовые группы настроек
+
+;; Мы явно обозначаем группу Customize для всех опций этого модуля.
+(defgroup pro-ii nil
+  "Глубокая интеграция AI-сервисов в Emacs на базе GPTEL."
+  :group 'applications
+  :prefix "pro-gptel-")
+
+(require 'установить-из)  ;; Универсальная функция установки пакетов (локальная/кастомная).
+(require 'cape)           ;; CAPE — инфраструктура для подсказок и completion от AI и пр.
+
+(eval-when-compile
+  (require 'cl-lib))
+
+;;;; 1. Таблица цен за токены (рубли), загрузка из Org и поиск тарифа модели
+
+(defcustom pro-gptel-pricing-org-file
+  (expand-file-name "~/pro/ai-model-prices.org")
+  "Путь к org-файлу с таблицей цен за 1000 токенов (в рублях).
+Ожидается таблица с колонками: | Модель | Вход | Выход |.
+Будут считаны значения и преобразованы к стоимости за 1 токен."
+  :type 'file
+  :group 'pro-ii)
+
 (defcustom pro-gptel-model-pricing-alist
-  'nil
-  "Alist с ценами за токены: (MODEL . (:input RUB/1k-токенов :output RUB/1k-токенов))
-Цены по 1000 токенов, для рублевой оценки (можно скорректировать через customize)."
+  nil
+  "Alist с ценами за токены в рублях: (MODEL . (:input RUB/1token :output RUB/1token)).
+Внутреннее представление — стоимость за 1 токен, а не за 1000.
+Данные обычно загружаются из =pro-gptel-pricing-org-file=, но могут быть отредактированы вручную."
   :type '(alist :key-type symbol :value-type (plist :key-type symbol :value-type number))
-  :group 'gptel)
+  :group 'pro-ii)
 
-(defun pro-gptel-load-pricing-from-org ()
-  "Load model pricing from `ai-model-prices.org' into `pro-gptel-model-pricing-alist'."
-  (let ((file (expand-file-name "~/pro/ai-model-prices.org"))
-        (alist nil))
+(defcustom pro-gptel-currency-rate 1.0
+  "Курс пересчёта тарифов, если прайс не в рублях (обычно 1.0 = рубли).
+Например, если у вас цены в $ за токен, здесь можно задать курс руб./$."
+  :type 'number
+  :group 'pro-ii)
+
+(defvar-local pro-gptel-last-cost-rub nil
+  "Последняя оцененная стоимость запроса в текущем буфере (float, рубли).
+Обновляется после прихода ответа в gptel-mode (hook =gptel-post-response-functions=).")
+
+(defun pro-gptel--parse-pricing-org-table (file)
+  "Возвращает alist цен из org-таблицы FILE.
+Ожидается таблица вида:
+| Модель | Вход | Выход |
+Где Вход/Выход указаны в рублях за 1000 токенов. Функция приводит к руб./1токен."
+  (let ((alist nil))
     (with-temp-buffer
       (insert-file-contents file)
       (goto-char (point-min))
-      (search-forward "| Модель ")
-      (forward-line 2)
-      (while (re-search-forward "^|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|$" nil t)
-        (let ((model (string-trim (match-string 1)))
-              (input (string-to-number (string-trim (match-string 2))))
-              (output (string-to-number (string-trim (match-string 3)))))
-          (unless (string-empty-p model)
-            (push (cons (intern (replace-regexp-in-string "\\." "-" model))
-                        (list :input (/ (float input) 1000)
-                              :output (/ (float output) 1000)))
-                  alist))))
-      (setq pro-gptel-model-pricing-alist (nreverse alist)))))
+      (when (search-forward "| Модель" nil t)
+        ;; Пропустим заголовок и разделитель таблицы.
+        (forward-line 2)
+        (while (re-search-forward
+                "^|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|$"
+                nil t)
+          (let* ((model (string-trim (match-string 1)))
+                 (input-1000 (string-to-number (string-trim (match-string 2))))
+                 (output-1000 (string-to-number (string-trim (match-string 3)))))
+            (unless (string-empty-p model)
+              ;; Храним в руб./1токен, точность — float
+              (push (cons (intern (replace-regexp-in-string "\\." "-" model))
+                          (list :input (/ (float input-1000) 1000.0)
+                                :output (/ (float output-1000) 1000.0)))
+                    alist))))))
+    (nreverse alist)))
 
+(defun pro-gptel-load-pricing-from-org ()
+  "Загрузить или перезагрузить =pro-gptel-model-pricing-alist= из =pro-gptel-pricing-org-file=.
+Если файл не найден, оставить текущее значение и вывести предупреждение."
+  (interactive)
+  (if (file-exists-p pro-gptel-pricing-org-file)
+      (condition-case err
+          (progn
+            (setq pro-gptel-model-pricing-alist
+                  (pro-gptel--parse-pricing-org-table pro-gptel-pricing-org-file))
+            (message "AI pricing loaded: %d models from %s"
+                     (length pro-gptel-model-pricing-alist)
+                     (abbreviate-file-name pro-gptel-pricing-org-file)))
+        (error
+         (message "Ошибка чтения прайса: %s" (error-message-string err))))
+    (message "Файл прайса не найден: %s (будет использоваться пустая таблица)"
+             (abbreviate-file-name pro-gptel-pricing-org-file))))
+
+;; Попытка загрузить прайс на старте (не критично, в случае отсутствия файла всё продолжит работать).
 (pro-gptel-load-pricing-from-org)
 
-(defcustom pro-gptel-currency-rate 1.0
-  "Курс пересчёта тарифов, если не в рублях (обычно 1.0 = рубли).
-Если у вас тарифы в $, здесь можно задать актуальный курс."
-  :type 'number
-  :group 'gptel)
-
-(defvar-local pro-gptel-last-cost-rub nil
-  "Последняя рассчитанная стоимость токенов текущего запроса (float, рубли).
-Показывается в header-line, можно использовать вне gptel.")
-
-;;;; 2. Функции оценки стоимости запросов и точного подсчёта токенов
 (defun pro-gptel-model-pricing (model)
-  "Получить plist (:input :output ...) для модели MODEL (символ или строка).
-Если нет точного совпадения, попробует подобрать по префиксу."
-  (let* ((name (if (symbolp model) (symbol-name model) model))
+  "Получить plist тарифов (:input :output) для модели MODEL (символ или строка).
+Если точного совпадения нет, пробуем подобрать по префиксу имени модели.
+Возвращает nil, если ничего не найдено."
+  (let* ((name (if (symbolp model) (symbol-name model) (or model "")))
          (name (replace-regexp-in-string "\\." "-" name)))
     (or
      (cdr (assoc (intern name) pro-gptel-model-pricing-alist))
@@ -83,22 +147,26 @@
                                    (symbolp (car x))
                                    (string-prefix-p (symbol-name (car x)) name)))
                             pro-gptel-model-pricing-alist)))
-       (and match (cdr match)))
-     )))
+       (and match (cdr match))))))
+
+;;;; 2. Калькуляция стоимости и подсчёт токенов (точный и эвристический)
 
 (defun pro-gptel-estimate-cost (n-in n-out model)
-  "Оценить стоимость запроса по количеству токенов prompt (N-IN) и response (N-OUT) для модели MODEL.
-Возвращает сумму в рублях."
+  "Оценить стоимость запроса по токенам prompt (N-IN) и response (N-OUT) для модели MODEL.
+Возвращает сумму в рублях (float). Если тариф модели не найден — вернёт 0.0."
   (let* ((pricing (pro-gptel-model-pricing model))
-         (in (or (plist-get pricing :input) 0))
-         (out (or (plist-get pricing :output) 0)))
-    (* pro-gptel-currency-rate
-       (+ (* (/ (float n-in) 1000) in)
-          (* (/ (float n-out) 1000) out)))))
+         (in (or (plist-get pricing :input) 0.0))
+         (out (or (plist-get pricing :output) 0.0)))
+    (/ pro-gptel-currency-rate
+       (+ (/ (/ (float n-in) 1.0) in)
+          (/ (/ (float n-out) 1.0) out)))))
 
 (defun pro-gptel--tokens-from-info (start end &optional model)
-  "Точным образом подсчитать количество токенов в диапазоне [START,END] (или всего буфера).
-Пытается вызвать внешний tiktoken-counter.py; если не найден — делит количество символов на 3.5 (эвристика)."
+  "Подсчитать число токенов в диапазоне [START, END].
+Пытается вызвать внешний =tiktoken-counter.py=, если он установлен:
+- Скрипт читается из stdin, параметром передаётся MODEL (по умолчанию «gpt-4»).
+- Если скрипт не найден/не исполняем — используется эвристика: длина текста / 3.5.
+Возвращает целое число токенов (минимум 1)."
   (let* ((text (buffer-substring-no-properties start end))
          (tmpfile (make-temp-file "tik-tok-txt-"))
          (script (or (executable-find "tiktoken-counter.py")
@@ -106,23 +174,25 @@
          (model (or model "gpt-4"))
          tokens)
     (with-temp-file tmpfile (insert text))
-    (if (and (file-exists-p script) (file-executable-p script))
-        (setq tokens
-              (string-to-number
-               (with-temp-buffer
-                 (call-process script tmpfile t nil model)
-                 (buffer-string))))
-      ;; fallback: эвристика по символам
-      (setq tokens (round (/ (length text) 3.5))))
-    (delete-file tmpfile)
-    (max 1 tokens)))
+    (unwind-protect
+        (if (and (file-exists-p script) (file-executable-p script))
+            (setq tokens
+                  (string-to-number
+                   (with-temp-buffer
+                     ;; stdin <- tmpfile, stdout -> current buffer
+                     (call-process script tmpfile t nil model)
+                     (buffer-string))))
+          ;; Fallback-эвристика по символам
+          (setq tokens (round (/ (max 1 (length text)) 3.5))))
+      (ignore-errors (delete-file tmpfile)))
+    (max 1 (truncate tokens))))
 
 (defun pro-gptel-post-response-cost (beg end)
-  "Обработчик post-response: выводит стоимость последнего запроса для gptel-mode (от start до end).
-Срабатывает в gptel-mode у буфера после прихода ответа."
+  "Hook-функция post-response для gptel: оценить стоимость запроса и вывести её в echo-area.
+Диапазон ответа [BEG, END], prompt считается как (point-min .. BEG).
+Обновляет =pro-gptel-last-cost-rub= в текущем буфере."
   (when (and (bound-and-true-p gptel-mode) (> end beg))
-    (let* ((buf (current-buffer))
-           (response-len (pro-gptel--tokens-from-info beg end))
+    (let* ((response-len (pro-gptel--tokens-from-info beg end))
            (prompt-tokens (pro-gptel--tokens-from-info (point-min) beg))
            (model (if (boundp 'gptel-model) gptel-model 'unknown))
            (cost (pro-gptel-estimate-cost prompt-tokens response-len model)))
@@ -130,20 +200,26 @@
       (message "Стоимость запроса: ≈%.2f₽ (модель: %s, prompt: %d токенов, response: %d токенов)"
                cost model prompt-tokens response-len))))
 
-;; Включаем автоматический трекинг расходов при каждом ответе в gptel-mode!
+;; Подключаем автоматический трекинг стоимости на каждое завершение ответа.
 (add-hook 'gptel-post-response-functions #'pro-gptel-post-response-cost)
 
-;;;; 3. Настроить переменные API/ключей и окружение
+;;;; 3. Ключи API и окружение (централизация)
 
-;; Объявление некоторых переменных бэкендов; могут быть определены в другом приватном файле:
-(defvar aitunnel-url)
-(defvar aitunnel-key)
-(defvar aitunnel-backend)
-(defvar chutes-api-key)
-(defvar proxyapi-url)
-(defvar proxyapi-key)
+;; Объявление переменных, которые могут быть заданы в приватных файлах/переменных окружения:
+(defvar aitunnel-url nil
+  "Базовый хост для кастомного AI-туннеля (без протокола).")
+(defvar aitunnel-key nil
+  "API-ключ для AI-туннеля.")
+(defvar aitunnel-backend nil
+  "Объект backend для AI-туннеля (создаётся при конфигурировании GPTEL).")
+(defvar chutes-api-key nil
+  "API-ключ для сервиса Chutes (DeepSeek).")
+(defvar proxyapi-url "api.proxyapi.ru"
+  "Базовый хост ProxyAPI.")
+(defvar proxyapi-key nil
+  "Единый ключ для ProxyAPI. Если установлен — применяется и к OpenAI-совместимым интерфейсам.")
 
-;; Автоматизация настройки ключей: если proxyapi-key определена, ставим ее всюду
+;; Если proxyapi-key определён, постараемся распространить его на все совместимые клиенты.
 (when (boundp 'proxyapi-key)
   (setq-default openai-key proxyapi-key)
   (setq-default gptel-api-key proxyapi-key)
@@ -151,40 +227,45 @@
   (setq-default dall-e-shell-openai-key proxyapi-key)
   (setenv "OPENAI_API_KEY" proxyapi-key))
 
-;;;; 4. Настройка пакета GPTEL и множественных AI бекендов
+;;;; 4. GPTEL: настройка и пул backend’ов (AI Tunnel, ProxyAPI: OpenAI/Anthropic, Chutes/DeepSeek)
 
 (use-package gptel
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (:map gptel-mode-map
-              ("C-c RET"      . gptel-send)
-              ("C-c C-<return>"      . gptel-send)
-              ("M-RET"        . pro/gptel-send-no-context)
-              ("C-c M-RET"    . pro/gptel-aibo-no-context))
+              ("C-c RET"           . gptel-send)
+              ("C-c C-<return>"    . gptel-send)
+              ("M-RET"             . pro/gptel-send-no-context)
+              ("C-c M-RET"         . pro/gptel-aibo-no-context))
   :custom
-  ((gptel-default-mode 'org-mode)                ;; Использовать org-mode для всего AI
-   (gptel-org-branching-context nil)             ;; Без автосоздания новых веток в org
-   (gptel-api-key proxyapi-key)                  ;; API-key централизованный
-   (gptel-log-level 'info)
-   (gptel--system-message
-    "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode, любые списки выдавай org-заголовками следующего уровня."))
+  (gptel-default-mode 'org-mode)                ;; Ответы в org-mode
+  (gptel-org-branching-context nil)             ;; Без разветвления контекста по умолчанию
+  (gptel-api-key proxyapi-key)                  ;; Централизованный ключ
+  (gptel-log-level 'info)
+  ;; Примечание: Используется внутренний var =gptel--system-message= — в API GPTEL он может меняться.
+  ;; Если увидите варнинги: замените на актуальную переменную системного сообщения из GPTEL.
+  (gptel--system-message
+   "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode. Любые списки представляй заголовками и пунктами Org.")
   :config
-  ;; Реализация быстрой отправки без контекста (M-RET)
+  ;; Быстрая отправка без контекста (stateless)
   (defun pro/gptel-send-no-context ()
-    "Отправить prompt без контекста (stateless режим)."
+    "Отправить текущий prompt без контекста (stateless-режим)."
     (interactive)
     (let ((gptel-use-context nil))
       (gptel-send)))
+
+  ;; Быстрая отправка через gptel-aibo без контекста (если установлен расширитель gptel-aibo)
   (defun pro/gptel-aibo-no-context ()
-    "Отправить prompt через gptel-aibo без контекста."
+    "Отправить prompt через gptel-aibo без контекста (если доступно)."
     (interactive)
     (let ((gptel-use-context nil))
-      (gptel-aibo-send)))
-  ;; Включить расширенное хранилище контекста, если используется (локальная библиотека)
+      (when (fboundp 'gptel-aibo-send)
+        (gptel-aibo-send))))
+
+  ;; Доп. расширение хранилища контекста (необязательно; локальная библиотека)
   (require 'gptel-context-store nil t)
 
-  ;; Создаем разнообразие бэкендов (вы делаете свой AI-пул по вкусу)
-  ;; --- Прокси Туннель (например, самостоятельный API proxy на своем сервере) ---
+  ;; --- AI Tunnel (кастомный прокси/сервер OpenAI API) ---
   (setq aitunnel-backend
         (gptel-make-openai "AI Tunnel"
           :protocol "https"
@@ -192,9 +273,9 @@
           :endpoint "/v1/chat/completions"
           :stream t
           :key aitunnel-key
-          :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+          :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
           :models (append
-                   '("gpt-4.5-preview" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
+                   '("gpt-5" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
                      "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
                      "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
                      "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
@@ -202,140 +283,163 @@
                      "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "grok-3-mini-beta" "grok-4")
                    gptel--openai-models)))
 
-  ;; --- ProxyAPI: центральный публичный российский прокси разных AI ---
+  ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
   (gptel-make-openai "Proxy OpenAI"
     :protocol "https"
-    :host "api.proxyapi.ru"
+    :host proxyapi-url
     :endpoint "/openai/v1/chat/completions"
     :stream t
     :key gptel-api-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models (append
-             '("gpt-4o-search-preview" "gpt-4o-mini-search-preview" "gpt-4.1" "o4-mini"
+             '("gpt-4o-search-preview" "gpt-4o-mini-search-preview" "gpt-5" "gpt-4.1" "o4-mini"
                "o4-mini-high" "gpt-4.5-preview" "o1-mini" "o1-pro"
                "dall-e-3" "gpt-4o" "gpt-4o-mini" "gpt-4o-audio-preview")
              gptel--openai-models))
 
-  ;; --- ProxyAPI Anthropic (Claude) ---
+  ;; --- ProxyAPI: Anthropic (Claude) через OpenAI-совместимую обёртку (экспериментально) ---
+  ;; Внимание: это путь через совместимый интерфейс. Если API несовместим — возможно потребуются
+  ;; нативные адаптеры/эндпоинты GPTEL для Anthropic.
   (gptel-make-openai "ProxyAPI Anthropic"
     :protocol "https"
-    :host "api.proxyapi.ru"
+    :host proxyapi-url
     :endpoint "/anthropic/v1/messages"
     :stream nil
     :key gptel-api-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
 
-  ;; --- Chutes (DeepSeek, отдельный бэкенд) ---
+  ;; --- Chutes: DeepSeek ---
   (gptel-make-openai "Chutes"
     :protocol "https"
     :host "llm.chutes.ai"
     :endpoint "/v1/chat/completions"
     :stream nil
     :key chutes-api-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("deepseek-ai/DeepSeek-V3-0324"))
 
-  ;; Бэкенд и модель по умолчанию (можно менять в интерактивном режиме)
+  ;; Бэкенд/модель по умолчанию — можно интерактивно менять
   (setq gptel-backend (gptel-get-backend "AI Tunnel"))
-  (setq gptel-model 'gpt-4.1))
+  (setq gptel-model 'gpt-5))
 
-;;;; 5. Быстрое меню интерактивного переключения backend/model через consult/completing-read
+;;;; 5. Интерактивные команды: переключение backend и модели (с Consult или fallback)
+
+(defun pro--read-with-consult-or-completing-read (prompt candidates &optional require-match initial annotate)
+  "Вспомогательная функция: выбрать строку из CANDIDATES.
+Если доступен =consult=, используем =consult--read=, иначе — =completing-read=.
+PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE — дополнительные параметры."
+  (cond
+   ((require 'consult nil t)
+    (consult--read
+     candidates
+     :prompt prompt
+     :require-match require-match
+     :initial initial
+     :annotate annotate))
+   (t
+    (completing-read prompt candidates nil require-match nil nil initial))))
 
 (defun pro/gptel-switch-backend ()
-  "Интерактивный выбор и активация `gptel-backend` среди всех известных бэкендов (через consult/completing-read)."
+  "Интерактивный выбор и активация =gptel-backend= среди известных бэкендов."
   (interactive)
   (require 'gptel)
-  (require 'consult)
   (let* ((known-backends (and (boundp 'gptel--known-backends) gptel--known-backends))
          (backends (mapcar #'car known-backends))
          (current (and (boundp 'gptel-backend) gptel-backend))
-         (str (or (and current (gptel-backend-name current)) "")))
-    (let* ((choice (consult--read
-                    backends
-                    :prompt (format "Выберите AI backend (текущий: %s): " str)
-                    :require-match t
-                    :category 'backend)))
-      (when choice
-        (setq gptel-backend (gptel-get-backend choice))
-        (message "Переключено на backend: %s" choice)
-        (force-mode-line-update t)))))
+         (cur-str (or (and current (gptel-backend-name current)) "")))
+    (if (null backends)
+        (user-error "Нет зарегистрированных бэкендов GPTEL")
+      (let* ((choice (pro--read-with-consult-or-completing-read
+                      (format "Выберите AI backend (текущий: %s): " cur-str)
+                      backends t)))
+        (when (and choice (not (string-empty-p choice)))
+          (setq gptel-backend (gptel-get-backend choice))
+          (message "Переключено на backend: %s" choice)
+          (force-mode-line-update t))))))
 
 (defun pro/gptel-switch-model ()
-  "Интерактивный выбор и активация модели из списка всех доступных моделей с описаниями (через consult)."
+  "Интерактивный выбор модели из всех доступных во всех бэкендах."
   (interactive)
   (require 'gptel)
-  (require 'consult)
-  ;; Собираем все модели из всех бэкендов
-  (let* ((models-alist (cl-loop
-                        for (name . backend) in gptel--known-backends
-                        nconc (cl-loop for model in (gptel-backend-models backend)
-                                       collect (let* ((model-name (gptel--model-name model))
-                                                      (full-name (concat (string-trim-right name) ":" model-name))
-                                                      (desc (or (get model :description) ""))
-                                                      (item (list :name name :model model :desc desc)))
-                                                 (cons full-name item)))))
-         (current-backend-name (and (boundp 'gptel-backend) (gptel-backend-name gptel-backend)))
-         (current-model (and (boundp 'gptel-model) (gptel--model-name gptel-model)))
-         (initial (concat current-backend-name ":" current-model)))
-    (let* ((candidates (mapcar #'car models-alist))
+  ;; Собираем все модели из всех бэкендов. Для удобства отображаем «Бэкенд:Модель».
+  (let* ((known (and (boundp 'gptel--known-backends) gptel--known-backends)))
+    (when (null known)
+      (user-error "Нет зарегистрированных бэкендов GPTEL"))
+    (let* ((models-alist
+            (cl-loop
+             for (name . backend) in known
+             nconc
+             (cl-loop
+              for model in (gptel-backend-models backend)
+              collect (let* ((model-name (gptel--model-name model))
+                             (full-name (concat (string-trim-right name) ":" model-name))
+                             (desc (or (get model :description) ""))
+                             (item (list :name name :model model :desc desc)))
+                        (cons full-name item)))))
+           (current-backend-name (and (boundp 'gptel-backend) (gptel-backend-name gptel-backend)))
+           (current-model-name (and (boundp 'gptel-model) (gptel--model-name gptel-model)))
+           (initial (and current-backend-name current-model-name
+                         (concat current-backend-name ":" current-model-name)))
+           (candidates (mapcar #'car models-alist))
            (annotate (lambda (cand)
                        (let* ((item (cdr (assoc cand models-alist)))
                               (desc (plist-get item :desc)))
                          (when (and desc (not (string-empty-p desc)))
                            (concat " — " desc)))))
-           (choice (consult--read
-                    candidates
-                    :prompt "Выберите модель (бэкенд:модель): "
-                    :require-match t
-                    :history 'pro/gptel-model-history
-                    :initial initial
-                    :annotate annotate
-                    :category 'gptel-model)))
+           (choice (pro--read-with-consult-or-completing-read
+                    "Выберите модель (формат: Бэкенд:Модель): "
+                    candidates t initial annotate)))
       (when choice
         (let* ((item (cdr (assoc choice models-alist)))
                (backend-name (plist-get item :name))
                (model (plist-get item :model))
                (backend (gptel-get-backend backend-name)))
-          (setq gptel-backend backend)
-          (setq gptel-model model)
+          (setq gptel-backend backend
+                gptel-model model)
           (message "Переключено на модель: %s (бэкенд: %s)" (gptel--model-name model) backend-name)
           (force-mode-line-update t))))))
 
-;;;; 6. Друзья-расширения: хуки, автозагрузка, расширения других пакетов (Cape и др.)
+;;;; 6. Расширения: CAPE, хуки, интеграции (не включены по умолчанию)
 
-;; Автодополнение от AI (Cape — в пару к corfu/completion-at-point)
-;; Можно добавить в свой `completion-at-point-functions`
-;; (add-hook 'text-mode-hook (lambda () (add-to-list (make-local-variable 'completion-at-point-functions) #'cape-gptel)))
+;; Если используете Corfu/CAPE — можно подключить подсказки от gptel как один из источников:
+;; (add-hook 'text-mode-hook
+;;           (lambda ()
+;;             (add-to-list (make-local-variable 'completion-at-point-functions)
+;;                          #'cape-gptel)))
 
-;;;; 7. Генерация git commit-сообщений через GPTel, ProxyAPI и gptel-commit
+;;;; 7. Генерация git commit-сообщений с gptel-commit (предпочтительно gpt-4.1, статич. контекст)
 
 (use-package gptel-commit
   :ensure t
   :after gptel
   :init
-  ;; Переиспользовать основной backend, но всегда явно требовать нужную модель
   (defun pro-gptel-commit-select-backend ()
-    "Всегда возвращает `aitunnel-backend` для `gptel-commit`."
+    "Всегда возвращать =aitunnel-backend= для =gptel-commit=."
     aitunnel-backend)
   :custom
   (gptel-commit-backend (pro-gptel-commit-select-backend))
   (gptel-commit-stream t)
   :bind (:map with-editor-mode-map
-              ("C-c i RET" . gptel-commit)
-              ("C-c C-<return>" . gptel-commit))
+              ("C-c i RET"       . gptel-commit)
+              ("C-c C-<return>"  . gptel-commit))
   :config
-  ;; Использовать gpt-4.1 для генерации коммитов вне зависимости от модели по умолчанию в backend
+  ;; Расширим промпт: всегда явно укажем желаемую модель и требования к формату RU/EN.
   (setq gptel-commit-prompt
-        (concat gptel-commit-prompt "\n\n[Model: gpt-4.1]\n\nТребование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, включая строку-описание и список файлов), отвечающую на впрос 'Что было сделано?', затем ниже — точно то же сообщение на английском. Не добавляй ничего лишнего, кроме двух вариантов: Русский сверху, английский внизу."))
+        (concat gptel-commit-prompt
+                "\n\n[Model: gpt-4.1]\n\n"
+                "Требование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, "
+                "включая строку-описание и список файлов), отвечающий на вопрос «Что было сделано?». "
+                "Затем ниже — точно то же сообщение на английском. Ничего лишнего, только два варианта: "
+                "русский сверху, английский внизу."))
 
-  ;; Гарантируем использование модели `gpt-4.1` при генерации коммит-сообщений,
-  ;; не затрагивая глобальный выбор модели для остальных запросов.
+  ;; Гарантируем модель и stateless-режим для генерации коммитов, не затрагивая глобальную конфигурацию.
   (advice-add 'gptel-commit--generate-message :around
               (lambda (orig-fun &rest args)
-                (let ((gptel-model 'gpt-4.1))
-                  (apply orig-fun args))))
-  :commands (gptel-commit gptel-commit-rationale))
+                (let ((gptel-model 'gpt-4.1)
+                      (gptel-use-context nil))
+                  (apply orig-fun args)))))
+;; Конец секции gptel-commit
 
 (provide 'про-ии)
 

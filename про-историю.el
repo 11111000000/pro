@@ -137,13 +137,13 @@
   :config (winner-mode 1))
 
 ;; c) Desktop-session — сохраняет ВСЮ сессию редактора (опционально)
-(use-package desktop
-  :ensure nil
-  :custom
-  (desktop-save-mode t) ;; включаем полный restore даже после аварийного выхода
-  (desktop-path (list user-emacs-directory))
-  (desktop-auto-save-timeout 600)
-  (desktop-restore-eager 8))
+;; (use-package desktop
+;;   :ensure nil
+;;   :custom
+;;   (desktop-save-mode t) ;; включаем полный restore даже после аварийного выхода
+;;   (desktop-path (list user-emacs-directory))
+;;   (desktop-auto-save-timeout 600)
+;; (desktop-restore-eager 8))
 
 ;;;; 5. Восстановление/запоминание мест в файлах, последних открытых
 

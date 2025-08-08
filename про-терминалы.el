@@ -1,6 +1,6 @@
 ;;; про-терминалы.el --- Работа с терминалами и Eshell -*- lexical-binding: t -*-
-;; 
-;; Этот файл предоставляет удобную, функциональную и стильную настройку работы с терминалами в Emacs
+;;
+;; Этот файл предоставляет удобную, функциональную и стильную настройку работы с терминалами
 ;; - vterm: полноценный терминал с яркими сочетаниями клавиш, быстрым копированием и вставкой
 ;; - multi-vterm: легкое открытие новых вкладок/окон терминала
 ;; - eshell: интегрированная оболочка Emacs с красивым внешним видом и умным автодополнением
@@ -192,10 +192,10 @@
          (eshell-mode . pro/eshell-dark-theme)
          (eshell-mode . pro/eshell-corfu-dark))
   :bind (:map eshell-mode-map
-         ("C-a" . beginning-of-line)
-         ("DEL" . pro/eshell-backspace)
-         ("s-q" . pro/kill-buffer-and-window)
-         ("s-t" . eshell-here))
+              ("C-a" . beginning-of-line)
+              ("DEL" . pro/eshell-backspace)
+              ("s-q" . pro/kill-buffer-and-window)
+              ("s-t" . eshell-here))
   :custom
   (comint-prompt-read-only t)
   (eshell-highlight-prompt nil)
@@ -207,7 +207,7 @@
                             "tmux" "top" "htop"
                             "less" "more" "lynx"
                             "links" "ncftp" "mutt"
-                            "pine" "tin" "trn"
+                            "pine" "tin" "trn" "nmtui" "alsamixer" "mc"
                             "elm" "changelog-ai.sh" "changelog-ai-new.sh"
                             "ollama" "npm" "nix")))
 

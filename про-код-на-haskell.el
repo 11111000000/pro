@@ -9,7 +9,7 @@
 ;;
 ;; Этот файл настраивает поддержку Haskell в Emacs, следуя принципам литературного
 ;; программирования: код представлен как повествование, где каждая
-;; секция мотивируется, объясняется и логически связывается с остальными. Мы
+;; секция мотивируется, объясняется и логически связывается с остальными.  Мы
 ;; стремимся к элегантности, минимализму и производительности в лучших традициях
 ;; Emacs — с использованием `use-package` для декларативной конфигурации, хуков
 ;; для автоматизации и отложенной загрузки для скорости.
@@ -94,11 +94,11 @@
   (:map haskell-mode-map
         ("C-c C-z" . haskell-interactive-switch)  ; Переключение в REPL-буфер.
         ("C-c C-k" . haskell-interactive-mode-clear)))  ; Очистка REPL.
-  :config
-  ;; Поддержка Nix: если есть shell.nix, запускать REPL через nix-shell.
-  (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
-    (setq haskell-process-wrapper-function
-          (lambda (args) (append (list "nix-shell" ".") (list "--run" (haskell-session-name (haskell-session)))))))
+:config
+;; Поддержка Nix: если есть shell.nix, запускать REPL через nix-shell.
+(when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
+  (setq haskell-process-wrapper-function
+        (lambda (args) (append (list "nix-shell" ".") (list "--run" (haskell-session-name (haskell-session)))))))
 
 ;;;; 3. Форматирование и стиль
 ;; Чистый код — ключ к поддержке Haskell. Здесь мы настраиваем форматтеры
