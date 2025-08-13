@@ -108,6 +108,10 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
       ;; -- 7. Системный трей и XIM/импорт ввода
       (exwm-systemtray-mode t)
       (exwm-xim-mode t)
+      ;; После инициализации system tray перезапускаем user graphical-session.target,
+      ;; чтобы треевые сервисы стартовали уже при наличии хоста трея (EXWM).
+      (ignore-errors
+        (start-process "systemctl-user" nil "systemctl" "--user" "restart" "exwm-session.target"))
       ;; -- 8. Принудительная активация всех workspace, чтобы EXWM их закрепил за мониторами
       (dotimes (i exwm-workspace-number)
         (exwm-workspace-switch-create i))
@@ -145,7 +149,7 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
     :if window-system
     :defer t
     :init
-    (setq exwm-debug t
+    (setq exwm-debug nil
           exwm-workspace-number         3
           exwm-workspace-show-all-buffers t
           exwm-layout-show-all-buffers   t

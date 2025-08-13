@@ -52,31 +52,89 @@
 ;; хинты и рефакторинг. Мотивация: Haskell требует сильной поддержки типов, и LSP
 ;; упрощает разработку, связывая Emacs с внешним сервером.
 
+;; Настройка контакта Eglot для Haskell до запуска Eglot и с учётом Nix.
+(defun pro/haskell-eglot-setup ()
+  "Настроить локальный сервер Eglot для Haskell.
+Если рядом в проекте есть flake.nix — использовать nix develop;
+если shell.nix — использовать nix-shell."
+  (let* ((flake-root (locate-dominating-file default-directory "flake.nix"))
+         (shell-root (locate-dominating-file default-directory "shell.nix"))
+         (in-flake (and (executable-find "nix") flake-root))
+         (in-shell (and (executable-find "nix-shell") shell-root))
+         (wrapper (executable-find "haskell-language-server-wrapper"))
+         (hls (or wrapper (executable-find "haskell-language-server")))
+         (modes '(haskell-mode haskell-literate-mode literate-haskell-mode haskell-debug-mode)))
+    (cond
+     (in-flake
+      (dolist (mm modes)
+        (setq-local eglot-server-programs
+                    (cons
+                     (cons mm (list "nix" "develop" flake-root "--command"
+                                    "haskell-language-server-wrapper" "--lsp"))
+                     (assq-delete-all mm eglot-server-programs)))))
+     (in-shell
+      (dolist (mm modes)
+        (setq-local eglot-server-programs
+                    (cons
+                     (cons mm '("nix-shell" "-p" "haskell-language-server"
+                                "--" "haskell-language-server-wrapper" "--lsp"))
+                     (assq-delete-all mm eglot-server-programs)))))
+     (hls
+      (let ((cmd (if wrapper
+                     '("haskell-language-server-wrapper" "--lsp")
+                   '("haskell-language-server" "--lsp"))))
+        (dolist (mm modes)
+          (setq-local eglot-server-programs
+                      (cons (cons mm cmd)
+                            (assq-delete-all mm eglot-server-programs))))))
+     (t
+      ;; HLS не найден — оставляем как есть; pro/haskell-eglot-ensure пропустит запуск.
+      ))))
+
+(defun pro/haskell-eglot-ensure ()
+  "Безопасно запустить Eglot в Haskell-буфере, только если доступен сервер."
+  (let* ((in-flake (and (executable-find "nix")
+                        (locate-dominating-file default-directory "flake.nix")))
+         (in-shell (and (executable-find "nix-shell")
+                        (locate-dominating-file default-directory "shell.nix")))
+         (hls (or (executable-find "haskell-language-server-wrapper")
+                  (executable-find "haskell-language-server"))))
+    (if (or in-flake in-shell hls)
+        (eglot-ensure)
+      (message "HLS не найден в PATH и нет flake.nix/shell.nix — пропускаю eglot-ensure"))))
+
 (use-package haskell-mode
   :ensure t
   :defer t
-  :hook ((haskell-mode . eglot-ensure)  ; Авто-запуск LSP для интеллектуальной помощи.
-         (haskell-mode . haskell-decl-scan-mode)  ; Сканирование деклараций для импорта/навигации.
-         (haskell-mode . haskell-doc-mode)  ; Документация по функциям/типам на hover.
-         (haskell-mode . interactive-haskell-mode)  ; Интерактивный REPL для оценки выражений.
-         ;; (haskell-mode . subword-mode)  ; Опционально: навигация по camelCase именам.
-         ;; (haskell-mode . haskell-indentation-mode)  ; Опционально: альтернативная индентация.
-         (haskell-mode . yas-minor-mode))  ; Сниппеты для быстрого ввода шаблонов (e.g., module).
+  :init
+  ;; Базовая (не-Nix) привязка HLS — задаём как можно раньше.
+  (add-to-list 'eglot-server-programs
+               '(haskell-mode . ("haskell-language-server-wrapper" "--lsp")))
+  ;; Поддержка literate Haskell.
+  (add-to-list 'eglot-server-programs
+               '(haskell-literate-mode . ("haskell-language-server-wrapper" "--lsp")))
+  (add-to-list 'eglot-server-programs
+               '(literate-haskell-mode . ("haskell-language-server-wrapper" "--lsp")))
+  (add-to-list 'eglot-server-programs
+               '(haskell-debug-mode . ("haskell-language-server-wrapper" "--lsp")))
+  :hook ((haskell-mode . pro/haskell-eglot-setup)   ; Сначала контакт (Nix), если нужен.
+         (haskell-mode . pro/haskell-eglot-ensure)  ; Затем — безопасный запуск Eglot.
+         (haskell-mode . haskell-decl-scan-mode)
+         (haskell-mode . haskell-doc-mode)
+         (haskell-mode . interactive-haskell-mode)
+         ;; (haskell-mode . subword-mode)
+         ;; (haskell-mode . haskell-indentation-mode)
+         (haskell-mode . yas-minor-mode))
   :custom
-  (haskell-indentation-layout-offset 4)  ; Отступ 4 пробела для читаемости.
-  (haskell-indentation-left-offset 4)  ; Аналогично для левого отступа.
-  (haskell-stylish-on-save t)  ; Авто-форматирование при сохранении (ormolu или stylish-haskell).
+  (haskell-indentation-layout-offset 4)
+  (haskell-indentation-left-offset 4)
+  ;; Избегаем конфликта со сторонними форматтерами (используем ormolu ниже).
+  (haskell-stylish-on-save nil)
   :bind
   (:map haskell-mode-map
-        ("C-c C-l" . haskell-process-load-file)  ; Загрузка файла в REPL.
-        ("C-c C-t" . haskell-mode-show-type-at)  ; Показ типа под курсором.
-        ("C-c C-i" . haskell-process-do-info))  ; Инфо о символе в REPL.
-  :config
-  ;; Интеграция Eglot с Haskell Language Server (HLS) для полной LSP-поддержки.
-  (add-to-list 'eglot-server-programs '(haskell-mode "haskell-language-server-wrapper" "--lsp"))
-  ;; Поддержка Nix: использовать nix-shell для HLS, если есть shell.nix.
-  (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
-    (add-to-list 'eglot-server-programs '(haskell-mode . ("nix-shell" "-p" "haskell-language-server" "--" "haskell-language-server-wrapper" "--lsp")))))
+        ("C-c C-l" . haskell-process-load-file)
+        ("C-c C-t" . haskell-mode-show-type-at)
+        ("C-c C-i" . haskell-process-do-info)))
 
 ;;;; 2. REPL и интерактивность
 ;; Haskell — язык с REPL-культурой, поэтому interactive-haskell-mode связывает
@@ -93,12 +151,23 @@
   :bind
   (:map haskell-mode-map
         ("C-c C-z" . haskell-interactive-switch)  ; Переключение в REPL-буфер.
-        ("C-c C-k" . haskell-interactive-mode-clear)))  ; Очистка REPL.
-:config
-;; Поддержка Nix: если есть shell.nix, запускать REPL через nix-shell.
-(when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
-  (setq haskell-process-wrapper-function
-        (lambda (args) (append (list "nix-shell" ".") (list "--run" (haskell-session-name (haskell-session)))))))
+        ("C-c C-k" . haskell-interactive-mode-clear))  ; Очистка REPL.
+  :config
+  ;; Поддержка Nix: если есть flake.nix — запускаем REPL через nix develop;
+  ;; если есть shell.nix — через nix-shell.
+  (let ((flake-root (locate-dominating-file default-directory "flake.nix"))
+        (shell-root (locate-dominating-file default-directory "shell.nix")))
+    (cond
+     ((and (executable-find "nix") flake-root)
+      (setq haskell-process-wrapper-function
+            (lambda (args)
+              (append (list "nix" "develop" flake-root "--command")
+                      (list (mapconcat #'identity args " "))))))
+     ((and (executable-find "nix-shell") shell-root)
+      (setq haskell-process-wrapper-function
+            (lambda (args)
+              (append (list "nix-shell" shell-root)
+                      (list "--run" (mapconcat #'identity args " ")))))))))
 
 ;;;; 3. Форматирование и стиль
 ;; Чистый код — ключ к поддержке Haskell. Здесь мы настраиваем форматтеры
@@ -113,21 +182,20 @@
               ("C-c f" . ormolu-format-buffer)))  ; Ручное форматирование.
 
 ;; Опционально: интеграция с format-all для универсальности.
-(use-package format-all
-  :defer t
-  :ensure t
-  :hook (haskell-mode . format-all-mode)
-  :custom (format-all-formatters '(("Haskell" ormolu))))
+
 
 ;;;; 4. Отладка и инспекция
 ;; Отладка в Haskell фокусируется на типах и декларациях. Haskell-decl-scan-mode
 ;; сканирует импорты, а doc-mode предоставляет документацию. Логи из REPL помогают
 ;; анализировать ошибки, логически продолжая интерактивность из секции 2.
 
-(use-package haskell-debug
-  :defer t
-  :ensure t
-  :hook (haskell-mode . haskell-debug-mode))  ; Отладчик для шагового выполнения.
+;; (use-package haskell-debug
+;;   :defer t
+;;   :ensure t
+;;   :hook (haskell-mode . haskell-debug-mode))  ; Отладчик для шагового выполнения.
+;; Eglot: на всякий случай поднимем/настроим и в haskell-debug-mode.
+(add-hook 'haskell-debug-mode-hook #'pro/haskell-eglot-setup)
+(add-hook 'haskell-debug-mode-hook #'pro/haskell-eglot-ensure)
 
 ;;;; 5. Дополнительные инструменты
 ;; Эти инструменты дополняют базовую настройку: decl-scan для навигации по коду,
@@ -138,11 +206,6 @@
   :defer t
   :requires haskell-mode
   :config (haskell-doc-mode t))  ; Авто-включение, но уже в хуке выше.
-
-(use-package yasnippet
-  :defer t
-  :ensure t
-  :config (yas-reload-all))  ; Перезагрузка сниппетов для Haskell.
 
 ;;;; 6. Кастомные функции
 ;; Здесь кастомные утилиты, расширяющие Haskell-mode: например, быстрая оценка

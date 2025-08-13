@@ -114,6 +114,8 @@
   ;; Кастомная конфигурация для Haskell (пример).
   (setq-default eglot-workspace-configuration
                 '((haskell (plugin (stan (globalOn . :json-false))))))
+  ;; Явная привязка HLS для haskell-mode (до запуска Eglot).
+  (add-to-list 'eglot-server-programs '(haskell-mode . ("haskell-language-server-wrapper" "--lsp")))
   ;; Отключаем логирование для производительности.
   (fset #'jsonrpc--log-event #'ignore))
 
@@ -130,7 +132,7 @@
   :init (установить-из :repo "dolmens/eglot-hierarchy"))
 
 ;; Поддержка Nix в Eglot: для языков, где сервер из Nix, проверка и запуск через nix-shell.
-(add-hook 'eglot-ensure-hook
+(add-hook 'eglot-managed-mode-hook
           (lambda ()
             (when (and (file-exists-p "shell.nix") (executable-find "nix-shell"))
               (setq-local eglot-server-programs
@@ -254,7 +256,7 @@ With prefix ARG, do it that many times; negative for backward."
   (format-all-mode . format-all-ensure-formatter)
   :config
   (custom-set-variables
-   '(format-all-formatters '(("Python" black) ("R" styler)))))
+   '(format-all-formatters '(("Python" black) ("R" styler) ("Haskell" ormolu)))))
 
 ;;;;; 5.2 Альтернативный форматтер
 (use-package apheleia

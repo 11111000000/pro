@@ -53,7 +53,20 @@
   (add-to-list 'reverse-im-input-methods "russian-computer"))
 
 ;; Дополнительные улучшения ввода:
-(delete-selection-mode +1)                   ;; Удалять выделенное при вводе.
+(delete-selection-mode +1)                   ;; Удалять выделенное при вводе и при вставке.
+
+;; Не копировать при простом выделении (ни клавиатурой, ни мышью).
+(setq select-active-regions nil)             ;; Не отправлять активный регион в PRIMARY/clipboard.
+(setq mouse-drag-copy-region nil)            ;; Не копировать при выделении мышью/перетаскивании.
+(setq select-enable-clipboard t)             ;; Явные копирования/вставки работают с clipboard.
+
+;; Заменять выделенный регион при вставке (включая мышиную/терминальную вставку).
+(with-eval-after-load 'mouse
+  (put 'mouse-yank-primary 'delete-selection 'yank)) ;; Средняя кнопка заменяет выделение.
+(dolist (cmd '(yank yank-pop yank-rectangle))
+  (put cmd 'delete-selection 'yank))          ;; C-y и M-y также заменяют выделение.
+(when (fboundp 'bracketed-paste)
+  (put 'bracketed-paste 'delete-selection 'yank)) ;; Терминальная вставка.
 (setq mouse-yank-at-point t)                 ;; Вставка мышью — в позицию курсора, не под мышь.
 
 ;;;; === Поиск и навигация по символам ===

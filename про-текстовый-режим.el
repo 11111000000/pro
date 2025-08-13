@@ -130,24 +130,7 @@
   (setq mouse-wheel-tilt-scroll t)
 
   ;;;; 6. Альтернативы GUI элементам
-  ;; Заменяем графические элементы текстовыми аналогами.
-
-  ;; Упрощённая mode-line оптимизированная для TTY
-  (setq-default mode-line-format
-                '("%e"
-                  mode-line-front-space
-                  (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
-                               display (min-width (5.0)))
-                  "  "
-                  (:propertize ("" mode-line-frame-identification mode-line-buffer-identification)
-                               face mode-line-buffer-id)
-                  "   "
-                  mode-line-position
-                  (vc-mode vc-mode)
-                  "  "
-                  mode-line-modes
-                  mode-line-misc-info
-                  mode-line-end-spaces))
+  o  ;; Заменяем графические элементы текстовыми аналогами.
 
   ;; Альтернативы иконкам - используем символы Unicode/ASCII
   (setq completion-show-inline-help t
@@ -203,9 +186,6 @@
   (setq-default indicate-buffer-boundaries 'left
                 indicate-empty-lines t)
 
-  ;; Базовая поддержка изображений везде (не мешает, даже если нет inline graphics)
-  (setq image-animate-loop t)
-
   ;; Улучшенная поддержка whitespace в TTY
   (setq whitespace-style '(face tabs spaces trailing space-before-tab
                                 newline indentation empty space-after-tab)
@@ -214,9 +194,7 @@
           (space-mark 160 [164] [95])    ; неразрывный пробел
           (newline-mark 10 [36 10])      ; конец строки
           (tab-mark 9 [8594 9] [92 9]))) ; табуляция
-
-  ;; Короткие диалоги везде
-  (defalias 'yes-or-no-p 'y-or-n-p))
+  )
 
 ;;;; 9. Хуки и автоматизация
 ;; Автоматические действия для поддержания оптимального состояния TTY.
@@ -270,6 +248,7 @@
 (when (текстовый-режим-p)
   (global-set-key (kbd "C-c t o") #'tty-optimize)
   (global-set-key (kbd "C-c t i") #'tty-info))
+
 
 ;;;; 11. Финал
 

@@ -101,17 +101,17 @@
         ;; Пропустим заголовок и разделитель таблицы.
         (forward-line 2)
         (while (re-search-forward
-                "^|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|$"
-                nil t)
+              "^|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|\\s-*\\([^|]+\\)\\s-*|$"
+              nil t)
           (let* ((model (string-trim (match-string 1)))
                  (input-1000 (string-to-number (string-trim (match-string 2))))
                  (output-1000 (string-to-number (string-trim (match-string 3)))))
             (unless (string-empty-p model)
               ;; Храним в руб./1токен, точность — float
               (push (cons (intern (replace-regexp-in-string "\\." "-" model))
-                          (list :input (/ (float input-1000) 1000.0)
-                                :output (/ (float output-1000) 1000.0)))
-                    alist))))))
+                           (list :input (/ (float input-1000) 1000.0)
+                                 :output (/ (float output-1000) 1000.0)))
+                     alist))))))
     (nreverse alist)))
 
 (defun pro-gptel-load-pricing-from-org ()
@@ -122,14 +122,14 @@
       (condition-case err
           (progn
             (setq pro-gptel-model-pricing-alist
-                  (pro-gptel--parse-pricing-org-table pro-gptel-pricing-org-file))
+                 (pro-gptel--parse-pricing-org-table pro-gptel-pricing-org-file))
             (message "AI pricing loaded: %d models from %s"
-                     (length pro-gptel-model-pricing-alist)
-                     (abbreviate-file-name pro-gptel-pricing-org-file)))
+                   (length pro-gptel-model-pricing-alist)
+                   (abbreviate-file-name pro-gptel-pricing-org-file)))
         (error
          (message "Ошибка чтения прайса: %s" (error-message-string err))))
     (message "Файл прайса не найден: %s (будет использоваться пустая таблица)"
-             (abbreviate-file-name pro-gptel-pricing-org-file))))
+           (abbreviate-file-name pro-gptel-pricing-org-file))))
 
 ;; Попытка загрузить прайс на старте (не критично, в случае отсутствия файла всё продолжит работать).
 (pro-gptel-load-pricing-from-org)
@@ -143,10 +143,10 @@
     (or
      (cdr (assoc (intern name) pro-gptel-model-pricing-alist))
      (let ((match (seq-find (lambda (x)
-                              (and (consp x)
-                                   (symbolp (car x))
-                                   (string-prefix-p (symbol-name (car x)) name)))
-                            pro-gptel-model-pricing-alist)))
+                               (and (consp x)
+                                  (symbolp (car x))
+                                  (string-prefix-p (symbol-name (car x)) name)))
+                             pro-gptel-model-pricing-alist)))
        (and match (cdr match))))))
 
 ;;;; 2. Калькуляция стоимости и подсчёт токенов (точный и эвристический)
@@ -177,11 +177,11 @@
     (unwind-protect
         (if (and (file-exists-p script) (file-executable-p script))
             (setq tokens
-                  (string-to-number
-                   (with-temp-buffer
-                     ;; stdin <- tmpfile, stdout -> current buffer
-                     (call-process script tmpfile t nil model)
-                     (buffer-string))))
+                 (string-to-number
+                  (with-temp-buffer
+                    ;; stdin <- tmpfile, stdout -> current buffer
+                    (call-process script tmpfile t nil model)
+                    (buffer-string))))
           ;; Fallback-эвристика по символам
           (setq tokens (round (/ (max 1 (length text)) 3.5))))
       (ignore-errors (delete-file tmpfile)))
@@ -198,7 +198,7 @@
            (cost (pro-gptel-estimate-cost prompt-tokens response-len model)))
       (setq-local pro-gptel-last-cost-rub cost)
       (message "Стоимость запроса: ≈%.2f₽ (модель: %s, prompt: %d токенов, response: %d токенов)"
-               cost model prompt-tokens response-len))))
+             cost model prompt-tokens response-len))))
 
 ;; Подключаем автоматический трекинг стоимости на каждое завершение ответа.
 (add-hook 'gptel-post-response-functions #'pro-gptel-post-response-cost)
@@ -233,10 +233,10 @@
   :ensure t
   :functions (gptel-make-openai gptel--get-api-key gptel-aibo-apply-last-suggestions)
   :bind (:map gptel-mode-map
-              ("C-c RET"           . gptel-send)
-              ("C-c C-<return>"    . gptel-send)
-              ("M-RET"             . pro/gptel-send-no-context)
-              ("C-c M-RET"         . pro/gptel-aibo-no-context))
+                ("C-c RET"           . gptel-send)
+                ("C-c C-<return>"    . gptel-send)
+                ("M-RET"             . pro/gptel-send-no-context)
+                ("C-c M-RET"         . pro/gptel-aibo-no-context))
   :custom
   (gptel-default-mode 'org-mode)                ;; Ответы в org-mode
   (gptel-org-branching-context nil)             ;; Без разветвления контекста по умолчанию
@@ -267,21 +267,21 @@
 
   ;; --- AI Tunnel (кастомный прокси/сервер OpenAI API) ---
   (setq aitunnel-backend
-        (gptel-make-openai "AI Tunnel"
-          :protocol "https"
-          :host aitunnel-url
-          :endpoint "/v1/chat/completions"
-          :stream t
-          :key aitunnel-key
-          :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-          :models (append
-                   '("gpt-5" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
-                     "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-                     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-                     "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
-                     "claude-sonnet-4" "claude-opus-4" "llama-4-maverick"
-                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "grok-3-mini-beta" "grok-4")
-                   gptel--openai-models)))
+       (gptel-make-openai "AI Tunnel"
+         :protocol "https"
+         :host aitunnel-url
+         :endpoint "/v1/chat/completions"
+         :stream t
+         :key aitunnel-key
+         :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+         :models (append
+                  '("gpt-5" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
+                    "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
+                    "gpt-4o-search-preview" "gpt-4o-mini-setarch-preview"
+                    "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
+                    "claude-sonnet-4" "claude-opus-4" "llama-4-maverick"
+                    "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "grok-3-mini-beta" "grok-4")
+                  gptel--openai-models)))
 
   ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
   (gptel-make-openai "Proxy OpenAI"
@@ -290,7 +290,7 @@
     :endpoint "/openai/v1/chat/completions"
     :stream t
     :key gptel-api-key
-    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models (append
              '("gpt-4o-search-preview" "gpt-4o-mini-search-preview" "gpt-5" "gpt-4.1" "o4-mini"
                "o4-mini-high" "gpt-4.5-preview" "o1-mini" "o1-pro"
@@ -306,7 +306,7 @@
     :endpoint "/anthropic/v1/messages"
     :stream nil
     :key gptel-api-key
-    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
 
   ;; --- Chutes: DeepSeek ---
@@ -316,7 +316,7 @@
     :endpoint "/v1/chat/completions"
     :stream nil
     :key chutes-api-key
-    :header (lambda () =(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models '("deepseek-ai/DeepSeek-V3-0324"))
 
   ;; Бэкенд/модель по умолчанию — можно интерактивно менять
@@ -373,14 +373,14 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
              (cl-loop
               for model in (gptel-backend-models backend)
               collect (let* ((model-name (gptel--model-name model))
-                             (full-name (concat (string-trim-right name) ":" model-name))
-                             (desc (or (get model :description) ""))
-                             (item (list :name name :model model :desc desc)))
-                        (cons full-name item)))))
+                          (full-name (concat (string-trim-right name) ":" model-name))
+                          (desc (or (get model :description) ""))
+                          (item (list :name name :model model :desc desc)))
+                     (cons full-name item)))))
            (current-backend-name (and (boundp 'gptel-backend) (gptel-backend-name gptel-backend)))
            (current-model-name (and (boundp 'gptel-model) (gptel--model-name gptel-model)))
            (initial (and current-backend-name current-model-name
-                         (concat current-backend-name ":" current-model-name)))
+                       (concat current-backend-name ":" current-model-name)))
            (candidates (mapcar #'car models-alist))
            (annotate (lambda (cand)
                        (let* ((item (cdr (assoc cand models-alist)))
@@ -396,7 +396,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
                (model (plist-get item :model))
                (backend (gptel-get-backend backend-name)))
           (setq gptel-backend backend
-                gptel-model model)
+               gptel-model model)
           (message "Переключено на модель: %s (бэкенд: %s)" (gptel--model-name model) backend-name)
           (force-mode-line-update t))))))
 
@@ -410,28 +410,29 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
 ;;;; 7. Генерация git commit-сообщений с gptel-commit (предпочтительно gpt-4.1, статич. контекст)
 
+(defun pro-gptel-commit-select-backend ()
+  "Всегда возвращать =aitunnel-backend= для =gptel-commit=."
+  aitunnel-backend)
+
 (use-package gptel-commit
   :ensure t
   :after gptel
   :init
-  (defun pro-gptel-commit-select-backend ()
-    "Всегда возвращать =aitunnel-backend= для =gptel-commit=."
-    aitunnel-backend)
   :custom
   (gptel-commit-backend (pro-gptel-commit-select-backend))
   (gptel-commit-stream t)
   :bind (:map with-editor-mode-map
-              ("C-c i RET"       . gptel-commit)
-              ("C-c C-<return>"  . gptel-commit))
+                ("C-c i RET"       . gptel-commit)
+                ("C-c C-<return>"  . gptel-commit))
   :config
   ;; Расширим промпт: всегда явно укажем желаемую модель и требования к формату RU/EN.
   (setq gptel-commit-prompt
-        (concat gptel-commit-prompt
-                "\n\n[Model: gpt-4.1]\n\n"
-                "Требование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, "
-                "включая строку-описание и список файлов), отвечающий на вопрос «Что было сделано?». "
-                "Затем ниже — точно то же сообщение на английском. Ничего лишнего, только два варианта: "
-                "русский сверху, английский внизу."))
+       (concat gptel-commit-prompt
+              "\n\n[Model: gpt-4.1]\n\n"
+              "Требование: Сначала сгенерируй commit message на русском языке (стандарт git-коммитов, "
+              "включая строку-описание и список файлов), отвечающий на вопрос «Что было сделано?». "
+              "Затем ниже — точно то же сообщение на английском. Ничего лишнего, только два варианта: "
+              "русский сверху, английский внизу."))
 
   ;; Гарантируем модель и stateless-режим для генерации коммитов, не затрагивая глобальную конфигурацию.
   (advice-add 'gptel-commit--generate-message :around
@@ -439,7 +440,210 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
                 (let ((gptel-model 'gpt-4.1)
                       (gptel-use-context nil))
                   (apply orig-fun args)))))
+
 ;; Конец секции gptel-commit
+
+;;;;; СТруктурировать...............:
+
+(use-package gptel-aibo
+  :ensure t
+  :bind (:map gptel-aibo-mode-map
+                ("C-c RET"      . gptel-aibo-send)
+                ("C-c C-<return>"      . gptel-aibo-send)
+                ("C-c M-RET"    . pro/gptel-aibo-no-context)))
+
+;;;; Настройка gptel-quick для быстрых запросов
+
+(use-package gptel-quick
+  :after gptel
+  :init
+  (установить-из :repo "karthink/gptel-quick")
+  (setq gptel-quick-backend gptel-backend)
+  (setq gptel-quick-model 'gpt-4.1))
+
+;;;; Настройка Minuet для автодополнения с GPT
+
+(use-package minuet
+  :ensure t
+  :defines (minuet-active-mode-map
+           minuet-provider
+           minuet-openai-fim-compatible-options
+           minuet-auto-suggestion-mode
+           minuet-openai-compatible-options
+           minuet-auto-suggestion-throttle-delay
+           minuet-auto-suggestion-debounce-delay
+           minuet-request-timeout)
+  :functions (minuet-complete-with-minibuffer
+         minuet-auto-suggestion-mode
+         minuet-show-suggestion
+         minuet-configure-provider
+         minuet-previous-suggestion
+         minuet-next-suggestion
+         minuet-accept-suggestion
+         minuet-accept-suggestion-line
+         minuet-dismiss-suggestion
+         minuet-set-optional-options)
+  :bind (("s-i y" . minuet-complete-with-minibuffer)
+         ("s-i TAB" . minuet-show-suggestion)
+         ("s-i s-<tab>" . minuet-complete-with-minibuffer)
+         ("s-i s-m" . minuet-configure-provider)
+         :map minuet-active-mode-map
+         ("M-p" . minuet-previous-suggestion)
+         ("M-n" . minuet-next-suggestion)
+         ("RET" . minuet-accept-suggestion)
+         ("C-RET" . minuet-accept-suggestion)
+         ("M-RET" . minuet-accept-suggestion-line)
+         ("C-g" . minuet-dismiss-suggestion)
+         ("M-q" . minuet-dismiss-suggestion)
+         ("s-q" . minuet-dismiss-suggestion)
+         ("M-a" . minuet-accept-suggestion-line))
+  :custom ((minuet-context-window 16000)
+          (minuet-request-timeout 3)
+          (minuet-context-ratio 0.75))
+  :config
+
+  (plist-put minuet-openai-options :model "gpt-4-turbo")
+  (setopt minuet-provider 'openai-compatible)
+  (minuet-auto-suggestion-mode -1)
+  (plist-put minuet-openai-compatible-options :end-point (concat "https://" proxyapi-url "/openai/v1/chat/completions"))
+  (plist-put minuet-openai-compatible-options :api-key "OPENAI_API_KEY")
+
+  (plist-put minuet-openai-compatible-options :model "gpt-4-turbo")
+  (minuet-set-optional-options minuet-openai-compatible-options :provider nil)
+  (minuet-set-optional-options minuet-openai-compatible-options :max_tokens nil)
+  (minuet-set-optional-options minuet-openai-compatible-options :max_completion_tokens 512)
+  (minuet-set-optional-options minuet-openai-compatible-options :top_p nil))
+
+;;;; Настройка пакета Evedel для интеграции LLM в процесс разработки
+
+(use-package evedel
+  :ensure t
+  :custom
+  ((evedel-empty-tag-query-matches-all nil)
+   (e-descriptive-mode-roles
+    '((emacs-lisp-mode . "an Emacs Lisp programmer")
+      (js-mode         . "a JavaScript programmer")
+      (js-ts-mode      . "a JavaScript programmer")
+      (typescript-ts-mode . "a TypeScript programmer")
+      (typescript-mode . "a TypeScript programmer")
+      (haskell-ts-mode . "a Haskell programmer")
+      (bash-ts-mode    . "a Bash programmer")
+      (c-mode          . "a C programmer")
+      (c++-mode        . "a C++ programmer")
+      (lisp-mode       . "a Common Lisp programmer")
+      (web-mode        . "a web developer")
+      (erlang-mode     . "an Erlang programmer")))))
+
+;;;; Инструмент gptel-tool: выполнение git-команд в текущем проекте
+
+(defun pro/gptel-git-command (command)
+  "Выполнить git-команду COMMAND в корне текущего проекта.
+Возвращает stdout+stderr для передачи нейросети."
+  (let ((project-root
+         (or (and (fboundp 'project-current)
+                (cdr (project-current)))
+             default-directory)))
+    (with-temp-buffer
+      (let ((default-directory project-root))
+        (call-process-shell-command (concat "git " command)
+                           nil (current-buffer) t))
+      (buffer-string))))
+
+;; (with-eval-after-load 'gptel
+;; (gptel-make-tool
+;;  :function #'pro/gptel-git-command
+;;  :name "run_git_command"
+;;  :description "Run any git command in the root of the current project. The argument is a valid git command, e.g. 'status', 'log --oneline', or 'diff HEAD~1'. Returns the raw output of git (stdout and stderr)."
+;;  :args (list
+;;         (list :name "command"
+;;               :type 'string
+;;               :description "A valid git command to run, e.g. 'status', 'log --oneline', or 'diff HEAD~1'.")))
+
+;; (add-to-list 'gptel-tools (gptel-get-tool "run_git_command")))
+
+;;;; Настройка поддержки LLAMA для локальных моделей
+
+(use-package ellama
+  :ensure t
+  :init
+  (require 'llm-ollama)
+  (setopt ellama-language "Russian")
+  (setopt ellama-provider
+          (make-llm-ollama :chat-model "codellama"
+                           :embedding-model "codellama")))
+
+;;;; Настройка Codeium для автодополнения кода
+
+(use-package codeium
+  :init (установить-из :repo "Exafunction/codeium.el")
+  :functions (codeium-utf8-byte-length codeium-init codeium-completion-at-point)
+  :bind (("C-c <tab>" . codeium-complete))
+  :config
+  (defun codeium-on ()
+    "Включить Codeium."
+    (interactive)
+    (codeium-init)
+    (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
+  (defun codeium-off ()
+    "Отключить Codeium."
+    (interactive)
+    (setq completion-at-point-functions
+         (remove #'codeium-completion-at-point completion-at-point-functions)))
+  (defun codeium-toggle ()
+    "Переключить состояние Codeium."
+    (interactive)
+    (if (memq #'codeium-completion-at-point completion-at-point-functions)
+        (codeium-off)
+      (codeium-on)))
+  (defalias 'codeium-complete (cape-capf-interactive #'codeium-completion-at-point))
+  (setq use-dialog-box nil)
+  (setq codeium-api-enabled
+       (lambda (api)
+         (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion)))))
+
+;;;; Настройка Whisper для распознавания речи
+
+(use-package whisper
+  :init (установить-из :repo "natrys/whisper.el")
+  :custom ((whisper--ffmpeg-input-format "alsa"))
+  :config
+  (setq whisper-install-directory (expand-file-name "~/.emacs.d/"))
+  (setq whisper-model "large")
+  (setq whisper-language "ru")
+  (setq whisper-translate nil)
+  (setq whisper-quantize nil)
+  (setq whisper-insert-text-at-point t)
+  (setq whisper-recording-timeout 500)
+  (setq whisper-use-threads (/ (num-processors) 1)))
+
+;;;; Настройка Aidermacs для поддержки AI в редакторе
+
+(use-package aidermacs
+  :ensure t
+  :config (aidermacs-setup-minor-mode)
+  :custom
+  (aidermacs-use-architect-mode nil)
+  (aidermacs-show-diff-after-change nil)
+  (setq aidermacs-auto-commits nil))
+
+;;-------------------------------------------------------------
+;; Выбор модели GPTEL из списка доступных
+(defun gptel-set-model ()
+  "Выбрать текущую модель для gptel в текущем буфере с помощью автодополнения.
+Все модели из текущего `gptel-backend`."
+  (interactive)
+  (require 'gptel)
+  (let* ((backend (if (boundp 'gptel-backend) gptel-backend (default-value 'gptel-backend)))
+         (models (and backend (gptel-backend-models backend)))
+         (model-names (mapcar #'gptel--model-name models))
+         (current (if (symbolp gptel-model) (symbol-name gptel-model) (format "%s" gptel-model)))
+         (choice (completing-read
+                  (format "Модель [%s]: " current)
+                  model-names nil t nil nil current)))
+    (when choice
+      (setq-local gptel-model (intern choice)))
+    (message "gptel-model: %s" gptel-model)))
+
 
 (provide 'про-ии)
 

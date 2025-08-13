@@ -143,6 +143,25 @@
   (setq-local ansi-term-color-vector
               [terminal "#000000" "#ff5555" "#50fa7b" "#f1fa8c"
                         "#bd93f9" "#ff79c6" "#8be9fd" "#bbbbbb"])
+
+  ;; Фиксированные цвета для вывода eshell/ls, не зависящие от темы (на чёрном фоне)
+  (setq-local eshell-ls-use-colors t)
+  (dolist (pair '((eshell-ls-directory  . (:foreground "#8be9fd" :weight bold))
+                  (eshell-ls-symlink    . (:foreground "#bd93f9" :slant italic))
+                  (eshell-ls-executable . (:foreground "#50fa7b" :weight bold))
+                  (eshell-ls-archive    . (:foreground "#ff79c6"))
+                  (eshell-ls-backup     . (:foreground "#777777"))
+                  (eshell-ls-clutter    . (:foreground "#777777"))
+                  (eshell-ls-missing    . (:foreground "#ff5555" :weight bold))
+                  (eshell-ls-product    . (:foreground "#f1fa8c"))
+                  (eshell-ls-readonly   . (:foreground "#bbbbbb"))
+                  (eshell-ls-special    . (:foreground "#f1fa8c" :weight bold))
+                  (eshell-ls-unreadable . (:foreground "#ff5555"))))
+    (let ((face (car pair))
+          (spec (cdr pair)))
+      (when (facep face)
+        (apply #'face-remap-add-relative face spec))))
+
   ;; Высококонтрастные лица подсветки синтаксиса (если пакет активирован)
   (set-face-attribute 'eshell-syntax-highlighting-alias-face nil
                       :foreground "#bd93f9" :weight 'bold)
@@ -174,15 +193,16 @@
                       :foreground "#f1fa8c")
   ;; АNSI-цвета для вывода:
   (add-to-list 'eshell-preoutput-filter-functions #'ansi-color-apply)
-  ;; Скрываем фринжи и отступы
+  ;; Фринжи: чёрный фон и стандартная ширина; сохраняем нулевые margins.
+  (face-remap-add-relative 'fringe '(:background "#000000"))
   (when (get-buffer-window)
-    (set-window-fringes (get-buffer-window) 0 0 nil)
+    (set-window-fringes (get-buffer-window) nil nil nil)
     (set-window-margins (get-buffer-window) 0 0))
   (add-hook 'window-configuration-change-hook
             (lambda ()
               (when (and (eq major-mode 'eshell-mode)
                          (get-buffer-window))
-                (set-window-fringes (get-buffer-window) 0 0 nil)
+                (set-window-fringes (get-buffer-window) nil nil nil)
                 (set-window-margins (get-buffer-window) 0 0)))
             nil t))
 
