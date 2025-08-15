@@ -24,8 +24,8 @@
   :defines (god-local-mode-map god-local-mode)
   :functions (god-mode-all)
   :hook (((god-mode-disabled god-mode-enabled) . курсор-бога)
-       ;;(god-mode-enabled . restore-input-method)
-       (god-mode-enabled . toggle-off-input-method))
+         ;;(god-mode-enabled . restore-input-method)
+         (god-mode-enabled . toggle-off-input-method))
 
   :bind (
          ("M-i" . god-local-mode)
@@ -65,7 +65,7 @@
                 racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
                 lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode
                 flymake-diagnostics-buffer-mode profiler-report-mode custom-mode chatgpt-shell-mode
-                undo-tree-visualizer yaz-repl))
+                undo-tree-visualizer yaz-repl messages-buffer-mode gptel-navigator-sidebar-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
 

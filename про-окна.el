@@ -143,5 +143,85 @@
               aw-leading-char-style 'char
               aw-scope 'frame))
 
+;;;; Messages: попап и posframe
+
+(use-package posframe
+  :ensure t
+  :defer t)
+
+(defun про/показать-сообщения ()
+  "Показать буфер *Messages* в нижнем сайд-окне (над echo-area)."
+  (interactive)
+  (let ((buf (get-buffer-create "*Messages*")))
+    (display-buffer
+     buf
+     '((display-buffer-in-side-window)
+       (side . bottom)
+       (slot . 0)
+       (window-height . 0.3)
+       (window-parameters . ((no-other-window . nil)))))))
+
+(defun про/скрыть-сообщения ()
+  "Скрыть нижнее окно с *Messages*."
+  (interactive)
+  (when-let ((win (get-buffer-window "*Messages*" t)))
+    (delete-window win)))
+
+(defvar messages-posframe--frame nil
+  "Child frame, созданный для показа *Messages* через posframe.")
+
+(defun messages-posframe--auto-hide ()
+  "Скрыть posframe, если фокус ушёл из него."
+  (when (and messages-posframe--frame
+             (frame-live-p messages-posframe--frame)
+             (not (eq (selected-frame) messages-posframe--frame)))
+    (скрыть-Messages-posframe)))
+
+(defun показать-сообщения-в-posframe (&optional lines)
+  "Показать *Messages* в posframe внизу экрана, над echo-area.
+LINES — желаемая высота в строках (по умолчанию 15). Posframe
+исчезает при клике вне его, но позволяет выделение и прокрутку."
+  (interactive "P")
+  (require 'posframe)
+  (let* ((buf (get-buffer-create "*Messages*"))
+         (height (cond
+                  ((numberp lines) (max 5 (min (frame-height) lines)))
+                  ((consp lines) (max 5 (min (frame-height) (car lines))))
+                  (t 15)))
+         (width (frame-width))
+         (mbw (minibuffer-window (selected-frame)))
+         (mbh (if (and mbw (window-live-p mbw))
+                  (window-pixel-height mbw)
+                0))
+         (y-off (- mbh)))
+    (setq messages-posframe--frame
+          (posframe-show buf
+                         :poshandler #'posframe-poshandler-frame-bottom-center
+                         :y-pixel-offset y-off
+                         :width width
+                         :height height
+                         :respect-mode-line nil
+                         :respect-header-line nil
+                         :override-parameters
+                         '((no-accept-focus . nil)
+                           (minibuffer . nil)
+                           (drag-internal-border . t)
+                           (internal-border-width . 1)
+                           (cursor-type . t))))
+    (when (frame-live-p messages-posframe--frame)
+      (select-frame-set-input-focus messages-posframe--frame)
+      (with-current-buffer buf
+        (goto-char (point-max)))
+      (add-hook 'post-command-hook #'messages-posframe--auto-hide))))
+
+(defun скрыть-сообщения-posframe ()
+  "Скрыть posframe с *Messages*."
+  (interactive)
+  (when (and (featurep 'posframe)
+             (frame-live-p messages-posframe--frame))
+    (posframe-hide "*Messages*")
+    (setq messages-posframe--frame nil)
+    (remove-hook 'post-command-hook #'messages-posframe--auto-hide)))
+
 (provide 'про-окна)
 ;;; про-окна.el ends here

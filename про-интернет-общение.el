@@ -13,7 +13,7 @@
   :init (установить-из :repo "zevlg/telega.el")
   :custom ((telega-use-docker t)
            (telega-chat-list-default-filter "Unread")
-           (telega-use-images nil)
+           (telega-use-images t)
            (telega-emoji-use-images nil)
            (telega-emoji-font-family nil)
            (telega-chat-show-avatars nil)

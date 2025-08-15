@@ -20,6 +20,8 @@
 ;;
 ;;; Code:
 
+(require 'cl-lib)
+
 ;;;; 0. Группа настроек для про-истории
 
 (defgroup про-история nil
@@ -80,6 +82,7 @@
    `((".*" . ,(no-littering-expand-var-file-name "undo/"))))
   (undo-tree-visualizer-timestamps t)
   (undo-tree-visualizer-diff t)
+  (undo-tree-history-overwrite t) ;; <--- Не задаём вопрос: всегда перезаписывать undo history файл.
   :bind (("C-M--" . undo-tree-visualize)
          ("C-M-_" . undo-tree-visualize)
          ("M-u"   . undo-tree-visualize)
@@ -87,7 +90,39 @@
          ("C-_"   . undo-tree-undo)
          ("M-_"   . undo-tree-redo))
   :config
+  ;; Гарантируем, что каталог для persistent-undo существует.
+  (make-directory (no-littering-expand-var-file-name "undo/") t)
   (global-undo-tree-mode 1)
+
+  ;; Без вопросов: совет оборачивает undo-tree-save-history и всегда отвечает 'y'.
+  (defun про-история--undo-tree-save-history-силентно (orig-fun &rest args)
+    (let ((undo-tree-history-overwrite t))
+      (condition-case _
+          (cl-letf (((symbol-function 'y-or-n-p)   (lambda (&rest _) t))
+                    ((symbol-function 'yes-or-no-p) (lambda (&rest _) t)))
+            (apply orig-fun args))
+        (wrong-number-of-arguments
+         ;; На старых версиях undo-tree параметр OVERWRITE игнорируется — всё равно подавим вопросы.
+         (cl-letf (((symbol-function 'y-or-n-p)   (lambda (&rest _) t))
+                   ((symbol-function 'yes-or-no-p) (lambda (&rest _) t)))
+           (apply orig-fun (list (car args))))))))
+  (advice-add 'undo-tree-save-history :around #'про-история--undo-tree-save-history-силентно)
+
+  ;; На всякий случай дублируем автосохранение истории:
+  ;; 1) Сохранять историю сразу после сохранения файла.
+  (add-hook 'undo-tree-mode-hook
+            (lambda ()
+              (when undo-tree-mode
+                (add-hook 'after-save-hook (lambda () (undo-tree-save-history nil t)) nil t))))
+  ;; 2) Сохранить историю всех буферов при выходе из Emacs.
+  (add-hook 'kill-emacs-hook
+            (lambda ()
+              (dolist (buf (buffer-list))
+                (with-current-buffer buf
+                  (when (and (bound-and-true-p undo-tree-mode)
+                             buffer-file-name)
+                    (ignore-errors (undo-tree-save-history nil t)))))))
+
   (defun про-историю/очистить-undo ()
     "Полностью очищает undo-историю текущего буфера."
     (interactive)
@@ -105,6 +140,19 @@
             (when (file-regular-p f)
               (delete-file f))))
         (message "Все undo-файлы из %s удалены." dir)))))
+
+(defun про-историю/показать-undo-файл ()
+  "Показать путь к файлу persistent-undo для текущего буфера."
+  (interactive)
+  (if (not buffer-file-name)
+      (message "Буфер не связан с файлом — persistent undo нельзя сохранить.")
+    (let* ((dir (cdr (assoc ".*" undo-tree-history-directory-alist)))
+           (name (and dir
+                      (concat (file-name-as-directory dir)
+                              (replace-regexp-in-string "[/\\:]" "%" buffer-file-name)))))
+      (if (and name (not (string-empty-p name)))
+          (message "Undo-файл: %s" name)
+        (message "Не удалось определить путь undo-файла.")))))
 
 ;;;; 3. Перемещение по пространству-времени к правке и месту
 

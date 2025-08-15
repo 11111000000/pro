@@ -31,7 +31,7 @@
 | C-+            | text-scale-increase                 |
 | C-=            | text-scale-increase                 |
 | C-M-=          | text-scale-set                      |
-| C-c m          | popwin:messages                     |
+| C-c m          | про/показать-сообщения              |
 | C-%            | forward-or-backward-sexp            |
 | C-a            | к-идентации-или-началу-строки       |
 | C-$            | toggle-truncate-lines               |
@@ -39,6 +39,7 @@
 | C-x b          | pro/consult-buffer                  |
 | C-x C-b        | pro/consult-buffer-other-window     |
 | C-x r          | consult-recent-file                 |
+| C-x C-r        | consult-recent-file                 |
 | C-x M-b        | consult-buffer-other-window         |
 | C-c b          | consult-buffer-other-window         |
 | C-c C-b        | consult-buffer-other-window         |
@@ -119,6 +120,7 @@
 | C-c ig         | gptel-abort                         |
 | C-c ic         | gptel-navigator-toggle              |
 | C-c in         | gptel-navigator-toggle              |
+| C-c id         | gptel-context-remove-all            |
 | C-c iq         | elysium-query                       |
 | C-c iw         | whisper-run                         |
 | C-c i M-c      | переключить-codeium                 |
@@ -155,8 +157,8 @@
 | s-i p          | gptel-system-prompt                 |
 | s-i RET        | gptel-send                          |
 | s-i s-<return> | gptel-send-no-context               |
-| s-i s          | gptel-context-store-save            |
-| s-i l          | gptel-context-store-load            |
+| s-i s          | gptel-navigator-context-save        |
+| s-i l          | gptel-navigator-context-load        |
 | s-i k          | gptel-abort                         |
 | s-i g          | gptel-abort                         |
 | s-i q          | elysium-query                       |

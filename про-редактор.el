@@ -136,6 +136,17 @@
   :ensure t
   :defer t)
 
+(defun my-isearch-mark-match-and-exit ()
+  "Выделить текущее совпадение isearch и выйти."
+  (interactive)
+  (when (and (boundp 'isearch-other-end) isearch-other-end)
+    (set-mark isearch-other-end))
+  (isearch-exit))
+
+(with-eval-after-load 'isearch
+  (define-key isearch-mode-map (kbd "C-SPC") #'my-isearch-mark-match-and-exit)
+  (define-key isearch-mode-map (kbd "C-@")   #'my-isearch-mark-match-and-exit))
+
 ;;;; === Режим чтения (отцентровка текста) ===
 ;; Olivetti: фокусирует текст по центру, полезно для чтения/писательства.
 ;; Улучшение: хук на man/info/markdown/org, минимальная ширина по умолчанию.
