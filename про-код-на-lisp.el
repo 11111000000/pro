@@ -70,7 +70,8 @@
         (when (ignore-errors (progn (forward-sexp) t))
           (eval-defun nil))
         (setq last-point cur-point)
-        (setq cur-point (point))))))
+        (setq cur-point (point))))
+    (message "Буфер выполнен заново!")))
 
 ;;;; 2. Emacs Lisp: биндинги, печать, оптимизации
 (use-package emacs

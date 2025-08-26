@@ -203,6 +203,6 @@ multi-vterm по Ctrl+1, Ctrl+2 итд.
 * TODO Добавить HTML представление org файлов
 * TODO ДОбавить настроки dunstrc
 * TODO Здесь одновременно пишем текст и проверяем может ли он одновременно писать несколько
-* TODO Открывая org с gptel PROPERTIES, включать gptel-mode dsf ds
-* WORK [#B] Предотвратить клики по тачпаду когда я печатаю
+* TODO Открывая org с gptel PROPERTIES, включать gptel-mode
+* DONE [#B] Предотвратить клики по тачпаду когда я печатаю
 * DONE Кнопка для выделения isearch

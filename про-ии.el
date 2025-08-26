@@ -649,6 +649,22 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   :config
   (gptel-navigator-mode t))
 
+;; --- Автоматически включать gptel-mode при открытии Org-файла с PROPERTIES, связанными с gptel ---
+
+(defun pro/org-auto-enable-gptel-mode ()
+  "Автоматически включает gptel-mode, если Org-файл содержит PROPERTIES, связанные с gptel."
+  (when (and (derived-mode-p 'org-mode)
+             (save-excursion
+               (goto-char (point-min))
+               (re-search-forward
+                "^\\s-*\\(:PROPERTIES:\\)?\\s-*$\\([^:]*\\(:gptel\\|gptel-\\)[^:]*\\|\\(:gptel\\)[^\\n]*\\)*"
+                nil t)))
+    (unless (bound-and-true-p gptel-mode)
+      (gptel-mode 1)
+      (message "gptel-mode включён автоматически (найдены PROPERTIES, связанные с gptel)"))))
+
+(add-hook 'org-mode-hook #'pro/org-auto-enable-gptel-mode)
+
 (provide 'про-ии)
 
 ;;; про-ии.el ends here
