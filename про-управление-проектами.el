@@ -4,14 +4,14 @@
 ;;;; Модуль для работы с проектами
 
 (use-package projectile
-  :defer t 
+  :defer t
   :ensure t
   :defines (projectile-command-map)
   :custom ((projectile-sort-order 'recently-active)
                                         ;(projectile-project-search-path '("~/Проекты/"))
-          (projectile-switch-project-action #'projectile-dired))
+           (projectile-switch-project-action #'projectile-dired))
   :bind (:map projectile-command-map
-                ("ss" . consult-grep))
+              ("ss" . consult-grep))
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
@@ -20,16 +20,16 @@
 ;;;; Заметки к проекту
 
 (use-package org-projectile
-  :defer t 
+  :defer t
   :ensure t
   :functions (org-projectile-per-project)
   :defines (org-projectile-per-project-filepath)
   :after (projectile org)
   :bind (:map projectile-mode-map
-                ("C-c pt" . org-projectile-project-todo-completing-read)
-                ("C-c c" . org-projectile-capture-for-current-project))
+              ("C-c pt" . org-projectile-project-todo-completing-read)
+              ("C-c c" . org-projectile-capture-for-current-project))
   :config
-  
+
   (setq org-projectile-per-project-filepath "TODO.org")
                                         ;(setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
 
@@ -51,11 +51,11 @@ were part of the capture template definition."
   (declare (obsolete org-project-capture-capture-for-current-project "3.0.1"))
   (interactive)
   (let ((project-name
-        (org-project-capture-current-project
-         (org-project-capture-strategy-get-backend org-projectile-strategy)))
-       (project-file (if (file-exists-p (concat (projectile-project-root) "ЧТОДЕЛ.org"))
-                         (concat (projectile-project-root) "ЧТОДЕЛ.org")
-                       (concat projectile-project-root "todo.org"))))
+         (org-project-capture-current-project
+          (org-project-capture-strategy-get-backend org-projectile-strategy)))
+        (project-file (if (file-exists-p (concat (projectile-project-root) "ЧТОДЕЛ.org"))
+                          (concat (projectile-project-root) "ЧТОДЕЛ.org")
+                        (concat projectile-project-root "todo.org"))))
     (print project-file)
     (if project-name
         (occ-capture
@@ -66,7 +66,7 @@ were part of the capture template definition."
                         :options (append additional-options `(:file ,project-file))
                         :strategy org-projectile-strategy))
       (error (format "%s is not a recognized project."
-                  project-name)))))
+                     project-name)))))
 
 ;; (cl-defun org-projectile-capture-for-current-project
 ;;     (&rest additional-options &key capture-template &allow-other-keys)
@@ -112,10 +112,10 @@ were part of the capture template definition."
   :defer t
   :after transient
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
-          (magit-after-save-refresh-buffers t))
+           (magit-after-save-refresh-buffers t))
   :init
   (add-hook 'magit-process-find-password-functions
-           'magit-process-password-auth-source))
+            'magit-process-password-auth-source))
 
 ;; Кто это сделал?
 
@@ -123,15 +123,15 @@ were part of the capture template definition."
   :ensure t
   :defer t
   :bind (("C-c M-i" . blamer-show-commit-info)
-	     ("C-c M-b" . blamer-mode))
+	 ("C-c M-b" . blamer-mode))
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 10)
   :custom-face
   (blamer-face ((t :foreground "#9099AB"
-		            :background "#AB9990"
-		            :height .9
-		            :italic t))))
+		   :background "#AB9990"
+		   :height .9
+		   :italic t))))
 
 ;; Улучшенная раскраска git diff
 
@@ -144,7 +144,7 @@ were part of the capture template definition."
 ;; Показываем незакоммиченные участки слева
 
 (use-package diff-hl
-  :defer t 
+  :defer t
   :ensure t
   :functions (global-diff-hl-mode)
   ;;:hook
@@ -157,7 +157,7 @@ were part of the capture template definition."
 ;;;; Машина времени для GIT
 
 (use-package git-timemachine
-  :defer t 
+  :defer t
   :ensure t)
 
 ;;;; Управление Github и Gitlab
@@ -186,15 +186,15 @@ were part of the capture template definition."
 ;;     (vterm-copy-mode)))
 
 (use-package docker
-  :defer t 
+  :defer t
   :ensure t
   :init
   :config
-  ;(add-hook 'vterm-mode-hook #'my/auto-vterm-copy-mode-for-docker-logs)
+                                        ;(add-hook 'vterm-mode-hook #'my/auto-vterm-copy-mode-for-docker-logs)
   )
 
 (use-package dockerfile-mode
-  :defer t 
+  :defer t
   :ensure t
   :init
   :config)
@@ -205,7 +205,7 @@ were part of the capture template definition."
 ;; :config)
 
 (use-package docker-compose-mode
-  :defer t 
+  :defer t
   :ensure t
   :init
   :config)
@@ -220,6 +220,30 @@ were part of the capture template definition."
 (use-package gitlab
   :ensure t
   :defer t)
+
+(use-package magpt
+  :defer t
+  :load-path "~/Code/magpt/"
+  :init
+  ;; Базовая настройка: можно задать модель и промт через customize, здесь примеры по умолчанию:
+  (setq magpt-model "gpt-4.1")              ;; по желанию — используйте любую модель, поддерживаемую gptel
+  (setq magpt-commit-prompt
+        "Вы — ассистент, пишущий качественные сообщения к Git-коммитам на основе Conventional Commits.
+- Первая строка — краткое резюме (до 72 символов).
+- Body: wrap 72, описывает мотивацию и результат изменений.
+- Используйте повелительное наклонение.
+- Не добавляйте ссылки на тикеты, если их нет в diff.
+- Если diff пуст или бессмыслен, используйте 'chore: update' и краткое пояснение.
+Только итоговое сообщение, никаких пояснений.
+- Сообщение на Английском языке")
+  ;; можно и другие переменные (magpt-max-diff-bytes и т. д.) настроить тут
+
+  :config
+  ;; Интеграция с Magit: добавить пункт magpt-commit-staged в transient commit меню (C-c g C)
+  (with-eval-after-load 'magit
+    (transient-append-suffix 'magit-commit "c"
+      '("i" "Commit with AI message (magpt)" magpt-commit-staged)))
+  )
 
 ;; (use-package lab
 ;;   :init (установить-из :repo "isamert/lab.el"))
