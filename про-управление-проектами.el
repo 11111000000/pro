@@ -222,28 +222,9 @@ were part of the capture template definition."
   :defer t)
 
 (use-package magpt
-  :defer t
   :load-path "~/Code/magpt/"
   :init
-  ;; Базовая настройка: можно задать модель и промт через customize, здесь примеры по умолчанию:
-  (setq magpt-model "gpt-4.1")              ;; по желанию — используйте любую модель, поддерживаемую gptel
-  (setq magpt-commit-prompt
-        "Вы — ассистент, пишущий качественные сообщения к Git-коммитам на основе Conventional Commits.
-- Первая строка — краткое резюме (до 72 символов).
-- Body: wrap 72, описывает мотивацию и результат изменений.
-- Используйте повелительное наклонение.
-- Не добавляйте ссылки на тикеты, если их нет в diff.
-- Если diff пуст или бессмыслен, используйте 'chore: update' и краткое пояснение.
-Только итоговое сообщение, никаких пояснений.
-- Сообщение на Английском языке")
-  ;; можно и другие переменные (magpt-max-diff-bytes и т. д.) настроить тут
-
-  :config
-  ;; Интеграция с Magit: добавить пункт magpt-commit-staged в transient commit меню (C-c g C)
-  (with-eval-after-load 'magit
-    (transient-append-suffix 'magit-commit "c"
-      '("i" "Commit with AI message (magpt)" magpt-commit-staged)))
-  )
+  :config (magpt-mode t))
 
 ;; (use-package lab
 ;;   :init (установить-из :repo "isamert/lab.el"))

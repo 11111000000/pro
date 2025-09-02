@@ -644,10 +644,10 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
       (setq-local gptel-model (intern choice)))
     (message "gptel-model: %s" gptel-model)))
 
-(use-package gptel-navigator
-  :load-path "~/Code/gptel-navigator/"
+(use-package context-navigator
+  :load-path "~/Code/context-navigator/"
   :config
-  (gptel-navigator-mode t))
+  (context-navigator-mode t))
 
 ;; --- Автоматически включать gptel-mode при открытии Org-файла с PROPERTIES, связанными с gptel ---
 
@@ -664,6 +664,46 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
       (message "gptel-mode включён автоматически (найдены PROPERTIES, связанные с gptel)"))))
 
 (add-hook 'org-mode-hook #'pro/org-auto-enable-gptel-mode)
+
+;;;###autoload
+(defun pro/gptel-aibo-apply-actions-from-region (beg end)
+  "Parse and execute <OP> actions from region between BEG and END.
+
+Понимает формат операций gptel-aibo:
+- <OP> MODIFY `BUFNAME` ... с парами *SEARCH*/*REPLACE*
+- <OP> CREATE <FILEPATH> ... с содержимым в блоке
+- <OP> DELETE <FILEPATH>
+
+В Org-буферах используется org-парсер."
+  (interactive "r")
+  (unless (use-region-p)
+    (user-error "Нет выделенного региона"))
+  (let* ((text (buffer-substring-no-properties beg end))
+         (parser (if (derived-mode-p 'org-mode)
+                     (gptel-aibo-make-action-org-parser)
+                   (gptel-aibo-make-action-parser)))
+         (ops (gptel-aibo-parse-action parser text)))
+    (cond
+     ;; Успешный парсинг — ops это список операций
+     ((and (listp ops) (not (eq (car-safe ops) 'error)))
+      (let* ((target (or (and (boundp 'gptel-aibo--working-buffer)
+                              (buffer-live-p gptel-aibo--working-buffer)
+                              gptel-aibo--working-buffer)
+                         (current-buffer)))
+             (ok 0) (fail 0))
+        (with-current-buffer target
+          (dolist (op ops)
+            (condition-case err
+                (progn
+                  (gptel-aibo-execute op)
+                  (setq ok (1+ ok)))
+              (error
+               (setq fail (1+ fail))
+               (message "gptel-aibo: ошибка при выполнении %S: %S" op err)))))
+        (message "gptel-aibo: применено %d операций, ошибок %d" ok fail)))
+     ;; Ошибка парсера — обычно возвращается (error . DETAIL) или подобная структура
+     (t
+      (message "gptel-aibo: ошибка парсинга: %S" ops)))))
 
 (provide 'про-ии)
 

@@ -94,7 +94,7 @@ fi"))
     "Настройки графической среды EXWM."
     :group 'exwm)
 
-  (defcustom про/tray-restart-delay 5.0
+  (defcustom про/tray-restart-delay 6.0
     "Задержка (в секундах) перед рестартом exwm-session.target после запуска EXWM и трея.
 Увеличьте, если иконки (например, nm-applet) не успевают зарегистрироваться."
     :type 'number

@@ -364,5 +364,12 @@ With prefix ARG, do it that many times; negative for backward."
                   (propertize (or (funcall topsy-fn) "") 'face 'topsy-header-line)))
     "The header line format used by =topsy-mode'."))
 
+;; Перевод комментариев
+
+(use-package cct-mode
+  :load-path "~/Code/cct-mode/")
+
+
+
 (provide 'про-код)
 ;;; про-код.el ends here

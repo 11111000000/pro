@@ -145,7 +145,7 @@
 
 (with-eval-after-load 'isearch
   (define-key isearch-mode-map (kbd "C-SPC") #'my-isearch-mark-match-and-exit)
-  (define-key isearch-mode-map (kbd "C-@")   #'my-isearch-mark-match-and-exit))
+  (define-key isearch-mode-map (kbd "M-SPC")   #'my-isearch-mark-match-and-exit))
 
 ;;;; === Режим чтения (отцентровка текста) ===
 ;; Olivetti: фокусирует текст по центру, полезно для чтения/писательства.

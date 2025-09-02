@@ -61,17 +61,34 @@
   "Eval всех верхнеуровневых форм в текущем буфере.
 Идеально для org-babel/literate конфигов."
   (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((last-point -1)
-          (cur-point (point)))
-      (while (and (< (point) (point-max))
-                  (/= last-point cur-point))
-        (when (ignore-errors (progn (forward-sexp) t))
-          (eval-defun nil))
-        (setq last-point cur-point)
-        (setq cur-point (point))))
-    (message "Буфер выполнен заново!")))
+  (unless (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
+    (user-error "перевыполнить-буфер: работает только в Emacs Lisp буфере"))
+  (let ((orig-buf (current-buffer))
+        pos msg)
+    (condition-case err
+        (save-excursion
+          (check-parens))
+      (scan-error
+       (let* ((data (cdr err))
+              (start (nth 1 data))
+              (end   (nth 2 data)))
+         (setq pos (or end start)
+               msg (or (car data) (error-message-string err)))))
+      (error
+       (setq msg (error-message-string err))))
+    (if msg
+        (progn
+          (when pos
+            (with-current-buffer orig-buf
+              (goto-char pos)
+              (recenter)
+              (when (fboundp 'pulse-momentary-highlight-one-line)
+                (pulse-momentary-highlight-one-line pos))))
+          (pop-to-buffer orig-buf)
+          (message "Неправильные скобки: %s" (or msg "Unbalanced parentheses")))
+      (save-excursion
+        (eval-buffer)
+        (message "Буфер выполнен заново!")))))
 
 ;;;; 2. Emacs Lisp: биндинги, печать, оптимизации
 (use-package emacs
@@ -208,6 +225,81 @@
 
 ;;; 6.6 Eros — вывод результата прямо в буфере
 (use-package eros  :defer t :ensure t :config (eros-mode 1))
+
+;;; 6.7 russian-lisp-mode - перевод лиспа на русский язык
+
+(use-package russian-lisp-mode
+  :load-path "~/Code/russian-lisp-mode/")
+
+;;; Полезные функции
+
+(defun pro/check-parens-in-directory (dir)
+  "Проверить все .el файлы в DIR с помощью `check-parens'.
+Результат выводится в буфере *check-parens/."
+  (interactive "DDirectory: ")
+  (let ((files (directory-files-recursively dir "\\.el\\'"))
+        (errs 0))
+    (with-current-buffer (get-buffer-create "*check-parens/")
+      (erase-buffer)
+      (dolist (f files)
+        (let ((buf (find-file-noselect f)))
+          (unwind-protect
+              (let (ok err-msg)
+                (with-current-buffer buf
+                  (condition-case e
+                      (progn (check-parens)
+                             (setq ok t))
+                    (error
+                     (setq ok nil
+                           err-msg (error-message-string e)))))
+                (when (not ok)
+                  (setq errs (1+ errs)))
+                (insert (format "%-3s %s\n" (if ok "OK" "ERR") f))
+                (when (not ok)
+                  (insert (format "    %s\n" err-msg))))
+            (kill-buffer buf))))
+      (insert (format "Summary: %d files, %d with errors\n" (length files) errs))
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))
+    (message "Done: %d files, %d with errors" (length files) errs)))
+
+(defun pro/dired-check-parens-marked ()
+  "Запустить `check-parens' для всех помеченных файлов в Dired.
+Результат в буфере *check-parens/."
+  (interactive)
+  (require 'dired)
+  (let* ((files (cl-remove-if #'file-directory-p (dired-get-marked-files)))
+         (errs 0))
+    (with-current-buffer (get-buffer-create "*check-parens/")
+      (erase-buffer)
+      (dolist (f files)
+        (let ((buf (find-file-noselect f)))
+          (unwind-protect
+              (let (ok err-msg)
+                (with-current-buffer buf
+                  (condition-case e
+                      (progn (check-parens)
+                             (setq ok t))
+                    (error
+                     (setq ok nil
+                           err-msg (error-message-string e)))))
+                (when (not ok)
+                  (setq errs (1+ errs)))
+                (insert (format "%-3s %s\n" (if ok "OK" "ERR") f))
+                (when (not ok)
+                  (insert (format "    %s\n" err-msg))))
+            (kill-buffer buf))))
+      (insert (format "Summary: %d files, %d with errors\n" (length files) errs))
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))))
+
+(defun pro/reload-all-elisp-in-dired-directory ()
+  "Перезагрузить все файлы .el в текущей папке Dired."
+  (interactive)
+  (let ((dir (dired-current-directory)))
+    (dolist (file (directory-files dir t "\\.el$"))
+      (load (file-name-sans-extension file) nil 'nomessage))
+    (message "Все .el-файлы из %s перезагружены." dir)))
 
 ;;   «Пишите код, чтобы его было легко читать; если вам скучно, вставьте шутку,
 ;;    но так, чтобы компилятору было всё равно» — мануфактура лиспа, 2023.

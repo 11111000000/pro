@@ -8,26 +8,26 @@
 
 (use-package org
   :bind (:map org-mode-map
-                ("C-<tab>" . org-cycle)
-                ("C-TAB" . org-cycle)
-                ("M-RET" . org-agenda-open-link)
-                ("M-p" . org-previous-visible-heading)
-                ("M-n" . org-next-visible-heading)
-                ("C-c C-p" . nil))
+              ("C-<tab>" . org-cycle)
+              ("C-TAB" . org-cycle)
+              ("M-RET" . org-agenda-open-link)
+              ("M-p" . org-previous-visible-heading)
+              ("M-n" . org-next-visible-heading)
+              ("C-c C-p" . nil))
   :custom ((org-log-done nil)
-          ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
-          (org-todo-keywords '((sequence "TODO" "THINK" "DOING" "|" "DONE")))
-          (org-not-done-keywords '("TODO" "THINK" "DOING"))
-          (org-done-keywords '("DONE" "CANCEL" "DELEGATED")))
+           ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
+           (org-todo-keywords '((sequence "TODO" "THINK" "DOING" "|" "DONE")))
+           (org-not-done-keywords '("TODO" "THINK" "DOING"))
+           (org-done-keywords '("DONE" "CANCEL" "DELEGATED")))
   :config
   (require 'org-compat)
   (require 'org-tempo)
   (setq org-todo-keyword-faces
-       '(("TODO" . org-warning)
-         ("FIX" . (:foreground "white" :background "red" :weight bold))
-         ("IN-PROGRESS" . (:foreground "blue" :weight bold))
-         ("DONE" . (:foreground "green" :weight normal))
-         ("CANCELLED" . (:foreground "gray" :weight normal))))
+        '(("TODO" . org-warning)
+          ("FIX" . (:foreground "white" :background "red" :weight bold))
+          ("IN-PROGRESS" . (:foreground "blue" :weight bold))
+          ("DONE" . (:foreground "green" :weight normal))
+          ("CANCELLED" . (:foreground "gray" :weight normal))))
   :init)
 
 ;;;; Отключаем использование _ и ^ для подстрочных и надстрочных символов
@@ -41,13 +41,13 @@
   :defer t
   :hook ((org-mode . org-fancy-priorities-mode))
   :custom (org-fancy-priorities-list '((?A . "⚡")
-                                 (?B . "⬆")
-                                 (?C . "⬇")
-                                 (?D . "☕")
-                                 (?1 . "⚡")
-                                 (?2 . "⮬")
-                                 (?3 . "⮮")
-                                 )))
+                                       (?B . "⬆")
+                                       (?C . "⬇")
+                                       (?D . "☕")
+                                       (?1 . "⚡")
+                                       (?2 . "⮬")
+                                       (?3 . "⮮")
+                                       )))
 
 ;;;; Иконка свёртки
 
@@ -82,21 +82,21 @@
 ;; Перед кодом никаких автоотступов
 
 (setq-default org-src-preserve-indentation t
-         org-edit-src-content-indentation 0)
+              org-edit-src-content-indentation 0)
 
 ;; Не автодополнять пару "<>", чтобы вводить быстрые блоки
 
 (require 'elec-pair)
 (add-hook 'org-mode-hook (lambda ()
-                          (setq-local electric-pair-inhibit-predicate
-                                 `(lambda (c)
-                                    (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+                           (setq-local electric-pair-inhibit-predicate
+                                       `(lambda (c)
+                                          (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 
 ;; Авто-обновление картинок при выполнении кода
 
 (defun поправить-встроеные-изображения ()
   "Перерисовать изображения."
-  
+
   (org-redisplay-inline-images))
 
 (add-hook 'org-babel-after-execute-hook 'поправить-встроеные-изображения)
@@ -174,10 +174,10 @@
   :defer t
   :ensure t :defer t
   :custom (
-          (org-pomodoro-length 15)
-  	      (org-pomodoro-short-break-length 5)
-  	      (org-pomodoro-long-break-length 15)
-  	      (org-pomodoro-play-sounds 1)))
+           (org-pomodoro-length 15)
+  	   (org-pomodoro-short-break-length 5)
+  	   (org-pomodoro-long-break-length 15)
+  	   (org-pomodoro-play-sounds 1)))
 
 ;;;; Поли-моды
 
@@ -217,10 +217,10 @@
   :if window-system
   :ensure t
   :custom ((org-modern-star '("●" "▶" "◆" "▷" "□" "◍"))
-          (org-modern-hide-stars " "))
+           (org-modern-hide-stars " "))
   :hook ((org-mode . org-modern-mode))
   :init
-  
+
   (setq
    org-auto-align-tags nil
    org-tags-column 0
@@ -238,20 +238,20 @@
   :defines (outshine-mode-map)
   :custom ((outshine-startup-folded-p nil))
   :hook (((emacs-lisp-mode) . outline-minor-mode)
-       (outline-minor-mode . outshine-mode)
-       (outline-minor-mode . iimage-mode))
+         (outline-minor-mode . outshine-mode)
+         (outline-minor-mode . iimage-mode))
   :bind (:map outshine-mode-map
-                ("C-<return>" . outshine-insert-heading)
-                ("C-M-i" . nil)))
+              ("C-<return>" . outshine-insert-heading)
+              ("C-M-i" . nil)))
 
 ;; В коде, вместо символов комментария показывать уровень вложенности
 
-(use-package outshine-bullets
-  :defer t
-  :init (установить-из :repo "11111000000/outshine-bullets")
-  :hook ((outshine-mode . outshine-bullets-mode))
-  :custom (
-	      (outshine-bullets-bullet-list '("●" "▶" "▷" "□" "◆" "◍"))))
+;; (use-package outshine-bullets
+;;   :defer t
+;;   :init (установить-из :repo "11111000000/outshine-bullets")
+;;   :hook ((outshine-mode . outshine-bullets-mode))
+;;   :custom (
+;; 	      (outshine-bullets-bullet-list '("●" "▶" "▷" "□" "◆" "◍"))))
 
 (set-face-attribute 'org-hide nil :foreground (face-background 'default))
 
@@ -269,7 +269,7 @@
   (plantuml-jar-path "/usr/share/plantuml/plantuml.jar")
   (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
   :config
-  
+
   ;; Понимать блоки кода UML
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   ;; (setq plantuml-default-exec-mode 'jar)
@@ -278,7 +278,7 @@
 
   ;; Быстрый ввод блоков кода UML
   (add-to-list 'org-structure-template-alist
-             '("uml" . "src plantuml :file ./diagram.svg")))
+               '("uml" . "src plantuml :file ./diagram.svg")))
 
 ;;;; Поддержка Mermaid
 
@@ -308,16 +308,16 @@
   "Вырезает все записи со статусом DONE и сохраняет их в архивный файл."
   (interactive)
   (let* ((current-file (buffer-file-name))
-        (archive-file (concat current-file ".archive.org"))
-        (done-tasks '()))
+         (archive-file (concat current-file ".archive.org"))
+         (done-tasks '()))
     (save-excursion
       ;; Сначала ищем записи со статусом DONE
       (goto-char (point-min))
       (while (re-search-forward "^\\*+[ ]+DONE" nil t)
         (let ((start (match-beginning 0))
-             (end (progn
-                    (outline-next-heading)
-                    (point))))
+              (end (progn
+                     (outline-next-heading)
+                     (point))))
           (push (buffer-substring-no-properties start end) done-tasks)
           (delete-region start end)))
       ;; Если есть записи, сохраняем их в архивный файл
@@ -348,8 +348,8 @@
   ;; Export to HTML; `org-export-to-file' returns the full path
   (let* ((org-export-with-broken-links t)   ; optional: suppress link warnings
          (html-file (org-export-to-file
-                      'html
-                      (concat (file-name-sans-extension buffer-file-name) ".html"))))
+                        'html
+                        (concat (file-name-sans-extension buffer-file-name) ".html"))))
     (eww-open-file html-file)))
 
 (provide 'про-организацию)
