@@ -122,6 +122,10 @@
                   (when (and (bound-and-true-p undo-tree-mode)
                              buffer-file-name)
                     (ignore-errors (undo-tree-save-history nil t)))))))
+  ;; Авто-сохранение всех изменённых файлов при выходе, без вопросов.
+  (advice-add 'save-buffers-kill-emacs :around
+              (lambda (orig-fun &optional arg)
+                (apply orig-fun (list t))))
 
   (defun про-историю/очистить-undo ()
     "Полностью очищает undo-историю текущего буфера."

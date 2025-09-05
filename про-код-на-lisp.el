@@ -150,12 +150,22 @@
 (use-package bug-hunter :defer t :ensure t)
 
 ;;; 3.6 Flymake для elisp
+;; Базовая настройка Flymake для elisp + package-lint
 (use-package fly
   :defer t
   :init (установить-из :repo "ROCKTAKEY/flymake-elisp-config")
   :functions (flymake-elisp-config-global-mode flymake-elisp-config-auto-mode)
-  :config (flymake-elisp-config-global-mode)
+  :config
+  (flymake-elisp-config-global-mode)
   (flymake-elisp-config-auto-mode))
+
+;; package-lint: проверка качества и метаданных пакетов
+(use-package package-lint
+  :defer t
+  :ensure t
+  :init
+  ;; Подключаем package-lint как backend Flymake, если доступен.
+  )n
 
 ;;;; 4. Форматирование
 (use-package format-all

@@ -109,22 +109,20 @@
 | C-M-.          | xref-find-definitions-other-window  |
 | C-.            | embark-act                          |
 | C-c ir         | gptel-rewrite                       |
-| C-c im         | gptel-menu                          |
+| C-c im         | про-ии-переключить-модель           |
 | C-c i.         | gptel-quick                         |
 | C-c ia         | gptel-add                           |
 | C-c if         | gptel-add-file                      |
 | C-c ip         | gptel-system-prompt                 |
 | C-c i RET      | gptel-send                          |
+| C-c i M-RET    | про-ии-отправить-без-контекста      |
 | C-c is         | gptel-send                          |
 | C-c ik         | gptel-abort                         |
 | C-c ig         | gptel-abort                         |
-| C-c ic         | context-navigator-toggle            |
-| C-c in         | context-navigator-toggle            |
-| C-c iu         | context-navigator-unload            |
 | C-c id         | gptel-context-remove-all            |
 | C-c iq         | elysium-query                       |
-| C-c iw         | whisper-run                         |
-| C-c i M-c      | переключить-codeium                 |
+| C-c i w        | whisper-run                         |
+| C-c i M-c      | про-ии-codeium-toggle               |
 | C-c e e        | evedel-create-directive             |
 | C-c e i        | evedel-modify-directive             |
 | C-c e D        | evedel-modify-directive-tag-query   |
@@ -147,20 +145,16 @@
 | s-i o          | gptel                               |
 | s-i s-o        | gptel                               |
 | s-i r          | gptel-rewrite                       |
-| s-i m          | pro/gptel-switch-model              |
+| s-i m          | про-ии-переключить-модель           |
 | s-i s-m        | gptel-menu                          |
-| s-i n          | context-navigator-toggle            |
-| s-i u          | context-navigator-unload            |
 | s-i .          | gptel-quick                         |
 | s-i a          | gptel-add                           |
 | s-i t          | gptel-tools                         |
-| s-i b          | pro/gptel-switch-backend            |
+| s-i b          | про-ии-переключить-бэкенд           |
 | s-i f          | gptel-add-file                      |
 | s-i p          | gptel-system-prompt                 |
 | s-i RET        | gptel-send                          |
-| s-i s-<return> | gptel-send-no-context               |
-| s-i s          | context-navigator-context-save      |
-| s-i l          | context-navigator-context-load      |
+| s-i s-<return> | про-ии-отправить-без-контекста      |
 | s-i k          | gptel-abort                         |
 | s-i g          | gptel-abort                         |
 | s-i q          | elysium-query                       |
@@ -187,7 +181,7 @@
 | s-e t          | evedel-add-tags                     |
 | s-e T          | evedel-remove-tags                  |
 | C-z            | nil                                 |
-| C-c n          | про/пересобрать-nix                 |
+| C-c M-n        | про/пересобрать-nix                 |
 | C-c k          | про/перезагрузить-клавиши           |
 
 
@@ -306,7 +300,7 @@
 | C-c '                   | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
-| C-c n                   | про/пересобрать-nix                  |
+| C-c M-n                 | про/пересобрать-nix                  |
 | C-c k                   | про/перезагрузить-клавиши            |
 
 

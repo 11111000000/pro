@@ -27,10 +27,16 @@
 ;;;;= Общие вспомогательные функции =;;;;;
 
 (defun pro/kill-buffer-and-window ()
-  "Закрыть текущий буфер и окно, если оно не единственное в этом фрейме."
+  "Закрыть текущий буфер и окно, если оно не единственное в этом фрейме.
+Если это терминальный буфер (vterm, term, shell), убивать процесс без подтверждения."
   (interactive)
   (let ((buf (current-buffer))
         (win (selected-window)))
+    (when (memq major-mode '(vterm-mode term-mode shell-mode))
+      (let ((kill-buffer-query-functions
+             (remq 'process-kill-buffer-query-function kill-buffer-query-functions)))
+        ;; Удаляем все kill-buffer-query, чтобы не было "Kill terminal ...?".
+        (set (make-local-variable 'kill-buffer-query-functions) nil)))
     (if (one-window-p)
         (kill-buffer buf)
       (progn

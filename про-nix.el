@@ -41,7 +41,7 @@
 (use-package nix-mode
   :ensure t
   :mode ("\\.nix\\'" . nix-mode)
-  ;:hook (nix-mode . lisp-interaction-mode) ;; если нужен дополнительный режим
+                                        ;:hook (nix-mode . lisp-interaction-mode) ;; если нужен дополнительный режим
   :config
   ;; Можно добавить дополнительные настройки тут.
   )
@@ -52,9 +52,11 @@
 ;; где окружение критично, связывая Emacs с внешней экосистемой.
 
 (use-package envrc
-     :ensure t
-     :config
-     (envrc-global-mode))
+  :ensure t
+
+  ;; :config
+  ;; (envrc-global-mode)
+  )
 
 ;;;; 3. Кастомные функции
 ;; Эти функции расширяют базовую поддержку: настройка путей для Nix и

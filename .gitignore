@@ -4,3 +4,5 @@ zai.conf
 про-сочетания-клавиш.el
 .yaz
 .session.org
+...*
+.context
