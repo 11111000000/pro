@@ -1,0 +1,18 @@
+;; .magptrc — per-project settings for magpt.
+;; Format: Emacs Lisp alist of (VARIABLE . VALUE) pairs.
+;; These settings override user options (highest priority).
+
+'(
+  ;; Язык информационных сообщений (обзоры, пояснения, рационали)
+  (magpt-info-language . "Russian")
+
+  ;; Язык для генерируемых сообщений коммитов
+  (magpt-commit-language . "Russian")
+  
+  ;; Панель задач автоматически показывать после ответа
+  (magpt-panel-auto-pop . t)
+
+  ;; (по желанию) Включить экспериментальный реестр задач
+  (magpt-enable-task-registry . t)
+
+  (magpt-model . "gpt-4.1-mini"))

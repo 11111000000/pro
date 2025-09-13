@@ -42,30 +42,27 @@
 
 ;;;; Подсказка комбинаций кавиш
 
-(use-package guide-key
-  :defer t
+(use-package which-key
   :ensure t
-  :diminish " C-?"
+  :defer t
+  :diminish which-key-mode
   :custom
-  ((guide-key/guide-key-sequence '("C-x" "C-c" "ESC" "C-," "C-z" "C-t" "C-." "M-t" "M-g" "SPC" "C-d" "F1" "M-s" "C-h"))
-   (guide-key/popup-window-position 'top)
-   (guide-key/recursive-key-sequence-flag t)
-   (guide-key/idle-delay 3)
-   (guide-key/text-scale-amount -1)
-   (guide-key/highlight-prefix-regexp "Prefix")
-   (guide-key/highlight-command-regexp
-    '("rectangle"
-      ("buffer" . "sky blue")
-      ("org" . "cornflower blue")
-      ("outshine" . "dark violet")
-      ("helm" . "lime green")
-      ("consult" . "lime green")
-      ("popwin" . "hot pink")
-      ("macro" . "medium orchid")
-      ("region" . "cadet blue")
-      ("mark" . "moccasin"))))
+  ((which-key-idle-delay 3)
+   (which-key-max-description-length 40)
+   (which-key-sort-order 'which-key-prefix-then-key-order)
+   (which-key-show-prefix 'top))
   :init
-  (guide-key-mode t))
+  (which-key-mode 1))
+
+(use-package which-key-posframe
+  :ensure t
+  :after which-key
+  :if (display-graphic-p)
+  :custom
+  (which-key-posframe-border-width 3)
+  (which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  (which-key-posframe-parameters '((left-fringe . 6) (right-fringe . 6)))
+  :hook (which-key-mode . which-key-posframe-mode))
 
 ;;;; Документация по языку во всплывающем окне
 

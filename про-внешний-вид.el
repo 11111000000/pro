@@ -84,10 +84,13 @@
   :ensure t
   :init (установить-из :repo "11111000000/shaoline")
   :custom
-  (shaoline-debug t)
+  (shaoline-debug nil)
   (shaoline-mode-strategy 'yang)
   (shaoline-with-tray t)
   (shaoline-enable-dynamic-segments t)
+  (shaoline-preserve-modeline-modes
+   '(help-mode
+     context-navigator-view-mode))
   :hook (after-init . shaoline-mode))
 
 (require 'time)
@@ -238,6 +241,20 @@
     :ensure t
     :hook (after-init . solaire-global-mode)))
 
+;;;; Текстовые меню - Transient
+
+(require 'установить-из)
+
+;; (use-package transient
+;;   :init (установить-из :repo "magit/transient" :name "transient"))
+
+                                        ;(add-to-list 'package--builtin-versions '(transient 0 4 3))
+
+(use-package transient-posframe
+  :ensure t
+  :config
+  (transient-posframe-mode t))
+
 ;; Универсальные визуальные улучшения для всех режимов.
 
 ;; Новое: показывать относительные номера строк в буферах с кодом.
@@ -259,7 +276,24 @@
 ;;;; 8. Финал
 ;; Завершаем: не беспокоим о процессах при выходе, предоставляем модуль.
 
-(setq confirm-kill-processes nil)
+;; Запретить выход по C-x C-c; вместо этого использовать C-x M-q
+(defun pro/quit-emacs ()
+  "Сохранить все буферы и выйти из Emacs без лишних вопросов."
+  (interactive)
+  (save-buffers-kill-emacs))
+
+;; Вежливо предупреждать при попытке выйти по C-x C-c
+(defun pro/block-quit-c-x-c-c ()
+  "Блокировать выход по C-x C-c."
+  (interactive)
+  (user-error "Выход отключён: используйте C-x M-q"))
+
+(setq confirm-kill-processes nil
+      confirm-kill-emacs nil)
+
+;; Переназначения клавиш выхода
+(global-set-key (kbd "C-x C-c") #'pro/block-quit-c-x-c-c)
+(global-set-key (kbd "C-x M-q") #'pro/quit-emacs)
 
 (provide 'про-внешний-вид)
 ;;; про-внешний-вид.el ends here

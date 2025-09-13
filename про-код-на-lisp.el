@@ -165,7 +165,7 @@
   :ensure t
   :init
   ;; Подключаем package-lint как backend Flymake, если доступен.
-  )n
+  )
 
 ;;;; 4. Форматирование
 (use-package format-all
@@ -239,6 +239,7 @@
 ;;; 6.7 russian-lisp-mode - перевод лиспа на русский язык
 
 (use-package russian-lisp-mode
+  :demand t
   :load-path "~/Code/russian-lisp-mode/")
 
 ;;; Полезные функции
@@ -273,43 +274,79 @@
       (display-buffer (current-buffer)))
     (message "Done: %d files, %d with errors" (length files) errs)))
 
-(defun pro/dired-check-parens-marked ()
-  "Запустить `check-parens' для всех помеченных файлов в Dired.
-Результат в буфере *check-parens/."
+(defun pro/reload-all-elisp-in-dired-directory ()
+  "Перевыполнить все .el файлы в текущей директории Dired (как `перевыполнить-буфер').
+Для каждого файла:
+- Проверяем сбалансированность скобок (`check-parens')
+- Если это elisp-буфер, принудительно переинициализируем все (defvar)/(defvar-local),
+  затем выполняем все верхнеуровневые формы (`eval-buffer').
+Ошибки собираются и показываются в буфере *reload-elisp*"
   (interactive)
   (require 'dired)
-  (let* ((files (cl-remove-if #'file-directory-p (dired-get-marked-files)))
-         (errs 0))
-    (with-current-buffer (get-buffer-create "*check-parens/")
-      (erase-buffer)
-      (dolist (f files)
-        (let ((buf (find-file-noselect f)))
-          (unwind-protect
-              (let (ok err-msg)
-                (with-current-buffer buf
-                  (condition-case e
-                      (progn (check-parens)
-                             (setq ok t))
-                    (error
-                     (setq ok nil
-                           err-msg (error-message-string e)))))
-                (when (not ok)
-                  (setq errs (1+ errs)))
-                (insert (format "%-3s %s\n" (if ok "OK" "ERR") f))
-                (when (not ok)
-                  (insert (format "    %s\n" err-msg))))
-            (kill-buffer buf))))
-      (insert (format "Summary: %d files, %d with errors\n" (length files) errs))
+  (let* ((dir (dired-current-directory))
+         (files (directory-files dir t "\\.el\\'"))
+         (report (get-buffer-create "*reload-elisp*"))
+         (errs 0)
+         (done 0))
+    ;; Сделать буфер отчёта временно записываемым (если он уже в special-mode)
+    (with-current-buffer report
+      (let ((inhibit-read-only t))
+        (when (derived-mode-p 'special-mode)
+          (fundamental-mode))
+        (setq buffer-read-only nil)
+        (erase-buffer)))
+    (dolist (file files)
+      (let* ((existing (get-file-buffer file))
+             (buf (or existing (find-file-noselect file)))
+             (created (not existing))
+             (ok nil)
+             (err-msg nil))
+        (unwind-protect
+            (with-current-buffer buf
+              (condition-case e
+                  (progn
+                    (check-parens)
+                    (if (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
+                        (progn
+                          ;; Принудительная переинициализация (defvar)/(defvar-local):
+                          ;; собираем имена переменных и делаем (makunbound), чтобы (defvar) их заново инициализировал.
+                          (let ((defvars
+                                 (save-excursion
+                                   (goto-char (point-min))
+                                   (let (acc form)
+                                     (condition-case _eof
+                                         (while t
+                                           (setq form (read (current-buffer)))
+                                           (when (and (consp form)
+                                                      (memq (car form) '(defvar defvar-local)))
+                                             (let ((name (nth 1 form)))
+                                               (when (symbolp name)
+                                                 (push name acc)))))
+                                       (end-of-file nil))
+                                     acc))))
+                            (dolist (v defvars)
+                              (when (boundp v) (makunbound v))))
+                          (save-excursion (eval-buffer))
+                          (setq ok t))
+                      (setq err-msg "Пропущен (не elisp-буфер)")))
+                (error
+                 (setq ok nil
+                       err-msg (error-message-string e)))))
+          (when created (kill-buffer buf)))
+        (with-current-buffer report
+          (let ((inhibit-read-only t))
+            (insert (format "%-4s %s\n" (if ok "OK" "ERR") (abbreviate-file-name file)))
+            (unless ok
+              (setq errs (1+ errs))
+              (insert (format "     %s\n" (or err-msg ""))))
+            (when ok
+              (setq done (1+ done)))))))
+    (with-current-buffer report
       (goto-char (point-min))
-      (display-buffer (current-buffer)))))
+      (special-mode))
+    (display-buffer report)
+    (message "Готово: %d файлов обработано, ошибок: %d" done errs)))
 
-(defun pro/reload-all-elisp-in-dired-directory ()
-  "Перезагрузить все файлы .el в текущей папке Dired."
-  (interactive)
-  (let ((dir (dired-current-directory)))
-    (dolist (file (directory-files dir t "\\.el$"))
-      (load (file-name-sans-extension file) nil 'nomessage))
-    (message "Все .el-файлы из %s перезагружены." dir)))
 
 ;;   «Пишите код, чтобы его было легко читать; если вам скучно, вставьте шутку,
 ;;    но так, чтобы компилятору было всё равно» — мануфактура лиспа, 2023.

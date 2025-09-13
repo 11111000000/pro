@@ -6,6 +6,7 @@
 (require 'all-the-icons)
 (require 'calendar)
 (require 'holidays)
+(require 'shaoline)
 (require 'lunar)
 
 (defun про-доску/футер (&optional _)
@@ -18,19 +19,28 @@ _ — игнорируемый аргумент, нужен для совмес�
          (holidays-today
           (let ((hs (calendar-check-holidays cal-date)))
             (and hs (mapconcat #'identity hs ", "))))
-         ;; Лунная фаза
-         (moon-icons ["🌑" "🌒" "🌓" "🌔" "🌕" "🌖" "🌗" "🌘"])
-         ;; moon phase: robust, use integer date, as in shaoline
-         (moon-idx
-          (let* ((abs-now (float (calendar-absolute-from-gregorian cal-date)))
-                 (synodic-month 29.530588853)
-                 (next-new (lunar-new-moon-on-or-after abs-now))
-                 (prev-new (- next-new synodic-month))
-                 (age (- abs-now prev-new)))
-            (mod (floor (* age (/ 8.0 synodic-month))) 8)))
-         (moon (if (and (integerp moon-idx) (<= 0 moon-idx) (< moon-idx 8))
-                   (aref moon-icons moon-idx)
-                 "☾")))
+         ;; Лунная фаза (используем lunar.el + shaoline при наличии)
+         (moon
+          (let* ((icons (if (boundp 'shaoline-moon-icons)
+                            shaoline-moon-icons
+                          ["🌑" "🌒" "🌓" "🌔" "🌕" "🌖" "🌗" "🌘"]))
+                 (jd (if (fboundp 'shaoline--jd-now)
+                         (shaoline--jd-now)
+                       ;; approximate Julian day from current time: JD = Unix/86400 + 2440587.5
+                       (+ (/ (float-time (current-time)) 86400.0) 2440587.5)))
+                 (synodic-month (if (boundp 'shaoline--synodic-month)
+                                    shaoline--synodic-month
+                                  29.530588853))
+                 (next-new (lunar-new-moon-on-or-after jd))
+                 (prev-guess (lunar-new-moon-on-or-after (- jd synodic-month)))
+                 (prev-new (if (> prev-guess jd)
+                               (lunar-new-moon-on-or-after (- jd (* 2 synodic-month)))
+                             prev-guess))
+                 (age (- jd prev-new))
+                 (idx (min 7 (max 0 (floor (* age (/ 8.0 synodic-month)))))))
+            (if (and (integerp idx) (<= 0 idx) (< idx 8))
+                (aref icons idx)
+              "☾"))))
     (concat
      moon
      "  "
@@ -47,7 +57,7 @@ _ — игнорируемый аргумент, нужен для совмес�
          ("<f5>" . dashboard-refresh-buffer)
          ("C-<f5>" . dashboard-refresh-buffer)
          :map dashboard-mode-map
-         ("C-g" . dashboard-refresh-buffer))
+         ("C-g" . keyboard-quit))
   :hook ((dashboard-mode-hook . variable-pitch-mode))
   :custom
   (dashboard-startup-banner "~/pro/lisp.png")
@@ -83,12 +93,18 @@ _ — игнорируемый аргумент, нужен для совмес�
       ("⚑" nil "Show flags"
        (lambda (&rest _) (message "flag")) error))))
   ;; --- Красивый футер с датой, праздником и луной ---
-
+  ;; Футер обновляем динамически при открытии/обновлении Dashboard.
   (dashboard-footer-messages (list (про-доску/футер)))
   (dashboard-footer-icon (if window-system (all-the-icons-octicon "dashboard"
                                                                   :height 1.1
                                                                   :v-adjust -0.05
                                                                   :face 'font-lock-keyword-face) "."))
+  :config
+  (defun про-доску/обновить-футер ()
+    "Сформировать и установить динамический футер Dashboard."
+    (setq dashboard-footer-messages (list (про-доску/футер))))
+  (add-hook 'dashboard-mode-hook #'про-доску/обновить-футер)
+  (advice-add 'dashboard-refresh-buffer :before #'про-доску/обновить-футер)
   :init
   ;;(dashboard-refresh-buffer)
   )

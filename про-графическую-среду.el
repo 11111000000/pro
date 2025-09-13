@@ -280,7 +280,7 @@ fi"))
       (make-directory dir t))
     (start-process-shell-command
      "scrot-full" nil
-     (format "scrot '%s%%Y-%%m-%%d-%%H-%%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'"
+     (format "scrot -d 3 '%s%%Y-%%m-%%d-%%H-%%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'"
              dir))))
 
 (defun скринкаст (&optional duration)

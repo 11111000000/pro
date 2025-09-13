@@ -138,7 +138,7 @@
   "Получить plist тарифов (:input :output) для модели MODEL (символ или строка).
 Если точного совпадения нет, пробуем подобрать по префиксу имени модели.
 Возвращает nil, если ничего не найдено."
-  (let* ((name (if (symbolп model) (symbol-name model) (or model "")))
+  (let* ((name (if (symbolp model) (symbol-name model) (or model "")))
          (name (replace-regexp-in-string "\\." "-" name)))
     (or
      (cdr (assoc (intern name) про-ии-тарифы-моделей))
@@ -220,15 +220,7 @@
 (defvar про-ии-proxyapi-хост "api.proxyapi.ru"
   "Базовый хост ProxyAPI.")
 (defvar про-ии-proxyapi-ключ nil
-  "Единый ключ для ProxyAPI. Если установлен — применяется и к OpenAI-совместимым интерфейсам.")
-
-;; Если ключ ProxyAPI определён, постараемся распространить его на все совместимые клиенты.
-(when (and (boundp 'про-ии-proxyapi-ключ) про-ии-proxyapi-ключ)
-  (setq-default openai-key про-ии-proxyapi-ключ)
-  (setq-default gptel-api-key про-ии-proxyapi-ключ)
-  (setq-default chatgpt-shell-openai-key про-ии-proxyapi-ключ)
-  (setq-default dall-e-shell-openai-key про-ии-proxyapi-ключ)
-  (setenv "OPENAI_API_KEY" про-ии-proxyapi-ключ))
+  "Единый ключ для ProxyAPI.")
 
 ;;;; 4. GPTEL: настройка и пул backend’ов (AI Tunnel, ProxyAPI: OpenAI/Anthropic, Chutes/DeepSeek)
 
@@ -240,10 +232,10 @@
               ("C-c C-<return>"    . gptel-send)
               ("M-RET"             . про-ии-отправить-без-контекста)
               ("C-c M-RET"         . про-ии-отправить-без-контекста-aibo))
+  :hook ((gptel-mode . tab-line-mode))
   :custom
   (gptel-default-mode 'org-mode)                ;; Ответы в org-mode
   (gptel-org-branching-context nil)             ;; Без разветвления контекста по умолчанию
-  (gptel-api-key про-ии-proxyapi-ключ)          ;; Централизованный ключ
   (gptel-log-level 'info)
   ;; Примечание: Используется внутренний var =gptel--system-message= — в API GPTEL он может меняться.
   ;; Если увидите варнинги: замените на актуальную переменную системного сообщения из GPTEL.
@@ -264,9 +256,6 @@
     (let ((gptel-use-context nil))
       (when (fboundp 'gptel-aibo-send)
         (gptel-aibo-send))))
-
-  ;; Доп. расширение хранилища контекста (необязательно; локальная библиотека)
-  (require 'gptel-context-store nil t)
 
   ;; --- AI Tunnel (кастомный прокси/сервер OpenAI API) ---
   (setq про-ии-aitunnel-бэкенд
@@ -292,7 +281,7 @@
     :host про-ии-proxyapi-хост
     :endpoint "/openai/v1/chat/completions"
     :stream t
-    :key gptel-api-key
+    :key про-ии-proxyapi-ключ
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models (append
              '("gpt-4o-search-preview" "gpt-4o-mini-search-preview" "gpt-5" "gpt-4.1" "o4-mini"
@@ -342,6 +331,18 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
      :annotate annotate))
    (t
     (completing-read prompt candidates nil require-match nil nil initial))))
+
+;; (defun про-ии-org-auto-enable-gptel-mode-by-heading ()
+;;   "Автоматически включает gptel-mode, если в Org-файле есть заголовки, содержащие 'gptel'."
+;;   (when (and (derived-mode-p 'org-mode)
+;;              (save-excursion
+;;                (goto-char (point-min))
+;;                (re-search-forward "^\\*+.*gptel" nil t)))
+;;     (unless (bound-and-true-p gptel-mode)
+;;       (gptel-mode 1)
+;;       (message "gptel-mode включён по gptel-заголовку"))))
+
+;; (add-hook 'org-mode-hook #'про-ии-org-auto-enable-gptel-mode-by-heading)
 
 (defun про-ии-переключить-бэкенд ()
   "Интерактивный выбор и активация =gptel-backend= среди известных бэкендов."
@@ -415,6 +416,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
 (use-package gptel-aibo
   :ensure t
+  :hook ((gptel-aibo-mode . tab-line-mode))
   :bind (:map gptel-aibo-mode-map
               ("C-c RET"      . gptel-aibo-send)
               ("C-c C-<return>"      . gptel-aibo-send)
@@ -623,9 +625,12 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   ;; Use :custom instead of setq — values are applied via customize-set-variable.
   :custom
   ;; Basics
+  (context-navigator-language 'en)
   (context-navigator-global-key "C-c n")           ;; recommended global key for the transient
   (context-navigator-autoload t)                   ;; load pieces on first use
   (context-navigator-autosave t)                   ;; auto-save contexts
+  (context-navigator-default-auto-project-switch t)
+  (context-navigator-default-push-to-gptel t)
   (context-navigator-sidebar-width 36)             ;; sidebar width in columns
 
   ;; Sidebar look & feel
@@ -636,7 +641,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
   ;; Render options
   (context-navigator-render-indicator-style 'icons) ;; tiny lamps via all-the-icons
-  (context-navigator-render-show-path t)            ;; show right-aligned paths
+  (context-navigator-render-show-path nil)          ;; show right-aligned paths
   (context-navigator-render-truncate-name 64)       ;; truncate long item names
 
   ;; Icons provider
@@ -661,6 +666,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   ;; Protect your layout when the sidebar is open
   (context-navigator-protect-sidebar-windows t)
 
+
   :config
   ;; Enable the global minor mode after customizing.
   (context-navigator-mode 1)
@@ -669,22 +675,31 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   ;; M-x all-the-icons-install-fonts
   )
 
+;; (use-package gptel-secrets
+;;   :after gptel
+;;   :load-path "~/Code/gptel-secrets"
+;;   :init
+;;   (setq gptel-secrets-locale 'ru
+;;         gptel-secrets-action 'confirm
+;;         gptel-secrets-enable t)
+;;   :config
+;;   (gptel-secrets-mode 1))
 
 ;; --- Автоматически включать gptel-mode при открытии Org-файла с PROPERTIES, связанными с gptel ---
 
-(defun про-ии-org-auto-enable-gptel-mode ()
-  "Автоматически включает gptel-mode, если Org-файл содержит PROPERTIES, связанные с gptel."
-  (when (and (derived-mode-p 'org-mode)
-             (save-excursion
-               (goto-char (point-min))
-               (re-search-forward
-                "^\\s-*\\(:PROPERTIES:\\)?\\s-*$\\([^:]*\\(:gptel\\|gptel-\\)[^:]*\\|\\(:gptel\\)[^\\n]*\\)*"
-                nil t)))
-    (unless (bound-and-true-p gptel-mode)
-      (gptel-mode 1)
-      (message "gptel-mode включён автоматически (найдены PROPERTIES, связанные с gptel)"))))
+;; (defun про-ии-org-auto-enable-gptel-mode ()
+;;   "Автоматически включает gptel-mode, если Org-файл содержит PROPERTIES, связанные с gptel."
+;;   (when (and (derived-mode-p 'org-mode)
+;;              (save-excursion
+;;                (goto-char (point-min))
+;;                (re-search-forward
+;;                 "^\\s-*\\(:PROPERTIES:\\)?\\s-*$\\([^:]*\\(:gptel\\|gptel-\\)[^:]*\\|\\(:gptel\\)[^\\n]*\\)*"
+;;                 nil t)))
+;;     (unless (bound-and-true-p gptel-mode)
+;;       (gptel-mode 1)
+;;       (message "gptel-mode включён автоматически (найдены PROPERTIES, связанные с gptel)"))))
 
-(add-hook 'org-mode-hook #'про-ии-org-auto-enable-gptel-mode)
+;; (add-hook 'org-mode-hook #'про-ии-org-auto-enable-gptel-mode)
 
 ;;;###autoload
 (defun про-ии-gptel-aibo-apply-actions-from-region (beg end)

@@ -135,7 +135,10 @@
   :config
   (autoload 'projectile-project-root "projectile")
   (require 'consult-xref)
-  (setq consult-project-function #'projectile-project-root))
+  (setq consult-project-function #'projectile-project-root)
+  ;; Не включать проектные буферы в consult-buffer, чтобы не было лишних "Select Project"
+  (setq consult-buffer-sources
+        (cl-remove 'consult--source-project-buffer consult-buffer-sources :test #'eq)))
 
 ;; Расширения Consult: для сниппетов и документации (Dash).
 (use-package consult-yasnippet

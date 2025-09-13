@@ -96,14 +96,6 @@ were part of the capture template definition."
 ;;       (error (format "%s is not a recognized project."
 ;;                   project-name)))))
 
-;;;; Текстовые меню - Transient
-
-(require 'установить-из)
-
-;; (use-package transient
-;;   :init (установить-из :repo "magit/transient" :name "transient"))
-
-                                        ;(add-to-list 'package--builtin-versions '(transient 0 4 3))
 
 ;;;; Система контроля версий Git
 

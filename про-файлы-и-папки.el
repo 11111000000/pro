@@ -22,7 +22,7 @@
          ("RET" . dired-find-file)
          ("h" . dired-up-directory)
          ("^" . dired-up-directory)
-         ("C-c r" . pro/reload-all-elisp-in-directory))
+         ("C-c r" . pro/dired-reload-elisp-here))
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode)
          ;;(dired-mode . hl-line-mode)
@@ -52,6 +52,13 @@
 ;;;; Функция выполнить команду в выбранных файлах
 
 (require 'dired)
+
+(defun pro/dired-reload-elisp-here ()
+  "Перезагрузить все .el файлы в текущей директории Dired.
+Требуем модуль 'про-код-на-lisp' по необходимости и вызываем его функцию."
+  (interactive)
+  (require 'про-код-на-lisp)
+  (pro/reload-all-elisp-in-dired-directory))
 
 (defun dired-do-command (command)
   "Выполняет команду COMMAND для помеченных файлов.

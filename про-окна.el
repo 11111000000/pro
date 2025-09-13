@@ -66,14 +66,17 @@
           "^\\*term.*\\*$"
           term-mode
           "^\\*vterm.*\\*$"
+          "^\\*gptel.*\\*$"
+          "^\\*AI.*\\*$"
           vterm-mode
+          gptel-aibo-mode
+          gptel-mode
           "^\\*nixos-log\\*$"
           ))
   (popper-mode +1)
   (popper-echo-mode +1)
   (add-to-list 'display-buffer-alist
-               (cons "\\*Async.*" (cons #'display-buffer-no-window nil)))
-  )
+               (cons "\\*Async.*" (cons #'display-buffer-no-window nil))))
 
 ;; (use-package popwin
 ;;   :ensure t
