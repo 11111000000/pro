@@ -104,10 +104,14 @@ were part of the capture template definition."
   :defer t
   :after transient
   :custom ((magit-log-margin '(t age-abbreviated magit-log-margin-width t 7))
-           (magit-after-save-refresh-buffers t))
+           (magit-after-save-refresh-buffers t)
+           (magit-save-repository-buffers nil))
   :init
   (add-hook 'magit-process-find-password-functions
             'magit-process-password-auth-source))
+
+
+
 
 ;; Кто это сделал?
 

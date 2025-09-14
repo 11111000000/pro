@@ -232,7 +232,7 @@
               ("C-c C-<return>"    . gptel-send)
               ("M-RET"             . про-ии-отправить-без-контекста)
               ("C-c M-RET"         . про-ии-отправить-без-контекста-aibo))
-  :hook ((gptel-mode . tab-line-mode))
+  ;;:hook ((gptel-mode . tab-line-mode))
   :custom
   (gptel-default-mode 'org-mode)                ;; Ответы в org-mode
   (gptel-org-branching-context nil)             ;; Без разветвления контекста по умолчанию
@@ -416,7 +416,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
 (use-package gptel-aibo
   :ensure t
-  :hook ((gptel-aibo-mode . tab-line-mode))
+  ;;:hook ((gptel-aibo-mode . tab-line-mode))
   :bind (:map gptel-aibo-mode-map
               ("C-c RET"      . gptel-aibo-send)
               ("C-c C-<return>"      . gptel-aibo-send)
