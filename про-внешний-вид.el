@@ -115,11 +115,14 @@
     (add-hook 'after-load-theme-hook #'kind-icon-reset-cache))
 
   ;; Иконки в marginalia (подсказки) через nerd-icons-completion.
-  (use-package nerd-icons-completion
-    :defer t
-    :ensure t
-    :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
-    :config (nerd-icons-completion-mode))
+  ;; (use-package nerd-icons-completion
+  ;;   :defer t
+  ;;   :ensure t
+  ;;   :after marginalia
+  ;;   :disabled t
+  ;;   :config
+  ;;   (nerd-icons-completion-mode)
+  ;;   (nerd-icons-completion-marginalia-setup))
 
   ;; Иконки в dired (файловый менеджер) через treemacs.
   (use-package treemacs-icons-dired

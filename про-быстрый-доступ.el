@@ -99,6 +99,8 @@
 (use-package marginalia
   :ensure t
   :functions (marginalia-mode)
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))  ; Цикл аннотаций (в M-x покажет описание функций)
   :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init (marginalia-mode t))  ; Глобальное включение.

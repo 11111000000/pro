@@ -202,11 +202,11 @@
 
 ;;;; Цветные тэги
 
-(use-package org-rainbow-tags
-  :defer t
-  :ensure t
-  :hook ((org-mode . org-rainbow-tags-mode))
-  :init)
+;; (use-package org-rainbow-tags
+;;   :defer t
+;;   :ensure t
+;;   :hook ((org-mode . org-rainbow-tags-mode))
+;;   :init)
 
 ;;;; Org modern
 

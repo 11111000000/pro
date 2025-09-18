@@ -109,20 +109,20 @@
 | C-M-.          | xref-find-definitions-other-window  |
 | C-.            | embark-act                          |
 | C-c ir         | gptel-rewrite                       |
-| C-c im         | про-ии-переключить-модель           |
+| C-c im         | pro-ai-переключить-модель           |
 | C-c i.         | gptel-quick                         |
 | C-c ia         | gptel-add                           |
 | C-c if         | gptel-add-file                      |
 | C-c ip         | gptel-system-prompt                 |
 | C-c i RET      | gptel-send                          |
-| C-c i M-RET    | про-ии-отправить-без-контекста      |
+| C-c i M-RET    | pro-ai-отправить-без-контекста      |
 | C-c is         | gptel-send                          |
 | C-c ik         | gptel-abort                         |
 | C-c ig         | gptel-abort                         |
 | C-c id         | gptel-context-remove-all            |
 | C-c iq         | elysium-query                       |
 | C-c i w        | whisper-run                         |
-| C-c i M-c      | про-ии-codeium-toggle               |
+| C-c i M-c      | pro-ai-codeium-toggle               |
 | C-c e e        | evedel-create-directive             |
 | C-c e i        | evedel-modify-directive             |
 | C-c e D        | evedel-modify-directive-tag-query   |
@@ -145,16 +145,16 @@
 | s-i o          | gptel                               |
 | s-i s-o        | gptel                               |
 | s-i r          | gptel-rewrite                       |
-| s-i m          | про-ии-переключить-модель           |
+| s-i m          | pro-ai-переключить-модель     |
 | s-i s-m        | gptel-menu                          |
 | s-i .          | gptel-quick                         |
 | s-i a          | gptel-add                           |
 | s-i t          | gptel-tools                         |
-| s-i b          | про-ии-переключить-бэкенд           |
+| s-i b          | pro-ai-переключить-бэкенд           |
 | s-i f          | gptel-add-file                      |
 | s-i p          | gptel-system-prompt                 |
 | s-i RET        | gptel-send                          |
-| s-i s-<return> | про-ии-отправить-без-контекста      |
+| s-i s-<return> | pro-ai-отправить-без-контекста      |
 | s-i k          | gptel-abort                         |
 | s-i g          | gptel-abort                         |
 | s-i q          | elysium-query                       |

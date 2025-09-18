@@ -18,6 +18,8 @@
            (telega-emoji-font-family nil)
            (telega-chat-show-avatars nil)
            (telega-chat-show-photos nil)
+           (telega-root-auto-fill-mode nil)
+           (telega-chat-auto-fill-mode nil)
            (telega-webpage-preview-mode nil)
            (telega-chat-fill-column 80)
            (telega-chat-history-limit 100)
