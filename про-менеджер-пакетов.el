@@ -159,10 +159,43 @@
                  (insert (format "\nDone (status %s, %.2fs): %s"
                                  (condition-case nil (process-exit-status proc) (error "n/a"))
                                  (- (float-time) start-time)
-                                 (string-trim event))))))))))
-    (pop-to-buffer buf)))
+                                 (string-trim event)))))
+             (run-at-time
+              0 nil
+              (lambda ()
+                (when (y-or-n-p "Перезагрузить пакеты? y/n ")
+                  (let ((reloaded (pro/reload-all-packages)))
+                    (with-current-buffer buf
+                      (let ((inhibit-read-only t))
+                        (goto-char (point-max))
+                        (insert (format "\nReloaded %d package files in current session." reloaded))))))))))))
+      (unless (get-buffer-window buf t)
+        (display-buffer buf)))))
 
 (defalias 'обновить-пакеты-в-фоне #'pro/package-upgrade-async)
+
+(defun pro/reload-all-packages ()
+  "Перезагрузить все загруженные файлы пакетов из package-user-dir в текущей сессии.
+Возвращает количество успешно перезагруженных файлов."
+  (interactive)
+  (let* ((dir (file-name-as-directory (expand-file-name package-user-dir)))
+         (count 0)
+         (load-prefer-newer t)
+         (gc-cons-threshold most-positive-fixnum))
+    ;; Обновляем load-path/активацию пакетов на случай новых версий.
+    (package-initialize)
+    ;; Перезагружаем все уже загруженные из ELPA/уложенные в load-history файлы.
+    (dolist (entry load-history count)
+      (let ((file (car entry)))
+        (when (and (stringp file)
+                   (string-prefix-p dir (expand-file-name file)))
+          (let ((lib (file-name-sans-extension (file-name-nondirectory file))))
+            (condition-case _
+                (progn
+                  ;; Грузим по имени библиотеки, чтобы подтянулась новая версия из load-path.
+                  (load lib nil 'nomessage)
+                  (setq count (1+ count)))
+              (error nil))))))))
 
 (provide 'про-менеджер-пакетов)
 ;;; про-менеджер-пакетов.el ends here.
