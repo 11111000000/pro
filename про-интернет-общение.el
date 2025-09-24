@@ -63,7 +63,7 @@
 (require 'cl-lib)
 (require 'subr-x)
 
-(defun az/telega--contacts ()
+(defun pro/telega--contacts ()
   "Вернуть список объектов user для всех контактов."
   (require 'telega)
   (let ((contacts (telega--getContacts)))
@@ -72,11 +72,11 @@
      ((listp contacts) contacts)
      (t nil))))
 
-(defun az/telega--mention-alist ()
+(defun pro/telega--mention-alist ()
   "Вернуть alist (username . fullname) для контактов.
 fullname — склеенные first_name и last_name (может быть nil/пустым).
 Если у пользователя несколько активных никнеймов — вернуть все."
-  (cl-loop for u in (az/telega--contacts)
+  (cl-loop for u in (pro/telega--contacts)
            for fname = (telega--tl-get u :first_name)
            for lname = (telega--tl-get u :last_name)
            for full = (string-trim (mapconcat #'identity
@@ -95,7 +95,7 @@ fullname — склеенные first_name и last_name (может быть nil
            when (not (string-empty-p full))
            collect (cons nil full)))
 
-(defun az/telega-mention-capf ()
+(defun pro/telega-mention-capf ()
   "CAPF для автодополнения @упоминаний в telega чатах.
 Ищет по нику и по имени (включая кириллицу)."
   (when (derived-mode-p 'telega-chat-mode)
@@ -110,7 +110,7 @@ fullname — склеенные first_name и last_name (может быть nil
                        (not (string-match-p "\\s-"
                                             (buffer-substring-no-properties start pt))))))
       (when valid
-        (let* ((alist (az/telega--mention-alist))
+        (let* ((alist (pro/telega--mention-alist))
                (table
                 (completion-table-dynamic
                  (lambda (str)
@@ -141,15 +141,15 @@ fullname — склеенные first_name и last_name (может быть nil
                      (t nil))))
                 :exclusive 'no))))))
 
-(defun az/telega-enable-mention-capf ()
+(defun pro/telega-enable-mention-capf ()
   "Включить автодополнение @упоминаний в telega чатах."
-  (add-hook 'completion-at-point-functions #'az/telega-mention-capf nil t)
+  (add-hook 'completion-at-point-functions #'pro/telega-mention-capf nil t)
   ;; Гарантируем, что TAB вызывает CAPF в чатах
   (local-set-key (kbd "TAB") #'completion-at-point)
   (local-set-key [tab] #'completion-at-point))
 
 (with-eval-after-load 'telega
-  (add-hook 'telega-chat-mode-hook #'az/telega-enable-mention-capf))
+  (add-hook 'telega-chat-mode-hook #'pro/telega-enable-mention-capf))
 
 (provide 'про-интернет-общение)
 ;;; про-интернет-общение.el ends here

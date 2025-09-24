@@ -725,16 +725,16 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
 ;; (add-hook 'org-mode-hook #'pro-ai-org-auto-enable-gptel-mode)
 
+(require 'gptel-aibo-planner)
 ;;;###autoload
 (defun pro-ai-gptel-aibo-apply-actions-from-region (beg end)
   "Parse and execute <OP> actions from region between BEG and END.
-
 Понимает формат операций gptel-aibo:
-- <OP> MODIFY `BUFNAME` ... с парами *SEARCH*/*REPLACE*
-- <OP> CREATE <FILEPATH> ... с содержимым в блоке
-- <OP> DELETE <FILEPATH>
+  - <OP> MODIFY `BUFNAME` ... с парами *SEARCH*/*REPLACE*
+  - <OP> CREATE <FILEPATH> ... с содержимым в блоке
+  - <OP> DELETE <FILEPATH>
 
-В Org-буферах используется org-парсер."
+  В Org-буферах используется org-парсер."
   (interactive "r")
   (unless (use-region-p)
     (user-error "Нет выделенного региона"))

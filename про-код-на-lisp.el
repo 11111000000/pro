@@ -222,7 +222,7 @@
 ;;   :hook (lispy-mode . lispyville-mode))
 
 ;;; 6.4 Rainbow-delimiters — уровень вложенности как радуга
-(use-package rainbow-delimiters :ensure t :hook (prog-mode . rainbow-delimiters-mode))
+;; (use-package rainbow-delimiters :ensure t :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;; 6.5 Macrostep — пошаговый expand
 (use-package macrostep
@@ -347,6 +347,86 @@
     (display-buffer report)
     (message "Готово: %d файлов обработано, ошибок: %d" done errs)))
 
+;;; ERT панелька
+
+(use-package test-flow
+  :load-path "~/Code/test-flow/lisp"
+  :custom (ert-flow-run-on-open t))
+
+;; ;; ert-explorer — удобная панелька для запуска/обзора ERT-тестов.
+;; (use-package ert-explorer
+;;   :ensure t
+;;   :defer t
+;;   :commands (ert-explorer)
+;;   :bind (:map emacs-lisp-mode-map
+;;               ;; Быстро открыть панель тестов из elisp-буфера
+;;               ("C-c M-t" . ert-explorer))
+;;   :config
+;;   ;; Пытаемся показывать панель справа в side-window
+;;   (add-to-list 'display-buffer-alist
+;;                '("^\\*ert-explorer" . ((display-buffer-reuse-window display-buffer-in-side-window)
+;;                                        (side . right)
+;;                                        (window-width . 0.33)
+;;                                        (inhibit-same-window . t))))
+;;   ;; Утилита: открыть панель и (опционально) включить ert-watch-mode в текущем elisp-буфере
+;;   (defun pro/ert-explorer-open (&optional enable-watch)
+;;     "Open ert-explorer panel. If ENABLE-WATCH is non-nil, enable `ert-watch-mode' locally."
+;;     (interactive "P")
+;;     (ert-explorer)
+;;     (when (and enable-watch (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode))
+;;       (ert-watch-mode 1)))
+
+;;   ;; Добавим удобную привязку с префиксом для тех, кто хочет включать watch сразу.
+;;   (define-key emacs-lisp-mode-map (kbd "C-c M-T") #'pro/ert-explorer-open))
+
+
+;; ;;; Watch для ERT
+
+;; (defgroup ert-watch nil
+;;   "Auto-rerun ERT on save and show results in a side window."
+;;   :group 'ert)
+
+;; (defcustom ert-watch-selector t
+;;   "ERT selector to use when rerunning tests."
+;;   :type 'sexp
+;;   :group 'ert-watch)
+
+;; (defcustom ert-watch-debounce 0.2
+;;   "Idle seconds before rerunning ERT after a save."
+;;   :type 'number
+;;   :group 'ert-watch)
+
+;; (defvar ert-watch--timer nil)
+
+;; (defun ert-watch--schedule ()
+;;   (when ert-watch--timer (cancel-timer ert-watch--timer))
+;;   (setq ert-watch--timer
+;;         (run-with-idle-timer ert-watch-debounce nil #'ert-watch--run)))
+
+;; (defun ert-watch--show-results-side ()
+;;   (when-let ((buf (get-buffer "*ert*")))
+;;     (display-buffer buf
+;;                     '((display-buffer-reuse-window display-buffer-in-side-window)
+;;                       (side . right)
+;;                       (window-width . 0.33)
+;;                       (inhibit-same-window . t)))))
+
+;; (defun ert-watch--run ()
+;;   (let ((win (selected-window)))
+;;     (unwind-protect
+;;         (progn
+;;           (save-window-excursion
+;;             (ert ert-watch-selector))
+;;           (ert-watch--show-results-side))
+;;       (when (window-live-p win)
+;;         (select-window win)))))
+
+;; (define-minor-mode ert-watch-mode
+;;   "Re-run ERT tests on save and show results in a side window."
+;;   :lighter " ERT-W"
+;;   (if ert-watch-mode
+;;       (add-hook 'after-save-hook #'ert-watch--schedule nil t)
+;;     (remove-hook 'after-save-hook #'ert-watch--schedule t)))
 
 ;;   «Пишите код, чтобы его было легко читать; если вам скучно, вставьте шутку,
 ;;    но так, чтобы компилятору было всё равно» — мануфактура лиспа, 2023.

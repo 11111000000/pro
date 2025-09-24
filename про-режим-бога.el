@@ -42,8 +42,7 @@
          ("h" . backward-char)
          ("C-j" . next-line)
          ("C-k" . previous-line)
-         ("q" . previous-buffer)
-         )
+         ("q" . previous-buffer))
 
   :custom
 
@@ -65,7 +64,8 @@
                 racket-repl-mode racket-mode telega-image-mode telega-chat-mode telega-root-mode
                 lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode
                 flymake-diagnostics-buffer-mode profiler-report-mode custom-mode chatgpt-shell-mode
-                undo-tree-visualizer yaz-repl messages-buffer-mode context-navigator-view-mode))
+                undo-tree-visualizer yaz-repl messages-buffer-mode context-navigator-view-mode test-flow-panel-mode
+                context-navigator-multifile-mode))
 
   (god-exempt-predicates (list #'god-exempt-mode-p))
 

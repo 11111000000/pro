@@ -47,7 +47,7 @@
 
 (use-package vterm
   :ensure t
-  :functions (vterm-send-next-key vterm-yank)
+  :functions (vterm-send-next-key vterm-yank vterm-send-string)
   :hook ((vterm-mode . tab-line-mode))
   :bind (:map vterm-mode-map
               ;; Основные бинды для управления терминалом
@@ -56,9 +56,9 @@
               ("C-c C-c" . pro/vterm-interrupt)
               ("C-c C-t" . #'vterm-copy-mode)
               ("C-q" . #'vterm-send-next-key)
-              ("C-y" . #'vterm-yank)
-              ("s-`" . #'delete-window)
-              ("s-v" . #'vterm-yank)
+              ;; Вставка из kill-ring в vterm с корректной поддержкой yank-pop:
+              ("C-y" . pro/vterm-yank)
+              ("C-x y" . pro/vterm-consult-yank-pop)
               ;; Перемещение по истории терминала:
               ("M-p" . (lambda () (interactive) (vterm-send-key "<up>")))
               ("M-n" . (lambda () (interactive) (vterm-send-key "<down>")))
@@ -105,13 +105,89 @@
   (when (eq major-mode 'vterm-mode)
     (vterm-send-key "c" nil nil t)))
 
+(defun pro/vterm-yank (&optional arg)
+  "Вставить строку из kill-ring в vterm, корректно поддерживая последующий M-y.
+С префиксом ARG вставляет не последнюю, а ARG-ю запись (как в `current-kill')."
+  (interactive "P")
+  (let* ((n (if (integerp arg) arg 0))
+         (str (current-kill n t)))
+    (when (and (eq major-mode 'vterm-mode) str)
+      ;; Помечаем действие как yank, чтобы работал yank-pop/consult-yank-pop
+      (setq this-command 'yank)
+      ;; Отправляем как bracketed paste для корректной многострочной вставки
+      (vterm-send-string str t))))
+
+(defun pro/vterm-consult-yank-pop ()
+  "Открыть меню Consult kill-ring и вставить выбранную строку в vterm.
+Работает и в char-mode: отправляет в терминал, не редактируя буфер Emacs."
+  (interactive)
+  (require 'consult)
+  ;; Используем внутреннюю функцию Consult для получения строки без вставки в буфер
+  (let ((str (consult--read-from-kill-ring)))
+    (when (and (eq major-mode 'vterm-mode) str)
+      (setq this-command 'yank)
+      (vterm-send-string str t))))
+
+
+;; Фикс: после выхода из vterm-copy-mode иногда в kill-ring попадает пустая запись.
+;; Удаляем пустую "голову" kill-ring и корректируем указатель `kill-ring-yank-pointer'.
+(defun pro/vterm--string-empty-or-ws-p (s)
+  (or (null s) (string-match-p "\\`[[:space:]]*\\'" s)))
+
+;; Локальный флаг: было ли реальное копирование во время vterm-copy-mode.
+(defvar-local pro/vterm--copied-in-copy-mode nil)
+
+(defun pro/vterm--on-enter-copy-mode (&rest _)
+  "Сбросить флаг о копировании при входе в `vterm-copy-mode'."
+  (when (and (eq major-mode 'vterm-mode)
+             (bound-and-true-p vterm-copy-mode))
+    (setq pro/vterm--copied-in-copy-mode nil)))
+
+(defun pro/vterm--flag-copied-in-copy-mode (&rest _)
+  "Пометить, что копирование произошло, если мы в `vterm-copy-mode' vterm."
+  (when (and (eq major-mode 'vterm-mode)
+             (bound-and-true-p vterm-copy-mode))
+    (setq pro/vterm--copied-in-copy-mode t)))
+
+(defun pro/vterm--fix-kill-ring-after-copy-mode (&rest _)
+  "Если вышли из `vterm-copy-mode', почистить пустые элементы и при необходимости
+откатить указатель `kill-ring-yank-pointer' на предыдущую запись."
+  (when (and (eq major-mode 'vterm-mode)
+             (not (bound-and-true-p vterm-copy-mode)))
+    ;; 1) Сначала убираем пустые головы kill-ring.
+    (let ((moved nil))
+      (while (and kill-ring (pro/vterm--string-empty-or-ws-p (car kill-ring)))
+        (setq kill-ring (cdr kill-ring))
+        (setq moved t))
+      (when (and (listp kill-ring-yank-pointer)
+                 (or (null kill-ring-yank-pointer)
+                     (pro/vterm--string-empty-or-ws-p (car kill-ring-yank-pointer))
+                     moved))
+        (setq kill-ring-yank-pointer kill-ring)))
+    ;; 2) Если в copy-mode ничего не копировали — перескочить новый «шумный» верхний элемент.
+    (unless pro/vterm--copied-in-copy-mode
+      (when (and kill-ring (cdr kill-ring))
+        ;; Не трогаем сам kill-ring, только переносим указатель, чтобы C-y/M-y/consult брали «предыдущее».
+        (setq kill-ring-yank-pointer (cdr kill-ring))))
+    ;; Сброс флага на всякий случай.
+    (setq pro/vterm--copied-in-copy-mode nil)))
+
+;; Глобальный хук: помечаем факт копирования (через kill-new) внутри vterm-copy-mode.
+(advice-add 'kill-new :after #'pro/vterm--flag-copied-in-copy-mode)
+
+;; Запускаем фиксацию и управление указателем при переключении copy-mode.
+(with-eval-after-load 'vterm
+  (advice-add 'vterm-copy-mode :before #'pro/vterm--on-enter-copy-mode)
+  (advice-add 'vterm-copy-mode :after  #'pro/vterm--fix-kill-ring-after-copy-mode))
 
 ;;;;= Multi-vterm: несколько вкладок терминала =;;;;;
 
 (use-package multi-vterm
   :ensure t
-  :bind (:map vterm-mode-map
-              ("s-t" . multi-vterm))
+  :bind (
+         ;; :map vterm-mode-map
+         ;; ("s-t" . multi-vterm)
+         )
   :functions (multi-vterm-dedicated-open multi-vterm-dedicated-toggle))
 
 
@@ -120,6 +196,7 @@
 ;;= Цветовая схема вкладок для Eshell (см. также про-внешний-вид.el) =;;
 (defun pro/eshell-tabline-colors ()
   "Сделать текущую вкладку tab-line в Eshell черной с белым акцентом."
+  (face-remap-add-relative 'pro-tabs-active '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil)))
 

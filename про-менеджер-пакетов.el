@@ -65,7 +65,6 @@
                    package-quickstart ,(if parent-quickstart t nil)
                    package-install-upgrade-built-in ,(if parent-upgrade-built-in t nil))
              (package-initialize)
-             ;; Удобный лог с таймстемпом.
              (defun vlog (fmt &rest args)
                (princ (format-time-string "%H:%M:%S "))
                (princ (apply #'format (concat fmt "\n") args)))

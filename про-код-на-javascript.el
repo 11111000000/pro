@@ -64,22 +64,26 @@
   :mode (("\\.js\\'" . js-ts-mode)
          ("\\.jsx\\'" . js-ts-mode))
   :interpreter (("node" . js-ts-mode))
-  :init (add-to-list 'eglot-server-programs `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) . ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"
-                                                                                                                     :initializationOptions (:preferences (:importModuleSpecifierPreference "non-relative"
-                                                                                                                                                                                            :includeInlayEnumMemberValueHints t
-                                                                                                                                                                                            :includeInlayFunctionLikeReturnTypeHints t
-                                                                                                                                                                                            :includeInlayFunctionParameterTypeHints t
-                                                                                                                                                                                            :includeInlayParameterNameHints "all" ; "none" | "literals" | "all"
-                                                                                                                                                                                            :includeInlayParameterNameHintsWhenArgumentMatchesName t
-                                                                                                                                                                                            :includeInlayPropertyDeclarationTypeHints t
-                                                                                                                                                                                            :includeInlayVariableTypeHints t
-                                                                                                                                                                                            :includeInlayVariableTypeHintsWhenTypeMatchesName t
-                                                                                                                                                                                            :organizeImportsCaseFirst "upper"
-                                                                                                                                                                                            :organizeImportsCollation "unicode" ; "ordinal" | "unicode"
-                                                                                                                                                                                            :organizeImportsIgnoreCase
+  :init (add-to-list 'eglot-server-programs
+                     `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
+                       ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"
+                        :initializationOptions (:preferences
+                                                (:importModuleSpecifierPreference
+                                                 "non-relative"
+                                                 :includeInlayEnumMemberValueHints t
+                                                 :includeInlayFunctionLikeReturnTypeHints t
+                                                 :includeInlayFunctionParameterTypeHints t
+                                                 :includeInlayParameterNameHints "all" ; "none" | "literals" | "all"
+                                                 :includeInlayParameterNameHintsWhenArgumentMatchesName t
+                                                 :includeInlayPropertyDeclarationTypeHints t
+                                                 :includeInlayVariableTypeHints t
+                                                 :includeInlayVariableTypeHintsWhenTypeMatchesName t
+                                                 :organizeImportsCaseFirst "upper"
+                                                 :organizeImportsCollation "unicode" ; "ordinal" | "unicode"
+                                                 :organizeImportsIgnoreCase
 
-                                                                                                                                                                                            :json-false
-                                                                                                                                                                                            :quotePreference "single"))))))
+                                                 :json-false
+                                                 :quotePreference "single"))))))
 
 ;;;; 2. Управление путями и модулями
 ;; Для проектов с npm: автоматически добавляем node_modules в exec-path,

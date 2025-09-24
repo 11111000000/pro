@@ -166,8 +166,8 @@
   (setq show-paren-delay 0
         show-paren-style 'parenthesis)
 
-  ;; Подсветка текущей строки
-  (global-hl-line-mode 1)
+  ;; Подсветка текущей строки не нужна глобально
+  ;;(global-hl-line-mode 1)
 
   ;; Относительные номера строк (особенно полезны в TTY для навигации)
   (when (version<= "26.0.50" emacs-version)

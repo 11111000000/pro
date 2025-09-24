@@ -183,10 +183,8 @@ With prefix ARG, do it that many times; negative for backward."
   :defines (global-highlight-parentheses-mode)
   :custom
   (hl-paren-colors
-   `("navajo white" "MediumOrchid2" "CornflowerBlue" "MediumAquamarine"
-     ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
-     ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
-  (hl-paren-background-colors '(nil nil nil nil nil))
+   '("#8e44ad" "#3498db" "#1abc9c" "#27ae60" "#f1c40f" "#f39c12" "#e74c3c" "coral3"))
+  ;; (hl-paren-background-colors '(nil nil nil nil nil))
   :config (global-highlight-parentheses-mode t)
   :init
   (add-hook 'after-load-theme-hook

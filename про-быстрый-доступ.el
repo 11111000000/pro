@@ -101,8 +101,6 @@
   :functions (marginalia-mode)
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))  ; Цикл аннотаций (в M-x покажет описание функций)
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init (marginalia-mode t))  ; Глобальное включение.
 
 ;;;; 3. Consult и расширения
@@ -113,22 +111,22 @@
 (use-package consult
   :ensure t
   :functions (consult-customize consult-xref)
-  :bind
-  (;; Глобальные remap для стандартных команд.
-   ([remap bookmark-jump] . consult-bookmark)
-   ([remap goto-line] . consult-goto-line)
-   ([remap imenu] . consult-imenu)
-   ([remap project-switch-to-buffer] . consult-project-buffer)
-   ([remap repeat-complex-command] . consult-complex-command)
-   ([remap switch-to-buffer] . consult-buffer)
-   ([remap yank-pop] . consult-yank-pop)
-   :map consult-narrow-map
-   ("C-h" . consult-narrow-help)
-   :map goto-map
-   ("m" . consult-mark)
-   ("o" . consult-outline)
-   :map help-map
-   ("M" . consult-minor-mode-menu))
+  :bind (
+         ;; Глобальные remap для стандартных команд.
+         ([remap bookmark-jump] . consult-bookmark)
+         ([remap goto-line] . consult-goto-line)
+         ([remap imenu] . consult-imenu)
+         ([remap project-switch-to-buffer] . consult-project-buffer)
+         ([remap repeat-complex-command] . consult-complex-command)
+         ([remap switch-to-buffer] . consult-buffer)
+         ([remap yank-pop] . consult-yank-pop)
+         :map consult-narrow-map
+         ("C-h" . consult-narrow-help)
+         :map goto-map
+         ("m" . consult-mark)
+         ("o" . consult-outline)
+         :map help-map
+         ("M" . consult-minor-mode-menu))
   :custom
   (consult-preview-key "M-.")
   (consult-line-start-from-top t)

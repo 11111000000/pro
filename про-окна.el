@@ -45,7 +45,9 @@
 (use-package popper
   :ensure t
   :after (projectile)
-  :custom (popper-window-height 20)
+  :custom
+  (popper-window-height 20)
+  (popper-display-control nil)
   :bind (("s-,"   . popper-toggle)
          ("s-]"   . nil)
          ("s-["   . nil)
@@ -71,9 +73,30 @@
           vterm-mode
           gptel-aibo-mode
           gptel-mode
-          "^\\*nixos-log\\*$"
-          ))
+          "^\\*nixos-log\\*$"))
   (popper-mode +1)
+  ;; GPTel: открывать справа (и по имени, и по major-mode)
+  (add-to-list 'display-buffer-alist
+               '( (lambda (buf _action)
+                    (with-current-buffer buf
+                      (or (derived-mode-p 'gptel-mode 'gptel-aibo-mode)
+                          (string-match-p "^\\*gptel.*\\*$" (buffer-name)))))
+                  (display-buffer-reuse-window display-buffer-in-side-window)
+                  (side . right)
+                  (slot . 1)
+                  (window-width . 0.35)
+                  (window-parameters . ((no-other-window . nil)))))
+  ;; vterm: открывать снизу (и по имени, и по major-mode)
+  (add-to-list 'display-buffer-alist
+               '( (lambda (buf _action)
+                    (with-current-buffer buf
+                      (or (derived-mode-p 'vterm-mode)
+                          (string-match-p "^\\*vterm.*\\*$" (buffer-name)))))
+                  (display-buffer-reuse-window display-buffer-in-side-window)
+                  (side . bottom)
+                  (slot . 1)
+                  (window-height . 0.3)
+                  (window-parameters . ((no-other-window . nil)))))
   (popper-echo-mode +1)
   (add-to-list 'display-buffer-alist
                (cons "\\*Async.*" (cons #'display-buffer-no-window nil))))
