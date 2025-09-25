@@ -369,7 +369,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 
 ;; (add-hook 'org-mode-hook #'pro-ai-org-auto-enable-gptel-mode-by-heading)
 
-(defun pro-ai-переключить-backend ()
+(defun pro/ai-switch-backend ()
   "Интерактивный выбор и активация =gptel-backend= среди известных бэкендов."
   (interactive)
   (require 'gptel)

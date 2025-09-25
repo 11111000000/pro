@@ -27,9 +27,7 @@
            (telega-emoji-font-family "Noto Color Emoji"))
   :hook ((telega-root-mode . telega-notifications-mode)
          (telega-load-hook . global-telega-url-shorten-mode)
-         (telega-root-mode . hl-line-mode)
-                                        ;(telega-chat-mode . variable-pitch-mode)
-         )
+         (telega-root-mode . hl-line-mode))
   :config)
 
 (defun telega-close-idle-chat-buffers ()
@@ -39,7 +37,7 @@
     (when (string-match-p "^\\*Telega Chat" (buffer-name buf))
       (kill-buffer buf))))
 
-(defun выбрать-контакт-в-телеге ()
+(defun pro/telega-select-contact ()
   "Выбор из всех контактов и чатов Telega с помощью consult."
   (interactive)
   (require 'telega)

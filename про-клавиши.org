@@ -20,7 +20,7 @@
 | C-M-d          | whole-line-or-region-kill-region    |
 | M-r            | replace-string                      |
 | M-R            | replace-regexp                      |
-| C-a            | к-идентации-или-началу-строки       |
+| C-a            | pro/to-identation-or-bol            |
 | C-S-r          | revert-buffer-quick                 |
 | C-r            | revert-buffer                       |
 | C-S-M-p        | shift-text-up                       |
@@ -33,7 +33,7 @@
 | C-M-=          | text-scale-set                      |
 | C-c m          | про/показать-сообщения              |
 | C-%            | forward-or-backward-sexp            |
-| C-a            | к-идентации-или-началу-строки       |
+| C-a            | pro/to-identation-or-bol            |
 | C-$            | toggle-truncate-lines               |
 | C-c M-f        | вставить-имя-файла                  |
 | C-x b          | pro/consult-buffer                  |
@@ -43,7 +43,7 @@
 | C-x M-b        | consult-buffer-other-window         |
 | C-c b          | consult-buffer-other-window         |
 | C-c C-b        | consult-buffer-other-window         |
-| C-x C-t        | выбрать-контакт-в-телеге            |
+| C-x C-t        | pro/telega-select-contact           |
 | C-c tp         | tab-bar-switch-to-prev-tab          |
 | C-c tn         | tab-bar-switch-to-next-tab          |
 | C-c tt         | pro-tabs-open-new-tab               |
@@ -109,7 +109,7 @@
 | C-M-.          | xref-find-definitions-other-window  |
 | C-.            | embark-act                          |
 | C-c ir         | gptel-rewrite                       |
-| C-c im         | pro-ai-переключить-модель           |
+| C-c im         | pro/ai-switch-model           |
 | C-c i.         | gptel-quick                         |
 | C-c ia         | gptel-add                           |
 | C-c if         | gptel-add-file                      |
@@ -145,12 +145,12 @@
 | s-i o          | gptel                               |
 | s-i s-o        | gptel                               |
 | s-i r          | gptel-rewrite                       |
-| s-i m          | pro-ai-переключить-модель     |
+| s-i m          | pro/ai-switch-model           |
 | s-i s-m        | gptel-menu                          |
 | s-i .          | gptel-quick                         |
 | s-i a          | gptel-add                           |
 | s-i t          | gptel-tools                         |
-| s-i b          | pro-ai-переключить-бэкенд           |
+| s-i b          | pro/ai-switch-backend               |
 | s-i f          | gptel-add-file                      |
 | s-i p          | gptel-system-prompt                 |
 | s-i RET        | gptel-send                          |
@@ -182,7 +182,7 @@
 | s-e T          | evedel-remove-tags                  |
 | C-z            | nil                                 |
 | C-c M-n        | про/пересобрать-nix                 |
-| C-c k          | про/перезагрузить-клавиши           |
+| C-c k          | pro/reload-keys                     |
 
 
 * Клавиши над всеми Xorg приложениями:
@@ -301,7 +301,7 @@
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
 | C-c M-n                 | про/пересобрать-nix                  |
-| C-c k                   | про/перезагрузить-клавиши            |
+| C-c k                   | pro/reload-keys                      |
 
 
 

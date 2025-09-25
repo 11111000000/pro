@@ -69,7 +69,7 @@
               modes-table)))))
 
 ;; Пример использования: (load-keybindings-from-org "~/pro/про-сочетания-клавиш.org")
-(defun про/перезагрузить-клавиши ()
+(defun pro/reload-keys ()
   "Перезагрузить клавиши из файла `~/pro/про-клавиши.org`."
   (interactive)
   (про/клавиши-из-org (expand-file-name "~/pro/про-клавиши.org"))
