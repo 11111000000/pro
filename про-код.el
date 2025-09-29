@@ -368,7 +368,5 @@ With prefix ARG, do it that many times; negative for backward."
 (use-package cct-mode
   :load-path "~/Code/cct-mode/")
 
-
-
 (provide 'про-код)
 ;;; про-код.el ends here
