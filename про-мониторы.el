@@ -8,7 +8,7 @@
   "Настройка и управление конфигурацией мониторов под EXWM."
   :group 'exwm)
 
-(defcustom про/monitor-refresh-delay 0.2
+(defcustom pro/monitor-refresh-delay 0.2
   "Сколько секунд ждать после вызова xrandr,
 прежде чем отправлять `exwm-randr-refresh`."
   :type 'number
@@ -18,7 +18,7 @@
 (defvar имя-встроенного-монитора "eDP-1")
 (defvar имя-внешнего-монитора "HDMI-1")
 (defvar имя-третьего-монитора "DP-1")
-(defvar про/monitor-refresh-timer nil)
+(defvar pro/monitor-refresh-timer nil)
 
 (defun применить-расположение-мониторов ()
   "Применить расположение мониторов из переменной `расположение-монитора`.
@@ -34,7 +34,7 @@
     ;; Запускаем xrandr синхронно, чтобы геометрия успела примениться до refresh
     (call-process-shell-command cmd)
     ;; Даём X немного времени «устаканиться»
-    (sleep-for про/monitor-refresh-delay)
+    (sleep-for pro/monitor-refresh-delay)
     ;; Делаем refresh только если EXWM уже загружен и RandR-режим активен
     (when (and (featurep 'exwm)
                (fboundp 'exwm-randr-refresh)
@@ -52,9 +52,9 @@ exwm-randr-mode и xrandr запускаются вне этой функции!
   ;; Смена топологии при изменении состава мониторов — дебаунс, чтобы не мигало на старте
   (add-hook 'exwm-randr-screen-change-hook
             (lambda ()
-              (when про/monitor-refresh-timer
-                (cancel-timer про/monitor-refresh-timer))
-              (setq про/monitor-refresh-timer
+              (when pro/monitor-refresh-timer
+                (cancel-timer pro/monitor-refresh-timer))
+              (setq pro/monitor-refresh-timer
                     (run-at-time 0.2 nil #'применить-расположение-мониторов)))))
 
 (provide 'про-мониторы)

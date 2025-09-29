@@ -172,10 +172,7 @@
 
     (treemacs-hide-gitignored-files-mode nil)))
 
-
 ;;;; Иконки
-
-
 ;;;; Дерево для проектов
 
 (use-package treemacs-projectile

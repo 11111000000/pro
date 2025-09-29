@@ -182,12 +182,12 @@
 ;; Конвертеры полезны для программистов/аналитиков: unix-time в дату и обратно.
 ;; Особенность: интерактивные функции с message для быстрого использования.
 
-(defun про/convert-unix-to-date (unixtime)
+(defun pro/convert-unix-to-date (unixtime)
   "Перевести unixtime (секунды с 1970-01-01) в читаемую дату. Полезно для логов."
   (interactive "nВремя в формате Unix (секунды с 1970): ")
   (message "%s" (format-time-string "%Y-%m-%d %A %H:%M:%S" (seconds-to-time unixtime))))
 
-(defun про/current-unixtime ()
+(defun pro/current-unixtime ()
   "Показать текущее unixtime. Идеально для timestamp в скриптах."
   (interactive)
   (message "%d" (floor (float-time (current-time)))))  ;; Округляем до целого.
@@ -200,17 +200,17 @@
 ;; а также функция для повторяющихся таймеров.
 
 ;; Улучшенный помодоро: 25 мин работа, 5 мин перерыв, после 4 циклов — 15 мин перерыв.
-(defvar про/pomodoro-cycles 0 "Счётчик циклов помодоро.")
-(defun про/pomodoro-start ()
+(defvar pro/pomodoro-cycles 0 "Счётчик циклов помодоро.")
+(defun pro/pomodoro-start ()
   "Запустить улучшенный помодоро-таймер с циклами."
   (interactive)
   (message "Pomodoro стартовал: 25 мин фокуса.")
-  (run-at-time (* 25 60) nil #'про/pomodoro-break))
+  (run-at-time (* 25 60) nil #'pro/pomodoro-break))
 
-(defun про/pomodoro-break ()
+(defun pro/pomodoro-break ()
   "Обработать перерыв после помодоро."
-  (setq про/pomodoro-cycles (1+ про/pomodoro-cycles))
-  (if (= (mod про/pomodoro-cycles 4) 0)
+  (setq pro/pomodoro-cycles (1+ pro/pomodoro-cycles))
+  (if (= (mod pro/pomodoro-cycles 4) 0)
       (progn
         (message "Длинный перерыв: 15 мин.")
         (run-at-time (* 15 60) nil (lambda () (message "Перерыв завершён. Готовы к новому циклу?"))))
@@ -218,13 +218,13 @@
     (run-at-time (* 5 60) nil (lambda () (message "Перерыв завершён. Начать новый помодоро?")))))
 
 ;; Повторяющийся таймер: например, напоминание каждые 30 мин.
-(defun про/set-repeating-timer (seconds message)
+(defun pro/set-repeating-timer (seconds message)
   "Установить повторяющийся таймер каждые SECONDS с MESSAGE."
   (interactive "nИнтервал (секунды): \nsСообщение: ")
   (run-with-timer seconds seconds (lambda () (message "%s" message))))
 
 ;; Пример будильника: установить на конкретное время.
-(defun про/set-alarm (time message)
+(defun pro/set-alarm (time message)
   "Установить будильник на TIME (строка, как '14:30') с MESSAGE."
   (interactive "sВремя будильника (HH:MM): \nsСообщение: ")
   (let ((alarm-time (time-convert (date-to-time (concat (format-time-string "%Y-%m-%d ") time)) 'integer)))
@@ -250,7 +250,7 @@
 (setq calendar-mark-diary-entries-flag t)
 
 ;; Функция для расчёта дней до события.
-(defun про/days-to-event (date)
+(defun pro/days-to-event (date)
   "Рассчитать количество дней до DATE (формат 'MM/DD/YYYY')."
   (interactive "sДата события (MM/DD/YYYY): ")
   (let ((event-date (calendar-absolute-from-gregorian (calendar-extract-month (calendar-read-date t) 1)
@@ -279,10 +279,10 @@
 ;; (global-set-key (kbd "C-c k") #'calendar)                 ;; Открыть календарь.
 ;; (global-set-key (kbd "C-c l") #'show-today-moon-phases)   ;; Фаза луны.
 ;; (global-set-key (kbd "C-c w") #'display-time-world)       ;; Мировое время.
-;; (global-set-key (kbd "C-c u") #'про/current-unixtime)     ;; Текущее unixtime.
-;; (global-set-key (kbd "C-c p") #'про/pomodoro-start)       ;; Запустить помодоро.
+;; (global-set-key (kbd "C-c u") #'pro/current-unixtime)     ;; Текущее unixtime.
+;; (global-set-key (kbd "C-c p") #'pro/pomodoro-start)       ;; Запустить помодоро.
 ;; (global-set-key (kbd "C-c s") #'show-sunrise-sunset)      ;; Восход/закат.
-;; (global-set-key (kbd "C-c d") #'про/days-to-event)        ;; Дни до события.
+;; (global-set-key (kbd "C-c d") #'pro/days-to-event)        ;; Дни до события.
 
 ;;;; 12. Финал
 ;; Завершаем модуль: provide для загрузки.

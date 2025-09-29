@@ -207,7 +207,6 @@
 
 ;;;; 7. Дополнительные улучшения
 ;; Здесь — мелочи, завершающие картину: изображения, fringes, диалоги.
-;; Каждая добавляет шарм без перегрузки.
 
 ;; imenu: авто-ресканирование для оглавлений в больших файлах.
 (use-package imenu
@@ -272,7 +271,6 @@
   (setq image-animate-loop t))
 
 ;; Хук для тем: запускать кастомные действия после load-theme.
-;;;;
 (defvar after-load-theme-hook nil "Хук после (load-theme).")
 (defadvice load-theme (after run-after-load-theme-hook activate) "Запуск after-load-theme-hook." (run-hooks 'after-load-theme-hook))
 

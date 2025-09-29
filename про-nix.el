@@ -85,7 +85,7 @@
 ;;                 (getenv "PATH")))
 ;; (add-to-list 'exec-path (expand-file-name "~/.nix-profile/bin"))
 
-(defun про/пересобрать-nix ()
+(defun pro/пересобрать-nix ()
   "Запустить 'sudo nixos-rebuild switch' с конфигом пользователя и показать вывод в буфере *nixos-log*."
   (interactive)
   (let ((cmd (format "sudo nixos-rebuild switch -I nixos-config=%s/.config/nixos/configuration.nix"

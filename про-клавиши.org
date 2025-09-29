@@ -31,7 +31,7 @@
 | C-+            | text-scale-increase                 |
 | C-=            | text-scale-increase                 |
 | C-M-=          | text-scale-set                      |
-| C-c m          | про/показать-сообщения              |
+| C-c m          | pro/показать-сообщения              |
 | C-%            | forward-or-backward-sexp            |
 | C-a            | pro/to-identation-or-bol            |
 | C-$            | toggle-truncate-lines               |
@@ -109,7 +109,7 @@
 | C-M-.          | xref-find-definitions-other-window  |
 | C-.            | embark-act                          |
 | C-c ir         | gptel-rewrite                       |
-| C-c im         | pro/ai-switch-model           |
+| C-c im         | pro/ai-switch-model                 |
 | C-c i.         | gptel-quick                         |
 | C-c ia         | gptel-add                           |
 | C-c if         | gptel-add-file                      |
@@ -145,7 +145,7 @@
 | s-i o          | gptel                               |
 | s-i s-o        | gptel                               |
 | s-i r          | gptel-rewrite                       |
-| s-i m          | pro/ai-switch-model           |
+| s-i m          | pro/ai-switch-model                 |
 | s-i s-m        | gptel-menu                          |
 | s-i .          | gptel-quick                         |
 | s-i a          | gptel-add                           |
@@ -181,8 +181,9 @@
 | s-e t          | evedel-add-tags                     |
 | s-e T          | evedel-remove-tags                  |
 | C-z            | nil                                 |
-| C-c M-n        | про/пересобрать-nix                 |
+| C-c M-n        | pro/пересобрать-nix                 |
 | C-c k          | pro/reload-keys                     |
+
 
 
 * Клавиши над всеми Xorg приложениями:
@@ -280,10 +281,9 @@
 | C-x -                   | minimize-window                      |
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
-| C-c f                   | nil                                  |
-| C-c ff                  | profiler-start                       |
-| C-c fs                  | profiler-stop                        |
-| C-c fr                  | profiler-report                      |
+| C-c <f5>                | profiler-start                       |
+| C-c <f6>                | profiler-stop                        |
+| C-c <f7>                | profiler-report                      |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
 | C-c il                  | ellama-chat                          |
@@ -300,7 +300,7 @@
 | C-c '                   | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
-| C-c M-n                 | про/пересобрать-nix                  |
+| C-c M-n                 | pro/пересобрать-nix                  |
 | C-c k                   | pro/reload-keys                      |
 
 

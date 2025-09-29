@@ -68,7 +68,7 @@ KEY-BINDINGS — список пар (\"клавиша\" функция)."
          (exwm-input-set-key (kbd key) cmd))))
 
   ;; --- Тачпад: отключать клики во время набора (Disable While Typing)
-  (defun про/disable-touchpad-while-typing-enable ()
+  (defun pro/disable-touchpad-while-typing-enable ()
     "Включить Disable-While-Typing для всех тачпадов libinput (X11).
 Настраивает свойство 'libinput Disable While Typing Enabled' на 1 для всех найденных touchpad/trackpad/clickpad."
     (interactive)
@@ -87,24 +87,24 @@ fi"))
   ;; Мы гарантируем однократный запуск, чтобы избежать повторений, и автостарт в графическом режиме.
 
   ;; --- Стартовая инициализация EXWM. Выполняется только один раз!
-  (defvar про/графика-initialized nil
+  (defvar pro/графика-initialized nil
     "Истина, если графическая среда уже инициализирована.")
 
-  (defgroup про/графика nil
+  (defgroup pro/графика nil
     "Настройки графической среды EXWM."
     :group 'exwm)
 
-  (defcustom про/tray-restart-delay 6.0
+  (defcustom pro/tray-restart-delay 6.0
     "Задержка (в секундах) перед рестартом exwm-session.target после запуска EXWM и трея.
 Увеличьте, если иконки (например, nm-applet) не успевают зарегистрироваться."
     :type 'number
-    :group 'про/графика)
+    :group 'pro/графика)
 
-  (defun про/старт-графической-среды ()
+  (defun pro/старт-графической-среды ()
     "Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
     (interactive)
-    (unless про/графика-initialized
-      (setq про/графика-initialized t)
+    (unless pro/графика-initialized
+      (setq pro/графика-initialized t)
       ;; -- Физическое размещение мониторов (xrandr) ДО запуска EXWM
       (применить-расположение-мониторов)
       ;; -- Инициализация сопоставлений workspace <-> monitor
@@ -143,7 +143,7 @@ fi"))
       (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
       (exwm-wm-mode 1)
       ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
-      (defun про/exwm-браузеры-line+sim ()
+      (defun pro/exwm-браузеры-line+sim ()
         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
 чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
 при необходимости можно вручную переключиться в char-mode (s-i)."
@@ -153,7 +153,7 @@ fi"))
                            '("firefox" "chromium" "google-chrome" "chromium-browser")))
           (exwm-input-line-mode)
           (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
-      (add-hook 'exwm-manage-finish-hook #'про/exwm-браузеры-line+sim)
+      (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
       ;; -- RandR после запуска EXWM (иначе “not connected”)
       (when (fboundp 'exwm-randr-mode)
         (exwm-randr-mode 1)
@@ -163,10 +163,10 @@ fi"))
       (exwm-xim-mode t)
       ;; -- Отключать тачпад при наборе (Disable-While-Typing) — предотвращает случайные клики
       (when (display-graphic-p)
-        (про/disable-touchpad-while-typing-enable)
+        (pro/disable-touchpad-while-typing-enable)
         ;; Повторно применять при изменении конфигурации дисплеев
         (with-eval-after-load 'exwm-randr
-          (add-hook 'exwm-randr-screen-change-hook #'про/disable-touchpad-while-typing-enable)))
+          (add-hook 'exwm-randr-screen-change-hook #'pro/disable-touchpad-while-typing-enable)))
 
       ;; -- Хуки для красивых имён окон
       (add-hook 'exwm-update-class-hook
@@ -197,7 +197,7 @@ fi"))
       ;; перезапускаем user graphical-session.target, чтобы треевые сервисы стартовали уже при наличии хоста трея (EXWM).
       ;; Важно: здесь необходима небольшая задержка (например, 1 секунда), чтобы EXWM успел полностью инициализировать трей.
       ;; Иначе сервис exwm-session.target может запуститься ДО появления трея и не интегрироваться с ним (race condition)!
-      (run-at-time про/tray-restart-delay nil ;; асинхронная задержка перед рестартом exwm-session.target
+      (run-at-time pro/tray-restart-delay nil ;; асинхронная задержка перед рестартом exwm-session.target
                    (lambda ()
                      (ignore-errors
                        (start-process "systemctl-user" nil "systemctl" "--user" "restart" "exwm-session.target"))))
@@ -230,7 +230,7 @@ fi"))
 
   ;; -- Автоматический запуск, только если не консоль
   (when window-system
-    (про/старт-графической-среды)))
+    (pro/старт-графической-среды)))
 
 ;;;; 4. Дополнительные возможности EXWM
 ;; Расширения для удобства: трей, редактор текстовых полей, фокус мыши.
@@ -396,108 +396,108 @@ fi"))
 
 ;;;; 6.9 EXWM: Логи для диагностики симуляции клавиш (C-n/C-p в браузерах)
 
-(defvar про/exwm-keys-log-buffer "*EXWM-keys-log*"
+(defvar pro/exwm-keys-log-buffer "*EXWM-keys-log*"
   "Буфер, куда пишем диагностические сообщения о симуляции клавиш EXWM.")
 
-(defun про/exwm-log (&rest args)
+(defun pro/exwm-log (&rest args)
   "Записать строку в лог и вывести в echo-area."
   (let* ((msg (apply #'format args))
          (ts  (format-time-string "%F %T.%3N")))
-    (with-current-buffer (get-buffer-create про/exwm-keys-log-buffer)
+    (with-current-buffer (get-buffer-create pro/exwm-keys-log-buffer)
       (goto-char (point-max))
       (insert (format "[%s] %s\n" ts msg)))
     (message "%s" msg)))
 
-(defun про/exwm-show-keys-log ()
+(defun pro/exwm-show-keys-log ()
   "Открыть буфер с логами EXWM-симуляции клавиш."
   (interactive)
-  (pop-to-buffer (get-buffer-create про/exwm-keys-log-buffer)))
+  (pop-to-buffer (get-buffer-create pro/exwm-keys-log-buffer)))
 
-(defvar-local про/exwm--mode 'unknown
+(defvar-local pro/exwm--mode 'unknown
   "Текущий режим ввода для EXWM-буфера: 'line, 'char или 'unknown.")
 
 (with-eval-after-load 'exwm
   ;; Отмечаем смену режимов (line/char) и логируем
   (advice-add 'exwm-input-line-mode :after
               (lambda (&rest _)
-                (setq про/exwm--mode 'line)
-                (про/exwm-log "→ line-mode для %s (%s)"
+                (setq pro/exwm--mode 'line)
+                (pro/exwm-log "→ line-mode для %s (%s)"
                               (or (bound-and-true-p exwm-class-name) "?")
                               (buffer-name))))
   (advice-add 'exwm-input-char-mode :after
               (lambda (&rest _)
-                (setq про/exwm--mode 'char)
-                (про/exwm-log "→ char-mode для %s (%s)"
+                (setq pro/exwm--mode 'char)
+                (pro/exwm-log "→ char-mode для %s (%s)"
                               (or (bound-and-true-p exwm-class-name) "?")
                               (buffer-name))))
   ;; Логируем фактическую отправку fake-keys во внешний клиент
   (advice-add 'exwm-input--fake-key :around
               (lambda (orig key &rest args)
-                (про/exwm-log "fake-key: %S -> class=%s buf=%s mode=%s"
+                (pro/exwm-log "fake-key: %S -> class=%s buf=%s mode=%s"
                               key
                               (or (bound-and-true-p exwm-class-name) "?")
                               (buffer-name)
-                              про/exwm--mode)
+                              pro/exwm--mode)
                 (apply orig key args))))
 
-(defun про/exwm--sim-mapping (key)
+(defun pro/exwm--sim-mapping (key)
   "Вернуть cons-мэппинг из (local/global) simulation-keys для KEY."
   (or (and (boundp 'exwm-local-simulation-keys)
            (assoc key exwm-local-simulation-keys))
       (and (boundp 'exwm-input-simulation-keys)
            (assoc key exwm-input-simulation-keys))))
 
-(defun про/exwm--log-state (trigger)
+(defun pro/exwm--log-state (trigger)
   "Снять срез состояния по TRIGGER (строка «C-n»/«C-p» и т.д.)."
-  (про/exwm-log "%s: class=%s buf=%s mode=%s xim=%s local-sim=%S"
+  (pro/exwm-log "%s: class=%s buf=%s mode=%s xim=%s local-sim=%S"
                 trigger
                 (or (and (boundp 'exwm-class-name) exwm-class-name) "?")
                 (buffer-name)
-                про/exwm--mode
+                pro/exwm--mode
                 (if (bound-and-true-p exwm-xim-mode) 'on 'off)
                 (and (boundp 'exwm-local-simulation-keys)
                      exwm-local-simulation-keys)))
 
-(defun про/exwm-C-n ()
+(defun pro/exwm-C-n ()
   "Логирующий обработчик C-n для EXWM-буфера браузера."
   (interactive)
-  (про/exwm--log-state "C-n")
-  (let ((m (про/exwm--sim-mapping [?\C-n])))
-    (про/exwm-log "C-n: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
+  (pro/exwm--log-state "C-n")
+  (let ((m (pro/exwm--sim-mapping [?\C-n])))
+    (pro/exwm-log "C-n: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
     ;; Пытаемся использовать штатную симуляцию; если маппинга нет,
     ;; EXWM обычно пошлёт исходный ключ клиенту — это тоже видно по эффекту.
     (when (fboundp 'exwm-input-send-simulation-keys)
       (exwm-input-send-simulation-keys (kbd "C-n")))))
 
-(defun про/exwm-C-p ()
+(defun pro/exwm-C-p ()
   "Логирующий обработчик C-p для EXWM-буфера браузера."
   (interactive)
-  (про/exwm--log-state "C-p")
-  (let ((m (про/exwm--sim-mapping [?\C-p])))
-    (про/exwm-log "C-p: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
+  (pro/exwm--log-state "C-p")
+  (let ((m (pro/exwm--sim-mapping [?\C-p])))
+    (pro/exwm-log "C-p: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
     (when (fboundp 'exwm-input-send-simulation-keys)
       (exwm-input-send-simulation-keys (kbd "C-p")))))
 
-(defun про/exwm-браузеры-line+sim ()
+(defun pro/exwm-браузеры-line+sim ()
   "Для Firefox/Chromium: включить line-mode и локальные simulation-keys."
   (when (and (derived-mode-p 'exwm-mode)
              (boundp 'exwm-class-name)
              exwm-class-name
              (member (downcase exwm-class-name)
                      '("firefox" "chromium" "google-chrome" "chromium-browser")))
-    (про/exwm-log "exwm-manage: %s → line-mode + локальные simulation-keys (xim=%s)"
+    (pro/exwm-log "exwm-manage: %s → line-mode + локальные simulation-keys (xim=%s)"
                   exwm-class-name (if (bound-and-true-p exwm-xim-mode) 'on 'off))
     (when (fboundp 'exwm-input-line-mode)
       (exwm-input-line-mode))
-    (setq-local про/exwm--mode 'line)
+    (setq-local pro/exwm--mode 'line)
     (when (fboundp 'exwm-input-set-local-simulation-keys)
       (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)
-      (про/exwm-log "local-sim set: %S"
+      (pro/exwm-log "local-sim set: %S"
                     (and (boundp 'exwm-local-simulation-keys)
                          exwm-local-simulation-keys)))))
 
 (with-eval-after-load 'exwm
-  (add-hook 'exwm-manage-finish-hook #'про/exwm-браузеры-line+sim))
+  (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim))
 
 ;;;; 7. Блокировка случайных Ctrl/Shift+мышь
 ;; Игнорируем комбо, чтобы избежать неожиданных меню в приложениях.

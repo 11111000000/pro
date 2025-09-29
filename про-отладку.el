@@ -18,7 +18,7 @@
 ;;   (load "~/pro/про-отладку.el")
 ;;
 ;; Чтобы оперативно включать/выключать режимы, предусмотрены интерактивные
-;; функции `про/enable-debug` и `про/disable-debug` (см. конец файла).
+;; функции `pro/enable-debug` и `pro/disable-debug` (см. конец файла).
 ;;
 ;;; Code:
 
@@ -44,11 +44,11 @@
               (display-buffer buf))))
 
 ;; Писать сообщения/предупреждения и метки времени в файл ~/.emacs.d/emacs.log.
-(defvar про/log-file (expand-file-name "emacs.log" user-emacs-directory)
+(defvar pro/log-file (expand-file-name "emacs.log" user-emacs-directory)
   "Файл для логирования сообщений и предупреждений Emacs.")
 
-(defun про/log--append-line (line)
-  "Append LINE to `про/log-file' with a timestamp."
+(defun pro/log--append-line (line)
+  "Append LINE to `pro/log-file' with a timestamp."
   (when (and (stringp line) (> (length line) 0))
     (let* ((ts (format-time-string "%Y-%m-%d %H:%M:%S%z"))
            (text (format "[%s] %s\n" ts line))
@@ -56,45 +56,45 @@
       (let ((debug-on-error nil)
             (debug-on-signal nil))
         (condition-case _err
-            (let ((dir (file-name-directory про/log-file)))
+            (let ((dir (file-name-directory pro/log-file)))
               (unless (file-directory-p dir)
                 (make-directory dir t))
               (with-temp-buffer
                 (insert (substring-no-properties text))
-                (write-region (point-min) (point-max) про/log-file 'append 'silent)))
+                (write-region (point-min) (point-max) pro/log-file 'append 'silent)))
           (error nil))))))
 
-(defun про/log-message-advice (orig format-string &rest args)
-  "Advice to also log `message' output to `про/log-file'."
+(defun pro/log-message-advice (orig format-string &rest args)
+  "Advice to also log `message' output to `pro/log-file'."
   (if (null format-string)
       (apply orig format-string args)
     (let ((out (apply orig format-string args)))
-      (про/log--append-line out)
+      (pro/log--append-line out)
       out)))
 
-(defun про/log-display-warning-advice (orig type message &optional level buffer-name)
-  "Advice to also log `display-warning' output to `про/log-file'."
+(defun pro/log-display-warning-advice (orig type message &optional level buffer-name)
+  "Advice to also log `display-warning' output to `pro/log-file'."
   (prog1 (funcall orig type message level buffer-name)
-    (про/log--append-line
+    (pro/log--append-line
      (format "WARNING[%s/%s]: %s"
              type (or level :warning) message))))
 
-(defun про/enable-file-log ()
-  "Включить запись сообщений/предупреждений в `про/log-file'."
+(defun pro/enable-file-log ()
+  "Включить запись сообщений/предупреждений в `pro/log-file'."
   (interactive)
-  (advice-remove 'message #'про/log-message-advice)
-  (advice-remove 'display-warning #'про/log-display-warning-advice)
-  (advice-add 'message :around #'про/log-message-advice)
-  (advice-add 'display-warning :around #'про/log-display-warning-advice))
+  (advice-remove 'message #'pro/log-message-advice)
+  (advice-remove 'display-warning #'pro/log-display-warning-advice)
+  (advice-add 'message :around #'pro/log-message-advice)
+  (advice-add 'display-warning :around #'pro/log-display-warning-advice))
 
-(defun про/disable-file-log ()
-  "Выключить запись сообщений/предупреждений в `про/log-file'."
+(defun pro/disable-file-log ()
+  "Выключить запись сообщений/предупреждений в `pro/log-file'."
   (interactive)
-  (advice-remove 'message #'про/log-message-advice)
-  (advice-remove 'display-warning #'про/log-display-warning-advice))
+  (advice-remove 'message #'pro/log-message-advice)
+  (advice-remove 'display-warning #'pro/log-display-warning-advice))
 
 ;; Включаем логирование сразу при загрузке этого файла.
-(про/enable-file-log)
+(pro/enable-file-log)
 
 ;;;; 3. Улучшенный вывод backtrace
 
@@ -107,7 +107,7 @@
 
 ;;;; 4. Интерактивные переключатели
 
-(defun про/enable-debug ()
+(defun pro/enable-debug ()
   "Включить основные опции отладки целиком."
   (interactive)
   (setq debug-on-error  t
@@ -116,7 +116,7 @@
         warning-minimum-level :debug)
   (message "Debug: ON"))
 
-(defun про/disable-debug ()
+(defun pro/disable-debug ()
   "Полностью выключить опции отладки."
   (interactive)
   (setq debug-on-error  nil

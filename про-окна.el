@@ -175,7 +175,7 @@
   :ensure t
   :defer t)
 
-(defun про/показать-сообщения ()
+(defun pro/показать-сообщения ()
   "Показать буфер *Messages* в нижнем сайд-окне (над echo-area)."
   (interactive)
   (let ((buf (get-buffer-create "*Messages*")))
@@ -187,7 +187,7 @@
        (window-height . 0.3)
        (window-parameters . ((no-other-window . nil)))))))
 
-(defun про/скрыть-сообщения ()
+(defun pro/скрыть-сообщения ()
   "Скрыть нижнее окно с *Messages*."
   (interactive)
   (when-let ((win (get-buffer-window "*Messages*" t)))

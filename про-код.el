@@ -183,7 +183,7 @@ With prefix ARG, do it that many times; negative for backward."
   :defines (global-highlight-parentheses-mode)
   :custom
   (hl-paren-colors
-   '("#8e44ad" "#3498db" "#1abc9c" "#27ae60" "#f1c40f" "#f39c12" "coral3" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
+   '("#8e44ad" "#3498db" "#1abc9c" "#27ae60" "#f1c40f" "#f39c12" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
      ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
   ;; (hl-paren-background-colors '(nil nil nil nil nil))
   :config (global-highlight-parentheses-mode t)

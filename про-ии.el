@@ -38,12 +38,6 @@
 ;; Загрузка:
 ;; - M-x load-file RET путь/до/про-ии.el RET
 ;;
-;; Полезные интерактивные команды:
-;; - M-x pro-ai-переключить-backend— быстрое переключение backend.
-;; - M-x pro-ai-переклюить-модель  — быстрое переключение модели (с подсказкой бэкенда).
-;; - M-x pro-ai-загрузить-цены-из-org — принудительно перечитать org-прайс.
-;; - M-x gptel-send, M-x pro-ai-отправить-без-контекста — отправка запросов (c контекстом/без).
-;;
 ;;; Code:
 
 ;;;; 0. Введение, зависимости и базовые группы настроек
@@ -387,7 +381,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
           (message "Переключено на backend: %s" choice)
           (force-mode-line-update t))))))
 
-(defun pro-ai-переключить-модель ()
+(defun pro/ai-switch-model ()
   "Интерактивный выбор модели из всех доступных во всех бэкендах."
   (interactive)
   (require 'gptel)
@@ -640,7 +634,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
     (message "gptel-model: %s" gptel-model)))
 
 (use-package context-navigator
-  :load-path "~/Code/context-navigator"
+  :load-path "~/Code/context-navigator-main/lisp"
   ;; :straight (context-navigator
   ;;            :type git
   ;;            :host github

@@ -25,7 +25,7 @@
             (cdr table)
           table)))))
 
-(defun про/клавиши-из-org (filename)
+(defun pro/клавиши-из-org (filename)
   "Load and set keybindings from named tables in the given Org file."
   (interactive "Org file: ")
   (with-temp-buffer
@@ -72,7 +72,7 @@
 (defun pro/reload-keys ()
   "Перезагрузить клавиши из файла `~/pro/про-клавиши.org`."
   (interactive)
-  (про/клавиши-из-org (expand-file-name "~/pro/про-клавиши.org"))
+  (pro/клавиши-из-org (expand-file-name "~/pro/про-клавиши.org"))
   (message "Клавиши перезагружены"))
 
 

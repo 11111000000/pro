@@ -186,7 +186,7 @@ were part of the capture template definition."
   :ensure t
   :init
   :config
-                                        ;(add-hook 'vterm-mode-hook #'my/auto-vterm-copy-mode-for-docker-logs)
+  ;;(add-hook 'vterm-mode-hook #'my/auto-vterm-copy-mode-for-docker-logs)
   )
 
 (use-package dockerfile-mode
