@@ -26,6 +26,8 @@
            ;; (telega-emoji-use-images t)
            (telega-emoji-font-family "Noto Color Emoji"))
   :hook ((telega-root-mode . telega-notifications-mode)
+         (telega-root-mode . (lambda () (telega-root-auto-fill-mode -1)))
+         (telega-chat-mode . (lambda () (telega-chat-auto-fill-mode -1)))
          (telega-load-hook . global-telega-url-shorten-mode)
          (telega-root-mode . hl-line-mode))
   :config)

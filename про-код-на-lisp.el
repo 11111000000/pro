@@ -53,14 +53,14 @@
   (if (use-region-p)
       (progn (eval-region (region-beginning) (region-end))
              (deactivate-mark))
-    (перевыполнить-буфер)))
+    (pro/reeval-buffer)))
 
-(defun перевыполнить-буфер ()
+(defun pro/reeval-buffer ()
   "Eval всех верхнеуровневых форм в текущем буфере.
 Идеально для org-babel/literate конфигов."
   (interactive)
   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
-    (user-error "перевыполнить-буфер: работает только в Emacs Lisp буфере"))
+    (user-error "pro/reeval-buffer: работает только в Emacs Lisp буфере"))
   (let ((orig-buf (current-buffer))
         pos msg)
     (condition-case err
@@ -84,9 +84,31 @@
                 (pulse-momentary-highlight-one-line pos))))
           (pop-to-buffer orig-buf)
           (message "Неправильные скобки: %s" (or msg "Unbalanced parentheses")))
-      (save-excursion
-        (eval-buffer)
-        (message "Буфер выполнен заново!")))))
+      (let (defvars defcustoms)
+        (save-excursion
+          (goto-char (point-min))
+          (let (form)
+            (condition-case _eof
+                (while t
+                  (setq form (read (current-buffer)))
+                  (when (and (consp form))
+                    (pcase (car form)
+                      ((or 'defvar 'defvar-local)
+                       (let ((name (nth 1 form)))
+                         (when (symbolp name) (push name defvars))))
+                      ('defcustom
+                       (let ((name (nth 1 form)))
+                         (when (symbolp name) (push name defcustoms)))))))
+              (end-of-file nil))))
+        ;; Сбросить defvar/defvar-local, чтобы (defvar) заново инициализировал.
+        (dolist (v defvars)
+          (when (boundp v) (makunbound v)))
+        ;; Переопределить всё
+        (save-excursion (eval-buffer))
+        ;; Применить новые стандартные значения defcustom (или сохранённые через Customize)
+        (dolist (c defcustoms)
+          (ignore-errors (custom-reevaluate-setting c))))
+      (message "Буфер выполнен заново!"))))
 
 ;;;; 2. Emacs Lisp: биндинги, печать, оптимизации
 (use-package emacs
@@ -94,7 +116,7 @@
   :bind (:map emacs-lisp-mode-map
               ("C-c C-c" . выполнить-регион-или-буфер)
               ("C-x M-e" . eval-print-last-sexp)
-              ("C-c C-k" . перевыполнить-буфер)))
+              ("C-c C-k" . pro/reeval-buffer)))
 
 (setq eval-expression-print-level 20   ; не усекать дип-структуры
       eval-expression-print-length 50)
@@ -273,7 +295,7 @@
     (message "Done: %d files, %d with errors" (length files) errs)))
 
 (defun pro/reload-all-elisp-in-dired-directory ()
-  "Перевыполнить все .el файлы в текущей директории Dired (как `перевыполнить-буфер').
+  "Перевыполнить все .el файлы в текущей директории Dired (как `pro/reeval-buffer').
 Для каждого файла:
 - Проверяем сбалансированность скобок (`check-parens')
 - Если это elisp-буфер, принудительно переинициализируем все (defvar)/(defvar-local),
@@ -308,23 +330,28 @@
                         (progn
                           ;; Принудительная переинициализация (defvar)/(defvar-local):
                           ;; собираем имена переменных и делаем (makunbound), чтобы (defvar) их заново инициализировал.
-                          (let ((defvars
-                                 (save-excursion
-                                   (goto-char (point-min))
-                                   (let (acc form)
-                                     (condition-case _eof
-                                         (while t
-                                           (setq form (read (current-buffer)))
-                                           (when (and (consp form)
-                                                      (memq (car form) '(defvar defvar-local)))
-                                             (let ((name (nth 1 form)))
-                                               (when (symbolp name)
-                                                 (push name acc)))))
-                                       (end-of-file nil))
-                                     acc))))
+                          (let ((defvars '())
+                                (defcustoms '()))
+                            (save-excursion
+                              (goto-char (point-min))
+                              (let (form)
+                                (condition-case _eof
+                                    (while t
+                                      (setq form (read (current-buffer)))
+                                      (when (and (consp form))
+                                        (pcase (car form)
+                                          ((or 'defvar 'defvar-local)
+                                           (let ((name (nth 1 form)))
+                                             (when (symbolp name) (push name defvars))))
+                                          ('defcustom
+                                           (let ((name (nth 1 form)))
+                                             (when (symbolp name) (push name defcustoms)))))))
+                                  (end-of-file nil))))
                             (dolist (v defvars)
-                              (when (boundp v) (makunbound v))))
-                          (save-excursion (eval-buffer))
+                              (when (boundp v) (makunbound v)))
+                            (save-excursion (eval-buffer))
+                            (dolist (c defcustoms)
+                              (ignore-errors (custom-reevaluate-setting c))))
                           (setq ok t))
                       (setq err-msg "Пропущен (не elisp-буфер)")))
                 (error

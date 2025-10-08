@@ -175,16 +175,16 @@ With prefix ARG, do it that many times; negative for backward."
 
 ;;;;; 3.4 Подсветка глубины скобок
 ;; Цветовая дифференциация по уровням вложенности.
-(defvar my/hl-paren-face)
-(setq my/hl-paren-face (face-foreground 'default))
+(defvar pro/hl-paren-face)
+(setq pro/hl-paren-face (face-foreground 'default))
 
 (use-package highlight-parentheses
   :ensure t
   :defines (global-highlight-parentheses-mode)
   :custom
   (hl-paren-colors
-   '("#8e44ad" "#3498db" "#1abc9c" "#27ae60" "#f1c40f" "#f39c12" ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face
-     ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face ,my/hl-paren-face))
+   `("violet" "blue2" "#3498db" #27ae60" "#f1c40f" "#f39c12" ,pro/hl-paren-face ,pro/hl-paren-face ,pro/hl-paren-face
+     ,pro/hl-paren-face ,pro/hl-paren-face ,pro/hl-paren-face ,pro/hl-paren-face ,pro/hl-paren-face ,pro/hl-paren-face))
   ;; (hl-paren-background-colors '(nil nil nil nil nil))
   :config (global-highlight-parentheses-mode t)
   :init

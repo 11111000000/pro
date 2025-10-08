@@ -195,10 +195,44 @@
 
 ;;= Цветовая схема вкладок для Eshell (см. также про-внешний-вид.el) =;;
 (defun pro/eshell-tabline-colors ()
-  "Сделать текущую вкладку tab-line в Eshell черной с белым акцентом."
-  (face-remap-add-relative 'pro-tabs-active '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
+  "Сделать вкладку Eshell в tab-line всегда чёрной: активную и при потере фокуса."
+  ;; Только tab-line лица — не трогаем pro-tabs-*, чтобы не влиять на tab-bar.
   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
-  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#cccccc" :weight bold :box nil)))
+  ;; В неактивном окне текущая вкладка использует tab-line-tab:
+  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil)))
+
+(defface pro/eshell-tabline-black-face
+  '((t (:background "#000000")))
+  "Однотонный чёрный фон для волны pro-tabs в Eshell.")
+
+(defun pro/eshell-tabline-name-function (buffer &optional _buffers)
+  "Tab-line formatter для Eshell: активная вкладка и её волны всегда чёрные.
+Центральная часть вкладки остаётся чёрной даже при потере фокуса."
+  (let* ((current? (eq buffer (window-buffer)))
+         (eshell? (with-current-buffer buffer (eq major-mode 'eshell-mode)))
+         (baseface (if current? 'pro-tabs-active-face 'pro-tabs-inactive-face))
+         ;; Чёрный фон только для текущей вкладки Eshell; неактивные остаются обычными.
+         (face (if (and eshell? current?)
+                   (list 'pro/eshell-tabline-black-face baseface)
+                 baseface))
+         (h pro-tabs-tab-line-height)
+         (icon (when (fboundp 'pro-tabs--icon) (pro-tabs--icon buffer 'tab-line)))
+         (wave-r (propertize " " 'display
+                             (if (and eshell? current?)
+                                 (pro-tabs--wave-right 'pro/eshell-tabline-black-face 'tab-line (+ 1 h))
+                               (pro-tabs--wave-right baseface 'tab-line (+ 1 h)))))
+         (wave-l (propertize " " 'display
+                             (if (and eshell? current?)
+                                 (pro-tabs--wave-left 'tab-line 'pro/eshell-tabline-black-face (+ 1 h))
+                               (pro-tabs--wave-left 'tab-line baseface (+ 1 h)))))
+         (txt (concat wave-r (or icon "") " " (buffer-name buffer) wave-l)))
+    ;; Препендим лицо, чтобы наш чёрный не перебивался tab-line-tab/… лицами.
+    (add-face-text-property 0 (length txt) face nil txt)
+    txt))
+
+(defun pro/eshell-tabline-black-waves-setup ()
+  "Сделать чёрными боковые волны активной вкладки tab-line только в Eshell."
+  (setq-local tab-line-tab-name-function #'pro/eshell-tabline-name-function))
 
 ;;= Темный pop-up Corfu для мини-окон автодополнения в Eshell =;;
 (defun pro/eshell-corfu-dark ()
@@ -293,7 +327,9 @@
   :ensure t
   :hook ((eshell-mode . tab-line-mode)
          (eshell-mode . pro/eshell-dark-theme)
-         (eshell-mode . pro/eshell-corfu-dark))
+         (eshell-mode . pro/eshell-corfu-dark)
+         (eshell-mode . pro/eshell-tabline-colors)
+         (eshell-mode . pro/eshell-tabline-black-waves-setup))
   :bind (:map eshell-mode-map
               ("C-a" . beginning-of-line)
               ("DEL" . pro/eshell-backspace)

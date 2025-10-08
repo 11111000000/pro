@@ -634,56 +634,54 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
     (message "gptel-model: %s" gptel-model)))
 
 (use-package context-navigator
-  :load-path "~/Code/context-navigator-main/lisp"
+  :load-path "~/Code/context-navigator/lisp"
   ;; :straight (context-navigator
   ;;            :type git
   ;;            :host github
   ;;            :repo "11111000000/context-navigator")
-
-  ;; Use :custom instead of setq — values are applied via customize-set-variable.
   :custom
-  ;; Basics
+
+  ;; ;; Basics
   (context-navigator-language 'ru)
   (context-navigator-global-key "C-c n")           ;; recommended global key for the transient
-  (context-navigator-autoload t)                   ;; load pieces on first use
-  (context-navigator-autosave t)                   ;; auto-save contexts
-  (context-navigator-default-auto-project-switch t)
-  (context-navigator-default-push-to-gptel t)
-  (context-navigator-sidebar-width 36)             ;; sidebar width in columns
+  ;; (context-navigator-autoload t)                   ;; load pieces on first use
+  ;; (context-navigator-autosave t)                   ;; auto-save contexts
+  ;; (context-navigator-default-auto-project-switch t)
+  ;; (context-navigator-default-push-to-gptel t)
+  ;; (context-navigator-sidebar-width 36)             ;; sidebar width in columns
 
-  ;; Sidebar look & feel
-  (context-navigator-controls-style 'icons)        ;; compact header/footer controls
-  (context-navigator-highlight-active-group t)     ;; highlight current group
-  (context-navigator-auto-open-groups-on-error t)  ;; open groups list if a load error occurs
-  (context-navigator-gptel-indicator-poll-interval 0.8) ;; keep gptel indicators fresh
+  ;; ;; Sidebar look & feel
+  ;; (context-navigator-controls-style 'icons)        ;; compact header/footer controls
+  ;; (context-navigator-highlight-active-group t)     ;; highlight current group
+  ;; (context-navigator-auto-open-groups-on-error t)  ;; open groups list if a load error occurs
+  ;; (context-navigator-gptel-indicator-poll-interval 0.8) ;; keep gptel indicators fresh
 
-  ;; Render options
-  (context-navigator-render-indicator-style 'icons) ;; tiny lamps via all-the-icons
-  (context-navigator-render-show-path nil)          ;; show right-aligned paths
-  (context-navigator-render-truncate-name 64)       ;; truncate long item names
+  ;; ;; Render options
+  ;; (context-navigator-render-indicator-style 'icons) ;; tiny lamps via all-the-icons
+  ;; (context-navigator-render-show-path nil)          ;; show right-aligned paths
+  ;; (context-navigator-render-truncate-name 64)       ;; truncate long item names
 
-  ;; Icons provider
-  (context-navigator-enable-icons t)               ;; turn on icons in the sidebar
-  (context-navigator-icons-disable-on-remote t)    ;; be gentle on TRAMP connections
+  ;; ;; Icons provider
+  ;; (context-navigator-enable-icons t)               ;; turn on icons in the sidebar
+  ;; (context-navigator-icons-disable-on-remote t)    ;; be gentle on TRAMP connections
 
-  ;; Footer “open buffers” counter
-  (context-navigator-openable-count-ttl 0.3)       ;; cache TTL for counting openable buffers
-  (context-navigator-openable-soft-cap 100)        ;; soft cap when opening many buffers
-  (context-navigator-openable-remote-mode 'lazy)   ;; 'off | 'lazy | 'strict for remote projects
+  ;; ;; Footer “open buffers” counter
+  ;; (context-navigator-openable-count-ttl 0.3)       ;; cache TTL for counting openable buffers
+  ;; (context-navigator-openable-soft-cap 100)        ;; soft cap when opening many buffers
+  ;; (context-navigator-openable-remote-mode 'lazy)   ;; 'off | 'lazy | 'strict for remote projects
 
-  ;; Project switching and persistence
-  (context-navigator-context-switch-interval 0.7)  ;; throttle auto-project switching
-  (context-navigator-create-default-group-file t)  ;; create a default group file automatically
+  ;; ;; Project switching and persistence
+  ;; (context-navigator-context-switch-interval 0.7)  ;; throttle auto-project switching
+  ;; (context-navigator-create-default-group-file t)  ;; create a default group file automatically
 
-  ;; Universal add (Dired recursion) size limit
-  (context-navigator-max-file-size (* 2 1024 1024)) ;; skip files larger than 2MB
+  ;; ;; Universal add (Dired recursion) size limit
+  ;; (context-navigator-max-file-size (* 2 1024 1024)) ;; skip files larger than 2MB
 
-  ;; Internationalization
-  (context-navigator-language 'auto)               ;; en/ru/fr/de/es or auto-from-locale
+  ;; ;; Internationalization
+  ;; (context-navigator-language 'auto)               ;; en/ru/fr/de/es or auto-from-locale
 
-  ;; Protect your layout when the sidebar is open
-  (context-navigator-protect-sidebar-windows t)
-
+  ;; ;; Protect your layout when the sidebar is open
+  ;; (context-navigator-protect-sidebar-windows t)
 
   :config
   ;; Enable the global minor mode after customizing.

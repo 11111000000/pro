@@ -69,6 +69,5 @@
   :config
   (envrc-global-mode))
 
-
 (provide 'про-код-на-python)
 ;;; про-код-на-python.el ends here
