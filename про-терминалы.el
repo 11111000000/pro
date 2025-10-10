@@ -194,12 +194,12 @@
 ;;;;= Eshell — стильно, удобно и мощно =;;;;;
 
 ;;= Цветовая схема вкладок для Eshell (см. также про-внешний-вид.el) =;;
-(defun pro/eshell-tabline-colors ()
-  "Сделать вкладку Eshell в tab-line всегда чёрной: активную и при потере фокуса."
-  ;; Только tab-line лица — не трогаем pro-tabs-*, чтобы не влиять на tab-bar.
-  (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
-  ;; В неактивном окне текущая вкладка использует tab-line-tab:
-  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil)))
+;; (defun pro/eshell-tabline-colors ()
+;;   "Сделать вкладку Eshell в tab-line всегда чёрной: активную и при потере фокуса."
+;;   ;; Только tab-line лица — не трогаем pro-tabs-*, чтобы не влиять на tab-bar.
+;;   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
+;;   ;; В неактивном окне текущая вкладка использует tab-line-tab:
+;;   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil)))
 
 (defface pro/eshell-tabline-black-face
   '((t (:background "#000000")))
@@ -217,15 +217,15 @@
                  baseface))
          (h pro-tabs-tab-line-height)
          (icon (when (fboundp 'pro-tabs--icon) (pro-tabs--icon buffer 'tab-line)))
-         (wave-r (propertize " " 'display
-                             (if (and eshell? current?)
-                                 (pro-tabs--wave-right 'pro/eshell-tabline-black-face 'tab-line (+ 1 h))
-                               (pro-tabs--wave-right baseface 'tab-line (+ 1 h)))))
          (wave-l (propertize " " 'display
                              (if (and eshell? current?)
-                                 (pro-tabs--wave-left 'tab-line 'pro/eshell-tabline-black-face (+ 1 h))
+                                 (pro-tabs--wave-right 'tab-line 'pro/eshell-tabline-black-face  (+ 1 h))
+                               (pro-tabs--wave-right baseface 'tab-line (+ 1 h)))))
+         (wave-r (propertize " " 'display
+                             (if (and eshell? current?)
+                                 (pro-tabs--wave-left 'pro/eshell-tabline-black-face 'tab-line (+ 1 h))
                                (pro-tabs--wave-left 'tab-line baseface (+ 1 h)))))
-         (txt (concat wave-r (or icon "") " " (buffer-name buffer) wave-l)))
+         (txt (concat wave-l (or icon "") " " (buffer-name buffer) wave-r)))
     ;; Препендим лицо, чтобы наш чёрный не перебивался tab-line-tab/… лицами.
     (add-face-text-property 0 (length txt) face nil txt)
     txt))

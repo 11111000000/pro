@@ -108,11 +108,29 @@
            (apply orig-fun (list (car args))))))))
   (advice-add 'undo-tree-save-history :around #'про-история--undo-tree-save-history-силентно)
 
+  ;; Без вопросов и при загрузке: автоматически восстанавливаем persistent-undo.
+  (defun про-история--undo-tree-load-history-силентно (orig-fun &rest args)
+    "Оборачивает `undo-tree-load-history', всегда подтверждая восстановление без диалогов."
+    (condition-case _
+        (cl-letf (((symbol-function 'y-or-n-p)   (lambda (&rest _) t))
+                  ((symbol-function 'yes-or-no-p) (lambda (&rest _) t)))
+          (apply orig-fun args))
+      (wrong-number-of-arguments
+       (cl-letf (((symbol-function 'y-or-n-p)   (lambda (&rest _) t))
+                 ((symbol-function 'yes-or-no-p) (lambda (&rest _) t)))
+         (apply orig-fun (list (car args)))))))
+
+  (advice-add 'undo-tree-load-history :around #'про-история--undo-tree-load-history-силентно)
+
   ;; На всякий случай дублируем автосохранение истории:
   ;; 1) Сохранять историю сразу после сохранения файла.
   (add-hook 'undo-tree-mode-hook
             (lambda ()
               (when undo-tree-mode
+                ;; Автовосстановление истории при открытии файла.
+                (when buffer-file-name
+                  (ignore-errors (undo-tree-load-history)))
+                ;; Автосохранение истории сразу после сохранения файла.
                 (add-hook 'after-save-hook (lambda () (undo-tree-save-history nil t)) nil t))))
   ;; 2) Сохранить историю всех буферов при выходе из Emacs.
   (add-hook 'kill-emacs-hook

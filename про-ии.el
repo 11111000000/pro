@@ -757,6 +757,8 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
      (t
       (message "gptel-aibo: ошибка парсинга: %S" ops)))))
 
+(require 'gptel-hotfix)
+
 (provide 'про-ии)
 
 ;;; про-ии.el ends here

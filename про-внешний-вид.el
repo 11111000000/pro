@@ -176,7 +176,7 @@
 ;; с иконками и удобными биндингами.
 
 (use-package pro-tabs
-  :init (установить-из :repo "11111000000/pro-tabs")
+  :load-path "~/Code/pro-tabs"
   :bind (;; Глобальные бинды для tab-bar.
          ("s-n" . tab-bar-switch-to-next-tab)
          ("s-p" . tab-bar-switch-to-prev-tab)
