@@ -13,6 +13,7 @@
               ("M-RET" . org-agenda-open-link)
               ("M-p" . org-previous-visible-heading)
               ("M-n" . org-next-visible-heading)
+              ("C-c SPC" . pro/org-mark-src-block)
               ("C-c C-p" . nil))
   :custom ((org-log-done nil)
            ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
@@ -303,6 +304,29 @@
 (require 'org)
 (require 'ox)
 (require 'outline)
+(require 'org-element)
+
+(defun pro/org-mark-src-block ()
+  "Если точка в Org src-блоке — выделить его содержимое (без строк #+begin/#+end)."
+  (interactive)
+  (let* ((el (org-element-at-point)))
+    (if (eq (car el) 'src-block)
+        (let* ((beg (org-element-property :begin el))
+               (end (org-element-property :end el))
+               (start (save-excursion
+                        (goto-char beg)
+                        (forward-line 1)
+                        (point)))
+               (finish (save-excursion
+                         (let ((case-fold-search t))
+                           (goto-char end)
+                           (re-search-backward "^[ \t]*#\\+end_src\\b" beg t)
+                           (match-beginning 0)))))
+          (when (and start finish)
+            (goto-char start)
+            (push-mark finish nil t)
+            (activate-mark)))
+      (message "Курсор не в src-блоке."))))
 
 (defun my/org-archive-done-tasks ()
   "Вырезает все записи со статусом DONE и сохраняет их в архивный файл."
