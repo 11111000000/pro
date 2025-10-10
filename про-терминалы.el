@@ -194,12 +194,12 @@
 ;;;;= Eshell — стильно, удобно и мощно =;;;;;
 
 ;;= Цветовая схема вкладок для Eshell (см. также про-внешний-вид.el) =;;
-;; (defun pro/eshell-tabline-colors ()
-;;   "Сделать вкладку Eshell в tab-line всегда чёрной: активную и при потере фокуса."
-;;   ;; Только tab-line лица — не трогаем pro-tabs-*, чтобы не влиять на tab-bar.
-;;   (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
-;;   ;; В неактивном окне текущая вкладка использует tab-line-tab:
-;;   (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil)))
+(defun pro/eshell-tabline-colors ()
+  "Сделать вкладку Eshell в tab-line всегда чёрной: активную и при потере фокуса."
+  ;; Только tab-line лица — не трогаем pro-tabs-*, чтобы не влиять на tab-bar.
+  (face-remap-add-relative 'tab-line-tab-current '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil))
+  ;; В неактивном окне текущая вкладка использует tab-line-tab:
+  (face-remap-add-relative 'tab-line-tab '(:background "#000000" :foreground "#eeeeee" :weight bold :box nil)))
 
 (defface pro/eshell-tabline-black-face
   '((t (:background "#000000")))

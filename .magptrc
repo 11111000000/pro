@@ -7,7 +7,7 @@
   (magpt-info-language . "Russian")
 
   ;; Язык для генерируемых сообщений коммитов
-  (magpt-commit-language . "Russian")
+  (magpt-commit-language . "English")
   
   ;; Панель задач автоматически показывать после ответа
   (magpt-panel-auto-pop . t)
