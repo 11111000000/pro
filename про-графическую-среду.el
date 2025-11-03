@@ -285,7 +285,8 @@ fi"))
 
 (defun скринкаст (&optional duration)
   "Запустить скринкаст экрана с помощью ffmpeg.
-Файл сохраняется в ~/Скринкасты/. Лог пишется в отдельный буфер, его можно просмотреть командой `скринкаст-показать-лог`.
+Файл сохраняется в ~/Скринкасты/. Формат максимально совместим с Android и Telegram:
+H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +faststart. Лог в отдельном буфере.
 Если DURATION задан (в секундах), запись завершится автоматически."
   (interactive "P")
   (let* ((dir (expand-file-name "~/Скринкасты/"))
@@ -293,7 +294,7 @@ fi"))
               (make-directory dir t)))
          (fname (read-string "Имя скринкаста (без расширения): "
                              (format-time-string "%Y-%m-%d_%H-%M-%S")))
-         (path (expand-file-name (concat fname ".mkv") dir))
+         (path (expand-file-name (concat fname ".mp4") dir))
          (log-buf (get-buffer-create (format "*скринкаст %s*" fname)))
          (size (string-trim
                 (shell-command-to-string
@@ -305,11 +306,32 @@ fi"))
                  "-framerate" "30"
                  "-f" "x11grab"
                  "-i" display
-                 "-c:v" "libx264rgb"
-                 "-crf" "0"
-                 "-preset" "ultrafast")
+                 ;; добавляем «тихий» аудиотрек для совместимости с плеерами Android
+                 "-f" "lavfi"
+                 "-i" "anullsrc=channel_layout=stereo:sample_rate=48000"
+                 ;; видео: максимально совместимый baseline профиль
+                 "-c:v" "libx264"
+                 "-pix_fmt" "yuv420p"
+                 "-profile:v" "baseline"
+                 "-level:v" "3.1"
+                 "-preset" "faster"
+                 "-crf" "23"
+                 "-maxrate" "4500k"
+                 "-bufsize" "9000k"
+                 "-g" "60"
+                 "-flags" "+global_header"
+                 "-movflags" "+faststart"
+                 "-vf" "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+                 ;; аудио: AAC стерео
+                 "-c:a" "aac"
+                 "-b:a" "128k"
+                 "-ac" "2"
+                 ;; Явное сопоставление потоков и запас для muxer'а
+                 "-map" "0:v:0"
+                 "-map" "1:a:0"
+                 "-max_muxing_queue_size" "9999")
                 (when duration (list "-t" (format "%s" duration)))
-                (list path)))
+                (list "-shortest" path)))
          (proc nil))
     (with-current-buffer log-buf (erase-buffer))
     (setq proc (apply #'start-process
@@ -396,108 +418,109 @@ fi"))
 
 ;;;; 6.9 EXWM: Логи для диагностики симуляции клавиш (C-n/C-p в браузерах)
 
-(defvar pro/exwm-keys-log-buffer "*EXWM-keys-log*"
-  "Буфер, куда пишем диагностические сообщения о симуляции клавиш EXWM.")
+;; (defvar pro/exwm-keys-log-buffer "*EXWM-keys-log*"
+;;   "Буфер, куда пишем диагностические сообщения о симуляции клавиш EXWM.")
 
-(defun pro/exwm-log (&rest args)
-  "Записать строку в лог и вывести в echo-area."
-  (let* ((msg (apply #'format args))
-         (ts  (format-time-string "%F %T.%3N")))
-    (with-current-buffer (get-buffer-create pro/exwm-keys-log-buffer)
-      (goto-char (point-max))
-      (insert (format "[%s] %s\n" ts msg)))
-    (message "%s" msg)))
+;; (defun pro/exwm-log (&rest args)
+;;   "Записать строку в лог и вывести в echo-area."
+;;   (let* ((msg (apply #'format args))
+;;          (ts  (format-time-string "%F %T.%3N")))
+;;     (with-current-buffer (get-buffer-create pro/exwm-keys-log-buffer)
+;;       (goto-char (point-max))
+;;       (insert (format "[%s] %s\n" ts msg)))
+;;     (message "%s" msg)))
 
-(defun pro/exwm-show-keys-log ()
-  "Открыть буфер с логами EXWM-симуляции клавиш."
-  (interactive)
-  (pop-to-buffer (get-buffer-create pro/exwm-keys-log-buffer)))
+;; (defun pro/exwm-show-keys-log ()
+;;   "Открыть буфер с логами EXWM-симуляции клавиш."
+;;   (interactive)
+;;   (pop-to-buffer (get-buffer-create pro/exwm-keys-log-buffer)))
 
-(defvar-local pro/exwm--mode 'unknown
-  "Текущий режим ввода для EXWM-буфера: 'line, 'char или 'unknown.")
+;; (defvar-local pro/exwm--mode 'unknown
+;;   "Текущий режим ввода для EXWM-буфера: 'line, 'char или 'unknown.")
 
-(with-eval-after-load 'exwm
-  ;; Отмечаем смену режимов (line/char) и логируем
-  (advice-add 'exwm-input-line-mode :after
-              (lambda (&rest _)
-                (setq pro/exwm--mode 'line)
-                (pro/exwm-log "→ line-mode для %s (%s)"
-                              (or (bound-and-true-p exwm-class-name) "?")
-                              (buffer-name))))
-  (advice-add 'exwm-input-char-mode :after
-              (lambda (&rest _)
-                (setq pro/exwm--mode 'char)
-                (pro/exwm-log "→ char-mode для %s (%s)"
-                              (or (bound-and-true-p exwm-class-name) "?")
-                              (buffer-name))))
-  ;; Логируем фактическую отправку fake-keys во внешний клиент
-  (advice-add 'exwm-input--fake-key :around
-              (lambda (orig key &rest args)
-                (pro/exwm-log "fake-key: %S -> class=%s buf=%s mode=%s"
-                              key
-                              (or (bound-and-true-p exwm-class-name) "?")
-                              (buffer-name)
-                              pro/exwm--mode)
-                (apply orig key args))))
+;; (with-eval-after-load 'exwm
+;;   ;; Отмечаем смену режимов (line/char) и логируем
+;;   (advice-add 'exwm-input-line-mode :after
+;;               (lambda (&rest _)
+;;                 (setq pro/exwm--mode 'line)
+;;                 (pro/exwm-log "→ line-mode для %s (%s)"
+;;                               (or (bound-and-true-p exwm-class-name) "?")
+;;                               (buffer-name))))
+;;   (advice-add 'exwm-input-char-mode :after
+;;               (lambda (&rest _)
+;;                 (setq pro/exwm--mode 'char)
+;;                 (pro/exwm-log "→ char-mode для %s (%s)"
+;;                               (or (bound-and-true-p exwm-class-name) "?")
+;;                               (buffer-name))))
+;;   ;; Логируем фактическую отправку fake-keys во внешний клиент
+;;   (advice-add 'exwm-input--fake-key :around
+;;               (lambda (orig key &rest args)
+;;                 (pro/exwm-log "fake-key: %S -> class=%s buf=%s mode=%s"
+;;                               key
+;;                               (or (bound-and-true-p exwm-class-name) "?")
+;;                               (buffer-name)
+;;                               pro/exwm--mode)
+;;                 (apply orig key args))))
 
-(defun pro/exwm--sim-mapping (key)
-  "Вернуть cons-мэппинг из (local/global) simulation-keys для KEY."
-  (or (and (boundp 'exwm-local-simulation-keys)
-           (assoc key exwm-local-simulation-keys))
-      (and (boundp 'exwm-input-simulation-keys)
-           (assoc key exwm-input-simulation-keys))))
+;; (defun pro/exwm--sim-mapping (key)
+;;   "Вернуть cons-мэппинг из (local/global) simulation-keys для KEY."
+;;   (or (and (boundp 'exwm-local-simulation-keys)
+;;            (assoc key exwm-local-simulation-keys))
+;;       (and (boundp 'exwm-input-simulation-keys)
+;;            (assoc key exwm-input-simulation-keys))))
 
-(defun pro/exwm--log-state (trigger)
-  "Снять срез состояния по TRIGGER (строка «C-n»/«C-p» и т.д.)."
-  (pro/exwm-log "%s: class=%s buf=%s mode=%s xim=%s local-sim=%S"
-                trigger
-                (or (and (boundp 'exwm-class-name) exwm-class-name) "?")
-                (buffer-name)
-                pro/exwm--mode
-                (if (bound-and-true-p exwm-xim-mode) 'on 'off)
-                (and (boundp 'exwm-local-simulation-keys)
-                     exwm-local-simulation-keys)))
+;; (defun pro/exwm--log-state (trigger)
+;;   "Снять срез состояния по TRIGGER (строка «C-n»/«C-p» и т.д.)."
+;;   (pro/exwm-log "%s: class=%s buf=%s mode=%s xim=%s local-sim=%S"
+;;                 trigger
+;;                 (or (and (boundp 'exwm-class-name) exwm-class-name) "?")
+;;                 (buffer-name)
+;;                 pro/exwm--mode
+;;                 (if (bound-and-true-p exwm-xim-mode) 'on 'off)
+;;                 (and (boundp 'exwm-local-simulation-keys)
+;;                      exwm-local-simulation-keys)))
 
-(defun pro/exwm-C-n ()
-  "Логирующий обработчик C-n для EXWM-буфера браузера."
-  (interactive)
-  (pro/exwm--log-state "C-n")
-  (let ((m (pro/exwm--sim-mapping [?\C-n])))
-    (pro/exwm-log "C-n: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
-    ;; Пытаемся использовать штатную симуляцию; если маппинга нет,
-    ;; EXWM обычно пошлёт исходный ключ клиенту — это тоже видно по эффекту.
-    (when (fboundp 'exwm-input-send-simulation-keys)
-      (exwm-input-send-simulation-keys (kbd "C-n")))))
+;; (defun pro/exwm-C-n ()
+;;   "Логирующий обработчик C-n для EXWM-буфера браузера."
+;;   (interactive)
+;;   (pro/exwm--log-state "C-n")
+;;   (let ((m (pro/exwm--sim-mapping [?\C-n])))
+;;     (pro/exwm-log "C-n: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
+;;     ;; Пытаемся использовать штатную симуляцию; если маппинга нет,
+;;     ;; EXWM обычно пошлёт исходный ключ клиенту — это тоже видно по эффекту.
+;;     (when (fboundp 'exwm-input-send-simulation-keys)
+;;       (exwm-input-send-simulation-keys (kbd "C-n")))))
 
-(defun pro/exwm-C-p ()
-  "Логирующий обработчик C-p для EXWM-буфера браузера."
-  (interactive)
-  (pro/exwm--log-state "C-p")
-  (let ((m (pro/exwm--sim-mapping [?\C-p])))
-    (pro/exwm-log "C-p: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
-    (when (fboundp 'exwm-input-send-simulation-keys)
-      (exwm-input-send-simulation-keys (kbd "C-p")))))
+;; (defun pro/exwm-C-p ()
+;;   "Логирующий обработчик C-p для EXWM-буфера браузера."
+;;   (interactive)
+;;   (pro/exwm--log-state "C-p")
+;;   (let ((m (pro/exwm--sim-mapping [?\C-p])))
+;;     (pro/exwm-log "C-p: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
+;;     (when (fboundp 'exwm-input-send-simulation-keys)
+;;       (exwm-input-send-simulation-keys (kbd "C-p")))))
 
-(defun pro/exwm-браузеры-line+sim ()
-  "Для Firefox/Chromium: включить line-mode и локальные simulation-keys."
-  (when (and (derived-mode-p 'exwm-mode)
-             (boundp 'exwm-class-name)
-             exwm-class-name
-             (member (downcase exwm-class-name)
-                     '("firefox" "chromium" "google-chrome" "chromium-browser")))
-    (pro/exwm-log "exwm-manage: %s → line-mode + локальные simulation-keys (xim=%s)"
-                  exwm-class-name (if (bound-and-true-p exwm-xim-mode) 'on 'off))
-    (when (fboundp 'exwm-input-line-mode)
-      (exwm-input-line-mode))
-    (setq-local pro/exwm--mode 'line)
-    (when (fboundp 'exwm-input-set-local-simulation-keys)
-      (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)
-      (pro/exwm-log "local-sim set: %S"
-                    (and (boundp 'exwm-local-simulation-keys)
-                         exwm-local-simulation-keys)))))
+;; (defun pro/exwm-браузеры-line+sim ()
+;;   "Для Firefox/Chromium: включить line-mode и локальные simulation-keys."
+;;   (when (and (derived-mode-p 'exwm-mode)
+;;              (boundp 'exwm-class-name)
+;;              exwm-class-name
+;;              (member (downcase exwm-class-name)
+;;                      '("firefox" "chromium" "google-chrome" "chromium-browser")))
+;;     (pro/exwm-log "exwm-manage: %s → line-mode + локальные simulation-keys (xim=%s)"
+;;                   exwm-class-name (if (bound-and-true-p exwm-xim-mode) 'on 'off))
+;;     (when (fboundp 'exwm-input-line-mode)
+;;       (exwm-input-line-mode))
+;;     (setq-local pro/exwm--mode 'line)
+;;     (when (fboundp 'exwm-input-set-local-simulation-keys)
+;;       (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)
+;;       (pro/exwm-log "local-sim set: %S"
+;;                     (and (boundp 'exwm-local-simulation-keys)
+;;                          exwm-local-simulation-keys)))))
 
-(with-eval-after-load 'exwm
-  (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim))
+;; (with-eval-after-load 'exwm
+;;   (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
+)
 
 ;;;; 7. Блокировка случайных Ctrl/Shift+мышь
 ;; Игнорируем комбо, чтобы избежать неожиданных меню в приложениях.

@@ -5,6 +5,11 @@
 ;; we attempt a fallback parse: recover HTTP status and JSON body directly
 ;; from the buffer and finalize the FSM cleanly.
 
+(defvar atlas-gptel-hotfix-dump t
+  "When non-nil, write the process buffer to a temp file when the Curl token is missing.")
+(defvar atlas-gptel-hotfix-dump-dir nil
+  "Directory for writing fallback dumps. If nil, use =temporary-file-directory'.")
+
 (with-eval-after-load 'gptel-request
   (defun atlas--gptel-safe-cleanup (orig-fn &rest args)
     "Wrap `gptel-curl--stream-cleanup' and gracefully finalize on missing token.
@@ -20,6 +25,25 @@ finalize the FSM and invoke the callback to avoid a stuck state."
               (fsm (and (processp process)
                         (car (alist-get process gptel--request-alist)))))
          (message "gptel: stream cleanup could not locate token (%s); using fallback" (cadr err))
+         (let* ((exit (and (processp process) (process-exit-status process)))
+                (pstat (and (processp process) (process-status process)))
+                (cmd (and (processp process) (mapconcat #'identity (process-command process) " "))))
+           (message "gptel: fallback diag: proc-status=%S exit=%S" pstat exit)
+           (when cmd (message "gptel: curl cmd: %s" cmd)))
+         (when (and (numberp exit) (= exit 126))
+           (with-current-buffer proc-buf
+             (save-excursion
+               (goto-char (point-min))
+               (when (search-forward "Argument list too long" nil t)
+                 (message "gptel: Curl failed with 'Argument list too long'. Set gptel-curl-file-size-threshold to 0 (use temp file) or shorten the prompt.")))))
+         (when (and atlas-gptel-hotfix-dump (buffer-live-p proc-buf))
+           (let* ((dir (or atlas-gptel-hotfix-dump-dir temporary-file-directory))
+                  (file (expand-file-name (format "gptel-fallback-%s.log"
+                                                  (format-time-string "%Y%m%d-%H%M%S"))
+                                          dir)))
+             (with-current-buffer proc-buf
+               (write-region (point-min) (point-max) file nil 'quiet))
+             (message "gptel: fallback dump written to %s" file)))
          (when (and fsm (buffer-live-p proc-buf))
            (let* ((info (gptel-fsm-info fsm))
                   (cb (plist-get info :callback))
@@ -59,7 +83,11 @@ finalize the FSM and invoke the callback to avoid a stuck state."
                                ((arrayp response)
                                 (cl-some (lambda (el) (plist-get el :error)) response)))))))
              ;; Store recovered status in info
-             (when http-status (plist-put info :http-status http-status))
+             (when http-status
+               (plist-put info :http-status http-status)
+               (message "gptel: fallback parsed HTTP status %s%s"
+                        http-status
+                        (if http-msg (format " (%s)" http-msg) "")))
              (when http-msg    (plist-put info :status http-msg))
              ;; Decide success/failure and invoke callback
              (cond

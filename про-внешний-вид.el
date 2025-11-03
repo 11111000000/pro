@@ -81,8 +81,8 @@
 (add-to-list 'load-path "/home/az/.emacs.d/elpa/shaoline/lisp")
 
 (use-package shaoline
-  :ensure t
-  :init (установить-из :repo "11111000000/shaoline")
+  :load-path "/home/az/Code/shaoline/lisp"
+                                        ;:init (установить-из :repo "11111000000/shaoline")
   :custom
   (shaoline-debug nil)
   (shaoline-mode-strategy 'yang)
@@ -152,10 +152,21 @@
     :defer t
     :init (установить-из :repo "emacsmirror/cursor-chg")
     :hook (after-init . change-cursor-mode)
-    :custom (curchg-input-method-cursor-color "orange")
+    :custom
+    (curchg-input-method-cursor-color "orange")
     (curchg-default-cursor-type '(bar . 3))
     (curchg-default-cursor-color "forest green")
-    (curchg-change-cursor-on-input-method-flag t)))
+    (curchg-change-cursor-on-input-method-flag t)
+    ;; Всегда серый курсор в read-only буферах
+    (curchg-change-cursor-on-overwrite/read-only-flag t)
+    (curchg-read-only-cursor-color "gray")
+    :config
+    ;; Read-only имеет приоритет: всегда серый курсор, независимо от раскладки
+    (advice-add 'curchg-set-cursor-color-according-to-mode :around
+                (lambda (orig-fn &rest args)
+                  (if buffer-read-only
+                      (ignore-errors (set-cursor-color curchg-read-only-cursor-color))
+                    (apply orig-fn args))))))
 
 ;; Прокрутка: консервативная, с margins для комфорта.
 (setq-default scroll-conservatively 80 scroll-step 1 scroll-margin 5 hscroll-step 1 auto-window-vscroll nil fast-but-imprecise-scrolling t jit-lock-defer-time 0 hscroll-margin 1)
@@ -293,8 +304,8 @@
       confirm-kill-emacs nil)
 
 ;; Переназначения клавиш выхода
-(global-set-key (kbd "C-x C-c") #'pro/block-quit-c-x-c-c)
-(global-set-key (kbd "C-x M-q") #'pro/quit-emacs)
+;;(global-set-key (kbd "C-x C-c") #'pro/block-quit-c-x-c-c)
+;;(global-set-key (kbd "C-x C-c") #'pro/quit-emacs)
 
 (provide 'про-внешний-вид)
 ;;; про-внешний-вид.el ends here

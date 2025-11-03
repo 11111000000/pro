@@ -65,9 +65,9 @@
                 lsp-ui-imenu-mode vterm-mode dashboard-mode helpful-mode eww-mode occur-mode ibuffer-mode
                 flymake-diagnostics-buffer-mode profiler-report-mode custom-mode chatgpt-shell-mode
                 undo-tree-visualizer-mode yaz-repl messages-buffer-mode context-navigator-view-mode test-flow-panel-mode lore-view-mode
-                context-navigator-multifile-mode context-navigator-groups-split-mode))
+                context-navigator-multifile-mode context-navigator-groups-split-mode atlas-entity-tree-mode))
 
-  (god-exempt-predicates (list #'god-exempt-mode-p))
+  (god-exempt-predicates (list #'god-exempt-mode-p (lambda () buffer-read-only)))
 
   :config
 
@@ -75,7 +75,19 @@
   (global-set-key (kbd "C-h") help-map)
 
   (god-mode-all)
-  (курсор-бога))
+  (курсор-бога)
+  ;; Запретить god-local-mode в read-only буферах и выключать автоматически
+  (defun pro/god--deny-in-read-only (orig &optional arg)
+    (if buffer-read-only
+        (progn
+          (when god-local-mode (funcall orig -1))
+          (user-error "God-mode запрещён в read-only буферах"))
+      (funcall orig arg)))
+  (advice-add 'god-local-mode :around #'pro/god--deny-in-read-only)
+  (add-hook 'read-only-mode-hook
+            (lambda ()
+              (when (and buffer-read-only (bound-and-true-p god-local-mode))
+                (god-local-mode -1)))))
 
 (provide 'про-режим-бога)
 ;;; про-режим-бога.el ends here

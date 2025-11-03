@@ -1,189 +1,155 @@
 * Клавиши текстового режима
 
 #+NAME: key-bindings-table
-| Сочетание      | Функция                             |
-|----------------+-------------------------------------|
-| C-d            | nil                                 |
-| C-w            | nil                                 |
-| s-x            | nil                                 |
-| M-c            | nil                                 |
-| M-t            | nil                                 |
-| M-\            | nil                                 |
-| s-z            | nil                                 |
-| M-f            | viper-forward-word                  |
-| M-b            | viper-backward-word                 |
-| M-j            | scroll-down                         |
-| M-k            | scroll-up                           |
-| M-y            | whole-line-or-region-kill-ring-save |
-| C-y            | yank                                |
-| C-d C-d        | whole-line-or-region-kill-region    |
-| C-M-d          | whole-line-or-region-kill-region    |
-| M-r            | replace-string                      |
-| M-R            | replace-regexp                      |
-| C-a            | pro/to-identation-or-bol            |
-| C-S-r          | revert-buffer-quick                 |
-| C-r            | revert-buffer                       |
-| C-S-M-p        | shift-text-up                       |
-| C-S-M-n        | shift-text-down                     |
-| C-S-M-f        | shift-text-right                    |
-| C-S-M-b        | shift-text-left                     |
-| C--            | text-scale-decrease                 |
-| C-+            | text-scale-increase                 |
-| C-=            | text-scale-increase                 |
-| C-M-=          | text-scale-set                      |
-| C-c m          | pro/показать-сообщения              |
-| C-%            | forward-or-backward-sexp            |
-| C-a            | pro/to-identation-or-bol            |
-| C-$            | toggle-truncate-lines               |
-| C-c M-f        | вставить-имя-файла                  |
-| C-x b          | pro/consult-buffer                  |
-| C-x C-b        | pro/consult-buffer-other-window     |
-| C-x r          | consult-recent-file                 |
-| C-x C-r        | consult-recent-file                 |
-| C-x M-b        | consult-buffer-other-window         |
-| C-c b          | consult-buffer-other-window         |
-| C-c C-b        | consult-buffer-other-window         |
-| C-x C-t        | pro/telega-select-contact           |
-| C-c tp         | tab-bar-switch-to-prev-tab          |
-| C-c tn         | tab-bar-switch-to-next-tab          |
-| C-c tt         | pro-tabs-open-new-tab               |
-| C-c tu         | tab-bar-undo-close-tab              |
-| C-c tr         | tab-bar-rename-tab                  |
-| C-c t M-n      | tab-bar-move-tab                    |
-| C-c t M-p      | tab-bar-move-tab-backward           |
-| C-c t d        | tab-bar-close-tab                   |
-| C-c t k        | pro-tabs-close-tab-and-buffer       |
-| M-s s          | consult-line                        |
-| M-s M-s        | consult-line-multi                  |
-| M-s d          | consult-dash                        |
-| C-x y          | consult-yank-from-kill-ring         |
-| <help> a       | consult-apropos                     |
-| C-c C-m        | consult-imenu-multi                 |
-| C-j            | next-line                           |
-| C-k            | previous-line                       |
-| M-o            | viper-open-line                     |
-| C-M-o          | viper-Open-line                     |
-| M-O            | viper-Open-line                     |
-| C-M-O          | viper-Open-line                     |
-| C-d C-f        | delete-forward-char                 |
-| C-d C-b        | backward-delete-char-untabify       |
-| C-d C-e        | удалить-до-конца-строки             |
-| C-d C-w        | delete-trailing-whitespace          |
-| C-d C-a        | delete-to-begin                     |
-| C-M-s          | isearch-backward                    |
-| C-c o p        | completion-at-point                 |
-| C-c o t        | complete-tag                        |
-| C-c o d        | cape-dabbrev                        |
-| C-c o h        | cape-history                        |
-| C-c o f        | cape-file                           |
-| C-c o k        | cape-keyword                        |
-| C-c o s        | cape-symbol                         |
-| C-c o a        | cape-abbrev                         |
-| C-c o i        | cape-ispell                         |
-| C-c o l        | cape-line                           |
-| C-c o w        | cape-dict                           |
-| C-c o \\       | cape-tex                            |
-| C-c o _        | cape-tex                            |
-| C-c o ^        | cape-tex                            |
-| C-c o &        | cape-sgml                           |
-| C-c o r        | cape-rfc1345                        |
-| C-c g          | magit-status                        |
-| C-c p y        | prodigy                             |
-| C-c d          | docker                              |
-| C-c u          | undo-tree-visualize                 |
-| C-c y y        | consult-yasnippet                   |
-| C-c y n        | создать-новый-сниппет-со-шпаргалкой |
-| C-c hl         | rainbow-identifiers-mode            |
-| C-c hi         | color-identifiers-mode              |
-| M-g g          | avy-goto-char                       |
-| M-SPC          | er/expand-region                    |
-| M-S-SPC        | er/contract-region                  |
-| S-SPC          | mark-current-line                   |
-| C-c SPC        | mc/mark-all-like-this               |
-| C-c C-SPC      | mc/unmark-all-like-this             |
-| C-c <mouse-1>  | mc/add-cursor-on-click              |
-| <backtab>      | hs-toggle-hiding                    |
-| C-c <f2>       | eglot-reconnect                     |
-| C-c v          | gt-do-translate                     |
-| s-.            | xref-find-definitions-other-window  |
-| C-M-.          | xref-find-definitions-other-window  |
-| C-.            | embark-act                          |
-| C-c ir         | gptel-rewrite                       |
-| C-c im         | pro/ai-switch-model                 |
-| C-c i.         | gptel-quick                         |
-| C-c ia         | gptel-add                           |
-| C-c if         | gptel-add-file                      |
-| C-c ip         | gptel-system-prompt                 |
-| C-c i RET      | gptel-send                          |
-| C-c i M-RET    | pro-ai-отправить-без-контекста      |
-| C-c is         | gptel-send                          |
-| C-c ik         | gptel-abort                         |
-| C-c ig         | gptel-abort                         |
-| C-c id         | gptel-context-remove-all            |
-| C-c iq         | elysium-query                       |
-| C-c i w        | whisper-run                         |
-| C-c i M-c      | pro-ai-codeium-toggle               |
-| C-c e e        | evedel-create-directive             |
-| C-c e i        | evedel-modify-directive             |
-| C-c e D        | evedel-modify-directive-tag-query   |
-| C-c e P        | evedel-preview-directive-prompt     |
-| C-c e RET      | evedel-process-directives           |
-| C-c e TAB      | evedel-convert-instructions         |
-| C-c e r        | evedel-create-reference             |
-| C-c e k        | evedel-delete-instructions          |
-| C-c e C-'      | evedel-modify-reference-commentary  |
-| C-c e n        | evedel-next-instruction             |
-| C-c e p        | evedel-previous-instruction         |
-| C-c e s        | evedel-save-instructions            |
-| C-c e l        | evedel-load-instructions            |
-| C-c e t        | evedel-add-tags                     |
-| C-c e T        | evedel-remove-tags                  |
-| s-a            | aidermacs-transient-menu            |
-| s-i            | nil                                 |
-| s-i i          | gptel                               |
-| s-i s-i        | gptel-aibo                          |
-| s-i o          | gptel                               |
-| s-i s-o        | gptel                               |
-| s-i r          | gptel-rewrite                       |
-| s-i m          | pro/ai-switch-model                 |
-| s-i s-m        | gptel-menu                          |
-| s-i .          | gptel-quick                         |
-| s-i a          | gptel-add                           |
-| s-i t          | gptel-tools                         |
-| s-i b          | pro/ai-switch-backend               |
-| s-i f          | gptel-add-file                      |
-| s-i p          | gptel-system-prompt                 |
-| s-i RET        | gptel-send                          |
-| s-i s-<return> | pro-ai-отправить-без-контекста      |
-| s-i k          | gptel-abort                         |
-| s-i g          | gptel-abort                         |
-| s-i q          | elysium-query                       |
-| s-i w          | whisper-run                         |
-| s-i x          | gptel-context-remove-all            |
-| s-i d          | gptel-context-remove-all            |
-| s-e            | nil                                 |
-| s-e s-e        | evedel-create-directive             |
-| s-e e          | evedel-modify-directive             |
-| s-e i          | evedel-modify-directive             |
-| s-e M-e        | evedel-preview-directive-prompt     |
-| s-e q          | evedel-modify-directive-tag-query   |
-| s-e M-t        | evedel-modify-directive-tag-query   |
-| s-e v          | evedel-preview-directive-prompt     |
-| s-e RET        | evedel-process-directives           |
-| s-e TAB        | evedel-convert-instructions         |
-| s-e r          | evedel-create-reference             |
-| s-e k          | evedel-delete-instructions          |
-| s-e C-'        | evedel-modify-reference-commentary  |
-| s-e n          | evedel-next-instruction             |
-| s-e p          | evedel-previous-instruction         |
-| s-e s          | evedel-save-instructions            |
-| s-e l          | evedel-load-instructions            |
-| s-e t          | evedel-add-tags                     |
-| s-e T          | evedel-remove-tags                  |
-| C-z            | nil                                 |
-| C-c M-n        | pro/пересобрать-nix                 |
-| C-c k          | pro/reload-keys                     |
-
+| Сочетание     | Функция                                     |
+|---------------+---------------------------------------------|
+| C-d           | nil                                         |
+| C-w           | nil                                         |
+| s-x           | nil                                         |
+| M-c           | nil                                         |
+| M-t           | nil                                         |
+| M-\           | nil                                         |
+| s-z           | nil                                         |
+| M-f           | viper-forward-word                          |
+| M-b           | viper-backward-word                         |
+| M-j           | scroll-down                                 |
+| M-k           | scroll-up                                   |
+| M-y           | whole-line-or-region-kill-ring-save         |
+| C-y           | yank                                        |
+| C-d C-d       | whole-line-or-region-kill-region            |
+| C-M-d         | whole-line-or-region-kill-region            |
+| M-r           | replace-string                              |
+| M-R           | replace-regexp                              |
+| C-a           | pro/to-identation-or-bol                    |
+| C-S-r         | revert-buffer-quick                         |
+| C-r           | revert-buffer                               |
+| C-S-M-p       | shift-text-up                               |
+| C-S-M-n       | shift-text-down                             |
+| C-S-M-f       | shift-text-right                            |
+| C-S-M-b       | shift-text-left                             |
+| C--           | text-scale-decrease                         |
+| C-+           | text-scale-increase                         |
+| C-=           | text-scale-increase                         |
+| C-M-=         | text-scale-set                              |
+| C-c m         | pro/показать-сообщения                      |
+| C-%           | forward-or-backward-sexp                    |
+| C-a           | pro/to-identation-or-bol                    |
+| C-$           | toggle-truncate-lines                       |
+| C-c M-f       | вставить-имя-файла                          |
+| C-x b         | pro/consult-buffer                          |
+| C-x C-b       | pro/consult-buffer-other-window             |
+| C-x r         | consult-recent-file                         |
+| C-x C-r       | consult-recent-file                         |
+| C-x M-b       | consult-buffer-other-window                 |
+| C-c b         | consult-buffer-other-window                 |
+| C-c C-b       | consult-buffer-other-window                 |
+| C-x C-t       | pro/telega-select-chat-or-contact           |
+| C-c tp        | tab-bar-switch-to-prev-tab                  |
+| C-c tn        | tab-bar-switch-to-next-tab                  |
+| C-c tt        | pro-tabs-open-new-tab                       |
+| C-c tu        | tab-bar-undo-close-tab                      |
+| C-c tr        | tab-bar-rename-tab                          |
+| C-c t M-n     | tab-bar-move-tab                            |
+| C-c t M-p     | tab-bar-move-tab-backward                   |
+| C-c t d       | tab-bar-close-tab                           |
+| C-c t k       | pro-tabs-close-tab-and-buffer               |
+| M-s s         | consult-line                                |
+| M-s M-s       | consult-line-multi                          |
+| M-s d         | consult-dash                                |
+| C-x y         | consult-yank-from-kill-ring                 |
+| <help> a      | consult-apropos                             |
+| C-c C-m       | consult-imenu-multi                         |
+| C-j           | next-line                                   |
+| C-k           | previous-line                               |
+| M-o           | viper-open-line                             |
+| C-M-o         | viper-Open-line                             |
+| M-O           | viper-Open-line                             |
+| C-M-O         | viper-Open-line                             |
+| C-d C-f       | delete-forward-char                         |
+| C-d C-b       | backward-delete-char-untabify               |
+| C-d C-e       | удалить-до-конца-строки                     |
+| C-d C-w       | delete-trailing-whitespace                  |
+| C-d C-a       | delete-to-begin                             |
+| C-M-s         | isearch-backward                            |
+| C-c o p       | completion-at-point                         |
+| C-c o t       | complete-tag                                |
+| C-c o d       | cape-dabbrev                                |
+| C-c o h       | cape-history                                |
+| C-c o f       | cape-file                                   |
+| C-c o k       | cape-keyword                                |
+| C-c o s       | cape-symbol                                 |
+| C-c o a       | cape-abbrev                                 |
+| C-c o i       | cape-ispell                                 |
+| C-c o l       | cape-line                                   |
+| C-c o w       | cape-dict                                   |
+| C-c o \\      | cape-tex                                    |
+| C-c o _       | cape-tex                                    |
+| C-c o ^       | cape-tex                                    |
+| C-c o &       | cape-sgml                                   |
+| C-c o r       | cape-rfc1345                                |
+| C-c g         | magit-status                                |
+| C-c p y       | prodigy                                     |
+| C-c d         | docker                                      |
+| C-c u         | undo-tree-visualize                         |
+| C-c y y       | consult-yasnippet                           |
+| C-c y n       | создать-новый-сниппет-со-шпаргалкой         |
+| C-c hl        | rainbow-identifiers-mode                    |
+| C-c hi        | color-identifiers-mode                      |
+| M-g g         | avy-goto-char                               |
+| M-SPC         | er/expand-region                            |
+| M-S-SPC       | er/contract-region                          |
+| S-SPC         | mark-current-line                           |
+| C-c SPC       | mc/mark-all-like-this                       |
+| C-c C-SPC     | mc/unmark-all-like-this                     |
+| C-c <mouse-1> | mc/add-cursor-on-click                      |
+| <backtab>     | hs-toggle-hiding                            |
+| C-c <f2>      | eglot-reconnect                             |
+| C-c M-t       | gt-do-translate                             |
+| s-.           | xref-find-definitions-other-window          |
+| C-M-.         | xref-find-definitions-other-window          |
+| C-.           | embark-act                                  |
+| C-c ii        | gptel                                       |
+| C-c i M-i     | gptel-aibo                                  |
+| C-c ir        | gptel-rewrite                               |
+| C-c im        | pro/ai-switch-model                         |
+| C-c i.        | gptel-quick                                 |
+| C-c ia        | gptel-add                                   |
+| C-c if        | gptel-add-file                              |
+| C-c ip        | gptel-system-prompt                         |
+| C-c i RET     | gptel-send                                  |
+| C-c i M-RET   | pro-ai-отправить-без-контекста              |
+| C-c is        | gptel-send                                  |
+| C-c ik        | gptel-abort                                 |
+| C-c ig        | gptel-abort                                 |
+| C-c id        | gptel-context-remove-all                    |
+| C-c iq        | elysium-query                               |
+| C-c i w       | whisper-run                                 |
+| C-c i M-c     | pro-ai-codeium-toggle                       |
+| C-c i t       | pro-ai-gptel-aibo-apply-actions-from-region |
+| s-a           | aidermacs-transient-menu                    |
+| s-e           | nil                                         |
+| s-e s-e       | evedel-create-directive                     |
+| s-e e         | evedel-modify-directive                     |
+| s-e i         | evedel-modify-directive                     |
+| s-e M-e       | evedel-preview-directive-prompt             |
+| s-e q         | evedel-modify-directive-tag-query           |
+| s-e M-t       | evedel-modify-directive-tag-query           |
+| s-e v         | evedel-preview-directive-prompt             |
+| s-e RET       | evedel-process-directives                   |
+| s-e TAB       | evedel-convert-instructions                 |
+| s-e r         | evedel-create-reference                     |
+| s-e k         | evedel-delete-instructions                  |
+| s-e C-'       | evedel-modify-reference-commentary          |
+| s-e n         | evedel-next-instruction                     |
+| s-e p         | evedel-previous-instruction                 |
+| s-e s         | evedel-save-instructions                    |
+| s-e l         | evedel-load-instructions                    |
+| s-e t         | evedel-add-tags                             |
+| s-e T         | evedel-remove-tags                          |
+| C-z           | nil                                         |
+| C-c M-n       | pro/пересобрать-nix                         |
+| C-c M-k       | pro/reload-keys                             |
+| C-c M-t       | multi-vterm                                 |
 
 
 * Клавиши над всеми Xorg приложениями:
@@ -233,10 +199,6 @@
 | C-x C-m                 | bookmark-set                         |
 | <XF86Back>              | winner-undo                          |
 | <XF86Forward>           | winner-redo                          |
-| <print>                 | скриншот-области                     |
-| s-s                     | consult-git-grep                     |
-| s-<print>               | скриншот                             |
-| s-S-s                   | скриншот                             |
 | s-<left>                | shrink-window-horizontally           |
 | s-<right>               | enlarge-window-horizontally          |
 | s-<down>                | shrink-window                        |
@@ -286,22 +248,46 @@
 | C-c <f7>                | profiler-report                      |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
-| C-c il                  | ellama-chat                          |
-| C-c i M-i               | chatgpt-shell                        |
-| C-c ie                  | chatgpt-shell                        |
 | C-c ii                  | gptel                                |
 | C-c i M-i               | gptel-aibo                           |
 | s-i e                   | chatgpt-shell                        |
+| s-i                     | nil                                  |
+| s-i i                   | gptel                                |
+| s-i s-i                 | gptel-aibo                           |
+| s-i M-i                 | gptel-aibo-mode                      |
+| s-i o                   | gptel                                |
+| s-i s-o                 | gptel                                |
+| s-i r                   | gptel-rewrite                        |
+| s-i m                   | pro/ai-switch-model                  |
+| s-i s-m                 | gptel-menu                           |
+| s-i .                   | gptel-quick                          |
+| s-i a                   | gptel-add                            |
+| s-i t                   | gptel-tools                          |
+| s-i b                   | pro/ai-switch-backend                |
+| s-i f                   | gptel-add-file                       |
+| s-i p                   | gptel-system-prompt                  |
+| s-i RET                 | gptel-send                           |
+| s-i s-<return>          | pro-ai-отправить-без-контекста       |
+| s-i k                   | gptel-abort                          |
+| s-i g                   | gptel-abort                          |
+| s-i q                   | elysium-query                        |
+| s-i w                   | whisper-run                          |
+| s-i x                   | gptel-context-remove-all             |
+| s-i d                   | gptel-context-remove-all             |
 | C-c iv                  | chatgpt-shell-send-and-review-region |
-| s-c                     | nil                                  |
-| s-c s                   | скринкаст                            |
-| s-c o                   | скринкаст-стоп                       |
-| C-c C-'                 | exwm-edit--compose-minibuffer        |
-| C-c '                   | exwm-edit--compose                   |
+| s-s                     | nil                                  |
+| s-s c                   | скринкаст                            |
+| s-s o                   | скринкаст-стоп                       |
+| s-M-'                   | exwm-edit--compose-minibuffer        |
+| <print>                 | скриншот-области                     |
+| s-<print>               | скриншот                             |
+| s-s s                   | скриншот                             |
+| s-"                     | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |
 | C-c M-n                 | pro/пересобрать-nix                  |
 | C-c k                   | pro/reload-keys                      |
+
 
 
 * Клавиши для модов

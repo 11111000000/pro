@@ -199,6 +199,75 @@
   :ensure t
   :defer t)
 
+(require 'treemacs)
+
+(defun pro/treemacs--window ()
+  "Найти окно Treemacs в текущем фрейме, если есть."
+  (catch 'w
+    (walk-windows
+     (lambda (w)
+       (with-current-buffer (window-buffer w)
+         (when (eq major-mode 'treemacs-mode)
+           (throw 'w w)))))
+    nil))
+
+(defun pro/treemacs-open-left-split (&optional width)
+  "Создать слева сплит и открыть в нем Treemacs (без ломания раскладки).
+Если с обычным сплитом не вышло — откатывается к side-window слева.
+WIDTH — желаемая ширина (по умолчанию treemacs-width)."
+  (interactive "P")
+  (require 'treemacs)
+  (let* ((target (or (and width (prefix-numeric-value width)) treemacs-width))
+         (treemacs-display-in-side-window nil)
+         (window-combination-resize t)
+         win)
+    (condition-case _
+        (progn
+          ;; 1) минимальный левый сплит у корня
+          (setq win (split-window (frame-root-window) nil 'left))
+          (select-window win)
+          ;; 2) открыть treemacs в этом окне (не side-window)
+          (if (and (fboundp 'treemacs-get-local-buffer)
+                   (buffer-live-p (treemacs-get-local-buffer)))
+              (switch-to-buffer (treemacs-get-local-buffer))
+            (treemacs))
+          ;; 3) дотянуть ширину
+          (let ((delta (- target (window-total-width win))))
+            (when (not (zerop delta))
+              (ignore-errors (adjust-window-trailing-edge win delta t))))
+          ;; 4) подсветить текущий файл/проект
+          (cond
+           (buffer-file-name (ignore-errors (treemacs-find-file)))
+           ((fboundp 'project-current)
+            (when (project-current)
+              (ignore-errors (treemacs-display-current-project-exclusively))))))
+      (error
+       ;; Fallback: side-window слева с нужной шириной
+       (let* ((buf (or (and (fboundp 'treemacs-get-local-buffer)
+                            (treemacs-get-local-buffer))
+                       (progn (treemacs) (treemacs-get-local-buffer)))))
+         (setq win
+               (display-buffer-in-side-window
+                buf =((side . left) (slot . 0)
+                      (window-width . ,target)
+                      (window-parameters . ((no-delete-other-windows . t))))))
+         (select-window win)
+         (when buffer-file-name
+           (ignore-errors (treemacs-find-file))))))
+    win))
+
+
+
+(defun pro/treemacs-toggle-left-split (&optional width)
+  "Переключатель: если окно Treemacs есть — закрыть, иначе открыть слева.
+WIDTH — ширина при открытии (см. pro/treemacs-open-left-split)."
+  (interactive "P")
+  (let ((tw (pro/treemacs--window)))
+    (if (window-live-p tw)
+        (delete-window tw)
+      (pro/treemacs-open-left-split width))))
+
+
 (provide 'про-файлы-и-папки)
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)

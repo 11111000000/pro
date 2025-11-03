@@ -230,27 +230,31 @@
   :bind (:map gptel-mode-map
               ("C-c RET"           . gptel-send)
               ("C-c C-<return>"    . gptel-send)
-              ("M-RET"             . pro-ai-отправить-без-контекста)
-              ("C-c M-RET"         . pro-ai-отправить-без-контекста-aibo))
+              ("C-c C-M-<return>"             . pro/ai-send-without-context)
+              ("C-c M-<return>"         . pro/ai-send-without-context-aibo))
   ;;:hook ((gptel-mode . tab-line-mode))
   :custom
   (gptel-default-mode 'org-mode)                ;; Ответы в org-mode
   (gptel-org-branching-context nil)             ;; Без разветвления контекста по умолчанию
   (gptel-log-level 'info)
+  (gptel-context-restrict-to-project-files nil)
   ;; Примечание: Используется внутренний var =gptel--system-message= — в API GPTEL он может меняться.
   ;; Если увидите варнинги: замените на актуальную переменную системного сообщения из GPTEL.
   (gptel--system-message
    "Ты — ИИ, живущий в Emacs под NIXOS. Отвечай в виде Org-mode. Любые списки представляй заголовками и пунктами Org.")
   :config
+  ;; Always use temp file for curl payloads to avoid 'Argument list too long'
+  (setq gptel-curl-file-size-threshold 0)
+
   ;; Быстрая отправка без контекста (stateless)
-  (defun pro-ai-отправить-без-контекста ()
+  (defun pro/ai-send-without-context ()
     "Отправить текущий prompt без контекста (stateless-режим)."
     (interactive)
     (let ((gptel-use-context nil))
       (gptel-send)))
 
   ;; Быстрая отправка через gptel-aibo без контекста (если установлен расширитель gptel-aibo)
-  (defun pro-ai-отправить-без-контекста-aibo ()
+  (defun pro/ai-send-without-context-aibo ()
     "Отправить prompt через gptel-aibo без контекста (если доступно)."
     (interactive)
     (let ((gptel-use-context nil))
@@ -439,7 +443,116 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   :bind (:map gptel-aibo-mode-map
               ("C-c RET"      . gptel-aibo-send)
               ("C-c C-<return>"      . gptel-aibo-send)
-              ("C-c M-RET"    . pro-ai-отправить-без-контекста-aibo)))
+              ("C-c M-RET"    . pro/ai-send-without-context-aibo))
+  :config
+  (setq gptel-aibo--system-message
+        (concat
+         gptel-aibo--system-role
+         "\n"
+         "
+All actions must be emitted using Org mode source blocks (#+begin_src ... #+end_src). Do NOT use Markdown triple backtick fences.
+
+Based on the user's request, you can generate one or more of the following actions:
+* Modify buffers
+* Create files
+* Delete files
+
+If multiple actions are required, provide them in the exact order of execution.
+
+### Action Formatting Rules (Org)
+
+Use the marker `<OP>` followed by the operation type, such as MODIFY, CREATE, or DELETE.
+
+#### Modify buffers
+Start with the line:
+
+<OP> MODIFY =<NAME>=
+
+=<NAME>= is the name of the buffer being modified, enclosed in backticks.
+
+Next, leave one blank line, then specify SEARCH/REPLACE pairs. Each pair has this structure:
+
+Begin with the exact line:
+
+/SEARCH/
+#+begin_src text
+... content to locate ...
+#+end_src
+
+Then the exact line:
+
+/REPLACE/
+#+begin_src text
+... replacement content ...
+#+end_src
+
+Example:
+
+<OP> MODIFY =file/path/name.txt=
+
+/SEARCH/
+#+begin_src text
+hello
+#+end_src
+/REPLACE/
+#+begin_src text
+good
+#+end_src
+/SEARCH/
+#+begin_src text
+world
+#+end_src
+/REPLACE/
+#+begin_src text
+morning
+#+end_src
+
+**SEARCH/REPLACE Key Rules**
+1. The SEARCH content must include enough surrounding text to uniquely match the intended location.
+2. The SEARCH content must exactly match the original text, including whitespace, indentation, and alignment.
+3. Consecutive lines that are part of the same modification should be included within a single SEARCH/REPLACE pair.
+
+**MODIFY OP Format Guidelines**
+1. Each SEARCH/REPLACE pair must strictly follow the structure shown, with no extra content before or after.
+2. Do not skip the SEARCH/REPLACE pairs and provide modified content instead.
+
+#### Create files
+Start with the line:
+
+<OP> CREATE =<FILEPATH>=
+
+=<FILEPATH>= is the path of the file to be created and must be provided.
+An absolute path is preferred. If a project root is defined, a path relative to it is also acceptable.
+
+Next, leave one blank line, then provide the file content inside an Org source block:
+
+#+begin_src <lang>
+... file content ...
+#+end_src
+
+#### Delete files
+Use a single-line command:
+
+<OP> DELETE =<FILEPATH>=
+
+=<FILEPATH>= is the path of the file to be deleted.
+
+---
+
+### Handling Code Blocks (Org)
+
+- Always specify the language after #+begin_src (elisp, sh, json, text, etc.). If unsure, use the original content’s language; if unknown, use text.
+- Do NOT use Markdown = fences.
+- If the content itself contains lines that look like #+begin_src/#+end_src, include them verbatim; do not escape them.
+
+*** Additional Notes
+
+You may add brief explanatory text before or after operations, but:
+1. Never start any line with =<OP>= unless it's an actual operation.
+2. Never insert any text between operation markers (/SEARCH/, /REPLACE/, etc.).
+3. Never add content inside code blocks except the actual code.
+4. Keep explanations minimal to avoid parsing conflicts.
+")))
 
 ;;;; Настройка gptel-quick для быстрых запросов
 
@@ -691,6 +804,130 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
   ;; M-x all-the-icons-install-fonts
   )
 
+(use-package atlas
+  :load-path (lambda () (expand-file-name "lisp" "~/Code/atlas"))
+  :config (atlas-progress-mode 1))
+
+;; Основной режим и команды
+(use-package carriage-mode
+  :ensure nil
+  :load-path "~/Code/carriage/lisp"
+  :init
+  (setq carriage-mode-default-model "gptel:ai-tunnel:gpt-4.1-mini")
+  :config)
+
+;;;; Инструмент gptel-tool: веб‑поиск и получение полного текста страниц
+
+;; Набор утилит для поиска через DuckDuckGo и извлечения читабельного текста страниц
+;; через r.jina.ai (без ключей). Инструмент возвращает склеенный полный текст
+;; найденных документов, что удобно для последующей работы модели.
+
+;; (require 'url)
+;; (require 'url-util)
+;; (require 'cl-lib)
+
+;; (defun pro-ai--http-get (url &optional headers)
+;;   "Синхронно получить URL и вернуть тело ответа как строку (или пустую строку при ошибке)."
+;;   (let ((url-request-method "GET")
+;;         (url-request-extra-headers
+;;          (append '(("User-Agent" . "Emacs gptel-tool/1.0")
+;;                    ("Accept-Language" . "ru,en;q=0.9"))
+;;                  headers))))
+;;   (let ((buf (url-retrieve-synchronously url t t 15.0)))
+;;     (if (not (bufferp buf))
+;;         ""
+;;       (unwind-protect
+;;           (with-current-buffer buf
+;;             (set-buffer-multibyte t)
+;;             (goto-char (point-min))
+;;             (when (search-forward "\n\n" nil t)
+;;               (buffer-substring-no-properties (point) (point-max))))
+;;         (kill-buffer buf)))))
+
+;; (defun pro-ai--ddg-extract-links ()
+;;   "Извлечь ссылки из текущего буфера с HTML DuckDuckGo."
+;;   (let ((urls '()))
+;;     (goto-char (point-min))
+;;     ;; DDG часто перенаправляет через /l/?uddg=...
+;;     (while (re-search-forward "href=\"/l/\\?[^\">]*uddg=\\([^\"&]+\\)" nil t)
+;;       (push (url-unhex-string (match-string 1)) urls))
+;;     ;; Также пробуем прямые https?-ссылки в result__a
+;;     (goto-char (point-min))
+;;     (while (re-search-forward "class=\"result__a\"[^>]*href=\"\\(https?://[^\"#]+\\)" nil t)
+;;       (push (match-string 1) urls))
+;;     (seq-uniq (seq-filter (lambda (u) (string-match-p "^https?://" u))
+;;                           (nreverse urls)))))
+
+;; (defun pro-ai-ddg-search (query &optional max-results site)
+;;   "Вернуть список URL по QUERY из DuckDuckGo. При SITE ограничивает поиск сайтом.
+;; MAX-RESULTS — максимальное число ссылок."
+;;   (let* ((q (if (and site (not (string-empty-p site)))
+;;                 (format "site:%s %s" site query)
+;;               query))
+;;          (search-url (format "https://duckduckgo.com/html/?kl=ru-ru&kp=-2&q=%s"
+;;                              (url-hexify-string q)))
+;;          (buf (url-retrieve-synchronously search-url t t 15.0)))
+;;     (if (not (bufferp buf))
+;;         nil
+;;       (unwind-protect
+;;           (with-current-buffer buf
+;;             (set-buffer-multibyte t)
+;;             (let ((links (pro-ai--ddg-extract-links)))
+;;               (if (and max-results (numberp max-results) (> max-results 0))
+;;                   (cl-subseq links 0 (min (length links) max-results))
+;;                 links)))
+;;         (kill-buffer buf)))))
+
+;; (defun pro-ai-fetch-url-text (url)
+;;   "Получить URL и вернуть чистый читабельный текст через r.jina.ai."
+;;   (let* ((clean (replace-regexp-in-string "^https?://" "" url))
+;;          (proxy-url (concat "https://r.jina.ai/http/" clean)))
+;;     (string-trim (or (pro-ai--http-get proxy-url) ""))))
+
+;; (defun pro-ai-web-search-and-fetch (query &optional max_results site)
+;;   "Найти по QUERY, скачать полный текст результатов и вернуть объединённую строку.
+;; MAX_RESULTS — сколько страниц скачивать (по умолчанию 3).
+;; SITE — ограничение по сайту (напр. \"en.wikipedia.org\")."
+;;   (let* ((n (or (and (numberp max_results) (> max_results 0) max_results) 3))
+;;          (urls (pro-ai-ddg-search query n site))
+;;          (pieces
+;;           (mapcar (lambda (u)
+;;                     (let ((txt (pro-ai-fetch-url-text u)))
+;;                       (format "URL: %s\n\n%s\n\n-----\n\n" u (or txt ""))))
+;;                   urls)))
+;;     (if pieces
+;;         (apply #'concat pieces)
+;;       "No results.")))
+
+;; (with-eval-after-load 'gptel
+;;   ;; Основной инструмент: поиск и полный текст
+;;   (gptel-make-tool
+;;    :function #'pro-ai-web-search-and-fetch
+;;    :name "web_search"
+;;    :category "web"
+;;    :description "Search the web (optionally site-limited) and return the full text of top results. Args: query, [max_results], [site]."
+;;    :args (list
+;;           (list :name "query" :type 'string
+;;                 :description "Search query in natural language.")
+;;           (list :name "max_results" :type 'integer
+;;                 :description "How many pages to fetch (1-5 recommended)." :optional t)
+;;           (list :name "site" :type 'string
+;;                 :description "Limit to this site, e.g., 'en.wikipedia.org'." :optional t))
+;;    :include t)
+
+;;   ;; Дополнительный утилитарный инструмент: получить текст по URL
+;;   (gptel-make-tool
+;;    :function #'pro-ai-fetch-url-text
+;;    :name "fetch_url"
+;;    :category "web"
+;;    :description "Fetch an http(s) URL and return readable plain text (via r.jina.ai)."
+;;    :args (list (list :name "url" :type 'string :description "Absolute http(s) URL."))
+;;    :include t)
+
+;;   ;; Сделать инструменты активными по умолчанию (без дублей)
+;;   (cl-pushnew (gptel-get-tool '("web" "web_search")) gptel-tools)
+;;   (cl-pushnew (gptel-get-tool '("web" "fetch_url")) gptel-tools))
+
 ;; (use-package gptel-secrets
 ;;   :after gptel
 ;;   :load-path "~/Code/gptel-secrets"
@@ -718,6 +955,7 @@ PROMPT — строка приглашения. REQUIRE-MATCH, INITIAL, ANNOTATE
 ;; (add-hook 'org-mode-hook #'pro-ai-org-auto-enable-gptel-mode)
 
 (require 'gptel-aibo-planner)
+(require 'gptel-aibo-action-org-parser)
 ;;;###autoload
 (defun pro-ai-gptel-aibo-apply-actions-from-region (beg end)
   "Parse and execute <OP> actions from region between BEG and END.

@@ -97,8 +97,8 @@
                        (let ((name (nth 1 form)))
                          (when (symbolp name) (push name defvars))))
                       ('defcustom
-                       (let ((name (nth 1 form)))
-                         (when (symbolp name) (push name defcustoms)))))))
+                        (let ((name (nth 1 form)))
+                          (when (symbolp name) (push name defcustoms)))))))
               (end-of-file nil))))
         ;; Сбросить defvar/defvar-local, чтобы (defvar) заново инициализировал.
         (dolist (v defvars)
@@ -293,84 +293,184 @@
       (goto-char (point-min))
       (display-buffer (current-buffer)))
     (message "Done: %d files, %d with errors" (length files) errs)))
+(defun pro/reload-elisp--collect-definitions ()
+  "Собрать списки defvar/defvar-local и defcustom в текущем буфере."
+  (save-excursion
+    (goto-char (point-min))
+    (let (defvars defcustoms form)
+      (condition-case _eof
+          (while t
+            (setq form (read (current-buffer)))
+            (when (and (consp form))
+              (pcase (car form)
+                ((or 'defvar 'defvar-local)
+                 (let ((name (nth 1 form)))
+                   (when (symbolp name) (push name defvars))))
+                ('defcustom
+                  (let ((name (nth 1 form)))
+                    (when (symbolp name) (push name defcustoms)))))))
+        (end-of-file nil))
+      (list defvars defcustoms))))
 
-(defun pro/reload-all-elisp-in-dired-directory ()
-  "Перевыполнить все .el файлы в текущей директории Dired (как `pro/reeval-buffer').
-Для каждого файла:
-- Проверяем сбалансированность скобок (`check-parens')
-- Если это elisp-буфер, принудительно переинициализируем все (defvar)/(defvar-local),
-  затем выполняем все верхнеуровневые формы (`eval-buffer').
-Ошибки собираются и показываются в буфере *reload-elisp*"
-  (interactive)
-  (require 'dired)
-  (let* ((dir (dired-current-directory))
-         (files (directory-files dir t "\\.el\\'"))
-         (report (get-buffer-create "*reload-elisp*"))
-         (errs 0)
-         (done 0))
-    ;; Сделать буфер отчёта временно записываемым (если он уже в special-mode)
+(defun pro/reload-elisp--reinit-and-eval (defvars defcustoms)
+  "Переинициализировать DEFVARS и выполнить буфер, затем переоценить DEFCUSTOMS."
+  (dolist (v defvars)
+    (when (boundp v) (makunbound v)))
+  (save-excursion (eval-buffer))
+  (dolist (c defcustoms)
+    (ignore-errors (custom-reevaluate-setting c))))
+
+(defun pro/reload-elisp--process-file (file)
+  "Обработать FILE: check-parens, eval для elisp. Вернуть cons (OK . ERR-MSG)."
+  (let* ((existing (get-file-buffer file))
+         (buf (or existing (find-file-noselect file)))
+         (created (not existing))
+         (ok nil)
+         (err-msg nil))
+    (unwind-protect
+        (with-current-buffer buf
+          (condition-case e
+              (progn
+                (check-parens)
+                (if (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
+                    (pcase-let ((`(,defvars ,defcustoms)
+                                 (pro/reload-elisp--collect-definitions)))
+                      (pro/reload-elisp--reinit-and-eval defvars defcustoms)
+                      (setq ok t))
+                  (setq err-msg "Пропущен (не elisp-буфер)")))
+            (error
+             (setq ok nil
+                   err-msg (error-message-string e)))))
+      (when created (kill-buffer buf)))
+    (cons ok err-msg)))
+
+(defun pro/reload-elisp--prepare-report-buffer ()
+  "Подготовить буфер отчёта и вернуть его."
+  (let ((report (get-buffer-create "*reload-elisp/")))
     (with-current-buffer report
       (let ((inhibit-read-only t))
         (when (derived-mode-p 'special-mode)
           (fundamental-mode))
         (setq buffer-read-only nil)
         (erase-buffer)))
+    report))
+
+(defun pro/reload-elisp-report-quit ()
+  "Закрыть окно отчёта (если появилось) и убить буфер."
+  (interactive)
+  (quit-window 'kill))
+
+(define-derived-mode pro/reload-elisp-report-mode special-mode "Reload-EL"
+  "Режим для буфера отчёта перезагрузки .el файлов."
+  (define-key pro/reload-elisp-report-mode-map (kbd "q") #'pro/reload-elisp-report-quit))
+
+(defun pro/reload-all-elisp-in-dired-directory ()
+  "Перевыполнить все .el файлы в текущей директории Dired (как =pro/reeval-buffer').
+Для каждого файла:
+- Проверяем сбалансированность скобок (=check-parens')
+- Если это elisp-буфер, принудительно переинициализируем все (defvar)/(defvar-local),
+  затем выполняем все верхнеуровневые формы (=eval-buffer').
+Ошибки собираются и показываются в буфере *reload-elisp*"
+  (interactive)
+  (require 'dired)
+  (let* ((dir (dired-current-directory))
+         (files (directory-files dir t "\\.el\\'"))
+         (report (pro/reload-elisp--prepare-report-buffer))
+         (errs 0)
+         (done 0))
     (dolist (file files)
-      (let* ((existing (get-file-buffer file))
-             (buf (or existing (find-file-noselect file)))
-             (created (not existing))
-             (ok nil)
-             (err-msg nil))
-        (unwind-protect
-            (with-current-buffer buf
-              (condition-case e
-                  (progn
-                    (check-parens)
-                    (if (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
-                        (progn
-                          ;; Принудительная переинициализация (defvar)/(defvar-local):
-                          ;; собираем имена переменных и делаем (makunbound), чтобы (defvar) их заново инициализировал.
-                          (let ((defvars '())
-                                (defcustoms '()))
-                            (save-excursion
-                              (goto-char (point-min))
-                              (let (form)
-                                (condition-case _eof
-                                    (while t
-                                      (setq form (read (current-buffer)))
-                                      (when (and (consp form))
-                                        (pcase (car form)
-                                          ((or 'defvar 'defvar-local)
-                                           (let ((name (nth 1 form)))
-                                             (when (symbolp name) (push name defvars))))
-                                          ('defcustom
-                                           (let ((name (nth 1 form)))
-                                             (when (symbolp name) (push name defcustoms)))))))
-                                  (end-of-file nil))))
-                            (dolist (v defvars)
-                              (when (boundp v) (makunbound v)))
-                            (save-excursion (eval-buffer))
-                            (dolist (c defcustoms)
-                              (ignore-errors (custom-reevaluate-setting c))))
-                          (setq ok t))
-                      (setq err-msg "Пропущен (не elisp-буфер)")))
-                (error
-                 (setq ok nil
-                       err-msg (error-message-string e)))))
-          (when created (kill-buffer buf)))
+      (pcase-let ((`(,ok . ,err-msg) (pro/reload-elisp--process-file file)))
         (with-current-buffer report
           (let ((inhibit-read-only t))
-            (insert (format "%-4s %s\n" (if ok "OK" "ERR") (abbreviate-file-name file)))
-            (unless ok
+            (insert (format "%-4s %s\n" (if ok "OK" "ERR")
+                            (abbreviate-file-name file)))
+            (if ok
+                (setq done (1+ done))
               (setq errs (1+ errs))
-              (insert (format "     %s\n" (or err-msg ""))))
-            (when ok
-              (setq done (1+ done)))))))
+              (when err-msg
+                (insert (format "     %s\n" err-msg))))))))
     (with-current-buffer report
       (goto-char (point-min))
-      (special-mode))
+      (pro/reload-elisp-report-mode))
     (display-buffer report)
     (message "Готово: %d файлов обработано, ошибок: %d" done errs)))
+;; (defun pro/reload-all-elisp-in-dired-directory ()
+;;   "Перевыполнить все .el файлы в текущей директории Dired (как `pro/reeval-buffer').
+;; Для каждого файла:
+;; - Проверяем сбалансированность скобок (`check-parens')
+;; - Если это elisp-буфер, принудительно переинициализируем все (defvar)/(defvar-local),
+;;   затем выполняем все верхнеуровневые формы (`eval-buffer').
+;; Ошибки собираются и показываются в буфере *reload-elisp*"
+;;   (interactive)
+;;   (require 'dired)
+;;   (let* ((dir (dired-current-directory))
+;;          (files (directory-files dir t "\\.el\\'"))
+;;          (report (get-buffer-create "*reload-elisp*"))
+;;          (errs 0)
+;;          (done 0))
+;;     ;; Сделать буфер отчёта временно записываемым (если он уже в special-mode)
+;;     (with-current-buffer report
+;;       (let ((inhibit-read-only t))
+;;         (when (derived-mode-p 'special-mode)
+;;           (fundamental-mode))
+;;         (setq buffer-read-only nil)
+;;         (erase-buffer)))
+;;     (dolist (file files)
+;;       (let* ((existing (get-file-buffer file))
+;;              (buf (or existing (find-file-noselect file)))
+;;              (created (not existing))
+;;              (ok nil)
+;;              (err-msg nil))
+;;         (unwind-protect
+;;             (with-current-buffer buf
+;;               (condition-case e
+;;                   (progn
+;;                     (check-parens)
+;;                     (if (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
+;;                         (progn
+;;                           ;; Принудительная переинициализация (defvar)/(defvar-local):
+;;                           ;; собираем имена переменных и делаем (makunbound), чтобы (defvar) их заново инициализировал.
+;;                           (let ((defvars '())
+;;                                 (defcustoms '()))
+;;                             (save-excursion
+;;                               (goto-char (point-min))
+;;                               (let (form)
+;;                                 (condition-case _eof
+;;                                     (while t
+;;                                       (setq form (read (current-buffer)))
+;;                                       (when (and (consp form))
+;;                                         (pcase (car form)
+;;                                           ((or 'defvar 'defvar-local)
+;;                                            (let ((name (nth 1 form)))
+;;                                              (when (symbolp name) (push name defvars))))
+;;                                           ('defcustom
+;;                                             (let ((name (nth 1 form)))
+;;                                               (when (symbolp name) (push name defcustoms)))))))
+;;                                   (end-of-file nil))))
+;;                             (dolist (v defvars)
+;;                               (when (boundp v) (makunbound v)))
+;;                             (save-excursion (eval-buffer))
+;;                             (dolist (c defcustoms)
+;;                               (ignore-errors (custom-reevaluate-setting c))))
+;;                           (setq ok t))
+;;                       (setq err-msg "Пропущен (не elisp-буфер)")))
+;;                 (error
+;;                  (setq ok nil
+;;                        err-msg (error-message-string e)))))
+;;           (when created (kill-buffer buf)))
+;;         (with-current-buffer report
+;;           (let ((inhibit-read-only t))
+;;             (insert (format "%-4s %s\n" (if ok "OK" "ERR") (abbreviate-file-name file)))
+;;             (unless ok
+;;               (setq errs (1+ errs))
+;;               (insert (format "     %s\n" (or err-msg ""))))
+;;             (when ok
+;;               (setq done (1+ done)))))))
+;;     (with-current-buffer report
+;;       (goto-char (point-min))
+;;       (special-mode))
+;;     (display-buffer report)
+;;     (message "Готово: %d файлов обработано, ошибок: %d" done errs)))
 
 ;;; ERT панелька
 
