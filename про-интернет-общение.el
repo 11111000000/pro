@@ -8,7 +8,7 @@
 ;;; Commentary:
 ;;
 ;; Этот файл объединяет выбор чатов/групп/каналов и контактов telega в одной
-;; удобной команде на базе consult. Предоставляет:
+;; удобной команде на базе consult.  Предоставляет:
 ;; - Единый интерактивный список (чаты + пользователи);
 ;; - Аннотации кандидатов ([chat]/[contact]) и краткие метрики непрочитанных;
 ;; - Narrowing (c — только чаты, u — только контакты);
@@ -16,13 +16,134 @@
 ;; - Дедупликацию контактов, у которых есть приватный чат;
 ;; - Сортировку чатов по активным критериям telega, пользователей — по telega-user>.
 ;;
-;; Файл устроен как «литературный код». Читайте комментарии, они описывают замыслы,
-;; компромиссы и решения. Настройки доступны в группе ‘pro/интернет’.
+;; Файл устроен как «литературный код».  Читайте комментарии, они описывают замыслы,
+;; компромиссы и решения.  Настройки доступны в группе ‘pro/интернет’.
 
 ;;; Code:
 
+;;;; Telegram: установка и базовая настройка
+
+(require 'установить-из)
+
+(use-package telega
+  :ensure t
+  :defer t
+  :init (установить-из :repo "zevlg/telega.el")
+  :custom ((telega-use-docker t)
+           (telega-chat-list-default-filter "Unread")
+           (telega-use-images t)
+           (telega-emoji-use-images nil)
+           (telega-emoji-font-family nil)
+           (telega-chat-show-avatars nil)
+           (telega-chat-show-photos nil)
+           (telega-root-auto-fill-mode nil)
+           (telega-chat-auto-fill-mode nil)
+           (telega-webpage-preview-mode nil)
+           (telega-chat-fill-column 80)
+           (telega-chat-history-limit 100)
+           (telega-emoji-font-family "Noto Color Emoji"))
+  :hook ((telega-root-mode . telega-notifications-mode)
+         (telega-root-mode . (lambda () (telega-root-auto-fill-mode -1)))
+         (telega-chat-mode . (lambda () (telega-chat-auto-fill-mode -1)))
+         (telega-load-hook . global-telega-url-shorten-mode)
+         (telega-root-mode . hl-line-mode))
+  :config)
+
+(defun telega-close-idle-chat-buffers ()
+  "Автоматически закрывает неактивные telega-буферы."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (when (string-match-p "^\\*Telega Chat" (buffer-name buf))
+      (kill-buffer buf))))
+
+;;;; Telegram: CAPF упоминаний (@username, полное имя)
+
+(defun pro/telega--mention-alist ()
+  "Вернуть alist (username . fullname) для контактов.
+fullname — склеенные first_name и last_name (может быть nil/пустым).
+Если у пользователя несколько активных никнеймов — вернуть все."
+  (cl-loop for u in (pro/telega--contacts)
+           for fname = (telega--tl-get u :first_name)
+           for lname = (telega--tl-get u :last_name)
+           for full = (string-trim (mapconcat #'identity
+                                              (delq nil (list fname lname))
+                                              " "))
+           for primary-uname = (telega--tl-get u :username)
+           for active = (let ((act (telega--tl-get u :usernames :active_usernames)))
+                          (cond
+                           ((vectorp act) (append act nil))
+                           ((listp act) act)
+                           (t nil)))
+           for unames = (delete-dups (delq nil (append (list primary-uname) active)))
+           append (mapcar (lambda (un) (cons un (unless (string-empty-p full) full)))
+                          unames)
+           ;; Запись без username — для поиска по имени
+           when (not (string-empty-p full))
+           collect (cons nil full)))
+
+(defun pro/telega-mention-capf ()
+  "CAPF для автодополнения @упоминаний в telega чатах.
+Ищет по нику и по имени (включая кириллицу)."
+  (when (derived-mode-p 'telega-chat-mode)
+    (let* ((pt (point))
+           (at-pos (save-excursion
+                     (when (search-backward "@" (line-beginning-position) t)
+                       (point))))
+           (start (and at-pos (1+ at-pos)))
+           (valid (and start
+                       (<= start pt)
+                       ;; Между '@' и точкой не должно быть пробелов
+                       (not (string-match-p "\\s-"
+                                            (buffer-substring-no-properties start pt))))))
+      (when valid
+        (let* ((alist (pro/telega--mention-alist))
+               (table
+                (completion-table-dynamic
+                 (lambda (str)
+                   (let* ((case-fold-search true)
+                          (str-no-at (if (and str (> (length str) 0) (eq (aref str 0) ?@))
+                                         (substring str 1)
+                                       str)))
+                     (cl-loop for (uname . full) in alist
+                              for cand = (or uname full)
+                              when (and cand
+                                        (if uname
+                                            ;; Подбор по никнейму
+                                            (string-match-p (regexp-quote str) uname)
+                                          ;; Подбор по имени (после '@' ищем по имени)
+                                          (string-match-p (regexp-quote str-no-at) full)))
+                              collect (propertize cand
+                                                  'telega-username-p (and uname t)
+                                                  'telega-fullname full)))))))
+          ;; Вставляем ТЕКСТ без '@'; символ '@' уже есть в буфере перед START
+          (list start pt table
+                :annotation-function
+                (lambda (cand)
+                  (let* ((is-user (get-text-property 0 'telega-username-p cand))
+                         (full    (get-text-property 0 'telega-fullname cand)))
+                    (cond
+                     (is-user (concat " @" cand (when full (concat " — " full))))
+                     (full    (concat " " full))
+                     (t nil))))
+                :exclusive 'no))))))
+
+(defun pro/telega-enable-mention-capf ()
+  "Включить автодополнение @упоминаний в telega чатах."
+  (add-hook 'completion-at-point-functions #'pro/telega-mention-capf nil t)
+  ;; Гарантируем, что TAB вызывает CAPF в чатах
+  (local-set-key (kbd "TAB") #'completion-at-point)
+  (local-set-key [tab] #'completion-at-point))
+
+(with-eval-after-load 'telega
+  (add-hook 'telega-chat-mode-hook #'pro/telega-enable-mention-capf))
+
 ;;;; 0. Введение и зависимости
 
+;; Базовые зависимости времени выполнения
+(require 'cl-lib)
+(require 'subr-x)
+
+;; Во время компиляции тоже подстрахуемся
 (eval-when-compile
   (require 'cl-lib)
   (require 'subr-x))
@@ -66,6 +187,10 @@
   "Показывать ли краткую метку непрочитанного (u, @, rx) в аннотации чатов."
   :type 'boolean
   :group 'pro/интернет)
+
+;; Хистори для minibuffer-выборов через consult
+(defvar pro/consult-telega-history nil
+  "История ввода для =pro/telega-select-chat-or-contact'.")
 
 ;;;; 2. Вспомогательные функции построения данных
 
