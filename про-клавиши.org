@@ -1,4 +1,4 @@
-* Клавиши текстового режима
+* TODO Клавиши текстового режима
 
 #+NAME: key-bindings-table
 | Сочетание     | Функция                                     |
@@ -99,9 +99,6 @@
 | M-SPC         | er/expand-region                            |
 | M-S-SPC       | er/contract-region                          |
 | S-SPC         | mark-current-line                           |
-| C-c SPC       | mc/mark-all-like-this                       |
-| C-c C-SPC     | mc/unmark-all-like-this                     |
-| C-c <mouse-1> | mc/add-cursor-on-click                      |
 | <backtab>     | hs-toggle-hiding                            |
 | C-c <f2>      | eglot-reconnect                             |
 | C-c M-t       | gt-do-translate                             |
@@ -127,25 +124,6 @@
 | C-c i M-c     | pro-ai-codeium-toggle                       |
 | C-c i t       | pro-ai-gptel-aibo-apply-actions-from-region |
 | s-a           | aidermacs-transient-menu                    |
-| s-e           | nil                                         |
-| s-e s-e       | evedel-create-directive                     |
-| s-e e         | evedel-modify-directive                     |
-| s-e i         | evedel-modify-directive                     |
-| s-e M-e       | evedel-preview-directive-prompt             |
-| s-e q         | evedel-modify-directive-tag-query           |
-| s-e M-t       | evedel-modify-directive-tag-query           |
-| s-e v         | evedel-preview-directive-prompt             |
-| s-e RET       | evedel-process-directives                   |
-| s-e TAB       | evedel-convert-instructions                 |
-| s-e r         | evedel-create-reference                     |
-| s-e k         | evedel-delete-instructions                  |
-| s-e C-'       | evedel-modify-reference-commentary          |
-| s-e n         | evedel-next-instruction                     |
-| s-e p         | evedel-previous-instruction                 |
-| s-e s         | evedel-save-instructions                    |
-| s-e l         | evedel-load-instructions                    |
-| s-e t         | evedel-add-tags                             |
-| s-e T         | evedel-remove-tags                          |
 | C-z           | nil                                         |
 | C-c M-n       | pro/пересобрать-nix                         |
 | C-c M-k       | pro/reload-keys                             |
@@ -243,9 +221,9 @@
 | C-x -                   | minimize-window                      |
 | s-f                     | projectile-find-file-other-window    |
 | s-F                     | ace-swap-window                      |
-| C-c <f5>                | profiler-start                       |
-| C-c <f6>                | profiler-stop                        |
-| C-c <f7>                | profiler-report                      |
+| C-c 1                   | profiler-start                       |
+| C-c 2                   | profiler-stop                        |
+| C-c 3                   | profiler-report                      |
 | <f6>                    | exwm-floating-toggle-floating        |
 | s-:                     | chatgpt-shell-prompt                 |
 | C-c ii                  | gptel                                |
@@ -281,7 +259,7 @@
 | s-M-'                   | exwm-edit--compose-minibuffer        |
 | <print>                 | скриншот-области                     |
 | s-<print>               | скриншот                             |
-| s-s s                   | скриншот                             |
+| s-s s                   | скриншот-области                     |
 | s-"                     | exwm-edit--compose                   |
 | s-b                     | ibuffer                              |
 | s-m                     | popwin:messages                      |

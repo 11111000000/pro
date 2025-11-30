@@ -104,8 +104,8 @@
 
   ;; Быстрая перерисовка без потери качества
   (setq fast-but-imprecise-scrolling t
-        redisplay-skip-fontification-on-input t
-        jit-lock-defer-time 0.1)
+        redisplay-skip-fontification-on-input nil
+        jit-lock-defer-time nil)
 
   ;; Отключаем ненужные в TTY функции для экономии ресурсов
   (setq use-file-dialog nil

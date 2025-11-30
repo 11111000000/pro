@@ -33,7 +33,6 @@
            (telega-chat-list-default-filter "Unread")
            (telega-use-images t)
            (telega-emoji-use-images nil)
-           (telega-emoji-font-family nil)
            (telega-chat-show-avatars nil)
            (telega-chat-show-photos nil)
            (telega-root-auto-fill-mode nil)
@@ -100,7 +99,7 @@ fullname — склеенные first_name и last_name (может быть nil
                (table
                 (completion-table-dynamic
                  (lambda (str)
-                   (let* ((case-fold-search true)
+                   (let* ((case-fold-search t)
                           (str-no-at (if (and str (> (length str) 0) (eq (aref str 0) ?@))
                                          (substring str 1)
                                        str)))
@@ -146,7 +145,8 @@ fullname — склеенные first_name и last_name (может быть nil
 ;; Во время компиляции тоже подстрахуемся
 (eval-when-compile
   (require 'cl-lib)
-  (require 'subr-x))
+  (require 'subr-x)
+  (require 'use-package))
 
 ;; Не тянем тяжелые зависимости сразу; подгружаем их, когда команда вызвана.
 ;; Но типы символов/байндинги мы ссылаем опционально.

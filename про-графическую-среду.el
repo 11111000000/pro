@@ -143,17 +143,17 @@ fi"))
       (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
       (exwm-wm-mode 1)
       ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
-      (defun pro/exwm-браузеры-line+sim ()
-        "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
-чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
-при необходимости можно вручную переключиться в char-mode (s-i)."
-        (when (and (derived-mode-p 'exwm-mode)
-                   exwm-class-name
-                   (member (downcase exwm-class-name)
-                           '("firefox" "chromium" "google-chrome" "chromium-browser")))
-          (exwm-input-line-mode)
-          (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
-      (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
+      ;; (defun pro/exwm-браузеры-line+sim ()
+      ;;         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
+      ;; чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
+      ;; при необходимости можно вручную переключиться в char-mode (s-i)."
+      ;;         (when (and (derived-mode-p 'exwm-mode)
+      ;;                    exwm-class-name
+      ;;                    (member (downcase exwm-class-name)
+      ;;                            '("firefox" "chromium" "google-chrome" "chromium-browser")))
+      ;;           (exwm-input-line-mode)
+      ;;           (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
+      ;; (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
       ;; -- RandR после запуска EXWM (иначе “not connected”)
       (when (fboundp 'exwm-randr-mode)
         (exwm-randr-mode 1)
@@ -287,7 +287,9 @@ fi"))
   "Запустить скринкаст экрана с помощью ffmpeg.
 Файл сохраняется в ~/Скринкасты/. Формат максимально совместим с Android и Telegram:
 H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +faststart. Лог в отдельном буфере.
-Если DURATION задан (в секундах), запись завершится автоматически."
+Если DURATION задан (в секундах), запись завершится автоматически.
+Важно: для корректного закрытия файла используйте M-x скринкаст-стоп (посылает «q» в ffmpeg),
+иначе при принудительном убийстве процесса MP4 может не содержать moov."
   (interactive "P")
   (let* ((dir (expand-file-name "~/Скринкасты/"))
          (_ (unless (file-directory-p dir)
@@ -319,8 +321,8 @@ H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +fastst
                  "-maxrate" "4500k"
                  "-bufsize" "9000k"
                  "-g" "60"
-                 "-flags" "+global_header"
-                 "-movflags" "+faststart"
+                 ;; moov в начале и безопасная фрагментация — файл будет читаем даже при аварийной остановке
+                 "-movflags" "+faststart+frag_keyframe+empty_moov"
                  "-vf" "scale=trunc(iw/2)*2:trunc(ih/2)*2"
                  ;; аудио: AAC стерео
                  "-c:a" "aac"
@@ -331,11 +333,14 @@ H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +fastst
                  "-map" "1:a:0"
                  "-max_muxing_queue_size" "9999")
                 (when duration (list "-t" (format "%s" duration)))
-                (list "-shortest" path)))
+                ;; Параметры выходного контейнера должны предшествовать пути
+                (list "-shortest" "-f" "mp4" path)))
          (proc nil))
     (with-current-buffer log-buf (erase-buffer))
     (setq proc (apply #'start-process
                       "ffmpeg-с-кринкаст" log-buf "ffmpeg" args))
+    ;; Не задавать вопросы при выходе Emacs, если ffmpeg ещё жив
+    (set-process-query-on-exit-flag proc nil)
     (setq скринкаст-процесс proc)
     (setq скринкаст-лог-був log-buf)
     (message "Скринкаст запущен: %s (лог в %s, остановка: M-x скринкаст-стоп)"
@@ -349,11 +354,31 @@ H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +fastst
     (message "Лог ещё не создан")))
 
 (defun скринкаст-стоп ()
-  "Остановить запись скринкаста (убить процесс ffmpeg для скринкаста)."
+  "Корректно остановить запись скринкаста.
+Сначала посылает 'q' во stdin ffmpeg (он дописывает индекс moov),
+через 3 сек при необходимости посылает SIGINT, затем (крайняя мера) SIGKILL."
   (interactive)
   (if (and (boundp 'скринкаст-процесс) (process-live-p скринкаст-процесс))
-      (progn (kill-process скринкаст-процесс)
-             (message "Скринкаст остановлен (процесс ffmpeg завершён)"))
+      (progn
+        ;; Мягкая остановка: ffmpeg по 'q' пишет трейлер и закрывает файл
+        (condition-case _err
+            (process-send-string скринкаст-процесс "q")
+          (error nil))
+        (message "Скринкаст: отправлена команда остановки (q). Ждите финализации файла...")
+        ;; Фолбэк: если по какой-то причине не завершился — посылаем SIGINT
+        (run-at-time
+         3 nil
+         (lambda ()
+           (when (process-live-p скринкаст-процесс)
+             (ignore-errors (interrupt-process скринкаст-процесс))
+             (message "Скринкаст: SIGINT отправлен, завершаем запись..."))))
+        ;; Крайняя мера: жёсткое убийство
+        (run-at-time
+         7 nil
+         (lambda ()
+           (when (process-live-p скринкаст-процесс)
+             (ignore-errors (kill-process скринкаст-процесс))
+             (message "Скринкаст: принудительно остановлен (SIGKILL).")))))
     (message "Нет активного процесса скринкаста! Используйте killall ffmpeg для остановки всех ffmpeg.")))
 
 ;; -- Очистка служебных буферов EXWM ("dead window")
@@ -520,7 +545,7 @@ H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +fastst
 
 ;; (with-eval-after-load 'exwm
 ;;   (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
-)
+
 
 ;;;; 7. Блокировка случайных Ctrl/Shift+мышь
 ;; Игнорируем комбо, чтобы избежать неожиданных меню в приложениях.

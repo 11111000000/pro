@@ -7,7 +7,8 @@
 (require 'subr-x)
 
 (setq-default package-archives
-              '(("melpa" . "https://melpa.org/packages/")
+              '(("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/")
+                ;;("melpa" . "https://melpa.org/packages/")
                 ("gnu" . "https://elpa.gnu.org/packages/")
                 ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 

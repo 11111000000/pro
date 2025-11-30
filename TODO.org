@@ -211,3 +211,9 @@ multi-vterm по Ctrl+1, Ctrl+2 итд.
 * DONE Кнопка для выделения isearch
 * TODO 
 * TODO 
+* TODO 
+* TODO 
+* TODO 
+* TODO 
+* TODO 
+* TODO 

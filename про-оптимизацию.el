@@ -10,14 +10,14 @@
 
 (defvar saved/gc-cons-threshold 800000)
 (setq gc-cons-threshold most-positive-fixnum
-     gc-cons-percentage 0.6)
+      gc-cons-percentage 0.6)
 
 ;; ...и включим её обратно, когда загрузимся
 
 (add-hook 'emacs-startup-hook
-         (lambda ()
-           (setq gc-cons-threshold saved/gc-cons-threshold
-                gc-cons-percentage 0.1)))
+          (lambda ()
+            (setq gc-cons-threshold saved/gc-cons-threshold
+                  gc-cons-percentage 0.1)))
 
 ;;;; Оптимизируем использование памяти в минибуфере
 
@@ -58,6 +58,18 @@
 
 (when (boundp 'read-process-output-max)
   (setq read-process-output-max (* 1024 1024)))
+
+;;;; Двунаправленный текст
+
+(setq-default bidi-display-reordering nil
+              bidi-paragraph-direction 'left-to-right)
+
+;;;; Более бережный скроллинг и фонтификация
+
+(setq fast-but-imprecise-scrolling t
+      jit-lock-defer-time nil
+      jit-lock-stealth-time 1
+      redisplay-skip-fontification-on-input nil)
 
 (provide 'про-оптимизацию)
 ;;; про-оптимизацию.el ends here

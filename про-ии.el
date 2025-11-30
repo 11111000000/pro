@@ -271,12 +271,12 @@
           :key pro-ai-aitunnel-key
           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
           :models (append
-                   '("gpt-5" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
+                   '("gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
                      "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
                      "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
                      "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
                      "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
-                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "grok-3-mini-beta" "grok-4")
+                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick" "grok-3-mini-beta" "grok-4")
                    gptel--openai-models)))
 
   ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
@@ -810,11 +810,14 @@ You may add brief explanatory text before or after operations, but:
 
 ;; Основной режим и команды
 (use-package carriage-mode
-  :ensure nil
+  :demand t
   :load-path "~/Code/carriage/lisp"
-  :init
-  (setq carriage-mode-default-model "gptel:ai-tunnel:gpt-4.1-mini")
-  :config)
+  :custom
+  (carriage-keys-prefix "C-c e")
+  (carriage-keys-prefix-alias "s-e")
+  :config
+  (setq carriage-mode-default-model "gptel:ai-tunnel:gpt-4.1")
+  (carriage-global-mode t))
 
 ;;;; Инструмент gptel-tool: веб‑поиск и получение полного текста страниц
 

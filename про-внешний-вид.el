@@ -169,7 +169,15 @@
                     (apply orig-fn args))))))
 
 ;; Прокрутка: консервативная, с margins для комфорта.
-(setq-default scroll-conservatively 80 scroll-step 1 scroll-margin 5 hscroll-step 1 auto-window-vscroll nil fast-but-imprecise-scrolling t jit-lock-defer-time 0 hscroll-margin 1)
+(setq-default scroll-conservatively 80
+              scroll-step 1
+              scroll-margin 5
+              hscroll-step 1
+              auto-window-vscroll nil
+              fast-but-imprecise-scrolling t
+              jit-lock-defer-time nil
+              hscroll-margin 1)
+
 
 ;; Плавная прокрутка: особенно эффективна в GUI режиме.
 (use-package iscroll

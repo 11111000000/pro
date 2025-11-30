@@ -42,13 +42,13 @@
   (org-projectile-per-project))
 
 (cl-defun org-projectile-capture-for-current-project
-    (&rest additional-options &key capture-template &allow-other-keys)
+    (&rest additional-options &key capture-template m&allow-other-keys)
   "Capture a TODO for the current active project.
 
 If CAPTURE-TEMPLATE is provided use it as the capture template
 for the TODO. ADDITIONAL-OPTIONS will be supplied as though they
 were part of the capture template definition."
-  (declare (obsolete org-project-capture-capture-for-current-project "3.0.1"))
+                                        ;(declare (obsolete org-project-capture-capture-for-current-project "3.0.1"))
   (interactive)
   (let ((project-name
          (org-project-capture-current-project

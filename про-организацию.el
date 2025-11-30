@@ -13,7 +13,7 @@
               ("M-RET" . org-agenda-open-link)
               ("M-p" . org-previous-visible-heading)
               ("M-n" . org-next-visible-heading)
-              ("C-c SPC" . pro/org-mark-src-block)
+              ("C-c SPC" . pro/org-mark-block)
               ("C-c C-p" . nil))
   :custom ((org-log-done nil)
            ;;(org-agenda-files (find-lisp-find-files "~/" "\.org$"))
@@ -306,28 +306,28 @@
 (require 'outline)
 (require 'org-element)
 
-(defun pro/org-mark-src-block ()
-  "Если точка в Org src-блоке — выделить его содержимое (без строк #+begin/#+end)."
+(defun pro/org-mark-block ()
+  "Если точка в любом Org #+begin_* блоке — выделить его содержимое (без строк #+begin*/#+end*).
+Работает с вложенными блоками: выбирается самый внутренний блок, в котором стоит точка."
   (interactive)
-  (let* ((el (org-element-at-point)))
-    (if (eq (car el) 'src-block)
-        (let* ((beg (org-element-property :begin el))
-               (end (org-element-property :end el))
-               (start (save-excursion
-                        (goto-char beg)
-                        (forward-line 1)
-                        (point)))
-               (finish (save-excursion
-                         (let ((case-fold-search t))
-                           (goto-char end)
-                           (re-search-backward "^[ \t]*#\\+end_src\\b" beg t)
-                           (match-beginning 0)))))
-          (when (and start finish)
-            (goto-char start)
-            (push-mark finish nil t)
-            (activate-mark)))
-      (message "Курсор не в src-блоке."))))
-
+  (let ((el (org-element-context)))
+    ;; Поднимаемся по родителям, пока не найдём соответствующий блок
+    (while (and el
+                (not (memq (car el)
+                           '(src-block example-block export-block quote-block
+                                       center-block comment-block verse-block special-block))))
+      (setq el (org-element-property :parent el)))
+    (if el
+        (let ((start  (org-element-property :contents-begin el))
+              (finish (org-element-property :contents-end el)))
+          (if (and start finish)
+              (progn
+                (goto-char start)
+                (push-mark finish nil t)
+                (activate-mark))
+            (message "Блок пустой или без содержимого.")))
+      (message "Курсор не в блоке #+begin_*."))))
+;;;;
 (defun my/org-archive-done-tasks ()
   "Вырезает все записи со статусом DONE и сохраняет их в архивный файл."
   (interactive)
