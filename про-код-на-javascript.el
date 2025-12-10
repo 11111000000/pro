@@ -66,7 +66,7 @@
   :interpreter (("node" . js-ts-mode))
   :init (add-to-list 'eglot-server-programs
                      `((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode) .
-                       ("/home/az/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"
+                       ("~/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"
                         :initializationOptions (:preferences
                                                 (:importModuleSpecifierPreference
                                                  "non-relative"

@@ -12,14 +12,14 @@
 
 ;; КРИТИЧЕСКИ ВАЖНО: Вызываем как можно раньше, ДО use-package, чтобы не мигал фон.
 (condition-case nil
-    (load-theme 'tao-yin t)
+    (load-theme 'tao-yang t)
   (error)) ;; если вдруг пакет не установлен — не падаем, просто продолжим
 
 (require 'загрузить)
 
 (defun tao-palette ()
   "Палитра."
-  (tao-theme-yin-palette))
+  (tao-theme-yang-palette))
 
 (require 'установить-из)
 
@@ -32,8 +32,7 @@
            ;;(tao-theme-scale-fn '(lambda ()'(10 12 13 15 23 37 60 97 158 195 218 232 241 246 250 252 259)))
            )
   :config
-  ;;(require 'tao-yin-theme)
-  (load-theme 'tao-yin t)
+  (load-theme 'tao-yang t)
   (загрузить 'face-remap))
 
 (provide 'про-цвет)

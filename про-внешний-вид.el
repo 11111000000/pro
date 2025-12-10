@@ -81,7 +81,7 @@
 (add-to-list 'load-path "/home/az/.emacs.d/elpa/shaoline/lisp")
 
 (use-package shaoline
-  :load-path "/home/az/Code/shaoline/lisp"
+  :load-path "~/Code/shaoline/lisp"
                                         ;:init (установить-из :repo "11111000000/shaoline")
   :custom
   (shaoline-debug nil)
@@ -173,21 +173,21 @@
               scroll-step 1
               scroll-margin 5
               hscroll-step 1
-              auto-window-vscroll nil
+              auto-window-vscroll t
               fast-but-imprecise-scrolling t
               jit-lock-defer-time nil
               hscroll-margin 1)
 
 
 ;; Плавная прокрутка: особенно эффективна в GUI режиме.
-(use-package iscroll
-  :defer t
-  :ensure t
-  :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode)
-  :config
-  ;; В TTY режиме используем более простые настройки прокрутки
-  (unless (display-graphic-p)
-    (setq iscroll-preserve-screen-position t)))
+;; (use-package iscroll
+;;   :defer t
+;;   :ensure t
+;;   :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode)
+;;   :config
+;;   ;; В TTY режиме используем более простые настройки прокрутки
+;;   (unless (display-graphic-p)
+;;     (setq iscroll-preserve-screen-position t)))
 
 ;;;; 5. Вкладки
 ;; Вкладки — современный способ организации: tab-bar для глобальных,

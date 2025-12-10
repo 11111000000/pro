@@ -32,7 +32,7 @@
   (ls-lisp-dirs-first t)
   (ls-lisp-use-insert-directory-program nil)
   (dired-dwim-target t)
-  (insert-directory-program "gls")
+  (insert-directory-program "ls")
   (dired-use-ls-dired t)
   (dired-auto-revert-buffer t)
   (global-auto-revert-non-file-buffers t)
