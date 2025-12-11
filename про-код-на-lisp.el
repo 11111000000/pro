@@ -258,37 +258,65 @@
 
 ;;; 6.7 russian-lisp-mode - перевод лиспа на русский язык
 
-(use-package russian-lisp-mode
-  :demand t
-  :load-path "~/Code/russian-lisp-mode/")
+;; (use-package russian-lisp-mode
+;;   :demand t
+;;   :load-path "~/Code/russian-lisp-mode/")
 
 ;;; Полезные функции
 
 (defun pro/check-parens-in-directory (dir)
-  "Проверить все .el файлы в DIR с помощью `check-parens'.
+  "Проверить все .ел файлы в DIR с помощью `check-parens'.
 Результат выводится в буфере *check-parens/."
   (interactive "DDirectory: ")
   (let ((files (directory-files-recursively dir "\\.el\\'"))
         (errs 0))
     (with-current-buffer (get-buffer-create "*check-parens/")
       (erase-buffer)
-      (dolist (f files)
-        (let ((buf (find-file-noselect f)))
-          (unwind-protect
-              (let (ok err-msg)
-                (with-current-buffer buf
-                  (condition-case e
-                      (progn (check-parens)
-                             (setq ok t))
-                    (error
-                     (setq ok nil
-                           err-msg (error-message-string e)))))
-                (when (not ok)
-                  (setq errs (1+ errs)))
-                (insert (format "%-3s %s\n" (if ok "OK" "ERR") f))
-                (when (not ok)
-                  (insert (format "    %s\n" err-msg))))
-            (kill-buffer buf))))
+      (let ((file-name-handler-alist nil)
+            (gc-cons-threshold most-positive-fixnum)
+            (gc-cons-percentage 0.6)
+            (inhibit-message t)
+            (undo-tree-auto-save-history nil))
+        (dolist (f files)
+          (let (ok err-msg)
+            (with-temp-buffer
+              (setq-local buffer-undo-list t)
+              (insert-file-contents f)
+              (require 'lisp-mode)
+              (set-syntax-table emacs-lisp-mode-syntax-table)
+              (setq-local parse-sexp-lookup-properties t)
+              (if (fboundp 'elisp--syntax-propertize)
+                  (progn
+                    (setq-local syntax-propertize-function #'elisp--syntax-propertize)
+                    (syntax-propertize (point-max)))
+                (let ((delay-mode-hooks t)
+                      (emacs-lisp-mode-hook nil)
+                      (prog-mode-hook nil)
+                      (after-change-major-mode-hook nil))
+                  (emacs-lisp-mode)))
+              (condition-case e
+                  (let ((inhibit-message t))
+                    (check-parens)
+                    (setq ok t))
+                (scan-error
+                 (let* ((data (cdr e))
+                        (start (nth 1 data))
+                        (end   (nth 2 data))
+                        (pos   (or end start)))
+                   (goto-char pos)
+                   (setq ok nil
+                         err-msg (format "%s (line %d, col %d)"
+                                         (car data)
+                                         (line-number-at-pos pos)
+                                         (current-column)))))
+                (error
+                 (setq ok nil
+                       err-msg (error-message-string e)))))
+            (when (not ok)
+              (setq errs (1+ errs)))
+            (insert (format "%-3s %s\n" (if ok "OK" "ERR") f))
+            (when (not ok)
+              (insert (format "    %s\n" err-msg))))))
       (insert (format "Summary: %d files, %d with errors\n" (length files) errs))
       (goto-char (point-min))
       (display-buffer (current-buffer)))
@@ -322,26 +350,53 @@
 
 (defun pro/reload-elisp--process-file (file)
   "Обработать FILE: check-parens, eval для elisp. Вернуть cons (OK . ERR-MSG)."
-  (let* ((existing (get-file-buffer file))
-         (buf (or existing (find-file-noselect file)))
-         (created (not existing))
-         (ok nil)
-         (err-msg nil))
-    (unwind-protect
-        (with-current-buffer buf
-          (condition-case e
-              (progn
-                (check-parens)
-                (if (derived-mode-p 'emacs-lisp-mode 'lisp-interaction-mode)
-                    (pcase-let ((`(,defvars ,defcustoms)
-                                 (pro/reload-elisp--collect-definitions)))
-                      (pro/reload-elisp--reinit-and-eval defvars defcustoms)
-                      (setq ok t))
-                  (setq err-msg "Пропущен (не elisp-буфер)")))
-            (error
-             (setq ok nil
-                   err-msg (error-message-string e)))))
-      (when created (kill-buffer buf)))
+  (let ((ok nil)
+        (err-msg nil))
+    (let ((file-name-handler-alist nil)
+          (inhibit-message t)
+          (undo-tree-auto-save-history nil))
+      (condition-case e
+          (progn
+            (pcase-let ((`(,defvars ,defcustoms)
+                         (with-temp-buffer
+                           (setq-local buffer-undo-list t)
+                           (insert-file-contents file)
+                           (require 'lisp-mode)
+                           (set-syntax-table emacs-lisp-mode-syntax-table)
+                           (setq-local parse-sexp-lookup-properties t)
+                           (let ((delay-mode-hooks t)
+                                 (emacs-lisp-mode-hook nil)
+                                 (prog-mode-hook nil)
+                                 (after-change-major-mode-hook nil))
+                             (emacs-lisp-mode)
+                             (syntax-propertize (point-max)))
+                           (condition-case se
+                               (check-parens)
+                             (scan-error
+                              (let* ((data (cdr se))
+                                     (start (nth 1 data))
+                                     (end   (nth 2 data))
+                                     (pos   (or end start)))
+                                (goto-char pos)
+                                (error "%s (line %d, col %d)"
+                                       (car data)
+                                       (line-number-at-pos pos)
+                                       (current-column)))))
+                           (pro/reload-elisp--collect-definitions))))
+              ;; Сбросить defvar/defvar-local перед загрузкой
+              (dolist (v defvars)
+                (when (boundp v) (makunbound v)))
+              ;; Загрузить файл с корректной обработкой lexical-binding, без лишних сообщений
+              (let ((inhibit-message t)
+                    (undo-tree-auto-save-history nil))
+                (load-file file))
+              ;; Переоценить defcustoms после загрузки
+              (dolist (c defcustoms)
+                (ignore-errors (custom-reevaluate-setting c))))
+            (setq ok t))
+        (error
+         (setq ok nil
+               err-msg (error-message-string e)))))
     (cons ok err-msg)))
 
 (defun pro/reload-elisp--prepare-report-buffer ()
@@ -378,17 +433,20 @@
          (report (pro/reload-elisp--prepare-report-buffer))
          (errs 0)
          (done 0))
-    (dolist (file files)
-      (pcase-let ((`(,ok . ,err-msg) (pro/reload-elisp--process-file file)))
-        (with-current-buffer report
-          (let ((inhibit-read-only t))
-            (insert (format "%-4s %s\n" (if ok "OK" "ERR")
-                            (abbreviate-file-name file)))
-            (if ok
-                (setq done (1+ done))
-              (setq errs (1+ errs))
-              (when err-msg
-                (insert (format "     %s\n" err-msg))))))))
+    (let ((file-name-handler-alist nil)
+          (gc-cons-threshold most-positive-fixnum)
+          (gc-cons-percentage 0.6))
+      (dolist (file files)
+        (pcase-let ((`(,ok . ,err-msg) (pro/reload-elisp--process-file file)))
+          (with-current-buffer report
+            (let ((inhibit-read-only t))
+              (insert (format "%-4s %s\n" (if ok "OK" "ERR")
+                              (abbreviate-file-name file)))
+              (if ok
+                  (setq done (1+ done))
+                (setq errs (1+ errs))
+                (when err-msg
+                  (insert (format "     %s\n" err-msg)))))))))
     (with-current-buffer report
       (goto-char (point-min))
       (pro/reload-elisp-report-mode))

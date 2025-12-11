@@ -276,7 +276,10 @@
                      "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
                      "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
                      "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
-                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick" "grok-3-mini-beta" "grok-4")
+                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
+                     "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
+                     "qwen3-coder" "qwen3-235b-a22b-2507" "qwen3-max"
+                     "codestral-2508")
                    gptel--openai-models)))
 
   ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
@@ -998,7 +1001,7 @@ You may add brief explanatory text before or after operations, but:
      (t
       (message "gptel-aibo: ошибка парсинга: %S" ops)))))
 
-(require 'gptel-hotfix)
+;;(require 'gptel-hotfix)
 
 (provide 'про-ии)
 

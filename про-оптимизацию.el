@@ -8,7 +8,7 @@
 
 ;;;; Временно выключим сборку мусора...
 
-(defvar saved/gc-cons-threshold 800000)
+(defvar saved/gc-cons-threshold (* 64 1024 1024))
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6)
 
@@ -57,7 +57,8 @@
 ;;;; Ускорим ввод-вывод
 
 (when (boundp 'read-process-output-max)
-  (setq read-process-output-max (* 1024 1024)))
+  (setq read-process-output-max (* 1024 1024))
+  (setq idle-update-delay 0.02))
 
 ;;;; Двунаправленный текст
 
@@ -66,7 +67,7 @@
 
 ;;;; Более бережный скроллинг и фонтификация
 
-(setq fast-but-imprecise-scrolling t
+(setq fast-but-imprecise-scrolling nil
       jit-lock-defer-time nil
       jit-lock-stealth-time 1
       redisplay-skip-fontification-on-input nil)

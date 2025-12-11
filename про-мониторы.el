@@ -15,9 +15,9 @@
   :group 'про-мониторы)
 
 (defvar расположение-монитора 'сверху)
-(defvar имя-встроенного-монитора "eDP-1")
-(defvar имя-внешнего-монитора "HDMI-1")
-(defvar имя-третьего-монитора "DP-1")
+(defvar имя-встроенного-монитора "DP-1")
+(defvar имя-внешнего-монитора "DP-2")
+(defvar имя-третьего-монитора nil)
 (defvar pro/monitor-refresh-timer nil)
 
 (defun применить-расположение-мониторов ()
@@ -27,7 +27,7 @@
   (let* ((cmd
           (concat "xrandr "
                   " --output " имя-встроенного-монитора " --auto --pos 0x0 --rotate normal "
-                  " --output " имя-внешнего-монитора " --auto --above " имя-встроенного-монитора " --rotate normal "
+                  " --output " имя-внешнего-монитора " --auto --right-of " имя-встроенного-монитора " --rotate left "
                   (if имя-третьего-монитора
                       (concat " --output " имя-третьего-монитора " --auto --rotate normal --above "  имя-внешнего-монитора)
                     ""))))

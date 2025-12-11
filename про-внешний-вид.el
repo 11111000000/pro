@@ -173,21 +173,21 @@
               scroll-step 1
               scroll-margin 5
               hscroll-step 1
-              auto-window-vscroll nil
+              auto-window-vscroll t
               fast-but-imprecise-scrolling t
               jit-lock-defer-time nil
               hscroll-margin 1)
 
 
 ;; Плавная прокрутка: особенно эффективна в GUI режиме.
-(use-package iscroll
-  :defer t
-  :ensure t
-  :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode)
-  :config
-  ;; В TTY режиме используем более простые настройки прокрутки
-  (unless (display-graphic-p)
-    (setq iscroll-preserve-screen-position t)))
+;; (use-package iscroll
+;;   :defer t
+;;   :ensure t
+;;   :hook ((org-mode markdown-mode image-mode eww-mode w3m-mode) . iscroll-mode)
+;;   :config
+;;   ;; В TTY режиме используем более простые настройки прокрутки
+;;   (unless (display-graphic-p)
+;;     (setq iscroll-preserve-screen-position t)))
 
 ;;;; 5. Вкладки
 ;; Вкладки — современный способ организации: tab-bar для глобальных,
@@ -257,63 +257,63 @@
     :init (установить-из :repo "Ilazki/prettify-utils.el"))
 
   ;; Цветной фон для служебных буферов (только в GUI).
-  (use-package solaire-mode
-    :defer t
-    :ensure t
-    :hook (after-init . solaire-global-mode)))
+  ;; (use-package solaire-mode
+  ;;   :defer t
+  ;;   :ensure t
+  ;;   :hook (after-init . solaire-global-mode)))
 
 ;;;; Текстовые меню - Transient
 
-(require 'установить-из)
+  (require 'установить-из)
 
-;; (use-package transient
-;;   :init (установить-из :repo "magit/transient" :name "transient"))
+  ;; (use-package transient
+  ;;   :init (установить-из :repo "magit/transient" :name "transient"))
 
                                         ;(add-to-list 'package--builtin-versions '(transient 0 4 3))
 
-(use-package transient-posframe
-  :ensure t
-  :config
-  (transient-posframe-mode t))
+  ;; (use-package transient-posframe
+  ;;   :ensure t
+  ;;   :config
+  ;;   (transient-posframe-mode t))
 
-;; Универсальные визуальные улучшения для всех режимов.
+  ;; Универсальные визуальные улучшения для всех режимов.
 
-;; Новое: показывать относительные номера строк в буферах с кодом.
-(use-package display-line-numbers
-  :hook (prog-mode . display-line-numbers-mode)
-  :custom
-  (display-line-numbers-type t)
-  (display-line-numbers-width-start t))
+  ;; Новое: показывать относительные номера строк в буферах с кодом.
+  (use-package display-line-numbers
+    :hook (prog-mode . display-line-numbers-mode)
+    :custom
+    (display-line-numbers-type t)
+    (display-line-numbers-width-start t))
 
-(when (display-graphic-p)
-  ;; Базовая поддержка изображений везде
-  (setq image-animate-loop t))
+  (when (display-graphic-p)
+    ;; Базовая поддержка изображений везде
+    (setq image-animate-loop t))
 
-;; Хук для тем: запускать кастомные действия после load-theme.
-(defvar after-load-theme-hook nil "Хук после (load-theme).")
-(defadvice load-theme (after run-after-load-theme-hook activate) "Запуск after-load-theme-hook." (run-hooks 'after-load-theme-hook))
+  ;; Хук для тем: запускать кастомные действия после load-theme.
+  (defvar after-load-theme-hook nil "Хук после (load-theme).")
+  (defadvice load-theme (after run-after-load-theme-hook activate) "Запуск after-load-theme-hook." (run-hooks 'after-load-theme-hook))
 
 ;;;; 8. Финал
-;; Завершаем: не беспокоим о процессах при выходе, предоставляем модуль.
+  ;; Завершаем: не беспокоим о процессах при выходе, предоставляем модуль.
 
-;; Запретить выход по C-x C-c; вместо этого использовать C-x M-q
-(defun pro/quit-emacs ()
-  "Сохранить все буферы и выйти из Emacs без лишних вопросов."
-  (interactive)
-  (save-buffers-kill-emacs))
+  ;; Запретить выход по C-x C-c; вместо этого использовать C-x M-q
+  (defun pro/quit-emacs ()
+    "Сохранить все буферы и выйти из Emacs без лишних вопросов."
+    (interactive)
+    (save-buffers-kill-emacs))
 
-;; Вежливо предупреждать при попытке выйти по C-x C-c
-(defun pro/block-quit-c-x-c-c ()
-  "Блокировать выход по C-x C-c."
-  (interactive)
-  (user-error "Выход отключён: используйте C-x M-q"))
+  ;; Вежливо предупреждать при попытке выйти по C-x C-c
+  (defun pro/block-quit-c-x-c-c ()
+    "Блокировать выход по C-x C-c."
+    (interactive)
+    (user-error "Выход отключён: используйте C-x M-q"))
 
-(setq confirm-kill-processes nil
-      confirm-kill-emacs nil)
+  (setq confirm-kill-processes nil
+        confirm-kill-emacs nil)
 
-;; Переназначения клавиш выхода
-;;(global-set-key (kbd "C-x C-c") #'pro/block-quit-c-x-c-c)
-;;(global-set-key (kbd "C-x C-c") #'pro/quit-emacs)
+  ;; Переназначения клавиш выхода
+  ;;(global-set-key (kbd "C-x C-c") #'pro/block-quit-c-x-c-c)
+  ;;(global-set-key (kbd "C-x C-c") #'pro/quit-emacs)
 
-(provide 'про-внешний-вид)
+  (provide 'про-внешний-вид)
 ;;; про-внешний-вид.el ends here
