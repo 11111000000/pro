@@ -271,7 +271,7 @@
           :key pro-ai-aitunnel-key
           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
           :models (append
-                   '("gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
+                   '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
                      "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
                      "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
                      "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"

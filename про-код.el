@@ -342,10 +342,10 @@ With prefix ARG, do it that many times; negative for backward."
 
 ;;;;; 7.2 Bash-поддержка
 ;; Flymake для shellcheck в Bash.
-(use-package flymake-shellcheck
-  :commands flymake-shellcheck-load
-  :hook ((bash-ts-mode sh-mode) . flymake-shellcheck-load)
-  :init)
+;; (use-package flymake-shellcheck
+;;   :commands flymake-shellcheck-load
+;;   :hook ((bash-ts-mode sh-mode) . flymake-shellcheck-load)
+;;   :init)
 
 ;;;;; 7.3 Заголовки функций (Topsy)
 ;; Показывает текущую функцию в header-line при скролле.

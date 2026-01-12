@@ -156,7 +156,7 @@
 
 (require 'dired)
 
-(defun искать-по-файлам-отсюда ()
+(defun pro/grep-from-here ()
   "Искать по файлам от текущей директории через Consult-grep."
   (interactive)
   (consult-grep default-directory))
@@ -166,7 +166,7 @@
   :after dired
   :functions (consult-ag)
   :bind (:map dired-mode-map
-              ("s" . искать-по-файлам-отсюда))
+              ("s" . pro/grep-from-here))
   :config
   ;; Кастомная функция для маркеров (из оригинала, для совместимости).
   (defun consult--position-marker (buffer line column)
