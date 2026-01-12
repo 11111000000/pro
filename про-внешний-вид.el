@@ -81,7 +81,7 @@
 (add-to-list 'load-path "/home/az/.emacs.d/elpa/shaoline/lisp")
 
 (use-package shaoline
-  :load-path "/home/az/Code/shaoline/lisp"
+  :load-path "~/Code/shaoline/lisp"
                                         ;:init (установить-из :repo "11111000000/shaoline")
   :custom
   (shaoline-debug nil)
