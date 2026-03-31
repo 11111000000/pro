@@ -271,16 +271,29 @@
           :key pro-ai-aitunnel-key
           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
           :models (append
-                   '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano"
-                     "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-                     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-                     "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
-                     "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
-                     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
-                     "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
-                     "qwen3-coder" "qwen3-235b-a22b-2507" "qwen3-max"
-                     "codestral-2508")
-                   gptel--openai-models)))
+                   '("mistral-small-2603" "minimax-m2.7" "gpt-5.4-nano" "gpt-5.4-mini" "gpt-5.4" "glm-5-turbo"
+                     "grok-4.20-multi-agent-beta" "grok-4.20-beta"
+                     "qwen3.5-9b" "gpt-5.4-pro" "gemini-3.1-flash-lite-preview" "qwen3.5-35b-a3b" "qwen3.5-27b"
+                     "qwen3.5-122b-a10b" "gpt-5.3-codex" "gemini-3.1-pro-preview" "claude-sonnet-4.6" "qwen3.5-plus-02-15"
+                     "qwen3.5-397b-a17b" "minimax-m2.5" "glm-5" "qwen3-max-thinking" "qwen3-coder-next" "kimi-k2.5"
+                     "gpt-5.2-codex" "gemini-3-flash-preview" "gpt-5.2" "gpt-5.1" "gpt-5.1-codex" "gpt-5.1-codex-max" "deepseek-v3.2-speciale" "deepseek-v3.2"
+                     "sonar-pro-search" "minimax-m2" "qwen3-max" "grok-code-fast-1" "gpt-4.1" "gpt-4.1-mini" "gigachat-2-pro" "gigachat-2-max" "gigachat-2"
+                     ;; "gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
+                     ;; "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
+                     ;; "gpt-4.1-mini" "gpt-4.1-nano" "gpt-5.4-nano" "minimax-m2.7" "gpt-5.4-mini" "mistral-small-2603"
+                     ;; "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
+                     ;; "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
+                     ;; "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
+                     ;; "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
+                     ;; "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
+                     ;; "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
+                     ;; "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
+                     ;; "gemini-3.1-flash-lite-preview"
+                     ;; "codestral-2508"
+                     )
+                   '()
+                   ;; gptel--openai-models
+                   )))
 
   ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
   (gptel-make-openai "Proxy OpenAI"
@@ -291,9 +304,18 @@
     :key pro-ai-proxyapi-key
     :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
     :models (append
-             '("gpt-4o-search-preview" "gpt-4o-mini-search-preview" "gpt-5" "gpt-4.1" "o4-mini"
-               "o4-mini-high" "gpt-4.5-preview" "o1-mini" "o1-pro"
-               "dall-e-3" "gpt-4o" "gpt-4o-mini" "gpt-4o-audio-preview")
+             '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
+               "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
+               "gpt-4.1-mini" "gpt-4.1-nano"
+               "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
+               "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
+               "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
+               "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
+               "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
+               "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
+               "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
+               "gemini-3.1-flash-lite-preview"
+               "codestral-2508")
              gptel--openai-models))
 
   (gptel-make-openai "Openrouter"

@@ -22,5 +22,9 @@
 ;;          :engines (list (gt-google-engine) (gt-bing-engine))
 ;;          :render (gt-buffer-render))))
 
+(use-package translat
+  :load-path "~/Code/translat-el/")
+
+
 (provide 'про-словари-и-перевод)
 ;;; про-словари-и-перевод.el ends here
