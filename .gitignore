@@ -6,3 +6,4 @@ zai.conf
 .session.org
 ...*
 .context
+/.agent-shell/

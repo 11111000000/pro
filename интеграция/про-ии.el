@@ -3,7 +3,7 @@
 ;; Автор: Пётр <11111000000@email.com>
 ;; Версия: 1.1
 ;; Keywords:  AI, GPT, Codeium, Whisper, ChatGPT
-;; URL: https://example.com/про-ии
+;; URL: https://github.com/username/emacs.d/blob/main/интеграция/про-ии.el
 ;; Package-Requires: ((emacs "29.1") (use-package "2.4") (gptel "0") (consult "1.7") (cape "0"))
 ;;
 ;;; Commentary:
@@ -307,7 +307,7 @@
     :models (append
              '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
                "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
-               "gpt-4.1-mini" "gpt-4.1-nano"
+               "gpt-4.1-mini" "gpt-4.1-nano" "gpt-4o-mini"
                "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
                "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
                "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
@@ -362,7 +362,7 @@
 
   ;; Бэкенд/модель по умолчанию — можно интерактивно менять
   (setq gptel-backend (gptel-get-backend "AI Tunnel"))
-  (setq gptel-model 'qwen3.5-122b-a10b))
+  (setq gptel-model 'gpt-4o-mini))
 
 ;;;; 5. Интерактивные команды: переключение backend и модели (с Consult или fallback)
 
