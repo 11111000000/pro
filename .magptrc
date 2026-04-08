@@ -15,4 +15,4 @@
   ;; (по желанию) Включить экспериментальный реестр задач
   (magpt-enable-task-registry . t)
 
-  (magpt-model . "gpt-4.1-mini"))
+  (magpt-model . "openrouter/free"))
