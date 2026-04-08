@@ -1,0 +1,102 @@
+* OpenRouter Free Models
+:PROPERTIES:
+:CUSTOM_ID: openrouter-free-models
+:END:
+Source snapshot: =https://openrouter.ai/api/v1/models= and OpenRouter
+model pages, checked on 2026-04-09.
+
+** Recommended Default
+:PROPERTIES:
+:CUSTOM_ID: recommended-default
+:END:
+Recommended default for =gptel=: =qwen/qwen3-next-80b-a3b-instruct:free=
+
+Reason: - Best quality/speed balance among current free text models. -
+OpenRouter describes it as optimized for fast, stable responses. -
+Strong fit for general assistant work, code help, RAG, tool use, and
+long-context tasks. - Lower active parameter footprint than the largest
+free models, so it is a safer default than pure "max quality" picks such
+as =qwen/qwen3-coder:free= or
+=nousresearch/hermes-3-llama-3.1-405b:free=.
+
+** Comparison Table
+:PROPERTIES:
+:CUSTOM_ID: comparison-table
+:END:
+| Model                                                         | Type                   | Context    | Modality           | Quality signal | Speed signal   | Notes                                                             |
+|---------------------------------------------------------------+------------------------+------------+--------------------+----------------+----------------+-------------------------------------------------------------------|
+| =qwen/qwen3-next-80b-a3b-instruct:free=                         | General / coding       | 262,144    | Text               | High           | High           | Best overall balance; optimized for fast stable responses         |
+| =qwen/qwen3-coder:free=                                         | Coding                 | 262,000    | Text               | Very high      | Medium         | Strongest coding-oriented free option; heavier model              |
+| =minimax/minimax-m2.5:free=                                     | General / productivity | 196,608    | Text               | Very high      | Medium         | Strong benchmark claims and strong practical agent/workflow focus |
+| =openai/gpt-oss-120b:free=                                      | Reasoning / agentic    | 131,072    | Text               | Very high      | Medium         | Strong tool use and reasoning; good fallback for hard tasks       |
+| =nvidia/nemotron-3-super-120b-a12b:free=                        | Reasoning              | 262,144    | Text               | High           | Medium         | Accuracy-oriented hybrid MoE                                      |
+| =z-ai/glm-4.5-air:free=                                         | General                | 131,072    | Text               | High           | Medium-high    | Lightweight flagship-style option                                 |
+| =qwen/qwen3.6-plus-preview:free=                                | General                | API-listed | Text               | High           | Medium-high    | Popular on rankings page; preview variant                         |
+| =arcee-ai/trinity-large-preview:free=                           | General                | 131,000    | Text               | High           | Medium         | Large preview model                                               |
+| =google/gemma-4-31b-it:free=                                    | Multimodal             | 262,144    | Text, image, video | High           | Medium         | Strong multimodal option                                          |
+| =google/gemma-4-26b-a4b-it:free=                                | Multimodal             | 262,144    | Text, image, video | High           | High           | Better speed profile than Gemma 4 31B                             |
+| =nvidia/nemotron-3-nano-30b-a3b:free=                           | Agentic                | 256,000    | Text               | Medium-high    | High           | Small active footprint; good efficiency                           |
+| =google/gemma-3-27b-it:free=                                    | Multimodal             | 131,072    | Text, image        | Medium-high    | Medium         | Prior-gen multimodal fallback                                     |
+| =qwen/qwen3.6-plus:free=                                        | General                | API-listed | Text               | High           | Medium-high    | Currently top-ranked free model on OpenRouter rankings            |
+| =openai/gpt-oss-20b:free=                                       | Reasoning / tool use   | 131,072    | Text               | Medium-high    | High           | Smaller, cheaper-to-serve sibling of =gpt-oss-120b=                 |
+| =nvidia/nemotron-nano-12b-v2-vl:free=                           | Multimodal             | 128,000    | Text, image, video | Medium-high    | High           | Good multimodal efficiency                                        |
+| =nvidia/nemotron-nano-9b-v2:free=                               | General                | 128,000    | Text               | Medium         | High           | Efficient text model                                              |
+| =arcee-ai/trinity-mini:free=                                    | General / tools        | 131,072    | Text               | Medium         | High           | Small and practical                                               |
+| =google/gemma-3-12b-it:free=                                    | Multimodal             | 32,768     | Text, image        | Medium         | High           | Compact multimodal model                                          |
+| =google/gemma-3-4b-it:free=                                     | Multimodal             | 32,768     | Text, image        | Medium         | Very high      | Small fast multimodal option                                      |
+| =meta-llama/llama-3.3-70b-instruct:free=                        | General                | 65,536     | Text               | High           | Medium         | Large general-purpose fallback                                    |
+| =nousresearch/hermes-3-llama-3.1-405b:free=                     | General / agentic      | 131,072    | Text               | Very high      | Low            | Huge model, good quality but not ideal for default latency        |
+| =cognitivecomputations/dolphin-mistral-24b-venice-edition:free= | Chat                   | 32,768     | Text               | Medium         | High           | Niche uncensored option                                           |
+| =meta-llama/llama-3.2-3b-instruct:free=                         | General                | 131,072    | Text               | Medium         | Very high      | Small fast fallback                                               |
+| =google/gemma-3n-e4b-it:free=                                   | General                | 8,192      | Text               | Medium         | Very high      | Mobile-oriented compact model                                     |
+| =google/gemma-3n-e2b-it:free=                                   | General                | 8,192      | Text               | Low-medium     | Extremely high | Smallest useful fallback                                          |
+| =liquid/lfm-2.5-1.2b-thinking:free=                             | Tiny reasoning         | 32,768     | Text               | Low-medium     | Extremely high | Edge-oriented reasoning model                                     |
+| =liquid/lfm-2.5-1.2b-instruct:free=                             | Tiny general           | 32,768     | Text               | Low-medium     | Extremely high | Fastest lightweight fallback                                      |
+
+** Top Picks By Use Case
+:PROPERTIES:
+:CUSTOM_ID: top-picks-by-use-case
+:END:
+| Use case             | Best pick                             | Runner-up                              |
+|----------------------+---------------------------------------+----------------------------------------|
+| Default general use  | =qwen/qwen3-next-80b-a3b-instruct:free= | =qwen/qwen3.6-plus:free=                 |
+| Coding               | =qwen/qwen3-coder:free=                 | =openai/gpt-oss-120b:free=               |
+| Raw reasoning        | =openai/gpt-oss-120b:free=              | =minimax/minimax-m2.5:free=              |
+| Multimodal           | =google/gemma-4-26b-a4b-it:free=        | =google/gemma-4-31b-it:free=             |
+| Fast/light           | =qwen/qwen3.6-plus:free=                | =meta-llama/llama-3.2-3b-instruct:free=  |
+| Long-context agentic | =qwen/qwen3-next-80b-a3b-instruct:free= | =nvidia/nemotron-3-super-120b-a12b:free= |
+
+** Short Recommendation Matrix
+:PROPERTIES:
+:CUSTOM_ID: short-recommendation-matrix
+:END:
+Best default: - =qwen/qwen3-next-80b-a3b-instruct:free=
+
+Best coding quality: - =qwen/qwen3-coder:free= -
+=openai/gpt-oss-120b:free= - =minimax/minimax-m2.5:free=
+
+Best raw reasoning quality: - =openai/gpt-oss-120b:free= -
+=minimax/minimax-m2.5:free= - =nvidia/nemotron-3-super-120b-a12b:free=
+
+Best multimodal free option: - =google/gemma-4-26b-a4b-it:free= -
+=google/gemma-4-31b-it:free=
+
+Best small fast option: - =meta-llama/llama-3.2-3b-instruct:free= -
+=qwen/qwen3.6-plus:free=
+
+Avoid as default: - =stepfun/step-3.5-flash:free= because OpenRouter
+marks it as going away on 2026-04-09. -
+=nousresearch/hermes-3-llama-3.1-405b:free= because it is too heavy for
+an everyday default. - Extremely large specialist models when you want
+low latency by default.
+
+** Notes
+:PROPERTIES:
+:CUSTOM_ID: notes
+:END:
+- All models in this table were observed as free in the OpenRouter API
+  snapshot at check time.
+- Free model availability can change quickly; some pages already show
+  deprecation or removal notices.
+- Rankings and descriptions on OpenRouter were used as additional
+  quality/speed signals where available.

@@ -50,6 +50,9 @@
 
 (require 'установить-из)  ;; Универсальная функция установки пакетов (локальная/кастомная).
 (require 'cape)           ;; CAPE — инфраструктура для подсказок и completion от AI и пр.
+(require 'seq)
+(require 'url)
+(require 'json)
 
 (eval-when-compile
   (require 'cl-lib))
@@ -202,25 +205,21 @@
 
 ;;;; 3. Ключи API и окружение (централизация)
 
-;; Объявление переменных, которые могут быть заданы в приватных файлах/переменных окружения:
-(defvar pro-ai-aitunnel-хост nil
-  "Базовый хост для кастомного AI-туннеля (без протокола).")
-(defvar pro-ai-aitunnel-key nil
-  "API-key для AI-туннеля.")
-(defvar pro-ai-aitunnel-backend nil
-  "Объект backend для AI-туннеля (создаётся при конфигурировании GPTEL).")
-(defvar pro-ai-chutes-key nil
-  "API-key для сервиса Chutes (DeepSeek).")
-(defvar pro-ai-proxyapi-хост "api.proxyapi.ru"
-  "Базовый хост ProxyAPI.")
-(defvar pro-ai-proxyapi-key nil
-  "Единый ключ для ProxyAPI.")
-(defvar pro-ai-openrouter-хост "openrouter.ai"
-  "Хост OpenRoouter.")
-(defvar pro-ai-openrouter-key nil
-  "Единый ключ для OpenRouter.")
-(defvar pro-ai-perplexity nil
-  "Единый ключ для Perplexity.")
+;; Хосты AI-сервисов (задаются здесь, ключи — в auth-source)
+(defvar pro-ai-aitunnel-host "api.aitunnel.ru"
+  "Хост AI Tunnel.")
+(defvar pro-ai-proxyapi-host "api.proxyapi.ru"
+  "Хост ProxyAPI.")
+(defvar pro-ai-openrouter-host "openrouter.ai"
+  "Хост OpenRouter.")
+
+(defun pro/ai--auth-key (host)
+  "Получить API-ключ для HOST из auth-source."
+  (when-let ((entry (car (auth-source-search :host host)))
+             (secret (plist-get entry :secret)))
+    (if (functionp secret)
+        (funcall secret)
+      secret)))
 
 ;;;; 4. GPTEL: настройка и пул backend’ов (AI Tunnel, ProxyAPI: OpenAI/Anthropic, Chutes/DeepSeek)
 
@@ -261,108 +260,246 @@
       (when (fboundp 'gptel-aibo-send)
         (gptel-aibo-send))))
 
-  ;; --- AI Tunnel (кастомный прокси/сервер OpenAI API) ---
-  (setq pro-ai-aitunnel-backend
-        (gptel-make-openai "AI Tunnel"
+  (defun pro/ai--register-backend (name host endpoint stream models &optional extra-models)
+    "Зарегистрировать GPTEL-бэкенд, если ключ найден в auth-source."
+    (let ((key (pro/ai--auth-key host)))
+      (message "[pro/ai] registered backend %S" name)
+      (when key
+        (gptel-make-openai name
           :protocol "https"
-          :host pro-ai-aitunnel-хост
-          :endpoint "/v1/chat/completions"
-          :stream t
-          :key pro-ai-aitunnel-key
+          :host host
+          :endpoint endpoint
+          :stream stream
+          :key key
           :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-          :models (append
-                   '("mistral-small-2603" "minimax-m2.7" "gpt-5.4-nano" "gpt-5.4-mini" "gpt-5.4" "glm-5-turbo"
-                     "grok-4.20-multi-agent-beta" "grok-4.20-beta"
-                     "qwen3.5-9b" "gpt-5.4-pro" "gemini-3.1-flash-lite-preview" "qwen3.5-35b-a3b" "qwen3.5-27b"
-                     "qwen3.5-122b-a10b" "gpt-5.3-codex" "gemini-3.1-pro-preview" "claude-sonnet-4.6" "qwen3.5-plus-02-15"
-                     "qwen3.5-397b-a17b" "minimax-m2.5" "glm-5" "qwen3-max-thinking" "qwen3-coder-next" "kimi-k2.5"
-                     "gpt-5.2-codex" "gemini-3-flash-preview" "gpt-5.2" "gpt-5.1" "gpt-5.1-codex" "gpt-5.1-codex-max" "deepseek-v3.2-speciale" "deepseek-v3.2"
-                     "sonar-pro-search" "minimax-m2" "qwen3-max" "grok-code-fast-1" "gpt-4.1" "gpt-4.1-mini" "gigachat-2-pro" "gigachat-2-max" "gigachat-2"
-                     "gpt-4o-mini-search-preview" "gpt-4o-search-preview"
-                     ;; "gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
-                     ;; "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
-                     ;; "gpt-4.1-mini" "gpt-4.1-nano" "gpt-5.4-nano" "minimax-m2.7" "gpt-5.4-mini" "mistral-small-2603"
-                     ;; "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-                     ;; "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-                     ;; "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
-                     ;; "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
-                     ;; "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
-                     ;; "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
-                     ;; "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
-                     ;; "gemini-3.1-flash-lite-preview"
-                     ;; "codestral-2508"
-                     )
-                   '()
-                   ;; gptel--openai-models
-                   )))
+          :models (if extra-models
+                    (append models extra-models)
+                  models)))))
 
-  ;; --- ProxyAPI: OpenAI-совместимый endpoint ---
-  (gptel-make-openai "Proxy OpenAI"
-    :protocol "https"
-    :host pro-ai-proxyapi-хост
-    :endpoint "/openai/v1/chat/completions"
-    :stream t
-    :key pro-ai-proxyapi-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models (append
-             '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
-               "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
-               "gpt-4.1-mini" "gpt-4.1-nano" "gpt-4o-mini"
-               "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-               "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-               "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
-               "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
-               "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus" "llama-4-maverick"
-               "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
-               "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
-               "gemini-3.1-flash-lite-preview"
-               "codestral-2508")
-             gptel--openai-models))
+  ;; --- AI Tunnel ---
+  (pro/ai--register-backend
+   "AI Tunnel" pro-ai-aitunnel-host "/v1/chat/completions" t
+   '("mistral-small-2603" "minimax-m2.7" "gpt-5.4-nano" "gpt-5.4-mini" "gpt-5.4" "glm-5-turbo"
+     "grok-4.20-multi-agent-beta" "grok-4.20-beta"
+     "qwen3.5-9b" "gpt-5.4-pro" "gemini-3.1-flash-lite-preview" "qwen3.5-35b-a3b" "qwen3.5-27b"
+     "qwen3.5-122b-a10b" "gpt-5.3-codex" "gemini-3.1-pro-preview" "claude-sonnet-4.6" "qwen3.5-plus-02-15"
+     "qwen3.5-397b-a17b" "minimax-m2.5" "glm-5" "qwen3-max-thinking" "qwen3-coder-next" "kimi-k2.5"
+     "gpt-5.2-codex" "gemini-3-flash-preview" "gpt-5.2" "gpt-5.1" "gpt-5.1-codex" "gpt-5.1-codex-max" "deepseek-v3.2-speciale" "deepseek-v3.2"
+     "sonar-pro-search" "minimax-m2" "qwen3-max" "grok-code-fast-1" "gpt-4.1" "gpt-4.1-mini" "gigachat-2-pro" "gigachat-2-max" "gigachat-2"
+     "gpt-4o-mini-search-preview" "gpt-4o-search-preview"))
 
-  (gptel-make-openai "Openrouter"
-    :protocol "https"
-    :host pro-ai-openrouter-хост
-    :endpoint "/api/v1/chat/completions"
-    :stream nil
-    :key pro-ai-openrouter-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("agentica-org/deepcoder-14b-preview:free"))
+  ;; --- ProxyAPI: OpenAI ---
+  (pro/ai--register-backend
+   "Proxy OpenAI" pro-ai-proxyapi-host "/openai/v1/chat/completions" t
+   '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
+     "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
+     "gpt-4.1-mini" "gpt-4.1-nano" "gpt-4o-mini"
+     "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
+     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
+     "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
+     "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
+     "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus"
+     "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
+     "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
+     "gemini-3.1-flash-lite-preview"
+     "codestral-2508")
+   gptel--openai-models)
 
-  (gptel-make-openai "Perplexity"
-    :protocol "https"
-    :host "api.perplexity.ai"
-    :endpoint "/chat/completions"
-    :stream t
-    :key pro-ai-perplexity-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("sonar-deep-research" "sonar-reasoning" "sonar"))
+  ;; --- ProxyAPI: Anthropic (Claude) ---
+  (pro/ai--register-backend
+   "ProxyAPI Anthropic" pro-ai-proxyapi-host "/anthropic/v1/messages" nil
+   '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
 
+  (defvar pro-ai-openrouter-free-models-default
+    '("qwen/qwen3-next-80b-a3b-instruct:free")
+    "Лучший баланс качества и скорости для дефолта OpenRouter.")
 
-  ;; --- ProxyAPI: Anthropic (Claude) через OpenAI-совместимую обёртку (экспериментально) ---
-  ;; Внимание: это путь через совместимый интерфейс. Если API несовместим — возможно потребуются
-  ;; нативные адаптеры/эндпоинты GPTEL для Anthropic.
-  (gptel-make-openai "ProxyAPI Anthropic"
-    :protocol "https"
-    :host pro-ai-proxyapi-хост
-    :endpoint "/anthropic/v1/messages"
-    :stream nil
-    :key gptel-api-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("claude-3-5-sonnet-20241022" "claude-3-opus-20240229"))
+  (defvar pro-ai-openrouter-free-models-coding
+    '("qwen/qwen3-coder:free"
+      "openai/gpt-oss-120b:free"
+      "minimax/minimax-m2.5:free"
+      "nvidia/nemotron-3-super-120b-a12b:free"
+      "arcee-ai/trinity-large-preview:free"
+      "nousresearch/hermes-3-llama-3.1-405b:free")
+    "Лучшие free-модели OpenRouter для кода и сложных задач.")
+
+  (defvar pro-ai-openrouter-free-models-multimodal
+    '("google/gemma-4-26b-a4b-it:free"
+      "google/gemma-4-31b-it:free"
+      "nvidia/nemotron-nano-12b-v2-vl:free"
+      "google/gemma-3-27b-it:free"
+      "google/gemma-3-12b-it:free"
+      "google/gemma-3-4b-it:free")
+    "Лучшие free-модели OpenRouter для мультимодальных задач.")
+
+  (defvar pro-ai-openrouter-free-models-fast
+    '("qwen/qwen3.6-plus:free"
+      "qwen/qwen3.6-plus-preview:free"
+      "z-ai/glm-4.5-air:free"
+      "nvidia/nemotron-nano-30b-a3b:free"
+      "nvidia/nemotron-nano-9b-v2:free"
+      "arcee-ai/trinity-mini:free"
+      "meta-llama/llama-3.3-70b-instruct:free"
+      "meta-llama/llama-3.2-3b-instruct:free"
+      "google/gemma-3n-e4b-it:free"
+      "google/gemma-3n-e2b-it:free"
+      "liquid/lfm-2.5-1.2b-thinking:free"
+      "liquid/lfm-2.5-1.2b-instruct:free"
+      "cognitivecomputations/dolphin-mistral-24b-venice-edition:free")
+    "Лучшие free-модели OpenRouter для скорости и лёгких запросов.")
+
+  (defvar pro-ai-openrouter-free-models-avoid
+    '("stepfun/step-3.5-flash:free")
+    "Free-модели OpenRouter, которые не стоит держать в общем дефолтном списке из-за deprecation notice.")
+
+  (defconst pro-ai-openrouter--preferred-free-model-order
+    (append pro-ai-openrouter-free-models-default
+            pro-ai-openrouter-free-models-coding
+            pro-ai-openrouter-free-models-multimodal
+            pro-ai-openrouter-free-models-fast)
+    "Предпочтительный порядок free-моделей OpenRouter.")
+
+  (defvar pro-ai-openrouter-free-models-all
+    (append pro-ai-openrouter-free-models-default
+            pro-ai-openrouter-free-models-coding
+            pro-ai-openrouter-free-models-multimodal
+            pro-ai-openrouter-free-models-fast)
+    "Полный список актуальных free-моделей OpenRouter, упорядоченный по практичности.")
+
+  (defun pro-ai-openrouter--fetch-free-model-ids ()
+    "Скачать актуальные free-модели OpenRouter из API и вернуть список их id."
+    (let ((buf (url-retrieve-synchronously "https://openrouter.ai/api/v1/models" t t 30)))
+      (when buf
+        (unwind-protect
+            (with-current-buffer buf
+              (goto-char (point-min))
+              (when (re-search-forward "\r?\n\r?\n" nil t)
+                (let* ((json-object-type 'alist)
+                       (json-array-type 'list)
+                       (json-key-type 'symbol)
+                       (payload (json-parse-buffer :object-type 'alist :array-type 'list))
+                       (data (alist-get 'data payload)))
+                  (seq-keep
+                   (lambda (item)
+                     (let ((id (alist-get 'id item)))
+                       (when (and (stringp id)
+                                  (string-suffix-p ":free" id))
+                         id)))
+                   data))))
+          (kill-buffer buf)))))
+
+  (defun pro-ai-openrouter--refresh-free-models (&optional quiet)
+    "Обновить списки free-моделей OpenRouter из API.
+Возвращает отсортированный список моделей."
+    (interactive)
+    (let* ((remote-ids (or (pro-ai-openrouter--fetch-free-model-ids)
+                           pro-ai-openrouter--preferred-free-model-order))
+           (preferred (seq-filter (lambda (id) (member id remote-ids))
+                                  pro-ai-openrouter--preferred-free-model-order))
+           (remaining (seq-filter (lambda (id) (and (not (member id preferred))
+                                                    (not (member id pro-ai-openrouter-free-models-avoid))))
+                                  remote-ids))
+           (ordered (append preferred (sort remaining #'string<))))
+      (setq pro-ai-openrouter-free-models-default
+            (seq-filter (lambda (id) (member id ordered))
+                        '("qwen/qwen3-next-80b-a3b-instruct:free")))
+      (setq pro-ai-openrouter-free-models-coding
+            (seq-filter (lambda (id) (member id ordered))
+                        '("qwen/qwen3-coder:free"
+                          "openai/gpt-oss-120b:free"
+                          "minimax/minimax-m2.5:free"
+                          "nvidia/nemotron-3-super-120b-a12b:free"
+                          "arcee-ai/trinity-large-preview:free"
+                          "nousresearch/hermes-3-llama-3.1-405b:free")))
+      (setq pro-ai-openrouter-free-models-multimodal
+            (seq-filter (lambda (id) (member id ordered))
+                        '("google/gemma-4-26b-a4b-it:free"
+                          "google/gemma-4-31b-it:free"
+                          "nvidia/nemotron-nano-12b-v2-vl:free"
+                          "google/gemma-3-27b-it:free"
+                          "google/gemma-3-12b-it:free"
+                          "google/gemma-3-4b-it:free")))
+      (setq pro-ai-openrouter-free-models-fast
+            (seq-filter (lambda (id) (member id ordered))
+                        '("qwen/qwen3.6-plus:free"
+                          "qwen/qwen3.6-plus-preview:free"
+                          "z-ai/glm-4.5-air:free"
+                          "nvidia/nemotron-nano-30b-a3b:free"
+                          "nvidia/nemotron-nano-9b-v2:free"
+                          "arcee-ai/trinity-mini:free"
+                          "meta-llama/llama-3.3-70b-instruct:free"
+                          "meta-llama/llama-3.2-3b-instruct:free"
+                          "google/gemma-3n-e4b-it:free"
+                          "google/gemma-3n-e2b-it:free"
+                          "liquid/lfm-2.5-1.2b-thinking:free"
+                          "liquid/lfm-2.5-1.2b-instruct:free"
+                          "cognitivecomputations/dolphin-mistral-24b-venice-edition:free")))
+      (setq pro-ai-openrouter-free-models-avoid
+            (seq-filter (lambda (id) (member id ordered))
+                        '("stepfun/step-3.5-flash:free")))
+      (setq pro-ai-openrouter-free-models-all ordered)
+      (unless quiet
+        (message "OpenRouter free models refreshed: %d" (length ordered)))
+      ordered))
+
+  (defun pro-ai-openrouter-refresh-free-models ()
+    "Интерактивно обновить free-модели OpenRouter из API."
+    (interactive)
+    (pro-ai-openrouter--refresh-free-models))
+
+  (pro-ai-openrouter--refresh-free-models t)
+
+  ;; --- OpenRouter: актуальные бесплатные модели ---
+  (pro/ai--register-backend
+   "Openrouter" pro-ai-openrouter-host "/api/v1/chat/completions" nil
+   pro-ai-openrouter-free-models-all)
+
+  ;; --- Perplexity ---
+   (pro/ai--register-backend
+   "Perplexity" "api.perplexity.ai" "/chat/completions" t
+   '("sonar-deep-research" "sonar-reasoning" "sonar"))
 
   ;; --- Chutes: DeepSeek ---
-  (gptel-make-openai "Chutes"
-    :protocol "https"
-    :host "llm.chutes.ai"
-    :endpoint "/v1/chat/completions"
-    :stream nil
-    :key pro-ai-chutes-key
-    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-    :models '("deepseek-ai/DeepSeek-V3-0324"))
+  (pro/ai--register-backend
+   "Chutes" "llm.chutes.ai" "/v1/chat/completions" nil
+   '("deepseek-ai/DeepSeek-V3-0324"))
 
-  ;; Бэкенд/модель по умолчанию — можно интерактивно менять
-  (setq gptel-backend (gptel-get-backend "AI Tunnel"))
-  (setq gptel-model 'gpt-4o-mini))
+  ;; Бэкенд/модель по умолчанию — OpenRouter.
+  ;; Qwen3 Next 80B A3B Instruct выбрана как лучший баланс качества/скорости:
+  ;; в описании OpenRouter упор на fast, stable responses, long-context и agentic workflows.
+  (let ((openrouter-backend (gptel-get-backend "Openrouter")))
+    (when openrouter-backend
+      (setq gptel-backend openrouter-backend)
+      (let ((models (gptel-backend-models openrouter-backend)))
+        (when (and models (listp models))
+          (setq gptel-model
+                (or (seq-find
+                     (lambda (model)
+                       (string= (gptel--model-name model)
+                                "qwen/qwen3-next-80b-a3b-instruct:free"))
+                     models)
+                    (car models)))
+          (message "OpenRouter default model set to: %s" (gptel--model-name gptel-model)))))))
+
+  (defconst pro-ai-openrouter-best-coding
+    '("qwen/qwen3-coder:free"
+      "openai/gpt-oss-120b:free"
+      "minimax/minimax-m2.5:free")
+    "Короткий список лучших free-моделей OpenRouter для кода.")
+
+  (defconst pro-ai-openrouter-best-multimodal
+    '("google/gemma-4-26b-a4b-it:free"
+      "google/gemma-4-31b-it:free"
+      "nvidia/nemotron-nano-12b-v2-vl:free")
+    "Короткий список лучших free-моделей OpenRouter для мультимодальности.")
+
+  (defconst pro-ai-openrouter-best-speed
+    '("qwen/qwen3.6-plus:free"
+      "qwen/qwen3.6-plus-preview:free"
+      "z-ai/glm-4.5-air:free"
+      "nvidia/nemotron-nano-30b-a3b:free"
+      "meta-llama/llama-3.2-3b-instruct:free")
+    "Короткий список лучших free-моделей OpenRouter для скорости.")
 
 ;;;; 5. Интерактивные команды: переключение backend и модели (с Consult или fallback)
 
@@ -633,7 +770,7 @@ You may add brief explanatory text before or after operations, but:
   (plist-put minuet-openai-options :model "gpt-4-turbo")
   (setopt minuet-provider 'openai-compatible)
   (minuet-auto-suggestion-mode -1)
-  (plist-put minuet-openai-compatible-options :end-point (concat "https://" pro-ai-proxyapi-хост "/openai/v1/chat/completions"))
+  (plist-put minuet-openai-compatible-options :end-point (concat "https://" pro-ai-proxyapi-host "/openai/v1/chat/completions"))
   (plist-put minuet-openai-compatible-options :api-key "OPENAI_API_KEY")
 
   (plist-put minuet-openai-compatible-options :model "gpt-4-turbo")
@@ -1033,7 +1170,8 @@ You may add brief explanatory text before or after operations, but:
               ("M-RET" . newline)
               ("RET" . shell-maker-submit)
               ("C-g" . nil)
-              ("C-с C-g" . agent-shell-interrupt))
+              ("C-с C-g" . agent-shell-interrupt)
+              ("C-c C-u" . agent-shell-show-usage))
   :custom
   (agent-shell-header-style 'text)
   (agent-shell-show-config-icons t)
@@ -1041,6 +1179,7 @@ You may add brief explanatory text before or after operations, but:
   (agent-shell-show-welcome-message t)
   (agent-shell-show-busy-indicator t)
   (agent-shell-show-context-usage-indicator 'detailed)
+  (agent-shell-show-usage-at-turn-end t)
   (agent-shell-confirm-interrupt nil)
   (agent-shell-prefer-session-resume t)
   (agent-shell-embed-file-size-limit 102400))
