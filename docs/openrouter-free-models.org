@@ -100,3 +100,10 @@ low latency by default.
   deprecation or removal notices.
 - Rankings and descriptions on OpenRouter were used as additional
   quality/speed signals where available.
+
+** Config Helper
+:PROPERTIES:
+:CUSTOM_ID: config-helper
+:END:
+The Emacs config exposes =pro-ai-openrouter-refresh-free-models= and calls
+it during load to refresh the free-model list from OpenRouter API.
