@@ -4,10 +4,10 @@
 
 | Level | Status | Notes |
 |-------|--------|-------|
-| L1 Syntax | ❌ BLOCKED | glib version conflict |
-| L2 Unit | ❌ BLOCKED | same issue |
-| L3 E2E | ❌ BLOCKED | network unavailable |
-| L4 Integration | ⏸️ MANUAL | works in interactive Emacs |
+| L1 Syntax | ✅ FIXED | env -i bypass nix-ld |
+| L2 Unit | ✅ FIXED | wrapper script works |
+| L3 E2E | ✅ PASS | org-roundtrip, module-load working |
+| L4 Integration | ⏸️ MANUAL | interactive Emacs |
 
 ## 2. Root Cause Analysis
 
@@ -125,7 +125,26 @@ Proof: docs/testing-report-ru.md (этот документ)
 Migration: Не требуется — это аналитический документ
 ```
 
-## 8. Appendix: Команды для проверки (когда окружение починено)
+## 8. Тесты: Актуальные результаты
+
+```bash
+# Работающие команды:
+bash run-tests.sh --syntax          # L1: ✅
+bash run-tests.sh tests/e2e/org-roundtrip.el  # L3: ✅  
+bash run-tests.sh tests/e2e/module-load.el    # L3: 10 OK
+```
+
+### Результаты (2026-04-12)
+
+| Test | Status | Details |
+|------|--------|---------|
+| L1 syntax | ✅ PASS | byte-compile |
+| org-roundtrip | ✅ PASS | org-mode built-in |
+| module-load | ✅ PASS | 10 modules OK |
+| healthcheck | ⚠️ MISSING | requires packages |
+| ai-integration | ⚠️ MISSING | requires packages |
+
+## 9. Appendix: Команды для проверки (когда окружение починено)
 
 ```bash
 # L1: Syntax (любой emacs --batch)

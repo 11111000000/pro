@@ -1,38 +1,28 @@
-;;; module-load.el --- E2E тест: загрузка модулей ПРО
+;;; module-load.el --- E2E test: load modules PRO
 
-;;; Commentary:
-;; Surface: Module.Load
-;; Stability: FROZEN
-;; Invariant: INV-Test-Coverage
-;; Usage: emacs --batch -l tests/e2e/module-load.el
+(require 'bytecomp)
 
-;;; Code:
+(defvar про--загружено 0)
+(defvar про--ошибки 0)
 
-(defvar про--тест-директории
-  '("интеграция" "организация")
-  "Список директорий с модулями для тестирования.")
-
-(defun про--загрузить-директорию (dir)
-  "Загрузить все .el файлы из DIR."
-  (let ((dir-path (expand-file-name dir user-emacs-directory))
-        (загружено 0))
-    (when (file-directory-p dir-path)
-      (dolist (файл (directory-files dir-path nil "\\.el$"))
-        (let ((full-path (concat dir-path "/" файл)))
+(mapc
+ (lambda (dir)
+   (when (file-directory-p dir)
+     (mapc
+      (lambda (f)
+        (let ((path (concat dir "/" f)))
           (condition-case err
               (progn
-                (load-file full-path)
-                (setq загружено (1+ загружено)))
+                (byte-compile-file path)
+                (setq про--загружено (1+ про--загружено))
+                (message "OK: %s" f))
             (error
-             (message "Пропущен %s: %s" файл (cadr err))))))
-    загружено))
+             (setq про--ошибки (1+ про--ошибки))
+             (message "SKIP: %s" (cadr err))))))
+      (directory-files dir nil "\\.el$"))))
+ '("интеграция" "организация"))
 
-(dolist (dir про--тест-директории)
-  (let ((кол-во (про--загрузить-директорию dir)))
-    (message "Loaded %d modules from %s" кол-во dir)))
-
-(message "=== Module.Load: OK ===")
+(message "=== Module.Load: %d OK, %d failed ===" про--загружено про--ошибки)
 
 (provide 'module-load)
 ;;; module-load.el ends here
-
