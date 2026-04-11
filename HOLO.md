@@ -1,0 +1,66 @@
+# HOLO.md — голограмма ПРО
+
+## Stage
+RealityCheck
+
+## Purpose
+ПРО — персональная система организации, программирования и автоматизации задач. Гибкая экосистема из 50+ модулей на LISP (Emacs) для настройки рабочей среды, интеграции ИИ (GPTEL, Ollama, Claude), управления проектами и знаниями (Org-mode), мультиязычного программирования.
+
+## Domain
+Персональная автоматизация / Emacs customization / AI integration
+
+## User Journey
+1. Запуск Emacs с конфигом ПРО
+2. Настройка модулей (языки, интерфейс, ИИ)
+3. Работа: код → заметки → ИИ-ассистент
+4. Сохранение состояния (org, files)
+
+## Invariants (baseline 7 + уточнения)
+- INV-Core-IO-Boundary: Core — LISP код, эффекты (GUI, vterm, network) в адаптерах.
+- INV-Determinism: Одинаковые входы/конфиг ⇒ одинаковый результат.
+- INV-Canonical-Roundtrip: org↔el конвертация сохраняет данные.
+- INV-Compat-Policy: Модули версионируются (semver), additive changes предпочтительны.
+- INV-Traceability: Change Gate обязателен для всех изменений.
+- INV-Surface-First: Публичный API фиксируется в SURFACE.md до кода.
+- INV-Single-Intent: Один PR/итерация — одна цель.
+- INV-Test-Coverage: [FROZEN] элементы имеют e2e Proof.
+- INV-Package-Init: Пакеты устанавливаются через use-package, требуют сеть при первом запуске.
+
+## Decisions
+- [Draft] ИИ-интеграция: GPTEL как core с multiple backends (OpenAI, Anthropic, Ollama, DeepSeek). Exit: e2e тест работает с mock. Proof: `tests/e2e/ai-integration.el`.
+- [Draft] Модульность: require/provide для каждого *.el. Exit: все модули грузятся. Proof: `tests/e2e/module-load.el`.
+- [Draft] Орг-нотатки: Org-mode как единый формат данных. Exit: roundtrip org↔el без потерь. Proof: `tests/e2e/org-roundtrip.el`.
+- [Frozen] Healthcheck: Базовый запуск без ошибок. Exit: M-x emacs --batch -l init.el работает. Proof: `tests/e2e/healthcheck.el`.
+
+## Key Modules (по зависимостям)
+- Инфраструктура: про-менеджер-пакетов, про-оптимизацию, установить-из
+- Ядро: про-код.el, про-историю
+- Интеграция: про-ии (AI), про-терминалы, про-интернет-сервисы
+- Организация: про-организацию, про-время, про-управление-проектами
+- Интерфейс: про-окна, про-буферы, про-доску
+- Языки: про-код-на-{lisp,python,javascript,c,rust,haskell,java,flutter}
+- Среды: про-внешний-вид, про-текстовый-режим, про-графическую-среду
+
+## External Forms (публичные API)
+- Emacs Lisp API: require/provide, hooks, advise
+- Org-mode: #+begin_src, agenda, capture
+- CLI: emacs --batch, shell-команды
+- Network: REST API (ИИ-провайдеры), RSS, Telegram
+
+## Constraints
+- Зависимость от Emacs 29.1+
+- Требует сеть для первого запуска (установка пакетов)
+- Часть модулей требует внешние утилиты (git, python, node)
+- Nix-окружение (flakes) — для воспроизводимости
+
+## Architecture
+```
+Интерфейс (GUI/vterm)
+    ↓
+Интеграция (про-иИ, про-терминалы)
+    ↓
+Ядро (про-код, про-организацию)
+    ↓
+Инфраструктура (про-менеджер-пакетов)
+```
+Core не зависит от IO; эффекты — в адаптерах.
