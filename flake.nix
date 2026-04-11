@@ -62,6 +62,20 @@
 
           devShells.default = pkgs.mkShell {
             packages = [ pkgs.emacs-nox ];
+            shellHook = ''
+              export EMACS_HEADLESS_ROOT="$(pwd)"
+              echo "=== Nix devShell: emacs available ==="
+            '';
+          };
+
+          devShells.test = pkgs.mkShell {
+            packages = [ pkgs.emacs-nox pkgs.git ];
+            buildInputs = [ pkgs.emacs-nox ];
+            shellHook = ''
+              export EMACS_HEADLESS_ROOT="$(pwd)"
+              echo "=== Test devShell: ready for e2e tests ==="
+              echo "Run: emacs --batch -l tests/e2e/<name>.el"
+            '';
           };
         };
     in

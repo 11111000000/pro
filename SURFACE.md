@@ -93,6 +93,40 @@ Proof: -
 
 ---
 
+### Name: Testing.Cycle
+Stability: [FLUID]
+Spec: Цикл тестирования с уровнями: L1 (syntax), L2 (unit), L3 (e2e), L4 (integration).
+Levels:
+- L1: `emacs --batch -f batch-byte-compile` — проверка синтаксиса
+- L2: `emacs --batch -l tests/unit/*.el` — изолированные юнит-тесты  
+- L3: `emacs --batch -l tests/e2e/*.el` — e2e (требует devShell)
+- L4: полная интеграция с network/GUI
+API: `про-тест-run-level`, `про-тест-все-уровни`
+Proof: `emacs --batch -f batch-byte-compile . --eval '(message "L1: OK")'`
+
+---
+
+## Test Infrastructure Requirements
+
+### Levels
+
+| Level | Type | What runs | Dependencies | Command |
+|-------|------|-----------|---------------|---------|
+| L1 | Syntax | byte-compile | none | `emacs --batch -f batch-byte-compile` |
+| L2 | Unit | require/provide модулей | none (batch) | `emacs --batch -l tests/unit/*.el` |
+| L3 | E2E | полная загрузка | devShell + network | `nix develop -c emacs --batch -l tests/e2e/*.el` |
+| L4 | Integration | AI, org roundtrip | full Emacs + packages | interactive |
+
+### Invariants
+
+- INV-Test-Levels: Тесты разделены по уровням, каждый уровень запускается независимо
+- INV-Test-Isolation: L1-L2 не требуют external packages, network, GUI
+- INV-Test-Repeatability: Одинаковые входы ⇒ одинаковые результаты
+
+---
+
+## Test Infrastructure Requirements
+
 ## Payloads (публичные структуры)
 
 ### pro-конфиг (alist)
