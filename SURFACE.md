@@ -79,7 +79,7 @@ Proof: -
 
 ### Name: AgentShell.BufferName
 Stability: [FLUID]
-Spec: Буферы `agent-shell` могут переименовываться локально для удобства отображения без изменения поведения режима.
+Spec: Буферы `agent-shell` могут принудительно переименовываться в `🤖 ...`, чтобы новое имя использовалось везде, включая mode line и списки буферов.
 API: `про-ии-agent-shell-rename-buffer`
 Proof: -
 

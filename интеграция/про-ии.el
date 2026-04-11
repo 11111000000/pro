@@ -1115,7 +1115,29 @@ You may add brief explanatory text before or after operations, but:
   (agent-shell-show-usage-at-turn-end t)
   (agent-shell-confirm-interrupt nil)
   (agent-shell-prefer-session-resume t)
-  (agent-shell-embed-file-size-limit 102400))
+  (agent-shell-embed-file-size-limit 102400)
+  :config
+  (defun про-ии-agent-shell--pretty-buffer-name (name)
+    "Return NAME with the agent-shell prefix shortened."
+    (replace-regexp-in-string "\\`OpenCode Agent\\s-*" "🤖 " name))
+
+  (defun про-ии-agent-shell-rename-buffer ()
+    "Normalize the initial agent-shell buffer name."
+    (when (and (derived-mode-p 'agent-shell-mode)
+               (string-prefix-p "OpenCode Agent" (buffer-name)))
+      (let ((short-name (про-ии-agent-shell--pretty-buffer-name (buffer-name))))
+        (rename-buffer short-name t))))
+
+  (defun про-ии-agent-shell-rename-buffer-advice (orig-fun name &optional unique)
+    "Keep agent-shell buffer names shortened even after later renames."
+    (if (and (derived-mode-p 'agent-shell-mode)
+             (stringp name)
+             (string-prefix-p "OpenCode Agent" name))
+        (funcall orig-fun (про-ии-agent-shell--pretty-buffer-name name) unique)
+      (funcall orig-fun name unique)))
+
+  (add-hook 'agent-shell-mode-hook #'про-ии-agent-shell-rename-buffer)
+  (advice-add 'rename-buffer :around #'про-ии-agent-shell-rename-buffer-advice))
 
 (add-to-list 'exec-path "/home/zoya/.opencode/bin")
 

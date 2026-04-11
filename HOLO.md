@@ -31,7 +31,7 @@ RealityCheck
 - [Draft] Модульность: require/provide для каждого *.el. Exit: все модули грузятся. Proof: `tests/e2e/module-load.el`.
 - [Draft] Орг-нотатки: Org-mode как единый формат данных. Exit: roundtrip org↔el без потерь. Proof: `tests/e2e/org-roundtrip.el`.
 - [Frozen] Healthcheck: Базовый запуск без ошибок. Exit: M-x emacs --batch -l init.el работает. Proof: `tests/e2e/healthcheck.el`.
-- [Fluid] AgentShell.BufferName: Локальное сокращение имени буфера agent-shell до emoji-префикса без изменения поведения. Exit: buffer rename hook in `про-ии.el`.
+- [Fluid] AgentShell.BufferName: Принудительное сокращение имени буфера agent-shell до emoji-префикса, чтобы новое имя отображалось везде. Exit: rename normalization in `про-ии.el`.
 
 ## Key Modules (по зависимостям)
 - Инфраструктура: про-менеджер-пакетов, про-оптимизацию, установить-из
