@@ -48,15 +48,22 @@
         (list (lambda ()
                 (setq python-shell-interpreter "python3")))))
 
+(when noninteractive
+  (defun package--save-selected-packages (&rest _args)
+    "Avoid Customize save-time errors during batch runs."
+    nil))
+
 ;;;; 2. Auto-virtualenv
 ;; Auto-virtualenv автоматически обнаруживает и активирует venv в проектах,
 ;; добавляя удобство без ручной настройки, с verbose для отладки.
 
 (use-package auto-virtualenv
   :ensure t
+  :commands (auto-virtualenv-setup)
   :config
   (setq auto-virtualenv-verbose t)
-  (auto-virtualenv-setup))
+  (when (display-graphic-p)
+    (auto-virtualenv-setup)))
 
 ;;;; 3. Envrc
 ;; Envrc интегрирует direnv для Nix-окружений, автоматически загружая shell.nix
@@ -67,7 +74,8 @@
   :if (executable-find "direnv")
   :hook (python-mode . envrc-allow)
   :config
-  (envrc-global-mode))
+  (when (display-graphic-p)
+    (envrc-global-mode)))
 
 (provide 'про-код-на-python)
 ;;; про-код-на-python.el ends here

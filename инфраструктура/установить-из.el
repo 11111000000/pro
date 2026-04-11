@@ -12,7 +12,7 @@
 ;;
 ;;; Code:
 
-(require 'package-vc)
+(require 'package-vc nil t)
 
 (cl-defun установить-из (&key (fetcher "github") repo name rev backend)
   "Установить пакет с удаленного компьютера, если он еще не установлен.
@@ -29,7 +29,9 @@
         (iname (when name (intern name)))
         (pac-name (or iname (intern (file-name-base repo)))))
     (unless (package-installed-p pac-name)
-      (package-vc-install url iname rev backend))))
+      (if (fboundp 'package-vc-install)
+          (package-vc-install url iname rev backend)
+        (message "package-vc unavailable, skipping install of %s" pac-name)))))
 
 (provide 'установить-из)
 

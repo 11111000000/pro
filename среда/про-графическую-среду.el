@@ -105,6 +105,7 @@ fi"))
     (interactive)
     (unless pro/графика-initialized
       (setq pro/графика-initialized t)
+      (catch 'pro/exwm-start
       ;; -- Физическое размещение мониторов (xrandr) ДО запуска EXWM
       (применить-расположение-мониторов)
       ;; -- Инициализация сопоставлений workspace <-> monitor
@@ -141,7 +142,17 @@ fi"))
               ([?\M-w] . ?\C-c)
               ([?\C-y] . ?\C-v)))
       (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
-      (exwm-wm-mode 1)
+      (condition-case err
+          (exwm-wm-mode 1)
+        (error
+         (setq pro/графика-initialized nil)
+         (message "EXWM не запущен, остаёмся в обычном Emacs: %s"
+                  (error-message-string err))
+         (throw 'pro/exwm-start nil)))
+      (unless (bound-and-true-p pro/exwm-booted)
+        (setq pro/графика-initialized nil)
+        (message "EXWM не запущен, остаёмся в обычном Emacs")
+        (throw 'pro/exwm-start nil))
       ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
       ;; (defun pro/exwm-браузеры-line+sim ()
       ;;         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
@@ -159,8 +170,10 @@ fi"))
         (exwm-randr-mode 1)
         (ignore-errors (exwm-randr-refresh)))
       ;; -- Системный трей и XIM/импорт ввода
-      (exwm-systemtray-mode t)
-      (exwm-xim-mode t)
+      (when (fboundp 'exwm-systemtray-mode)
+        (exwm-systemtray-mode t))
+      (when (fboundp 'exwm-xim-mode)
+        (exwm-xim-mode t))
       ;; -- Отключать тачпад при наборе (Disable-While-Typing) — предотвращает случайные клики
       (when (display-graphic-p)
         (pro/disable-touchpad-while-typing-enable)
@@ -191,8 +204,15 @@ fi"))
                height 175 x 30 y 30 managed t)
               ))
       ;; -- Копипаста
-      (require 'xclip)
-      (xclip-mode 1)
+      (when (require 'xclip nil t)
+        (when (fboundp 'xclip-mode)
+          (xclip-mode 1)))
+
+      ;; Помечаем, что EXWM реально поднялся, чтобы не убивать обычный Emacs,
+      ;; если старт EXWM был прерван на вопросе про замену WM.
+      (defvar pro/exwm-booted nil)
+      (setq pro/exwm-booted nil)
+      (add-hook 'exwm-init-hook (lambda () (setq pro/exwm-booted t)))
 
       ;; перезапускаем user graphical-session.target, чтобы треевые сервисы стартовали уже при наличии хоста трея (EXWM).
       ;; Важно: здесь необходима небольшая задержка (например, 1 секунда), чтобы EXWM успел полностью инициализировать трей.
@@ -201,7 +221,7 @@ fi"))
                    (lambda ()
                      (ignore-errors
                        (start-process "systemctl-user" nil "systemctl" "--user" "restart" "exwm-session.target"))))
-      )))
+       ))))
 
 (use-package xclip
   :ensure t)
@@ -225,7 +245,11 @@ fi"))
   :config
   ;; Без этого Emacs остаётся жить после kill X, держит сокет :0,
   ;; SDDM не может поднять новый сервер и уходит в restart-loop.
-  (add-hook 'exwm-exit-hook #'save-buffers-kill-emacs)
+  ;; Но убиваем Emacs только если EXWM реально успел стартовать.
+  (add-hook 'exwm-exit-hook
+            (lambda ()
+              (when (bound-and-true-p pro/exwm-booted)
+                (save-buffers-kill-emacs))))
 
 
   ;; -- Автоматический запуск, только если не консоль
@@ -237,7 +261,7 @@ fi"))
 ;; Они дополняют базовый EXWM, делая его полноценным десктопом.
 
 ;; -- Системный трей (иконки в панели)
-(require 'exwm-systemtray)
+(require 'exwm-systemtray nil t)
 
 ;; -- Встроенный редактор для внешних текстовых полей
 (use-package exwm-edit
@@ -252,7 +276,8 @@ fi"))
   :functions (exwm-mff-mode)
   :ensure t
   :init
-  (exwm-mff-mode t))
+  (when (fboundp 'exwm-mff-mode)
+    (exwm-mff-mode t)))
 
 ;;;; 5. Утилиты: Скриншоты и очистка
 ;; Практичные инструменты: скриншоты в clipboard, очистка "мёртвых" буферов.

@@ -70,7 +70,9 @@
    `(vterm-color-bright-yellow ((,class (:foreground "#ffffb0" :background "#afaf00"))))
    `(vterm-color-bright-blue ((,class (:foreground "#b0d7ff" :background "#005faf"))))
    `(vterm-color-bright-magenta ((,class (:foreground "#ffb0ff" :background "#8700af"))))
-   `(vterm-color-bright-cyan ((,class (:foreground "#94ffff" :background "#00afaf"))))
-   `(vterm-color-bright-white ((,class (:foreground "#ffffff" :background "#888888"))))
-   ))
+    `(vterm-color-bright-cyan ((,class (:foreground "#94ffff" :background "#00afaf"))))
+    `(vterm-color-bright-white ((,class (:foreground "#ffffff" :background "#888888"))))
+    ))
+
 (provide-theme 'vterm-dark-theme)
+(provide 'про-тему-vterm)

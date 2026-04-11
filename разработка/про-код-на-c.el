@@ -35,13 +35,15 @@
 
 (use-package csharp-mode
   :ensure t
+  :defer t
   :config
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
   ;; Поддержка Nix: если shell.nix, использовать nix-shell для компиляции/загрузки через Eglot.
   (when (and (executable-find "nix-shell") (file-exists-p "shell.nix"))
     (add-hook 'csharp-mode-hook
               (lambda ()
-                (setq-local compile-command "nix-shell --run 'mcs'")))))
+                (setq-local compile-command "nix-shell --run 'mcs'")
+                (setq-local c-basic-offset 4)))))
 
 ;;;; 2. Финал
 ;; Завершаем модуль.

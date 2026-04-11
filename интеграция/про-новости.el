@@ -17,8 +17,12 @@
 (require 'cl-lib)
 (require 'subr-x)
 (require 'seq)
-(require 'elfeed)
-(require 'gptel)
+
+(use-package elfeed
+  :ensure t)
+
+(use-package gptel
+  :ensure t)
 
 (defgroup про-новости nil
   "Асинхронные дайджесты и AI-аналитика для новостных лент."

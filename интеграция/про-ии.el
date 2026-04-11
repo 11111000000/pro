@@ -279,35 +279,64 @@
   ;; --- AI Tunnel ---
   (pro/ai--register-backend
    "AI Tunnel" pro-ai-aitunnel-host "/v1/chat/completions" t
-   '("qwen3-coder-next"
+   '(
+     ;; coding / cheapest good value
+     "qwen3-coder-next"
+     "qwen3-coder"
      "deepseek-v3.2"
      "deepseek-v3.2-exp"
+     "deepseek-v3.2-speciale"
      "gpt-oss-120b"
      "minimax-m2.7"
+     "minimax-m2.5"
+     "gpt-5.3-codex"
+     "gpt-5.2-codex"
+     "gpt-5.1-codex"
+     "gpt-5.1-codex-max"
+     "gpt-5.2"
+     "gpt-5.1"
+     ;; coding / premium fallback
+     "gpt-5.4-nano"
+     "gpt-5.4-mini"
+     "gpt-5.4"
+     "gpt-5.4-pro"
+     ;; reasoning / general agentic
      "gemini-3-flash-preview"
      "claude-sonnet-4.6"
-     "gpt-5.3-codex"
+     "qwen3-max-thinking"
+     "qwen3-max"
+     "kimi-k2.5"
+     "grok-code-fast-1"
+     "grok-4.20-beta"
+     "grok-4.20-multi-agent-beta"
+     ;; multimodal for coding / UI / docs
      "gemma-4-26b-a4b-it"
      "gemma-4-31b-it"
-     "gpt-5.4"
-     "gpt-5.4-mini"
-     "gpt-5.4-nano"))
+     "gemini-3.1-flash-lite-preview"
+     "gemini-3.1-pro-preview"))
 
   ;; --- ProxyAPI: OpenAI ---
   (pro/ai--register-backend
    "Proxy OpenAI" pro-ai-proxyapi-host "/openai/v1/chat/completions" t
-   '("gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex" "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.4" "gpt-5.4-pro"
-     "gpt-5.2"  "gpt-5-codex" "gpt-5-image" "gpt-5.1" "gpt-5" "gpt-5-pro" "gpt-4.5" "gpt-4.1"
-     "gpt-4.1-mini" "gpt-4.1-nano" "gpt-4o-mini"
+   '(
+     ;; coding
+     "gpt-5.1-codex-min" "gpt-5.1-codex-max" "gpt-5.1-codex"
+     "gpt-5.2-chat" "gpt-5.2-pro" "gpt-5.2" "gpt-5-codex"
+     "gpt-5.4" "gpt-5.4-pro" "gpt-5.1" "gpt-5" "gpt-5-pro"
+     "gpt-4.5" "gpt-4.1" "gpt-4.1-mini" "gpt-4.1-nano" "gpt-4o-mini"
+     "gpt-5-image" "gpt-4o-audio-preview"
+     ;; reasoning / general
      "o3" "o3-mini" "o1-pro" "o1" "o1-mini" "o4-mini"
-     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
-     "gpt-4o-audio-preview" "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
-     "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick"
      "deepseek-r1" "deepseek-r1-fast" "deepseek-chat" "deepseek-v3.2-exp" "deepseek-v3.1-terminus"
      "grok-3-mini-beta" "grok-4" "grok-code-fast-1"
-     "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507" "qwen3-max" "qwen3-max-thinking" "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
+     "qwen3-max" "qwen3-max-thinking" "qwen3-coder" "qwen3.5-397b-a17b" "qwen3-235b-a22b-2507"
+     "qwen3.5-9b" "qwen3.5-35b-a3b" "qwen3.5-27b" "qwen3.5-122b-a10b"
+     "codestral-2508"
+     ;; multimodal / search / assistant
+     "gpt-4o-search-preview" "gpt-4o-mini-search-preview"
+     "gemini-2.5-pro-preview" "gemini-2.5-flash" "gemini-2.5-flash-lite"
      "gemini-3.1-flash-lite-preview"
-     "codestral-2508")
+     "claude-sonnet-4" "claude-opus-4" "claude-opus-4.1" "llama-4-maverick")
    gptel--openai-models)
 
   (defconst pro-ai-openrouter-free-models
@@ -344,6 +373,22 @@
       "arcee-ai/trinity-large-preview:free"
       "nousresearch/hermes-3-llama-3.1-405b:free")
     "Актуальные free-модели OpenRouter, сгруппированные по типам задач.")
+
+  (defconst pro-ai-openrouter-coding-models
+    '("qwen/qwen3-coder:free"
+      "openai/gpt-oss-120b:free"
+      "minimax/minimax-m2.5:free"
+      "qwen/qwen3-next-80b-a3b-instruct:free")
+    "OpenRouter free-модели для программирования.")
+
+  (defconst pro-ai-openrouter-multimodal-models
+    '("google/gemma-4-26b-a4b-it:free"
+      "google/gemma-4-31b-it:free"
+      "nvidia/nemotron-nano-12b-v2-vl:free"
+      "google/gemma-3-27b-it:free"
+      "google/gemma-3-12b-it:free"
+      "google/gemma-3-4b-it:free")
+    "OpenRouter free-модели для мультимодальности.")
 
   ;; --- OpenRouter: актуальные бесплатные модели ---
   (pro/ai--register-backend
@@ -596,10 +641,18 @@ You may add brief explanatory text before or after operations, but:
 
 (use-package gptel-quick
   :after gptel
+  :ensure nil
   :init
-  (установить-из :repo "karthink/gptel-quick")
+  (when (fboundp 'установить-из)
+    (установить-из :repo "karthink/gptel-quick"))
   (setq gptel-quick-backend gptel-backend)
   (setq gptel-quick-model 'gpt-4.1))
+
+(use-package gptel
+  :ensure t
+  :after (dash)
+  :init
+  (setq gptel-default-mode 'org-mode))
 
 ;;;; Настройка Minuet для автодополнения с GPT
 
@@ -760,6 +813,7 @@ You may add brief explanatory text before or after operations, but:
 
 (use-package aidermacs
   :ensure t
+  :if (display-graphic-p)
   :config (aidermacs-setup-minor-mode)
   :custom
   (aidermacs-use-architect-mode nil)
@@ -1036,7 +1090,11 @@ You may add brief explanatory text before or after operations, but:
      (t
       (message "gptel-aibo: ошибка парсинга: %S" ops)))))
 
-(use-package eca :vc (:url "https://github.com/editor-code-assistant/eca-emacs" :rev :newest))
+(use-package eca
+  :ensure nil
+  :vc (:url "https://github.com/editor-code-assistant/eca-emacs" :rev :newest)
+  :after dash
+  :if (fboundp 'package-vc-install))
 
 (use-package agent-shell
   :ensure t

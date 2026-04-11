@@ -32,6 +32,20 @@
 (require 'package)
 (require 'cl-lib)
 (require 'subr-x)
+(require 'cus-edit)
+
+(when noninteractive
+  (defun package--save-selected-packages (&rest _args)
+    "Avoid Customize save-time errors during batch runs."
+    nil))
+
+(defun pro/package--ignore-selected-packages-save (orig-fn symbol value &rest args)
+  "Skip saving PACKAGE-SELECTED-PACKAGES in batch runs."
+  (if (and noninteractive (eq symbol 'package-selected-packages))
+      (setq package-selected-packages value)
+    (apply orig-fn symbol value args)))
+
+(advice-add 'customize-save-variable :around #'pro/package--ignore-selected-packages-save)
 
 (setq-default package-archives
               '(("melpa" . "https://www.mirrorservice.org/sites/melpa.org/packages/")
@@ -41,9 +55,19 @@
 
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(setq package-install-upgrade-built-in t)
+
+(defun pro/package--maybe-install (pkg)
+  "Install PKG if it is missing."
+  (unless (package-installed-p pkg)
+    (condition-case err
+        (progn
+          (package-refresh-contents)
+          (package-install pkg))
+      (error
+       (message "Package install skipped for %s: %s" pkg (error-message-string err))))))
+
+(pro/package--maybe-install 'use-package)
 
 (custom-set-variables
  '(use-package-enable-imenu-support t))
@@ -77,9 +101,9 @@
          ;; Lisp, который выполнится ТОЛЬКО в дочернем Emacs (-Q --batch)
          (batch-form
           `(progn
-             (setq noninteractive t
-                   inhibit-message t
-                   url-show-status t       ;; Показывать сетевой прогресс (Contacting host ...)
+              (setq noninteractive t
+                    inhibit-message t
+                    url-show-status t       ;; Показывать сетевой прогресс (Contacting host ...)
                    ;; Ускоряем batch-запуск.
                    gc-cons-threshold most-positive-fixnum
                    url-queue-timeout 60
@@ -139,13 +163,13 @@
                        (package-autoremove))
                      (vlog "== autoremove: done"))
                  (error (vlog "!! autoremove: %s" (error-message-string e))))
-               (when (and package-quickstart (fboundp 'package-quickstart-refresh))
-                 (condition-case e
-                     (progn (package-quickstart-refresh)
-                            (vlog "== quickstart-refresh: done"))
-                   (error (vlog "!! quickstart-refresh: %s"
-                                (error-message-string e)))))
-               (vlog "== Finished: %d upgraded, %d failed, %d unchanged" ok fail skipped)))))
+                (when (and package-quickstart (fboundp 'package-quickstart-refresh))
+                  (condition-case e
+                      (progn (package-quickstart-refresh)
+                             (vlog "== quickstart-refresh: done"))
+                    (error (vlog "!! quickstart-refresh: %s"
+                                 (error-message-string e)))))
+                (vlog "== Finished: %d upgraded, %d failed, %d unchanged" ok fail skipped))))))
     ;; Подготовка буфера лога
     (with-current-buffer buf
       (let ((inhibit-read-only t))
@@ -197,7 +221,7 @@
                         (goto-char (point-max))
                         (insert (format "\nReloaded %d package files in current session." reloaded))))))))))))
       (unless (get-buffer-window buf t)
-        (display-buffer buf)))))
+        (display-buffer buf))))
 
 (defalias 'обновить-пакеты-в-фоне #'pro/package-upgrade-async)
 

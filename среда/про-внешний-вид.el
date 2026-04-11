@@ -57,9 +57,12 @@
 ;; Отключаем раздражители: нет звукам, визуальным колокольчикам.
 (setq visible-bell nil ring-bell-function 'ignore)
 
-;; Скрываем ненужные бары: скролл, горизонтальный скролл.
-(scroll-bar-mode -1)
-(horizontal-scroll-bar-mode -1)
+;; Скрываем ненужные бары только в графическом режиме.
+(when (display-graphic-p)
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+  (when (fboundp 'horizontal-scroll-bar-mode)
+    (horizontal-scroll-bar-mode -1)))
 
 ;; Разделители окон: тонкие линии для визуального разделения,
 ;; только в графическом режиме для эстетики.
@@ -77,21 +80,21 @@
               message-truncate-lines nil                ; Полные сообщения без усечения.
               resize-mini-windows t)                    ; Авто-адаптация размера.
 
-;; Строка статуса с иконками (shaoline): минималистичный и информативный.
-(add-to-list 'load-path "/home/az/.emacs.d/elpa/shaoline/lisp")
-
-(use-package shaoline
-  :load-path "~/Code/shaoline/lisp"
-                                        ;:init (установить-из :repo "11111000000/shaoline")
-  :custom
-  (shaoline-debug nil)
-  (shaoline-mode-strategy 'yang)
-  (shaoline-with-tray t)
-  (shaoline-enable-dynamic-segments t)
-  (shaoline-preserve-modeline-modes
-   '(help-mode
-     context-navigator-view-mode))
-  :hook (after-init . shaoline-mode))
+;; Строка статуса с иконками (shaoline): включаем только если пакет доступен.
+(add-to-list 'load-path "~/Code/shaoline/lisp")
+(when (and (display-graphic-p)
+           (locate-library "shaoline"))
+  (use-package shaoline
+    :load-path "~/Code/shaoline"
+    :custom
+    (shaoline-debug nil)
+    (shaoline-mode-strategy 'yang)
+    (shaoline-with-tray t)
+    (shaoline-enable-dynamic-segments t)
+    (shaoline-preserve-modeline-modes
+     '(help-mode
+       context-navigator-view-mode))
+    :hook (after-init . shaoline-mode)))
 
 (require 'time)
 

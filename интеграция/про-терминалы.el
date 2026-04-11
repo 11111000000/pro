@@ -18,8 +18,11 @@
 (require 'seq)
 (require 'eshell)
 (require 'vc-git)
-(require 'shrink-path)
-(require 'all-the-icons)
+(use-package shrink-path
+  :ensure t)
+(use-package all-the-icons
+  :ensure t
+  :defer t)
 (require 'esh-mode)
 (require 'eshell)
 (require 'json)
@@ -184,6 +187,7 @@
 
 (use-package multi-vterm
   :ensure t
+  :if (and (display-graphic-p) (fboundp 'vterm-module-compile))
   :bind (
          ;; :map vterm-mode-map
          ;; ("s-t" . multi-vterm)
@@ -370,6 +374,7 @@
 ;;= Подключение современных подсказок в Eshell =;;
 (use-package eshell-vterm
   :ensure t
+  :if (and (display-graphic-p) (fboundp 'vterm-module-compile))
   :after eshell
   :config (eshell-vterm-mode))
 

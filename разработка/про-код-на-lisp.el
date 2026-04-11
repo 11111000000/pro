@@ -532,9 +532,11 @@
 
 ;;; ERT панелька
 
-(use-package test-flow
-  :load-path "~/Code/test-flow/lisp"
-  :custom (ert-flow-run-on-open t))
+(when (and (display-graphic-p)
+           (file-directory-p "~/Code/test-flow/lisp"))
+  (use-package test-flow
+    :load-path "~/Code/test-flow/lisp"
+    :custom (ert-flow-run-on-open t)))
 
 ;; ;; ert-explorer — удобная панелька для запуска/обзора ERT-тестов.
 ;; (use-package ert-explorer

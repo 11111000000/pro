@@ -130,8 +130,6 @@
   (setq mouse-wheel-tilt-scroll t)
 
   ;;;; 6. Альтернативы GUI элементам
-  o  ;; Заменяем графические элементы текстовыми аналогами.
-
   ;; Альтернативы иконкам - используем символы Unicode/ASCII
   (setq completion-show-inline-help t
         completions-detailed t)

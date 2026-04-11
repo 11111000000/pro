@@ -25,6 +25,14 @@
               (error-message-string err))
      nil)))
 
+(defun pro/load-module (feature)
+  "Load FEATURE and continue on error."
+  (condition-case err
+      (загрузить feature)
+    (error
+     (message "Модуль %s упал: %s" feature (error-message-string err))
+     nil)))
+
 (defun загрузить-org (org-file)
   "Load ORG-FILE as with `org-babel-load-file', then delete the resulting .el file."
   (let ((el-file (concat (file-name-sans-extension org-file) ".el")))

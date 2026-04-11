@@ -70,8 +70,9 @@
                                         ; (custom-set-faces '(variable-pitch ((t (:family "Source Serif Pro" :height 1.0))))) }
   ) ;; Настраиваем переменную ширину
 
-;; Добавление поддержки для эмодзи в шрифтовом наборе
-(set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend)
+;; Добавление поддержки для эмодзи в шрифтовом наборе только в GUI.
+(when (and (display-graphic-p) (fboundp 'set-fontset-font))
+  (set-fontset-font "fontset-default" 'unicode "Noto Emoji" nil 'prepend))
 
 ;; Инициализация настроек шрифтов (ТОЛЬКО один раз при запуске, без хуков и post-load-theme)
 (обновить-настройки-шрифтов)
@@ -95,7 +96,8 @@
   (fira-code-mode-set-font))  ;; Настраиваем шрифт Fira Code для использования
 
 ;; Включаем "красивые" символы в тексте
-(global-prettify-symbols-mode +1)
+(when (display-graphic-p)
+  (global-prettify-symbols-mode +1))
 (setq prettify-symbols-unprettify-at-point t)  ;; Возвращаем оригинальный символ при наведении курсора
 
 (provide 'про-шрифты) ;; Экспортируем текущий пакет
