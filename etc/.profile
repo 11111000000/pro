@@ -1,5 +1,6 @@
 NPM_PREFIX="${HOME}/.local"
 
+export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$PATH:$NPM_PREFIX/bin"
 
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PREFIX/share/man"

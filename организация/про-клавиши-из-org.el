@@ -30,7 +30,7 @@
 ;;
 ;;; Code:
 (require 'cl-lib)
-(require 'exwm)  ;; Если используется EXWM, иначе закомментировать
+(require 'exwm nil t)  ;; Загружать только если EXWM доступен
 
 (defun org-get-named-table (name)
   "Extract a named Org table as Lisp list from current buffer."
@@ -88,12 +88,28 @@
                         (define-key (symbol-value mode-map) (kbd key) (intern func)))))))
               modes-table)))))
 
+(defalias 'pro/klavishy-iz-org #'pro/клавиши-из-org)
+
 ;; Пример использования: (load-keybindings-from-org "~/pro/про-сочетания-клавиш.org")
+(defun pro/автозагрузка-клавиш ()
+  "Автоматически загрузить клавиши из системного ~/.emacs.d/мои-клавиши.org или про-клавиши.org в корне pro."
+  (let* ((системный-файл (expand-file-name "~/.emacs.d/мои-клавиши.org"))
+         (локальный-файл (expand-file-name "~/pro/про-клавиши.org"))
+         (выбранный-файл (cond
+                          ((file-exists-p системный-файл) системный-файл)
+                          ((file-exists-p локальный-файл) локальный-файл)
+                          (t nil))))
+    (when выбранный-файл
+      (pro/клавиши-из-org выбранный-файл)
+      (message "Загружены клавиши из: %s" выбранный-файл))))
+
 (defun pro/reload-keys ()
   "Перезагрузить клавиши из файла `~/pro/про-клавиши.org`."
   (interactive)
-  (pro/клавиши-из-org (expand-file-name "~/pro/про-клавиши.org"))
-  (message "Клавиши перезагружены"))
+  (pro/автозагрузка-клавиш))
 
+
+;; Автоматически загрузить клавиши при загрузке модуля
+(pro/автозагрузка-клавиш)
 
 (provide 'про-клавиши-из-org)
