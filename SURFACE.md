@@ -77,6 +77,14 @@ Proof: -
 
 ---
 
+### Name: AgentShell.BufferName
+Stability: [FLUID]
+Spec: Буферы `agent-shell` могут переименовываться локально для удобства отображения без изменения поведения режима.
+API: `про-ии-agent-shell-rename-buffer`
+Proof: -
+
+---
+
 ### Name: Project.Navigation
 Stability: [FLUID]
 Spec: Навигация по проектам: dired, Projectile,(find-lisp).
@@ -95,14 +103,15 @@ Proof: -
 
 ### Name: Testing.Cycle
 Stability: [FLUID]
-Spec: Цикл тестирования с уровнями: L1 (syntax), L2 (unit), L3 (e2e), L4 (integration).
+Spec: Цикл тестирования ПРО с уровнями и wrapper-скриптом.
 Levels:
-- L1: `emacs --batch -f batch-byte-compile` — проверка синтаксиса
-- L2: `emacs --batch -l tests/unit/*.el` — изолированные юнит-тесты  
-- L3: `emacs --batch -l tests/e2e/*.el` — e2e (требует devShell)
-- L4: полная интеграция с network/GUI
-API: `про-тест-run-level`, `про-тест-все-уровни`
-Proof: `emacs --batch -f batch-byte-compile . --eval '(message "L1: OK")'`
+- L1: `run-tests.sh --syntax` — byte-compile всех .el файлов
+- L2: `run-tests.sh tests/unit/syntax.el` — unit syntax test  
+- L3: `run-tests.sh tests/e2e/org-roundtrip.el` — e2e (org built-in)
+- L4: Интерактивный Emacs — полная функциональность
+Env: Использует `env -i` для обхода nix-ld glib conflict
+Proof: `bash run-tests.sh --syntax`
+Note: e2e тесты требуют установленные пакеты (use-package)
 
 ---
 
@@ -124,8 +133,6 @@ Proof: `emacs --batch -f batch-byte-compile . --eval '(message "L1: OK")'`
 - INV-Test-Repeatability: Одинаковые входы ⇒ одинаковые результаты
 
 ---
-
-## Test Infrastructure Requirements
 
 ## Payloads (публичные структуры)
 

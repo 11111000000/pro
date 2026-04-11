@@ -1,7 +1,7 @@
 {
   description = "Headless Emacs runner for init.el logging";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
   outputs = { self, nixpkgs }:
     let
@@ -63,8 +63,9 @@
           devShells.default = pkgs.mkShell {
             packages = [ pkgs.emacs-nox ];
             shellHook = ''
+              unset NIX_LD LD_LIBRARY_PATH
               export EMACS_HEADLESS_ROOT="$(pwd)"
-              echo "=== Nix devShell: emacs available ==="
+              echo "=== Nix devShell: emacs ready (nix-ld bypassed) ==="
             '';
           };
 
@@ -72,9 +73,10 @@
             packages = [ pkgs.emacs-nox pkgs.git ];
             buildInputs = [ pkgs.emacs-nox ];
             shellHook = ''
+              unset NIX_LD LD_LIBRARY_PATH
               export EMACS_HEADLESS_ROOT="$(pwd)"
               echo "=== Test devShell: ready for e2e tests ==="
-              echo "Run: emacs --batch -l tests/e2e/<name>.el"
+              echo "Run: emacs --batch -Q -l tests/e2e/<name>.el"
             '';
           };
         };
