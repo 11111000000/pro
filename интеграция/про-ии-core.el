@@ -103,76 +103,73 @@
 (defvar pro-ai-gptel-aitunnel-preferred-models
   '(
     ;; Light - бюджетные
-    "qwen3-5-9b"
-    "deepseek-chat-v3-1"
-    "gpt-5-nano"
-    ;; Balance - средние
-    "qwen3-coder"
+    "gpt-5.4-nano"
     "deepseek-v3-2"
-    "gpt-5"
+    "qwen3-coder"
+    ;; Balance - средние
+    "gpt-5.4-mini"
+    "gemini-2-5-flash"
+    "grok-4-fast"
     ;; Strong - мощные
-    "qwen3-max"
-    "deepseek-r1"
-    "gpt-5-pro")
+    "gpt-5.4"
+    "claude-sonnet-4-6"
+    "deepseek-r1")
   "AITunnel models: light/balance/strong by purpose.")
 
 (defvar pro-ai-gptel-aitunnel-all-models
   '(
-    ;; Qwen - light/balance/strong
-    "qwen3-5-9b"
-    "qwen3-coder"
-    "qwen3-max"
-    ;; DeepSeek
-    "deepseek-chat-v3-1"
-    "deepseek-v3-2"
-    "deepseek-r1"
-    ;; OpenAI
-    "gpt-5-nano"
-    "gpt-5"
-    "gpt-5-pro"
+    ;; GPT - флагманы
+    "gpt-5.4"
+    "gpt-5.4-mini"
+    "gpt-5.4-nano"
+    "gpt-5.3-codex"
+    "gpt-5.3-chat"
+    "gpt-5.2-codex"
+    "gpt-4o"
+    "gpt-4o-mini"
+    "gpt-4.1"
+    "gpt-4.1-mini"
     ;; Claude
-    "claude-3-5-haiku"
     "claude-sonnet-4-6"
     "claude-opus-4-6"
-    ;; Google
-    "gemini-2-5-flash-lite"
+    "claude-haiku-4-5"
+    ;; DeepSeek
+    "deepseek-v3-2"
+    "deepseek-r1"
+    ;; Gemini/Gemma
     "gemini-2-5-flash"
     "gemini-2-5-pro"
+    "gemini-3-flash-preview"
+    "gemini-3-1-pro-preview"
+    "gemma-4-26b-a4b-it"
+    "gemma-4-31b-it"
     ;; Grok
+    "grok-4"
     "grok-4-fast"
     "grok-code-fast-1"
-    "grok-4"
+    ;; Qwen
+    "qwen3-coder"
+    "qwen3-max"
+    "qwen3-235b-a22b-2507"
     ;; MiniMax
-    "minimax-m2"
     "minimax-m2-5"
     "minimax-m2-7"
     ;; Mistral
-    "mistral-nemo"
     "mistral-small-2603"
     "mistral-large-2512"
     ;; Llama
-    "llama-3-2-3b-instruct"
-    "llama-3-2-11b-vision-instruct"
+    "llama-4-scout"
     "llama-4-maverick"
     ;; GLM
-    "glm-4-5-air"
-    "glm-4-7-flash"
     "glm-5"
+    "glm-4-7-flash"
     ;; Kimi
-    "kimi-k2-0905"
-    "kimi-k2-thinking"
     "kimi-k2-5"
+    "kimi-k2-thinking"
     ;; Sonar
-    "sonar"
-    "sonar-pro"
     "sonar-pro-search"
     ;; Gigachat
-    "gigachat-2"
-    "gigachat-2-max"
-    "gigachat-2-pro"
-    ;; Gemma
-    "gemma-4-26b-a4b-it"
-    "gemma-4-31b-it")
+    "gigachat-2-pro")
   "All AITunnel available models (Apr 2026).")
 
 (defvar pro-ai-gptel-qwen-full-line
@@ -507,9 +504,9 @@ If REFRESH is non-nil, bypass the session cache."
   (unless (and pro-ai-gptel-aitunnel-key
                (not (string-empty-p pro-ai-gptel-aitunnel-key)))
     (message "[про-ии] AITunnel НЕ зарегистрирован — нет ключа (pro-ai-gptel-aitunnel-key=%s)"
-             pro-ai-gptel-aitunnel-key)))
+             pro-ai-gptel-aitunnel-key))
 
-(when (and pro-ai-gptel-proxyapi-key
+  (when (and pro-ai-gptel-proxyapi-key
              (not (string-empty-p pro-ai-gptel-proxyapi-key)))
     (pro/ai--register-backend
      "ProxyAPI-OpenAI" "api.proxyapi.xyz" "/v1/chat/completions" t
@@ -537,22 +534,22 @@ If REFRESH is non-nil, bypass the session cache."
 
   (pro/ai--register-backend
    "Chutes" "llm.chutes.ai" "/v1/chat/completions" nil
-   '("deepseek-ai/DeepSeek-V3-0324")))
+   '("deepseek-ai/DeepSeek-V3-0324"))
 
-(let ((openrouter-backend (gptel-get-backend pro-ai-gptel-openrouter-backend-name)))
-  (when openrouter-backend
-    (setq gptel-backend openrouter-backend)
-    (let* ((models (gptel-backend-models openrouter-backend))
-           (model-names (pro-ai-gptel--backend-model-names openrouter-backend))
-           (choice (pro-ai-gptel--preferred-model
-                    model-names
-                    pro-ai-gptel-openrouter-preferred-models)))
-      (setq gptel-model
-            (or (and choice
-                     (seq-find (lambda (model)
-                                 (string= (gptel--model-name model) choice))
-                               models))
-                (car models))))))
+  (let ((openrouter-backend (gptel-get-backend pro-ai-gptel-openrouter-backend-name)))
+    (when openrouter-backend
+      (setq gptel-backend openrouter-backend)
+      (let* ((models (gptel-backend-models openrouter-backend))
+             (model-names (pro-ai-gptel--backend-model-names openrouter-backend))
+             (choice (pro-ai-gptel--preferred-model
+                      model-names
+                      pro-ai-gptel-openrouter-preferred-models)))
+        (setq gptel-model
+              (or (and choice
+                       (seq-find (lambda (model)
+                                   (string= (gptel--model-name model) choice))
+                                 models))
+                  (car models)))))))
 
 (provide 'про-ии-core)
 ;;; про-ии-core.el ends here
