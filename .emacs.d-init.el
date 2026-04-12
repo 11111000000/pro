@@ -11,6 +11,9 @@
              (not (string-match "\\`\\." (file-name-nondirectory dir))))
     (add-to-list 'load-path dir)))
 
+;; Загрузить auth-source для работы с ~/.authinfo
+(require 'auth-source nil t)
+
 ;; Прочие специальные настройки
 (load-file (expand-file-name "~/.emacs.d/other.el"))
 ;; Прочие специальные настройки
@@ -51,7 +54,7 @@
     про-интернет-сервисы
     про-новости
     про-инструменты
-    про-ии
+    про-ии-core
     про-справку
     про-устройства
     про-малую-механизацию)
