@@ -209,11 +209,3 @@ multi-vterm по Ctrl+1, Ctrl+2 итд.
 * TODO Открывая org с gptel PROPERTIES, включать gptel-mode
 * DONE [#B] Предотвратить клики по тачпаду когда я печатаю
 * DONE Кнопка для выделения isearch
-* TODO 
-* TODO 
-* TODO 
-* TODO 
-* TODO 
-* TODO 
-* TODO 
-* TODO 

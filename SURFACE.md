@@ -20,10 +20,26 @@ Invariant: INV-Test-Coverage
 
 ### Name: Integration.Ai
 Stability: [FROZEN]
-Spec: ИИ-интеграция через GPTEL: chat buffer, множественные backends (OpenAI, Anthropic, Ollama, DeepSeek), подсчёт токенов и стоимости (рубли).
-API: `pro-ai-gptel-start`, `gptel`, `gptel-send`
+Spec: ИИ-интеграция через GPTEL: chat buffer, множественные backends (OpenRouter free-only, OpenAI, Anthropic, Ollama, DeepSeek), переключение backend/model, подсчёт токенов и стоимости (рубли), поддержка приоритетов по производителям и всей линейки Qwen.
+API: `pro-ai-gptel-start`, `gptel`, `gptel-send`, `pro/ai-switch-backend`, `pro/ai-switch-model`, `pro-ai-gptel-openrouter-free-models`, `pro-ai-gptel-refresh-openrouter-backend`, `pro-ai-gptel-openrouter-preferred-models`, `pro-ai-gptel-aitunnel-preferred-models`
 Proof: `emacs --batch -l tests/e2e/ai-integration.el`
 Invariant: INV-Test-Coverage
+
+---
+
+### Name: Integration.AI.Extras
+Stability: [FLUID]
+Spec: Дополнительные AI-модули подключаются двумя файлами: `про-ии-дополнения`, `про-ии-ввод-вывод`; загрузка идёт явно из `init.el`.
+API: `require 'про-ии-дополнения`, `require 'про-ии-ввод-вывод`
+Proof: -
+
+---
+
+### Name: AgentShell.BufferName
+Stability: [FLUID]
+Spec: Буферы `agent-shell` переименовываются в `🤖 ...`, чтобы новое имя использовалось везде, включая mode line и списки буферов.
+API: `про-ии-agent-shell-rename-buffer`
+Proof: -
 
 ---
 
@@ -101,6 +117,14 @@ Proof: -
 
 ---
 
+### Name: OpenRouter.FreeOnly
+Stability: [FLUID]
+Spec: OpenRouter backend строится только из актуального списка бесплатных моделей, полученных с `https://openrouter.ai/api/v1/models`; платные модели не регистрируются.
+API: `pro-ai-gptel-openrouter-free-models`, `pro-ai-gptel-refresh-openrouter-backend`
+Proof: `bash run-tests.sh tests/e2e/module-load.el`
+
+---
+
 ### Name: Testing.Cycle
 Stability: [FLUID]
 Spec: Цикл тестирования ПРО с уровнями и wrapper-скриптом.
@@ -141,7 +165,7 @@ Note: e2e тесты требуют установленные пакеты (use
 (:модуль . "про-ии")
 (:тема . "default")
 (:языки . (lisp python javascript))
-(:ии-провайдеры . (openai anthropic ollama))
+(:ии-провайдеры . (openrouter openai anthropic ollama deepseek))
 ```
 
 ### pro-org-структура (org-headings)

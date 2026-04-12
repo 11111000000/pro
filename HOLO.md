@@ -27,11 +27,11 @@ RealityCheck
 - INV-Package-Init: Пакеты устанавливаются через use-package, требуют сеть при первом запуске.
 
 ## Decisions
-- [Draft] ИИ-интеграция: GPTEL как core с multiple backends (OpenAI, Anthropic, Ollama, DeepSeek). Exit: e2e тест работает с mock. Proof: `tests/e2e/ai-integration.el`.
+- [Draft] ИИ-интеграция: GPTEL как core с multiple backends (OpenRouter free-only, OpenAI, Anthropic, Ollama, DeepSeek), переключением backend/model, pricing из org, подсчётом токенов, приоритетом Qwen и разными производителями, а также отдельными AI-слоями: дополнения и ввод-вывод. Exit: e2e тест работает с mock. Proof: `tests/e2e/ai-integration.el`.
 - [Draft] Модульность: require/provide для каждого *.el. Exit: все модули грузятся. Proof: `tests/e2e/module-load.el`.
 - [Draft] Орг-нотатки: Org-mode как единый формат данных. Exit: roundtrip org↔el без потерь. Proof: `tests/e2e/org-roundtrip.el`.
 - [Frozen] Healthcheck: Базовый запуск без ошибок. Exit: M-x emacs --batch -l init.el работает. Proof: `tests/e2e/healthcheck.el`.
-- [Fluid] AgentShell.BufferName: Принудительное сокращение имени буфера agent-shell до emoji-префикса, чтобы новое имя отображалось везде. Exit: rename normalization in `про-ии.el`.
+- [Fluid] AgentShell.BufferName: Принудительное сокращение имени буфера agent-shell до emoji-префикса, чтобы новое имя отображалось везде. Exit: safe rename normalization in `про-ии-agent-shell.el`.
 
 ## Key Modules (по зависимостям)
 - Инфраструктура: про-менеджер-пакетов, про-оптимизацию, установить-из
