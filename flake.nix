@@ -64,6 +64,8 @@
             packages = [ pkgs.emacs-nox ];
             shellHook = ''
               unset NIX_LD LD_LIBRARY_PATH
+              # Also remove nix-ld from PATH entirely
+              export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v nix-ld | tr '\n' ':')"
               export EMACS_HEADLESS_ROOT="$(pwd)"
               echo "=== Nix devShell: emacs ready (nix-ld bypassed) ==="
             '';
@@ -74,6 +76,7 @@
             buildInputs = [ pkgs.emacs-nox ];
             shellHook = ''
               unset NIX_LD LD_LIBRARY_PATH
+              export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v nix-ld | tr '\n' ':')"
               export EMACS_HEADLESS_ROOT="$(pwd)"
               echo "=== Test devShell: ready for e2e tests ==="
               echo "Run: emacs --batch -Q -l tests/e2e/<name>.el"

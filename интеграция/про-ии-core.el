@@ -402,6 +402,11 @@ If REFRESH is non-nil, bypass the session cache."
   :type 'string
   :group 'про-ии)
 
+(when (and (not pro-ai-gptel-aitunnel-key)
+           (getenv "AITUNNEL_KEY"))
+  (setq pro-ai-gptel-aitunnel-key (getenv "AITUNNEL_KEY"))
+  (message "[про-ии] AITunnel key загружен из env"))
+
 (defcustom pro-ai-gptel-deepseek-key nil
   "Ключ DeepSeek API."
   :type 'string
@@ -481,20 +486,30 @@ If REFRESH is non-nil, bypass the session cache."
     (when openrouter-models
       (pro-ai-gptel--openrouter-set-backend openrouter-models)))
 
+  (message "[про-ии] AITunnel key from env: %s" (or (getenv "AITUNNEL_KEY") "not set"))
+  (message "[про-ии] AITunnel key var: %s" (if pro-ai-gptel-aitunnel-key "SET" "NIL"))
+  (message "[про-ии] AITunnel key empty: %s" (if (and pro-ai-gptel-aitunnel-key (string-empty-p pro-ai-gptel-aitunnel-key)) "yes" "no"))
+
   ;; AITunnel - best price/quality
   (when (and pro-ai-gptel-aitunnel-key
              (not (string-empty-p pro-ai-gptel-aitunnel-key)))
+    (message "[про-ии] Регистрирую AITunnel backend...")
     (pro/ai--register-backend
      "AITunnel" "api.aitunnel.ru" "/v1/chat/completions" t
      pro-ai-gptel-aitunnel-preferred-models
      pro-ai-gptel-aitunnel-key)
+    (message "[про-ии] AITunnel backend зарегистрирован")
     ;; Qwen full line via AITunnel
     (pro/ai--register-backend
      "Qwen" "api.aitunnel.ru" "/v1/chat/completions" t
-     pro-ai-gptel-qwen-full-line
+     pro-ии-gptel-qwen-full-line
      pro-ai-gptel-aitunnel-key))
+  (unless (and pro-ai-gptel-aitunnel-key
+               (not (string-empty-p pro-ai-gptel-aitunnel-key)))
+    (message "[про-ии] AITunnel НЕ зарегистрирован — нет ключа (pro-ai-gptel-aitunnel-key=%s)"
+             pro-ai-gptel-aitunnel-key)))
 
-  (when (and pro-ai-gptel-proxyapi-key
+(when (and pro-ai-gptel-proxyapi-key
              (not (string-empty-p pro-ai-gptel-proxyapi-key)))
     (pro/ai--register-backend
      "ProxyAPI-OpenAI" "api.proxyapi.xyz" "/v1/chat/completions" t
