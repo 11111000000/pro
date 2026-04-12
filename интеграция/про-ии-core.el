@@ -400,9 +400,25 @@ If REFRESH is non-nil, bypass the session cache."
   :group 'про-ии)
 
 (when (and (not pro-ai-gptel-aitunnel-key)
-           (getenv "AITUNNEL_KEY"))
-  (setq pro-ai-gptel-aitunnel-key (getenv "AITUNNEL_KEY"))
-  (message "[про-ии] AITunnel key загружен из env"))
+  (or (getenv "AITUNNEL_KEY")
+      ;; Пробуем загрузить из ~/.authinfo
+      (require 'auth-source nil t)
+      (let ((auth (auth-source-search :max 1
+                          :host "api.aitunnel.ru"
+                          :port 443
+                          :user "aitunnel")))
+        (when auth
+          (plist-get (car auth) :secret))))
+  (setq pro-ai-gptel-aitunnel-key (or (getenv "AITUNNEL_KEY")
+                                    (caar (auth-source-search :max 1
+                                                    :host "api.aitunnel.ru"
+                                                    :port 443
+                                                    :user "aitunnel"))
+                                    ;; Fallback: искать machine aitunnel.ru login anything
+                                    (caar (auth-source-search :max 1
+                                                    :host "aitunnel.ru")))))
+  (when pro-ai-gptel-aitunnel-key
+    (message "[про-ии] AITunnel key loaded from env/authinfo")))
 
 (defcustom pro-ai-gptel-deepseek-key nil
   "Ключ DeepSeek API."
