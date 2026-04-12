@@ -379,36 +379,52 @@ If REFRESH is non-nil, bypass the session cache."
       (user-error "Слишком дорого: %s руб (лимит: %s)"
                   стоимость pro-ai-gptel-max-cost-rub))))
 
-(defcustom pro-ai-gptel-proxyapi-key nil
-  "Ключ ProxyAPI для OpenAI/Anthropic совместимых API."
-  :type 'string
-  :group 'про-ии)
+;; Load API keys from ~/.authinfo only
+(defun про-ии--load-key-from-authinfo (host user)
+  "Load secret for HOST and USER from ~/.authinfo via auth-source."
+  (require 'auth-source nil t)
+  (let ((auth (auth-source-search :max 1
+                          :host host
+                          :user user)))
+    (when auth
+      (plist-get (car auth) :secret))))
 
-(defcustom pro-ai-gptel-openai-key nil
-  "Ключ OpenAI API."
-  :type 'string
-  :group 'про-ии)
+;; Initialize all keys from ~/.authinfo at startup
+(when (not pro-ai-gptel-openrouter-api-key)
+  (setq pro-ai-gptel-openrouter-api-key
+        (про-ии--load-key-from-authinfo "openrouter.ai" "openrouter"))
+  (when pro-ai-gptel-openrouter-api-key
+    (message "[про-ии] OpenRouter API key loaded from ~/.authinfo")))
 
-(defcustom pro-ai-gptel-anthropic-key nil
-  "Ключ Anthropic API."
-  :type 'string
-  :group 'про-ии)
+(when (not pro-ai-gptel-openai-key)
+  (setq pro-ai-gptel-openai-key
+        (про-ии--load-key-from-authinfo "api.openai.com" "openai"))
+  (when pro-ai-gptel-openai-key
+    (message "[про-ии] OpenAI API key loaded from ~/.authinfo")))
 
-(defcustom pro-ai-gptel-aitunnel-key nil
-  "Ключ AITunnel API (https://aitunnel.ru)."
-  :type 'string
-  :group 'про-ии)
+(when (not pro-ai-gptel-anthropic-key)
+  (setq pro-ai-gptel-anthropic-key
+        (про-ии--load-key-from-authinfo "api.anthropic.com" "anthropic"))
+  (when pro-ai-gptel-anthropic-key
+    (message "[про-ии] Anthropic API key loaded from ~/.authinfo")))
 
-(when (and (not pro-ai-gptel-aitunnel-key)
-           (not (stringp pro-ai-gptel-aitunnel-key))
-           (getenv "AITUNNEL_KEY"))
-  (setq pro-ai-gptel-aitunnel-key (getenv "AITUNNEL_KEY"))
-  (message "[про-ии] AITunnel key loaded from env"))
+(when (not pro-ai-gptel-proxyapi-key)
+  (setq pro-ai-gptel-proxyapi-key
+        (про-ии--load-key-from-authinfo "api.proxyapi.xyz" "proxyapi"))
+  (when pro-ai-gptel-proxyapi-key
+    (message "[про-ии] ProxyAPI key loaded from ~/.authinfo")))
 
-(defcustom pro-ai-gptel-deepseek-key nil
-  "Ключ DeepSeek API."
-  :type 'string
-  :group 'про-ии)
+(when (not pro-ai-gptel-deepseek-key)
+  (setq pro-ai-gptel-deepseek-key
+        (про-ии--load-key-from-authinfo "api.deepseek.com" "deepseek"))
+  (when pro-ai-gptel-deepseek-key
+    (message "[про-ии] DeepSeek API key loaded from ~/.authinfo")))
+
+(when (not pro-ai-gptel-aitunnel-key)
+  (setq pro-ai-gptel-aitunnel-key
+        (про-ии--load-key-from-authinfo "aitunnel.ru" "aitunnel"))
+  (when pro-ai-gptel-aitunnel-key
+    (message "[про-ии] AITunnel key loaded from ~/.authinfo")))
 
 (defun про-ии-set-key (key-name value)
   "Установить ключ KEY-NAME в значение VALUE."
