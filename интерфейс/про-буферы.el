@@ -43,8 +43,8 @@
 
 ;; но восновном буферы актуализируются автоматически
 
-(global-auto-revert-mode t)
-(setq-default global-auto-revert-non-file-buffers t)
+(global-auto-revert-mode nil) ;; Оптимизация: убираем фоновые проверки буферов.
+(setq-default global-auto-revert-non-file-buffers nil) ;; Оптимизация: не трогаем не-файловые буферы.
 (setq-default auto-revert-verbose nil)
 
 ;; асинхронные буферы скрыты из списка

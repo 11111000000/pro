@@ -8,6 +8,4 @@ zai.conf
 .context
 /.agent-shell/
 emacs.log
-flake.lock
 .emacs.d-init.el
-n

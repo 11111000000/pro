@@ -43,6 +43,46 @@ Proof: -
 
 ---
 
+### Name: AgentShell.UiRefresh
+Stability: [FLUID]
+Spec: UI `agent-shell` переинициализируется не чаще одного раза на буфер, чтобы не пересобирать header/mode line на каждый ход.
+API: `про-ии-agent-shell--reload-after-first-turn`
+Proof: -
+
+---
+
+### Name: Completion.Perf
+Stability: [FLUID]
+Spec: Автодополнение не должно ставить постоянные `post-command` таймеры; Corfu работает без авто-popup и без лишних popupinfo-попапов.
+API: `corfu-auto`, `corfu-popupinfo-mode`
+Proof: -
+
+---
+
+### Name: JitLock.Perf
+Stability: [FLUID]
+Spec: Фоновые font-lock/jit-lock таймеры не должны включать stealth-проходы без необходимости.
+API: `jit-lock-stealth-time`, `jit-lock-defer-time`
+Proof: -
+
+---
+
+### Name: Timer.Optimization
+Stability: [FLUID]
+Spec: Таймерные фоновые настройки в конфиге помечаются и уменьшаются как оптимизация производительности.
+API: `savehist-autosave-interval`, `jit-lock-stealth-time`, `global-auto-revert-mode`
+Proof: -
+
+---
+
+### Name: Savehist.Perf
+Stability: [FLUID]
+Spec: История не делает автосохранение по таймеру; savehist работает без periodic autosave.
+API: `savehist-mode`, `savehist-autosave-interval`
+Proof: -
+
+---
+
 ### Name: Org.Roundtrip
 Stability: [FROZEN]
 Spec: Org-mode ↔ Emacs Lisp: конвертация org→el (org-element-parse-buffer) и обратно (org-element-interpret-data) без потери данных.

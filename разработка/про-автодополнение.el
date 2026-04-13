@@ -73,7 +73,7 @@
   :custom
   (tab-always-indent 'complete)           ; TAB всегда пытается дополнить.
   (completion-cycle-threshold nil)        ; Нет автопереключения кандидатов.
-  (corfu-auto t)                          ; Автоматическое срабатывание.
+  (corfu-auto nil)                        ; Оптимизация: ручной вызов вместо постоянных post-command таймеров.
   (corfu-auto-prefix 3)                   ; После 3 символов.
   (corfu-auto-delay 0.4)                  ; Задержка 0.4с.
   (corfu-popupinfo-delay 0.5)             ; Задержка инфо-попапа.
@@ -89,7 +89,7 @@
   (corfu-preselect 'prompt)               ; Предвыбор в промпте.
   :config
   (global-corfu-mode t)                   ; Глобальное включение.
-  (corfu-popupinfo-mode t)                ; Инфо-попапы.
+  (corfu-popupinfo-mode nil)              ; Оптимизация: убираем лишние фоновые попапы.
   (corfu-history-mode t))                 ; История для повторного использования.
 
 ;;;; 2. Настройка для минибуфера

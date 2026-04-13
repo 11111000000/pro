@@ -55,14 +55,17 @@
 (use-package agent-shell
   :ensure t
   :preface
+  (defvar-local про-ии-agent-shell--ui-restored nil
+    "Non-nil when agent-shell UI was already reasserted in this buffer.")
+
   (defun про-ии-agent-shell--reload-after-first-turn (orig-fun &rest args)
-    "Preserve visible agent-shell UI after the first turn starts."
+    "Preserve visible agent-shell UI once, without rebuilding it repeatedly."
     (let ((result (apply orig-fun args)))
-      (when-let ((buf (and (derived-mode-p 'agent-shell-mode)
-                           (current-buffer))))
-        (with-current-buffer buf
-          (agent-shell-ui-mode +1)
-          (agent-shell--update-header-and-mode-line)))
+      (when (and (derived-mode-p 'agent-shell-mode)
+                 (not про-ии-agent-shell--ui-restored))
+        (setq про-ии-agent-shell--ui-restored t)
+        (agent-shell-ui-mode +1)
+        (agent-shell--update-header-and-mode-line))
       result))
   :bind (:map agent-shell-mode-map
               ("C-RET" . newline)
@@ -80,7 +83,7 @@
   (agent-shell-show-context-usage-indicator 'detailed)
   (agent-shell-show-usage-at-turn-end t)
   (agent-shell-thought-process-expand-by-default t)
-  (agent-shell-tool-use-expand-by-default t)
+  (agent-shell-tool-use-expand-by-default nil)
   (agent-shell-user-message-expand-by-default t)
   (agent-shell-prefer-viewport-interaction nil)
   (agent-shell-highlight-blocks t)

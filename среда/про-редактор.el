@@ -189,7 +189,7 @@
 (use-package aggressive-indent
   :defer t
   :ensure t
-  :hook ((emacs-lisp-mode . aggressive-indent-mode))) ;; Настойчивость для Lisp.
+  :hook ((emacs-lisp-mode . aggressive-indent-mode))) ;; Оптимизация: оставляем только там, где нужно.
 
 (use-package editorconfig
   :defer t

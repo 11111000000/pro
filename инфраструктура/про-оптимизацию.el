@@ -44,7 +44,7 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold saved/gc-cons-threshold
-                  gc-cons-percentage 0.1)))
+                   gc-cons-percentage 0.1)))
 
 ;;;; Оптимизируем использование памяти в минибуфере
 
@@ -56,7 +56,8 @@
   "Восстановить сборку мусора."
   (run-at-time 1 nil
                (lambda ()
-                 (setq gc-cons-threshold saved/gc-cons-threshold))))
+                 ;; Оптимизация: откладываем возврат GC, чтобы не мешать вводу.
+                  (setq gc-cons-threshold saved/gc-cons-threshold))))
 
 (add-hook 'minibuffer-setup-hook #'задержать-сборку-мусора)
 (add-hook 'minibuffer-exit-hook #'восстановить-сборку-мусора)
@@ -96,7 +97,7 @@
 
 (setq fast-but-imprecise-scrolling nil
       jit-lock-defer-time nil
-      jit-lock-stealth-time 1
+      jit-lock-stealth-time nil ;; Оптимизация: без stealth-проходов фонтификации.
       redisplay-skip-fontification-on-input nil)
 
 (provide 'про-оптимизацию)

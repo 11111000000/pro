@@ -1,6 +1,11 @@
 {
   description = "Headless Emacs runner for init.el logging";
 
+  nixConfig = {
+    warn-dirty = false;
+    extra-experimental-features = [ "nix-command" "flakes" ];
+  };
+
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
   outputs = { self, nixpkgs }:
@@ -13,10 +18,30 @@
       forSystem = system:
         let
           pkgs = import nixpkgs { inherit system; };
+          emacsBin = "${pkgs.emacs-nox}/bin/emacs";
+
+          cleanPath = ''
+            clean_path=""
+            old_ifs=$IFS
+            IFS=':'
+            for p in $PATH; do
+              case "$p" in
+                *nix-ld*) ;;
+                *) clean_path="''${clean_path:+$clean_path:}$p" ;;
+              esac
+            done
+            IFS=$old_ifs
+            export PATH="$clean_path"
+          '';
+
+          emacsPkg = pkgs.emacs.pkgs.withPackages (epkgs: [
+            epkgs.gptel
+            epkgs.use-package
+          ]);
 
           emacs-headless = pkgs.writeShellApplication {
             name = "emacs-headless";
-            runtimeInputs = [ pkgs.emacs-nox pkgs.coreutils ];
+            runtimeInputs = [ emacsPkg pkgs.coreutils ];
             text = ''
               set -euo pipefail
 
@@ -32,7 +57,7 @@
 
               echo "Logging to $log_file"
               set +e
-              emacs --batch --debug-init \
+              "${emacsPkg}/bin/emacs" --batch --debug-init \
                 --eval '(setq user-emacs-directory (file-name-as-directory (or (getenv "EMACS_HEADLESS_ROOT") default-directory)))' \
                 -l "$init_file" \
                 "$@" 2>&1 | tee "$log_file"
@@ -42,10 +67,31 @@
               exit "$status"
             '';
           };
+
+          emacs-headless-test = pkgs.writeShellApplication {
+            name = "emacs-headless-test";
+            runtimeInputs = [ emacsPkg pkgs.coreutils ];
+            text = ''
+              set -euo pipefail
+
+              repo_root="''${EMACS_HEADLESS_ROOT:-$(pwd)}"
+              test_file="''${1:-$repo_root/tests/unit/ai-openrouter-api.el}"
+
+              export EMACS_HEADLESS_ROOT="$repo_root"
+              unset NIX_LD LD_LIBRARY_PATH
+              ${cleanPath}
+
+              "${emacsPkg}/bin/emacs" --batch -Q \
+                --eval '(setq user-emacs-directory (file-name-as-directory (or (getenv "EMACS_HEADLESS_ROOT") default-directory)))' \
+                --eval "(add-to-list 'load-path (expand-file-name \"интеграция\" (or (getenv \"EMACS_HEADLESS_ROOT\") default-directory)))" \
+                -l "$test_file"
+            '';
+          };
         in
         {
           packages = {
             inherit emacs-headless;
+            inherit emacs-headless-test;
             default = emacs-headless;
           };
 
@@ -61,27 +107,35 @@
           };
 
           devShells.default = pkgs.mkShell {
-            packages = [ pkgs.emacs-nox ];
+            packages = [ pkgs.emacs-nox pkgs.coreutils ];
             shellHook = ''
               unset NIX_LD LD_LIBRARY_PATH
-              # Also remove nix-ld from PATH entirely
-              export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v nix-ld | tr '\n' ':')"
+              ${cleanPath}
               export EMACS_HEADLESS_ROOT="$(pwd)"
               echo "=== Nix devShell: emacs ready (nix-ld bypassed) ==="
             '';
           };
 
           devShells.test = pkgs.mkShell {
-            packages = [ pkgs.emacs-nox pkgs.git ];
+            packages = [ pkgs.emacs-nox pkgs.git pkgs.coreutils ];
             buildInputs = [ pkgs.emacs-nox ];
             shellHook = ''
               unset NIX_LD LD_LIBRARY_PATH
-              export PATH="$(echo "$PATH" | tr ':' '\n' | grep -v nix-ld | tr '\n' ':')"
+              ${cleanPath}
               export EMACS_HEADLESS_ROOT="$(pwd)"
               echo "=== Test devShell: ready for e2e tests ==="
               echo "Run: emacs --batch -Q -l tests/e2e/<name>.el"
             '';
           };
+
+          checks.smoke = pkgs.runCommand "emacs-headless-smoke" {
+            nativeBuildInputs = [ pkgs.emacs-nox pkgs.coreutils ];
+          } ''
+            export EMACS_HEADLESS_ROOT=${self}
+            unset NIX_LD LD_LIBRARY_PATH
+            ${cleanPath}
+            "${emacsBin}" --batch -Q --eval '(princ "ok")' > "$out"
+          '';
         };
     in
     {

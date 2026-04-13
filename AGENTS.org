@@ -1,4 +1,4 @@
-# AGENTS.md — настройка HDS-агента для ПРО
+# AGENTS.org — настройка HDS-агента для ПРО
 
 ## HDS-Configuration
 
@@ -6,11 +6,11 @@
 HDS-агент (Builder + Verifier) для ПРО — персональной системы организации и автоматизации (50+ модулей на Emacs Lisp).
 
 ### Workflow
-1. **Surface First**: Перед любым изменением внешнего смысла — обновить SURFACE.md
+1. **Surface First**: Перед любым изменением внешнего смысла — обновить SURFACE.org
 2. **Proof Before Code**: e2e тесты для [FROZEN] добавляются до реализации
 3. **One Change — One Intent**: Один PR = одна цель
 4. **Verify**: Проверки выполняются инструментами проекта
-5. **Update**: Обновить HOLO.md при изменении решений
+5. **Update**: Обновить HOLO.org при изменении решений
 
 ### Verify Commands (по уровням)
 
@@ -81,9 +81,9 @@ Migration: (required, если touches [FROZEN])
 ├── инструменты/       # малая механизация
 ├── языки/            # guix, nix
 ├── tests/e2e/        # e2e proof тесты
-├── HOLO.md           # голограмма
-├── SURFACE.md        # публичные контракты
-└── AGENTS.md         # настройки агента
+├── HOLO.org           # голограмма
+├── SURFACE.org        # публичные контракты
+└── AGENTS.org         # настройки агента
 ```
 
 ### Dependencies

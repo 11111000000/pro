@@ -106,122 +106,122 @@ fi"))
     (unless pro/графика-initialized
       (setq pro/графика-initialized t)
       (catch 'pro/exwm-start
-      ;; -- Физическое размещение мониторов (xrandr) ДО запуска EXWM
-      (применить-расположение-мониторов)
-      ;; -- Инициализация сопоставлений workspace <-> monitor
-      (про-мониторы-инициализировать)
-      ;; -- Запустить собственно EXWM
-      (require 'exwm)
-      ;; -- Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
-      (dotimes (i 9)
-        (exwm-input-set-key (kbd (format "s-<f%d>" i))
-                            `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
-        (exwm-input-set-key (kbd (format "S-s-<f%d>" i))
-                            `(lambda () (interactive) (message ">%d" ,i)))
-        (exwm-input-set-key (kbd (format "s-%d" i))
-                            `(lambda () (interactive) (tab-bar-select-tab ,i))))
-      (exwm-input-set-key (kbd "s-<f10>")
-                          `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-      ;; Эмуляция «эмаксовских» клавиш в X-приложениях (для line-mode).
-      ;; Текущая версия EXWM не содержит exwm-input-set-simulation-keys — задаём напрямую.
-      (setq exwm-input-simulation-keys
-            '(([?\C-b] . left)
-              ([?\C-f] . right)
-              ([?\C-p] . up)
-              ([?\C-n] . down)
-              ([?\C-a] . home)
-              ([?\C-e] . end)
-              ([?\M-v] . prior)
-              ([?\C-v] . next)
-              ([?\M-b] . C-left)
-              ([?\M-f] . C-right)
-              ;; Редактирование
-              ([?\C-d] . delete)
-              ([?\C-k] . (S-end delete))
-              ;; Копирование/вставка (часто удобны в браузерах)
-              ([?\M-w] . ?\C-c)
-              ([?\C-y] . ?\C-v)))
-      (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
-      (condition-case err
-          (exwm-wm-mode 1)
-        (error
-         (setq pro/графика-initialized nil)
-         (message "EXWM не запущен, остаёмся в обычном Emacs: %s"
-                  (error-message-string err))
-         (throw 'pro/exwm-start nil)))
-      (unless (bound-and-true-p pro/exwm-booted)
-        (setq pro/графика-initialized nil)
-        (message "EXWM не запущен, остаёмся в обычном Emacs")
-        (throw 'pro/exwm-start nil))
-      ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
-      ;; (defun pro/exwm-браузеры-line+sim ()
-      ;;         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
-      ;; чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
-      ;; при необходимости можно вручную переключиться в char-mode (s-i)."
-      ;;         (when (and (derived-mode-p 'exwm-mode)
-      ;;                    exwm-class-name
-      ;;                    (member (downcase exwm-class-name)
-      ;;                            '("firefox" "chromium" "google-chrome" "chromium-browser")))
-      ;;           (exwm-input-line-mode)
-      ;;           (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
-      ;; (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
-      ;; -- RandR после запуска EXWM (иначе “not connected”)
-      (when (fboundp 'exwm-randr-mode)
-        (exwm-randr-mode 1)
-        (ignore-errors (exwm-randr-refresh)))
-      ;; -- Системный трей и XIM/импорт ввода
-      (when (fboundp 'exwm-systemtray-mode)
-        (exwm-systemtray-mode t))
-      (when (fboundp 'exwm-xim-mode)
-        (exwm-xim-mode t))
-      ;; -- Отключать тачпад при наборе (Disable-While-Typing) — предотвращает случайные клики
-      (when (display-graphic-p)
-        (pro/disable-touchpad-while-typing-enable)
-        ;; Повторно применять при изменении конфигурации дисплеев
-        (with-eval-after-load 'exwm-randr
-          (add-hook 'exwm-randr-screen-change-hook #'pro/disable-touchpad-while-typing-enable)))
+        ;; -- Физическое размещение мониторов (xrandr) ДО запуска EXWM
+        (применить-расположение-мониторов)
+        ;; -- Инициализация сопоставлений workspace <-> monitor
+        (про-мониторы-инициализировать)
+        ;; -- Запустить собственно EXWM
+        (require 'exwm)
+        ;; -- Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
+        (dotimes (i 9)
+          (exwm-input-set-key (kbd (format "s-<f%d>" i))
+                              `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
+          (exwm-input-set-key (kbd (format "S-s-<f%d>" i))
+                              `(lambda () (interactive) (message ">%d" ,i)))
+          (exwm-input-set-key (kbd (format "s-%d" i))
+                              `(lambda () (interactive) (tab-bar-select-tab ,i))))
+        (exwm-input-set-key (kbd "s-<f10>")
+                            `(lambda () (interactive) (exwm-workspace-switch-create 0)))
+        ;; Эмуляция «эмаксовских» клавиш в X-приложениях (для line-mode).
+        ;; Текущая версия EXWM не содержит exwm-input-set-simulation-keys — задаём напрямую.
+        (setq exwm-input-simulation-keys
+              '(([?\C-b] . left)
+                ([?\C-f] . right)
+                ([?\C-p] . up)
+                ([?\C-n] . down)
+                ([?\C-a] . home)
+                ([?\C-e] . end)
+                ([?\M-v] . prior)
+                ([?\C-v] . next)
+                ([?\M-b] . C-left)
+                ([?\M-f] . C-right)
+                ;; Редактирование
+                ([?\C-d] . delete)
+                ([?\C-k] . (S-end delete))
+                ;; Копирование/вставка (часто удобны в браузерах)
+                ([?\M-w] . ?\C-c)
+                ([?\C-y] . ?\C-v)))
+        (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
+        (condition-case err
+            (exwm-wm-mode 1)
+          (error
+           (setq pro/графика-initialized nil)
+           (message "EXWM не запущен, остаёмся в обычном Emacs: %s"
+                    (error-message-string err))
+           (throw 'pro/exwm-start nil)))
+        (unless (bound-and-true-p pro/exwm-booted)
+          (setq pro/графика-initialized nil)
+          (message "EXWM не запущен, остаёмся в обычном Emacs")
+          (throw 'pro/exwm-start nil))
+        ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
+        ;; (defun pro/exwm-браузеры-line+sim ()
+        ;;         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
+        ;; чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
+        ;; при необходимости можно вручную переключиться в char-mode (s-i)."
+        ;;         (when (and (derived-mode-p 'exwm-mode)
+        ;;                    exwm-class-name
+        ;;                    (member (downcase exwm-class-name)
+        ;;                            '("firefox" "chromium" "google-chrome" "chromium-browser")))
+        ;;           (exwm-input-line-mode)
+        ;;           (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
+        ;; (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
+        ;; -- RandR после запуска EXWM (иначе “not connected”)
+        (when (fboundp 'exwm-randr-mode)
+          (exwm-randr-mode 1)
+          (ignore-errors (exwm-randr-refresh)))
+        ;; -- Системный трей и XIM/импорт ввода
+        (when (fboundp 'exwm-systemtray-mode)
+          (exwm-systemtray-mode t))
+        (when (fboundp 'exwm-xim-mode)
+          (exwm-xim-mode t))
+        ;; -- Отключать тачпад при наборе (Disable-While-Typing) — предотвращает случайные клики
+        (when (display-graphic-p)
+          (pro/disable-touchpad-while-typing-enable)
+          ;; Повторно применять при изменении конфигурации дисплеев
+          (with-eval-after-load 'exwm-randr
+            (add-hook 'exwm-randr-screen-change-hook #'pro/disable-touchpad-while-typing-enable)))
 
-      ;; -- Хуки для красивых имён окон
-      (add-hook 'exwm-update-class-hook
-                (lambda ()
-                  (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
-      (defun exwm-update-title-hook ()
-        (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
-      (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
-      ;; -- Конфигурация специальных окон и поведение floating
-      (setq exwm-manage-configurations
-            `(
-              ;; Blueman Applet/Manager — не floating и управляются
-              ((or (string= exwm-class-name "Blueman-manager")
-                   (string= exwm-class-name "Blueman-applet")
-                   (and exwm-title (string-match "blueman" exwm-title)))
-               floating nil
-               managed t)
-              ;; posframe — floating окно без mode line
-              ((equal exwm-title "posframe") floating t floating-mode-line nil)
-              ;; chromebug — спец. размеры и fixed позиция
-              ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
-               height 175 x 30 y 30 managed t)
-              ))
-      ;; -- Копипаста
-      (when (require 'xclip nil t)
-        (when (fboundp 'xclip-mode)
-          (xclip-mode 1)))
+        ;; -- Хуки для красивых имён окон
+        (add-hook 'exwm-update-class-hook
+                  (lambda ()
+                    (exwm-workspace-rename-buffer (concat exwm-class-name exwm-title))))
+        (defun exwm-update-title-hook ()
+          (exwm-workspace-rename-buffer (concat exwm-class-name ":" exwm-title)))
+        (add-hook 'exwm-update-title-hook 'exwm-update-title-hook)
+        ;; -- Конфигурация специальных окон и поведение floating
+        (setq exwm-manage-configurations
+              `(
+                ;; Blueman Applet/Manager — не floating и управляются
+                ((or (string= exwm-class-name "Blueman-manager")
+                     (string= exwm-class-name "Blueman-applet")
+                     (and exwm-title (string-match "blueman" exwm-title)))
+                 floating nil
+                 managed t)
+                ;; posframe — floating окно без mode line
+                ((equal exwm-title "posframe") floating t floating-mode-line nil)
+                ;; chromebug — спец. размеры и fixed позиция
+                ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
+                 height 175 x 30 y 30 managed t)
+                ))
+        ;; -- Копипаста
+        (when (require 'xclip nil t)
+          (when (fboundp 'xclip-mode)
+            (xclip-mode 1)))
 
-      ;; Помечаем, что EXWM реально поднялся, чтобы не убивать обычный Emacs,
-      ;; если старт EXWM был прерван на вопросе про замену WM.
-      (defvar pro/exwm-booted nil)
-      (setq pro/exwm-booted nil)
-      (add-hook 'exwm-init-hook (lambda () (setq pro/exwm-booted t)))
+        ;; Помечаем, что EXWM реально поднялся, чтобы не убивать обычный Emacs,
+        ;; если старт EXWM был прерван на вопросе про замену WM.
+        (defvar pro/exwm-booted nil)
+        (setq pro/exwm-booted nil)
+        (add-hook 'exwm-init-hook (lambda () (setq pro/exwm-booted t)))
 
-      ;; перезапускаем user graphical-session.target, чтобы треевые сервисы стартовали уже при наличии хоста трея (EXWM).
-      ;; Важно: здесь необходима небольшая задержка (например, 1 секунда), чтобы EXWM успел полностью инициализировать трей.
-      ;; Иначе сервис exwm-session.target может запуститься ДО появления трея и не интегрироваться с ним (race condition)!
-      (run-at-time pro/tray-restart-delay nil ;; асинхронная задержка перед рестартом exwm-session.target
-                   (lambda ()
-                     (ignore-errors
-                       (start-process "systemctl-user" nil "systemctl" "--user" "restart" "exwm-session.target"))))
-       ))))
+        ;; перезапускаем user graphical-session.target, чтобы треевые сервисы стартовали уже при наличии хоста трея (EXWM).
+        ;; Важно: здесь необходима небольшая задержка (например, 1 секунда), чтобы EXWM успел полностью инициализировать трей.
+        ;; Иначе сервис exwm-session.target может запуститься ДО появления трея и не интегрироваться с ним (race condition)!
+        (run-at-time pro/tray-restart-delay nil ;; асинхронная задержка перед рестартом exwm-session.target
+                     (lambda ()
+                       (ignore-errors
+                         (start-process "systemctl-user" nil "systemctl" "--user" "restart" "exwm-session.target"))))
+        ))))
 
 (use-package xclip
   :ensure t)
@@ -232,12 +232,12 @@ fi"))
   :defer t
   :init
   (setq exwm-debug nil
-        exwm-workspace-number         3
+        exwm-workspace-number 3
         exwm-workspace-show-all-buffers t
-        exwm-layout-show-all-buffers   t
+        exwm-layout-show-all-buffers t
         exwm-manage-force-tiling nil
         exwm-systemtray-background-color 'default
-        exwm-systemtray-height         30
+        exwm-systemtray-height 25
         ;; Точные пиксельные ресайзы, минимизация промежуточных пересчётов
         frame-resize-pixelwise t
         window-resize-pixelwise t

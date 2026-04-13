@@ -49,7 +49,7 @@
   ;; Ставим backup'ы и history-файлы в аккуратные подпапки, используя no-littering
   (setq
    history-length 300
-   savehist-autosave-interval 300
+   savehist-autosave-interval nil ;; Оптимизация: отключаем периодический autosave истории.
    savehist-additional-variables
    '(search-ring
      regexp-search-ring
@@ -64,7 +64,7 @@
    create-lockfiles nil
    vc-make-backup-files t
    version-control t)
-  (savehist-mode 1)
+(savehist-mode 1) ;; Оставляем историю, но без автосохранения по таймеру.
   (setq
    auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
