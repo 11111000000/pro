@@ -1,0 +1,20 @@
+#+title: OpenRouter Audit Report
+
+* Purpose
+Audit free OpenRouter models with headless Emacs and classify failures.
+
+* How to run
+#+begin_src bash
+nix develop .#test --accept-flake-config --no-write-lock-file -c emacs --batch -Q -l tests/e2e/ai-openrouter-live.el
+#+end_src
+
+* Known Reasons
+- 429: rate limited by OpenRouter
+- 401: auth/token issue
+- 404: model or endpoint mismatch
+- empty-content: request succeeded but returned no usable content
+- invalid-json: non-JSON or truncated body
+
+* Notes
+- Delay between requests is controlled by =openrouter-audit-delay-seconds=.
+- Limit test size with =openrouter-audit-max-models= for smoke runs.
