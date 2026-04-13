@@ -1,1 +1,0 @@
-[['file:../architecture.org][Архитектура]]\n- [[file:../principles.org][Принципы]]\n- [[file:index.org][Модули]]']]
