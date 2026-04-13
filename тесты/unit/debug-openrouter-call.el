@@ -9,9 +9,9 @@
 (require 'url)
 
 ;; Load our package
-(load-file "/home/zoya/pro/про-ии-core.el")
+(load-file "/home/zoya/pro/про-ии-ядро.el")
 
-(message "Loaded про-ии-core")
+(message "Loaded про-ии-ядро")
 
 ;; Test key loading
 (let ((key (про-ии--load-key-from-authinfo "openrouter.ai" "token")))

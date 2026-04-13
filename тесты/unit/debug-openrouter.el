@@ -8,7 +8,7 @@
 
 ;; Add integration path
 (add-to-list 'load-path "/home/zoya/pro/интеграция")
-(load-file "/home/zoya/pro/интеграция/про-ии-core.el")
+(load-file "/home/zoya/pro/интеграция/про-ии-ядро.el")
 
 (message "1. Testing key loading...")
 (let ((key (про-ии--load-key-from-authinfo "openrouter.ai" "token")))
@@ -47,9 +47,9 @@
       (message "   ✗ No models for registration"))))
 
 (message "4. Testing model name parsing...")
-(let ((test-models '("qwen/qwen3-coder:free" 
-                    "google/gemma-4-26b-a4b-it:free" 
-                    "nvidia/nemotron-3-super-120b-a12b:free")))
+(let ((test-models '("qwen/qwen3-coder:free"
+                     "google/gemma-4-26b-a4b-it:free"
+                     "nvidia/nemotron-3-super-120b-a12b:free")))
   (dolist (model test-models)
     (message "   Model: %s" model)))
 

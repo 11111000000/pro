@@ -14,27 +14,27 @@
                  (file-name-directory source))))
     (add-to-list 'load-path (expand-file-name "../../интеграция/" root))))
 
-(require 'про-ии-core)
+(require 'про-ии-ядро)
 
 (ert-deftest pro-ai-openrouter-gptel-backend-setup ()
   "Test that OpenRouter backend is properly set up in gptel."
   (skip-unless (bound-and-true-p про-ии--gptel-available))
-  
+
   ;; Force refresh of free models
   (let ((free-models (pro-ai-gptel-openrouter-free-models t)))
     (when free-models
       (pro-ai-gptel--openrouter-set-backend free-models)))
-  
+
   ;; Check backend exists
   (let ((backend (gptel-get-backend "Openrouter")))
     (should backend)
     (should (gptel-backend-p backend))
-    
+
     ;; Check backend has models
     (let ((models (gptel-backend-models backend)))
       (should models)
       (should (> (length models) 0))
-      
+
       ;; Check that at least one model name contains ":free"
       (let ((model-names (mapcar #'gptel--model-name models)))
         (let ((has-free (cl-some (lambda (name) (string-match ":free" name)) model-names)))
@@ -44,7 +44,7 @@
 (ert-deftest pro-ai-openrouter-model-selection ()
   "Test that we can select a proper OpenRouter model."
   (skip-unless (bound-and-true-p про-ии--gptel-available))
-  
+
   (let ((backend (gptel-get-backend "Openrouter")))
     (when backend
       ;; Check current model selection
@@ -59,7 +59,7 @@
 (ert-deftest pro-ai-openrouter-key-configuration ()
   "Test that OpenRouter backend has proper key configuration."
   (skip-unless (bound-and-true-p про-ии--gptel-available))
-  
+
   (let ((backend (gptel-get-backend "Openrouter")))
     (when backend
       ;; In our implementation, the key should be loaded via our function

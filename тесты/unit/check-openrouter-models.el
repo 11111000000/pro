@@ -1,4 +1,4 @@
-(require 'про-ии-core)
+(require 'про-ии-ядро)
 
 (message "=== OpenRouter Models Test ===")
 
@@ -15,7 +15,7 @@
     (message "First 10 models:")
     (dolist (model (seq-take models 10))
       (message "  - %s" model))
-    
+
     ;; Check for specific models
     (let ((has-gemma (seq-find (lambda (m) (string-match "gemma" m)) models))
           (has-llama (seq-find (lambda (m) (string-match "llama" m)) models))

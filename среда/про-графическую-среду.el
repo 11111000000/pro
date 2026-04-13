@@ -237,7 +237,7 @@ fi"))
         exwm-layout-show-all-buffers t
         exwm-manage-force-tiling nil
         exwm-systemtray-background-color 'default
-        exwm-systemtray-height 25
+        ;; exwm-systemtray-height 25
         ;; Точные пиксельные ресайзы, минимизация промежуточных пересчётов
         frame-resize-pixelwise t
         window-resize-pixelwise t

@@ -1,7 +1,7 @@
 ;;; test-openrouter.el --- Test OpenRouter integration
 
 ;; Load the core AI integration
-(load-file "/home/zoya/pro/интеграция/про-ии-core.el")
+(load-file "/home/zoya/pro/интеграция/про-ии-ядро.el")
 
 (defun test-openrouter-key-loading ()
   "Test loading OpenRouter key from authinfo."
@@ -10,8 +10,8 @@
     (if key
         (progn
           (message "✓ OpenRouter key loaded successfully")
-          (message "  Key preview: %s" 
-                   (if (> (length key) 20) 
+          (message "  Key preview: %s"
+                   (if (> (length key) 20)
                        (concat (substring key 0 10) "..." (substring key -10))
                      key))
           t)
@@ -53,40 +53,40 @@
                       t)
                   (message "✗ Failed to register OpenRouter backend")
                   nil))
-          (message "✗ No models available for backend registration")
-          nil))
-    (message "✗ gptel is not available")
-    nil))
+              (message "✗ No models available for backend registration")
+              nil))
+        (message "✗ gptel is not available")
+        nil))
 
-(defun run-all-tests ()
-  "Run all OpenRouter integration tests."
-  (message "=== OpenRouter Integration Tests ===")
-  
-  (let ((results '()))
-    ;; Test 1: Key loading
-    (push (cons "Key Loading" (test-openrouter-key-loading)) results)
-    
-    ;; Test 2: Models fetch
-    (push (cons "Models Fetch" (test-openrouter-models-fetch)) results)
-    
-    ;; Test 3: Backend registration
-    (push (cons "Backend Registration" (test-openrouter-backend-registration)) results)
-    
-    ;; Print summary
-    (message "=== Test Results ===")
-    (dolist (result results)
-      (if (cdr result)
-          (message "✓ %s: PASSED" (car result))
-        (message "✗ %s: FAILED" (car result))))
-    
-    (let ((passed (length (cl-remove-if-not #'cdr results)))
-          (total (length results)))
-      (message "Overall: %d/%d tests passed" passed total)
-      (if (= passed total)
-          (message "🎉 All tests PASSED!")
-        (message "❌ Some tests FAILED")))
-    
-    results))
+  (defun run-all-tests ()
+    "Run all OpenRouter integration tests."
+    (message "=== OpenRouter Integration Tests ===")
 
-;; Run the tests
-(run-all-tests)
+    (let ((results '()))
+      ;; Test 1: Key loading
+      (push (cons "Key Loading" (test-openrouter-key-loading)) results)
+
+      ;; Test 2: Models fetch
+      (push (cons "Models Fetch" (test-openrouter-models-fetch)) results)
+
+      ;; Test 3: Backend registration
+      (push (cons "Backend Registration" (test-openrouter-backend-registration)) results)
+
+      ;; Print summary
+      (message "=== Test Results ===")
+      (dolist (result results)
+        (if (cdr result)
+            (message "✓ %s: PASSED" (car result))
+          (message "✗ %s: FAILED" (car result))))
+
+      (let ((passed (length (cl-remove-if-not #'cdr results)))
+            (total (length results)))
+        (message "Overall: %d/%d tests passed" passed total)
+        (if (= passed total)
+            (message "🎉 All tests PASSED!")
+          (message "❌ Some tests FAILED")))
+
+      results))
+
+  ;; Run the tests
+  (run-all-tests)

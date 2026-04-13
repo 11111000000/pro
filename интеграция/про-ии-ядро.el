@@ -1,4 +1,4 @@
-;;; про-ии-core.el --- Ядро AI-интеграции ПРО -*- coding: utf-8; lexical-binding: t; -*-
+;;; про-ии-ядро.el --- Ядро AI-интеграции ПРО -*- coding: utf-8; lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Ядро AI-интеграции: GPTEL, тарифы, OpenRouter и подсчёт стоимости.
@@ -132,75 +132,166 @@
 
 (defvar pro-ai-gptel-aitunnel-preferred-models
   '(
-    ;; Light - бюджетные
-    "gpt-5.4-nano"
-    "deepseek-v3-2"
-    "qwen3-coder"
-    ;; Balance - средние
-    "gpt-5.4-mini"
-    "gemini-2-5-flash"
-    "grok-4-fast"
-    ;; Strong - мощные
-    "gpt-5.4"
-    "claude-sonnet-4-6"
-    "deepseek-r1")
-  "AITunnel models: light/balance/strong by purpose.")
+    ;; ═══════════════════════════════════════════════════════════════
+    ;; Light — бюджетные (до $0.5/1M tok)
+    ;; ═══════════════════════════════════════════════════════════════
+    "gpt-4.1-mini"           ;; OpenAI, быстрый
+    "gpt-4.1-nano"           ;; OpenAI, самый дешёвый
+    "deepseek-v3.2"          ;; DeepSeek, отличное качество/цена
+    "qwen3-coder"            ;; Qwen, код
+    "qwen3.5-9b"             ;; Qwen 3.5, легкий
+    "grok-4.1-fast"          ;; xAI, быстрый
+    "gemini-2.5-flash-lite"  ;; Google, легкий
+    "claude-3.5-haiku"       ;; Anthropic, быстрый
+    "mistral-small-2603"     ;; Mistral, легкий
+    "llama-3.2-3b-instruct"  ;; Meta, очень легкий
+
+    ;; ═══════════════════════════════════════════════════════════════
+    ;; Balance — средние ($0.5-3/1M tok)
+    ;; ═══════════════════════════════════════════════════════════════
+    "gpt-4.1"                ;; OpenAI, баланс
+    "gpt-5.4-mini"           ;; OpenAI, новый
+    "gemini-2.5-flash"       ;; Google, multimodal
+    "grok-4-fast"            ;; xAI, быстрый
+    "claude-3.5-sonnet"      ;; Anthropic, баланс
+    "deepseek-r1"            ;; DeepSeek, reasoning
+    "qwen3-max"              ;; Qwen, мощный
+    "qwen3-coder-next"       ;; Qwen, код новый
+    "sonar-reasoning"         ;; Perplexity, поиск
+    "mistral-small-3.2-24b-instruct"  ;; Mistral 3.2
+    "gigachat-2"             ;; Сбер, русский
+
+    ;; ═══════════════════════════════════════════════════════════════
+    ;; Strong — мощные ($3+/1M tok)
+    ;; ═══════════════════════════════════════════════════════════════
+    "gpt-5.4"                ;; OpenAI, флагман
+    "gpt-5.4-pro"            ;; OpenAI, лучший
+    "claude-sonnet-4.6"      ;; Anthropic, топ
+    "claude-opus-4.6"        ;; Anthropic, максимум
+    "gemini-2.5-pro"         ;; Google, топ
+    "grok-4.20"              ;; xAI, новый
+    "qwen3-max-thinking"     ;; Qwen, reasoning
+    "deepseek-r1-0528"      ;; DeepSeek, новый reasoning
+    "o3"                     ;; OpenAI, reasoning
+    "o3-pro"                 ;; OpenAI, reasoning+
+    "sonar-pro"              ;; Perplexity, топ
+    "sonar-deep-research"    ;; Perplexity, поиск
+    "gigachat-2-pro"         ;; Сбер, топ русский
+    "minimax-01"             ;; MiniMax, новый
+    "llama-4-maverick"       ;; Meta, новый
+    )
+  "AITunnel models: light/balance/strong by price/quality.")
 
 (defvar pro-ai-gptel-aitunnel-all-models
   '(
-    ;; GPT - флагманы
+    ;; GPT - флагманы OpenAI
     "gpt-5.4"
+    "gpt-5.4-pro"
     "gpt-5.4-mini"
     "gpt-5.4-nano"
     "gpt-5.3-codex"
     "gpt-5.3-chat"
-    "gpt-5.2-codex"
-    "gpt-4o"
-    "gpt-4o-mini"
+    "gpt-5.2"
+    "gpt-5.2-pro"
     "gpt-4.1"
     "gpt-4.1-mini"
-    ;; Claude
-    "claude-sonnet-4-6"
-    "claude-opus-4-6"
-    "claude-haiku-4-5"
+    "gpt-4.1-nano"
+    "gpt-4o"
+    "gpt-4o-mini"
+    "gpt-4o-search-preview"
+    "gpt-4o-mini-search-preview"
+    ;; OpenAI reasoning
+    "o4-mini"
+    "o3-mini"
+    "o3"
+    "o3-pro"
+    "o1-mini"
+    "o1"
+    "o1-pro"
+    ;; Claude - Anthropic
+    "claude-sonnet-4.6"
+    "claude-opus-4.6"
+    "claude-haiku-4.5"
+    "claude-sonnet-4.5"
+    "claude-opus-4.5"
+    "claude-3.7-sonnet"
+    "claude-3.5-sonnet"
+    "claude-3.5-haiku"
     ;; DeepSeek
-    "deepseek-v3-2"
+    "deepseek-v3.2"
+    "deepseek-v3.2-speciale"
+    "deepseek-v3.2-exp"
     "deepseek-r1"
-    ;; Gemini/Gemma
-    "gemini-2-5-flash"
-    "gemini-2-5-pro"
+    "deepseek-r1-0528"
+    "deepseek-chat"
+    "deepseek-chat-v3-0324"
+    ;; Gemini/Gemma - Google
+    "gemini-2.5-pro"
+    "gemini-2.5-flash"
+    "gemini-2.5-flash-lite"
+    "gemini-2.5-flash-image"
+    "gemini-3-pro-preview"
     "gemini-3-flash-preview"
-    "gemini-3-1-pro-preview"
+    "gemini-3.1-pro-preview"
     "gemma-4-26b-a4b-it"
     "gemma-4-31b-it"
-    ;; Grok
+    ;; Grok - xAI
+    "grok-4.20"
     "grok-4"
     "grok-4-fast"
+    "grok-4.1-fast"
     "grok-code-fast-1"
-    ;; Qwen
+    ;; Qwen - Alibaba (основная линейка)
+    "qwen3-coder-next"
     "qwen3-coder"
+    "qwen3-max-thinking"
     "qwen3-max"
     "qwen3-235b-a22b-2507"
+    "qwen3-30b-a3b"
+    "qwen3.5-plus-02-15"
+    "qwen3.5-122b-a10b"
+    "qwen3.5-397b-a17b"
+    "qwen3.5-35b-a3b"
+    "qwen3.5-27b"
+    "qwen3.5-9b"
     ;; MiniMax
-    "minimax-m2-5"
-    "minimax-m2-7"
+    "minimax-m2.7"
+    "minimax-m2.5"
+    "minimax-01"
     ;; Mistral
-    "mistral-small-2603"
     "mistral-large-2512"
-    ;; Llama
+    "mistral-small-2603"
+    "mistral-small-3.2-24b-instruct"
+    "mistral-medium-3.1"
+    "codestral-2508"
+    "devstral-small"
+    ;; Llama - Meta
     "llama-4-scout"
     "llama-4-maverick"
-    ;; GLM
+    "llama-3.3-70b-instruct"
+    "llama-3.2-90b-vision-instruct"
+    "llama-3.2-11b-vision-instruct"
+    ;; GLM - Z.ai
+    "glm-5.1"
     "glm-5"
-    "glm-4-7-flash"
-    ;; Kimi
-    "kimi-k2-5"
+    "glm-5-turbo"
+    "glm-4.7-flash"
+    "glm-4.5"
+    "glm-4.5-air"
+    ;; Kimi - Moonshot
+    "kimi-k2.5"
     "kimi-k2-thinking"
-    ;; Sonar
+    "kimi-k2-0905"
+    ;; Sonar - Perplexity
+    "sonar-pro"
     "sonar-pro-search"
-    ;; Gigachat
-    "gigachat-2-pro")
-  "All AITunnel available models (Apr 2026).")
+    "sonar-reasoning"
+    "sonar-deep-research"
+    ;; Gigachat - Сбер
+    "gigachat-2-pro"
+    "gigachat-2"
+    "gigachat-2-max")
+  "All AITunnel available models (Jun 2025).")
 
 (defvar pro-ai-gptel-qwen-full-line
   '(
@@ -415,8 +506,8 @@ If REFRESH is non-nil, bypass the session cache."
   "Load secret for HOST and USER from ~/.authinfo via auth-source."
   (require 'auth-source nil t)
   (let ((auth (auth-source-search :max 1
-                          :host host
-                          :user user)))
+                                  :host host
+                                  :user user)))
     (when auth
       (let ((secret (plist-get (car auth) :secret)))
         (if (functionp secret)
@@ -444,19 +535,19 @@ If REFRESH is non-nil, bypass the session cache."
 
 (when (not pro-ai-gptel-proxyapi-key)
   (setq pro-ai-gptel-proxyapi-key
-        (про-ии--load-key-from-authinfo "api.proxyapi.xyz" "proxyapi"))
+        (про-ии--load-key-from-authinfo "api.proxyapi.ru" "token"))
   (when pro-ai-gptel-proxyapi-key
     (message "[про-ии] ProxyAPI key loaded from ~/.authinfo")))
 
 (when (not pro-ai-gptel-deepseek-key)
   (setq pro-ai-gptel-deepseek-key
-        (про-ии--load-key-from-authinfo "api.deepseek.com" "deepseek"))
+        (про-ии--load-key-from-authinfo "api.deepseek.com" "token"))
   (when pro-ai-gptel-deepseek-key
     (message "[про-ии] DeepSeek API key loaded from ~/.authinfo")))
 
 (when (not pro-ai-gptel-aitunnel-key)
   (setq pro-ai-gptel-aitunnel-key
-        (про-ии--load-key-from-authinfo "aitunnel.ru" "aitunnel"))
+        (про-ии--load-key-from-authinfo "api.aitunnel.ru" "token"))
   (when pro-ai-gptel-aitunnel-key
     (message "[про-ии] AITunnel key loaded from ~/.authinfo")))
 
@@ -552,7 +643,7 @@ If REFRESH is non-nil, bypass the session cache."
     ;; Qwen full line via AITunnel
     (pro/ai--register-backend
      "Qwen" "api.aitunnel.ru" "/v1/chat/completions" t
-     pro-ии-gptel-qwen-full-line
+     pro-ai-gptel-qwen-full-line
      pro-ai-gptel-aitunnel-key))
   (unless (and pro-ai-gptel-aitunnel-key
                (not (string-empty-p pro-ai-gptel-aitunnel-key)))
@@ -562,18 +653,20 @@ If REFRESH is non-nil, bypass the session cache."
   (when (and pro-ai-gptel-proxyapi-key
              (not (string-empty-p pro-ai-gptel-proxyapi-key)))
     (pro/ai--register-backend
-     "ProxyAPI-OpenAI" "api.proxyapi.xyz" "/v1/chat/completions" t
+     "ProxyAPI-OpenAI" "api.proxyapi.ru" "/v1/chat/completions" t
      '("gpt-4.1" "o4-mini" "gpt-4o" "gpt-4o-mini")
      pro-ai-gptel-proxyapi-key)
     (pro/ai--register-backend
-     "ProxyAPI-Anthropic" "api.proxyapi.xyz" "/v1/chat/completions" t
+     "ProxyAPI-Anthropic" "api.proxyapi.ru" "/v1/chat/completions" t
      '("claude-sonnet-4-20250514" "claude-3-7-sonnet-20250227")
      pro-ai-gptel-proxyapi-key))
 
   (when (executable-find "ollama")
-    (pro/ai--register-backend
-     "Ollama" "localhost:11434" "/v1/chat/completions" nil
-     '("qwen2.5-coder:latest" "llama3:latest" "mistral:latest")))
+    ;; Ollama has a dedicated backend: it must stay on HTTP.
+    (when (and про-ии--gptel-available (fboundp 'gptel-make-ollama))
+      (gptel-make-ollama "Ollama"
+        :host "localhost:11434"
+        :models '("codellama:7b-instruct-q4_K_M" "codellama:latest" "llama3:latest" "mistral:latest"))))
 
   (when pro-ai-gptel-deepseek-key
     (pro/ai--register-backend
@@ -604,5 +697,5 @@ If REFRESH is non-nil, bypass the session cache."
                                  models))
                   (car models)))))))
 
-(provide 'про-ии-core)
-;;; про-ии-core.el ends here
+(provide 'про-ии-ядро)
+;;; про-ии-ядро.el ends here

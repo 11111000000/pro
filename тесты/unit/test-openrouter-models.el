@@ -7,7 +7,7 @@
 (require 'url-http)
 (require 'subr-x)
 
-(let ((core-file (expand-file-name "интеграция/про-ии-core.el" default-directory)))
+(let ((core-file (expand-file-name "интеграция/про-ии-ядро.el" default-directory)))
   (load-file core-file))
 
 (defun pro-ai-openrouter--request (model prompt)

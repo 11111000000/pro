@@ -14,7 +14,7 @@
                  (file-name-directory source))))
     (add-to-list 'load-path (expand-file-name "../../интеграция/" root))))
 
-(require 'про-ии-core)
+(require 'про-ии-ядро)
 
 (ert-deftest pro-ai-openrouter-key-loading ()
   "Test that OpenRouter key can be loaded from authinfo."

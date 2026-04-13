@@ -16,7 +16,7 @@
                  (file-name-directory source))))
     (add-to-list 'load-path (expand-file-name "../../интеграция/" root))))
 
-(require 'про-ии-core)
+(require 'про-ии-ядро)
 
 (ert-deftest pro-ai-openrouter-http-request ()
   "Test HTTP request to OpenRouter API."
@@ -31,8 +31,8 @@
 
 (ert-deftest pro-ai-openrouter-free-model-detection ()
   "Test detection of free models from sample data."
-  (let* ((sample-data 
-          '((data 
+  (let* ((sample-data
+          '((data
              ((id . "qwen/qwen3-coder:free")
               (pricing . ((prompt . "0") (completion . "0"))))
              ((id . "google/gemma-4-26b-a4b-it:free")
@@ -42,7 +42,7 @@
          (items (alist-get 'data sample-data))
          (free-items (seq-filter #'pro-ai-gptel--openrouter-free-model-p items))
          (free-models (delq nil (mapcar (lambda (entry) (alist-get 'id entry)) free-items))))
-    
+
     (should (= (length free-models) 2))
     (should (member "qwen/qwen3-coder:free" free-models))
     (should (member "google/gemma-4-26b-a4b-it:free" free-models))
@@ -50,11 +50,11 @@
 
 (ert-deftest pro-ai-openrouter-model-name-extraction ()
   "Test extraction of model names from sample data."
-  (let* ((sample-models '("qwen/qwen3-coder:free" 
-                         "google/gemma-4-26b-a4b-it:free"
-                         "paid-model:premium"))
+  (let* ((sample-models '("qwen/qwen3-coder:free"
+                          "google/gemma-4-26b-a4b-it:free"
+                          "paid-model:premium"))
          (free-models (seq-filter (lambda (m) (string-match ":free$" m)) sample-models)))
-    
+
     (should (= (length free-models) 2))
     (should (member "qwen/qwen3-coder:free" free-models))
     (should (member "google/gemma-4-26b-a4b-it:free" free-models))

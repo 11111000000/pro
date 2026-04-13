@@ -8,7 +8,7 @@
 
 ;;; Code:
 
-(require 'про-ии-core)
+(require 'про-ии-ядро)
 (require 'ert)
 (require 'url-http)
 
@@ -31,7 +31,7 @@
   (when-let ((key (test-openrouter-key-load)))
     (message "key_type: %s" (type-of key))
     (message "key: %s..." (substring key 0 (min 10 (length key)))))
-  
+
   ;; Test fetching free models (without network)
   (let ((fetched-models (pro-ai-gptel-openrouter-free-models)))
     (message "Fetched %d free models." (length fetched-models))
