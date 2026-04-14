@@ -666,7 +666,7 @@ If REFRESH is non-nil, bypass the session cache."
     (when (and про-ии--gptel-available (fboundp 'gptel-make-ollama))
       (gptel-make-ollama "Ollama"
         :host "localhost:11434"
-        :models '("codellama:7b-instruct-q4_K_M" "codellama:latest" "llama3:latest" "mistral:latest"))))
+        :models '("codellama:7b-instruct-q4_K_M" "phi:latest"))))
 
   (when pro-ai-gptel-deepseek-key
     (pro/ai--register-backend
