@@ -5,6 +5,11 @@
 (defconst папка-про (expand-file-name "~/pro"))
 (add-to-list 'load-path папка-про)
 
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "sample-init start"))
+
+(message "sample-init: start")
+
 ;; Добавить все подпапки в load-path для доступа к модулям
 (dolist (dir (directory-files папка-про t))
   (when (and (file-directory-p dir)
@@ -15,11 +20,28 @@
 (require 'auth-source nil t)
 
 ;; Прочие специальные настройки
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "loading other.el"))
+(message "sample-init: loading other.el")
 (load-file (expand-file-name "~/.emacs.d/other.el"))
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "loaded other.el"))
 ;; Прочие специальные настройки
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "loading feeds.el"))
+(message "sample-init: loading feeds.el")
 (load-file (expand-file-name "~/.emacs.d/feeds.el"))
 
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "loaded feeds.el"))
+
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "requiring zagrusit"))
+(message "sample-init: requiring загрузить")
 (require 'загрузить)
+(when (fboundp 'pro/early-log)
+  (pro/early-log "init" "requiring pro-otladku"))
+(message "sample-init: requiring про-отладку")
 (require 'про-отладку)
 (pro/log-startup-stage "init" "sample-init.el loaded")
 (defvar pro/startup-modules
@@ -32,7 +54,7 @@
     про-текстовый-режим
     про-функции
     про-клавиши-из-org
-    про-графическую-среду
+    про-графическую-среду-старт
     про-внешний-вид
     про-историю
     про-буферы
