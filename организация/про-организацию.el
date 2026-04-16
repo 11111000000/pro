@@ -246,7 +246,9 @@
   :if window-system
   :ensure t
   :custom ((org-modern-star '("●" "▶" "◆" "▷" "□" "◍"))
-           (org-modern-hide-stars " "))
+           (org-modern-hide-stars " ")
+           (org-modern-capture-format "[ %t ] %i%?")
+           )
   :hook ((org-mode . org-modern-mode))
   :init
 
@@ -259,6 +261,32 @@
    org-hide-emphasis-markers t
    org-pretty-entities t
    org-ellipsis "…"))
+
+;;;; Org Capture и шаблоны
+
+(setq org-capture-templates
+      '(("t" "TODO" entry (file+headline "tasks.org" "Inbox")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree "journal.org")
+         "* %?\n  %i\n  %a")
+        ("n" "Note" entry (file "notes.org")
+         "* %? :NOTE:\n  %i\n  %a")
+        ("b" "Bookmarks" entry (file "bookmarks.org")
+         "* %c :LINK:\n  %i\n  %a")
+        ("l" "Link" entry (file+headline "links.org" "Inbox")
+         "* %^L\n  %i\n  %a")))
+
+;; (use-package org-modern-capture
+;;   :ensure t
+;;   :after org-modern
+;;   :init
+;;   (setq org-capture-use-outline-path t)
+;;   (setq org-capture-template-keys
+;;         '(("t" . "TODO")
+;;           ("j" . "Journal")
+;;           ("n" . "Note")
+;;           ("b" . "Bookmarks")
+;;           ("l" . "Link"))))
 
 ;;;; Организация кода - аутлайнер для любых файлов
 

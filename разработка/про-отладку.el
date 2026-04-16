@@ -37,11 +37,7 @@
 ;; Запоминаем последние 2000 сообщений вместо стандартных 100.
 (setq message-log-max 2000)
 
-;; Автоматически открывать *Messages* при старте Emacs (удобно для журналов).
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (when-let ((buf (get-buffer "*Messages*")))
-              (display-buffer buf))))
+;; Не трогаем окна на старте: в EXWM это может ломать раннюю инициализацию.
 
 ;; Писать сообщения/предупреждения и метки времени в файл, заданный средой,
 ;; или в `user-emacs-directory/emacs.log` по умолчанию.
@@ -90,6 +86,10 @@
        (format "STARTUP[%s] %s" stage detail)
      (format "STARTUP[%s]" stage))))
 
+(defun pro/startup-log (stage &optional detail)
+  "Backward-compatible alias for `pro/log-startup-stage'."
+  (pro/log-startup-stage stage detail))
+
 (defun pro/enable-file-log ()
   "Включить запись сообщений/предупреждений в `pro/log-file'."
   (interactive)
@@ -104,8 +104,8 @@
   (advice-remove 'message #'pro/log-message-advice)
   (advice-remove 'display-warning #'pro/log-display-warning-advice))
 
-;; Включаем логирование сразу при загрузке этого файла.
-(pro/enable-file-log)
+;; Подключаем advice после завершения старта, чтобы не вмешиваться в раннюю загрузку.
+(add-hook 'emacs-startup-hook #'pro/enable-file-log)
 
 ;;;; 3. Улучшенный вывод backtrace
 

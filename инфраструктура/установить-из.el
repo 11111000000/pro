@@ -12,7 +12,10 @@
 ;;
 ;;; Code:
 
-(require 'package-vc nil t)
+(require 'cl-lib)
+
+;; Avoid loading package/URL machinery during startup.  `package-vc-install`
+;; is only needed when this helper is invoked explicitly.
 
 (cl-defun установить-из (&key (fetcher "github") repo name rev backend)
   "Установить пакет с удаленного компьютера, если он еще не установлен.
@@ -30,7 +33,10 @@
         (pac-name (or iname (intern (file-name-base repo)))))
     (unless (package-installed-p pac-name)
       (if (fboundp 'package-vc-install)
-          (package-vc-install url iname rev backend)
+          (condition-case err
+              (package-vc-install url iname rev backend)
+            (error
+             (message "package-vc install skipped for %s: %s" pac-name (error-message-string err))))
         (message "package-vc unavailable, skipping install of %s" pac-name)))))
 
 (provide 'установить-из)
