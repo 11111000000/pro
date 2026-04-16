@@ -98,6 +98,29 @@ fi"))
   :type 'number
   :group 'pro/графика)
 
+(defun pro/exwm-import-display-env ()
+  "Передать DISPLAY/XAUTHORITY в systemd --user, чтобы tray-сервисы увидели X11."
+  (let ((display (or (getenv "DISPLAY") ":0"))
+        (xauth (or (getenv "XAUTHORITY")
+                   (expand-file-name "~/.Xauthority"))))
+    (setenv "DISPLAY" display)
+    (setenv "XAUTHORITY" xauth)
+    (ignore-errors
+      (start-process "systemctl-user-import" nil
+                     "systemctl" "--user" "import-environment"
+                     "DISPLAY" "XAUTHORITY"))))
+
+(defun pro/exwm-restart-tray-services ()
+  "Перезапустить target с tray-сервисами после того, как EXWM поднял XEmbed host."
+  (ignore-errors
+    (start-process "systemctl-user-reset-failed" nil
+                   "systemctl" "--user" "reset-failed"
+                   "nm-applet.service" "pasystray.service"
+                   "blueman-applet.service" "snixembed.service"
+                   "udiskie-tray.service" "copyq.service")
+    (start-process "systemctl-user-restart" nil
+                   "systemctl" "--user" "restart" "exwm-session.target")))
+
 (defun pro/старт-графической-среды ()
   "Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
   (interactive)
@@ -179,24 +202,18 @@ fi"))
         (with-eval-after-load 'exwm-randr
           (add-hook 'exwm-randr-screen-change-hook #'pro/disable-touchpad-while-typing-enable)))
 
-      ;; -- Хуки для красивых имён окон
+      ;; -- Хуки для имён окон по приложению, а не по заголовку страницы/документа
+      (defun pro/exwm-app-name ()
+        "Вернуть имя приложения для EXWM-буфера."
+        (or (and (boundp 'exwm-class-name) exwm-class-name)
+            (and (boundp 'exwm-instance-name) exwm-instance-name)
+            "EXWM"))
+
       (defun pro/exwm-rename-buffer ()
-        "Переименовать EXWM-буфер по окну приложения."
+        "Переименовать EXWM-буфер по имени приложения."
         (when (derived-mode-p 'exwm-mode)
-          (let* ((instance (and (boundp 'exwm-instance-name) exwm-instance-name))
-                 (class (and (boundp 'exwm-class-name) exwm-class-name))
-                 (title (and (boundp 'exwm-title) exwm-title))
-                 (base (or class instance "EXWM"))
-                 (title-short (when (and title (> (length title) 0))
-                                (if (> (length title) 50)
-                                    (concat (substring title 0 47) "...")
-                                  title)))
-                 (name (if title-short
-                           (concat base " — " title-short)
-                         base)))
-            (exwm-workspace-rename-buffer name))))
+          (exwm-workspace-rename-buffer (pro/exwm-app-name))))
       (add-hook 'exwm-update-class-hook #'pro/exwm-rename-buffer)
-      (add-hook 'exwm-update-title-hook #'pro/exwm-rename-buffer)
       (add-hook 'exwm-manage-finish-hook #'pro/exwm-rename-buffer)
       ;; -- Конфигурация специальных окон и поведение floating
       (setq exwm-manage-configurations
@@ -225,14 +242,11 @@ fi"))
       (add-hook 'exwm-init-hook
                 (lambda ()
                   (setq pro/exwm-booted t)
+                  (pro/exwm-import-display-env)
                   ;; Рестарт сервисов после полной инициализации EXWM и трея.
-                  ;; Без этой задержки аплеты (nm-applet, blueman-applet) могут
-                  ;; не найти xembed-хоста и не зарегистрировать иконки в трее.
+                  ;; Без этого delay аплеты могут стартовать без DISPLAY/XAUTHORITY.
                   (run-at-time pro/tray-restart-delay nil
-                               (lambda ()
-                                 (ignore-errors
-                                   (start-process "systemctl-user" nil
-                                                 "systemctl" "--user" "restart" "exwm-session.target"))))))
+                               #'pro/exwm-restart-tray-services)))
       )))
 
 (use-package xclip
