@@ -43,8 +43,12 @@
             (when-let ((buf (get-buffer "*Messages*")))
               (display-buffer buf))))
 
-;; Писать сообщения/предупреждения и метки времени в файл ~/.emacs.d/emacs.log.
-(defvar pro/log-file (expand-file-name "emacs.log" user-emacs-directory)
+;; Писать сообщения/предупреждения и метки времени в файл, заданный средой,
+;; или в `user-emacs-directory/emacs.log` по умолчанию.
+(defvar pro/log-file
+  (expand-file-name
+   (or (getenv "EMACS_STARTUP_LOG_FILE") "emacs.log")
+   (or (getenv "EMACS_STARTUP_LOG_DIR") user-emacs-directory))
   "Файл для логирования сообщений и предупреждений Emacs.")
 
 (defun pro/log--append-line (line)
@@ -78,6 +82,13 @@
     (pro/log--append-line
      (format "WARNING[%s/%s]: %s"
              type (or level :warning) message))))
+
+(defun pro/log-startup-stage (stage &optional detail)
+  "Записать этап старта в `pro/log-file'."
+  (pro/log--append-line
+   (if detail
+       (format "STARTUP[%s] %s" stage detail)
+     (format "STARTUP[%s]" stage))))
 
 (defun pro/enable-file-log ()
   "Включить запись сообщений/предупреждений в `pro/log-file'."

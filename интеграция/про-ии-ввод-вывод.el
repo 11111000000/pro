@@ -53,6 +53,7 @@
   (carriage-global-mode t))
 
 (use-package agent-shell
+  ;;:load-path "~/Code/agent-shell"
   :ensure t
   :preface
   (defvar-local про-ии-agent-shell--ui-restored nil
@@ -79,9 +80,9 @@
   (agent-shell-show-config-icons t)
   (agent-shell-show-session-id nil)
   (agent-shell-show-welcome-message t)
-  (agent-shell-show-busy-indicator t)
+  (agent-shell-show-busy-indicator nil)
   (agent-shell-section-functions nil)
-  (agent-shell-show-context-usage-indicator t)
+  (agent-shell-show-context-usage-indicator nil)
   (agent-shell-show-usage-at-turn-end t)
   (agent-shell-thought-process-expand-by-default nil)
   (agent-shell-tool-use-expand-by-default nil)
@@ -100,32 +101,33 @@
   (agent-shell-preferred-agent-config 'opencode)
   (agent-shell-session-strategy 'prompt)
   :config
-  (defun про-ии-agent-shell--pretty-buffer-name (name)
-    "Return NAME with the agent-shell prefix shortened."
-    (replace-regexp-in-string "\\`OpenCode Agent\\s-*" "🤖 " name))
+  ;; (defun про-ии-agent-shell--pretty-buffer-name (name)
+  ;;   "Return NAME with the agent-shell prefix shortened."
+  ;;   (replace-regexp-in-string "\\`OpenCode Agent\\s-*" "🤖 " name))
 
-  (defun про-ии-agent-shell-rename-buffer ()
-    "Normalize the initial agent-shell buffer name safely."
-    (condition-case nil
-        (when (and (derived-mode-p 'agent-shell-mode)
-                   (string-prefix-p "OpenCode Agent" (buffer-name))
-                   (boundp 'shell-maker-config)
-                   shell-maker-config)
-          (let ((short-name (про-ии-agent-shell--pretty-buffer-name (buffer-name))))
-            (rename-buffer short-name t)))
-      (error nil)))
+  ;; (defun про-ии-agent-shell-rename-buffer ()
+  ;;   "Normalize the initial agent-shell buffer name safely."
+  ;;   (condition-case nil
+  ;;       (when (and (derived-mode-p 'agent-shell-mode)
+  ;;                  (string-prefix-p "OpenCode Agent" (buffer-name))
+  ;;                  (boundp 'shell-maker-config)
+  ;;                  shell-maker-config)
+  ;;         (let ((short-name (про-ии-agent-shell--pretty-buffer-name (buffer-name))))
+  ;;           (rename-buffer short-name t)))
+  ;;     (error nil)))ice remo
 
-  (defun про-ии-agent-shell-rename-buffer-advice (orig-fun name &optional unique)
-    "Keep agent-shell buffer names shortened even after later renames."
-    (if (and (derived-mode-p 'agent-shell-mode)
-             (stringp name)
-             (string-prefix-p "OpenCode Agent" name))
-        (funcall orig-fun (про-ии-agent-shell--pretty-buffer-name name) unique)
-      (funcall orig-fun name unique)))
+  ;; (defun про-ии-agent-shell-rename-buffer-advice (orig-fun name &optional unique)
+  ;;   "Keep agent-shell buffer names shortened even after later renames."
+  ;;   (if (and (derived-mode-p 'agent-shell-mode)
+  ;;            (stringp name)
+  ;;            (string-prefix-p "OpenCode Agent" name))
+  ;;       (funcall orig-fun (про-ии-agent-shell--pretty-buffer-name name) unique)
+  ;;     (funcall orig-fun name unique)))
 
-  (add-hook 'agent-shell-mode-hook #'про-ии-agent-shell-rename-buffer)
-  (advice-add 'rename-buffer :around #'про-ии-agent-shell-rename-buffer-advice)
-  (advice-add 'agent-shell--handle :around #'про-ии-agent-shell--reload-after-first-turn))
+  ;; (add-hook 'agent-shell-mode-hook #'про-ии-agent-shell-rename-buffer)
+  ;; (advice-add 'rename-buffer :around #'про-ии-agent-shell-rename-buffer-advice)
+  ;; (advice-add 'agent-shell--handle :around #'про-ии-agent-shell--reload-after-first-turn)
+  )
 
 (provide 'про-ии-ввод-вывод)
 ;;; про-ии-ввод-вывод.el ends here

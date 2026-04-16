@@ -88,7 +88,7 @@
 (defun pro/пересобрать-nix ()
   "Запустить 'sudo nixos-rebuild switch' с конфигом пользователя и показать вывод в буфере *nixos-log*."
   (interactive)
-  (let ((cmd (format "sudo nixos-rebuild switch -I nixos-config=%s/.config/nixos/configuration.nix"
+  (let ((cmd (format "sudo nixos-rebuild switch --flake %s/.config/nixos#nixos"
                      (getenv "HOME")))
         (log-buf "*nixos-log*"))
     (with-current-buffer (get-buffer-create log-buf)

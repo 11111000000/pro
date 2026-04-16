@@ -41,11 +41,11 @@
   (setq use-proxy-http-proxy "socks5h://127.0.0.1:9050")
   (setq use-proxy-https-proxy "socks5h://127.0.0.1:9050")
   (setq use-proxy-no-proxy "localhost|127.0.0.1|::1")
-  
+
   (use-proxy-mode 1)
 
   ;; Key bindings to toggle proxy settings
-  
+
   (global-set-key (kbd "C-c C-g") 'use-proxy-toggle-proxies-global))
 
 ;; Set the proxy for HTTP and HTTPS
@@ -67,9 +67,9 @@
 (setq tramp-default-method "ssh")
 
 (setq vc-ignore-dir-regexp
-             (format "\\(%s\\)\\|\\(%s\\)"
-                     vc-ignore-dir-regexp
-                     tramp-file-name-regexp))
+      (format "\\(%s\\)\\|\\(%s\\)"
+              vc-ignore-dir-regexp
+              tramp-file-name-regexp))
 
 ;;;; URL открывается в текстовом браузере в новой вкладке или в Хроме.
 
@@ -87,18 +87,17 @@
 ;;;;; Нумерация ссылков
 
 (use-package ace-link
-  :defer t 
+  :defer t
   :ensure t
   :after eww
   :defer t
   :commands (eww-back-url eww-forward-url ace-link-eww)
   :bind (:map eww-mode-map
-                ("<" . eww-back-url)
-                (">" . eww-forward-url)
-                ("C-c f" . ace-link-eww)))
+              ("<" . eww-back-url)
+              (">" . eww-forward-url)))
 
 (use-package eww-lnum
-  :defer t 
+  :defer t
   :ensure t
   :demand t
   :after eww
@@ -115,36 +114,36 @@
   :defer t
   :hook (w3m-mode . w3m-lnum-mode)
   :bind (:map w3m-mode-map
-                ("C-<tab>" . w3m-tab-next-buffer)
-                ("C-<iso-lefttab>" . w3m-tab-previous-buffer)
-                ("C-w" . w3m-delete-buffer)
-                ("M-n" . w3m-tab-next-buffer)
-                ("M-p" . w3m-tab-previous-buffer)
-                ("<S-return>" . w3m-view-this-url-background-session)
-                ("<M-return>" . w3m-view-this-url-background-session)
-                ("B" . w3m-view-previous-page)
-                ("F" . w3m-view-next-page)
-                ("<M-left>" . w3m-view-previous-page)
-                ("<M-right>" . w3m-view-previous-page)
-                ("F" . w3m-view-next-page)
-                ("M-s" . nil)
-                ("<XF86Back>" . nil)
-                ("<XF86Forward>" . nil)
-                ("C-r" . w3m-reload-this-page)
-                ("C-S-R" . w3m-reload-this-page))
+              ("C-<tab>" . w3m-tab-next-buffer)
+              ("C-<iso-lefttab>" . w3m-tab-previous-buffer)
+              ("C-w" . w3m-delete-buffer)
+              ("M-n" . w3m-tab-next-buffer)
+              ("M-p" . w3m-tab-previous-buffer)
+              ("<S-return>" . w3m-view-this-url-background-session)
+              ("<M-return>" . w3m-view-this-url-background-session)
+              ("B" . w3m-view-previous-page)
+              ("F" . w3m-view-next-page)
+              ("<M-left>" . w3m-view-previous-page)
+              ("<M-right>" . w3m-view-previous-page)
+              ("F" . w3m-view-next-page)
+              ("M-s" . nil)
+              ("<XF86Back>" . nil)
+              ("<XF86Forward>" . nil)
+              ("C-r" . w3m-reload-this-page)
+              ("C-S-R" . w3m-reload-this-page))
   :config
 
   (autoload 'w3m-browse-url "w3m" ">" t)
 
   (setq-default w3m-use-cookies t
-           browse-url-new-window-flag t
-           w3m-show-graphic-icons-in-header-line t
-           w3m-display-inline-images t
-           w3m-show-graphic-icons-in-mode-line t
-           w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533."
-           w3m-session-load-always t
-           w3m-session-autosave t
-           w3m-session-load-last-sessions t))
+                browse-url-new-window-flag t
+                w3m-show-graphic-icons-in-header-line t
+                w3m-display-inline-images t
+                w3m-show-graphic-icons-in-mode-line t
+                w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533."
+                w3m-session-load-always t
+                w3m-session-autosave t
+                w3m-session-load-last-sessions t))
 
 
 ;;;; Карты OSM
@@ -163,13 +162,13 @@
   :bind (("<f1> W" . wttrin))
   :init
   (setq wttrin-default-accept-language '("Accept-Language" . "ru-RU,ru")
-       wttrin-default-cities '("Moscow"
-                               "Novosibirsk"
-                               "Krasnoyarsk"
-                               "Irkutsk"
-                               "Angarsk"
-                               "Voronezh"
-                               "Rossosh")))
+        wttrin-default-cities '("Moscow"
+                                "Novosibirsk"
+                                "Krasnoyarsk"
+                                "Irkutsk"
+                                "Angarsk"
+                                "Voronezh"
+                                "Rossosh")))
 
 ;;;; Перевод валют
 
@@ -178,7 +177,7 @@
 (defun usd-to-rub (sum)
   "Преобразует сумму в долларах SUM в рубли.
 используя текущий обменный курс с сервера."
-  
+
   (progn
     (message "aaa %f" sum)
     (url-retrieve "https://api.exchangerate-api.com/v4/latest/USD"
@@ -190,11 +189,11 @@
                       (goto-char url-http-end-of-headers)
                       ;; Парсинг JSON-ответа
                       (let* ((json-object-type 'hash-table)
-                            (json-array-type 'list)
-                            (json-key-type 'string)
-                            (response (json-read))
-                            (rates (gethash "rates" response))
-                            (rub-rate (gethash "RUB" rates)))
+                             (json-array-type 'list)
+                             (json-key-type 'string)
+                             (response (json-read))
+                             (rates (gethash "rates" response))
+                             (rub-rate (gethash "RUB" rates)))
                         (if rub-rate
                             (message "Сумма в RUB: %.2f" (* sum rub-rate))
                           (message "Не найден курс RUB в ответе.")))))
@@ -205,7 +204,7 @@
 Use Firefox if Alt is pressed, Chrome if Shift is pressed."
   (interactive "e")
   (let* ((mouse-pos (event-start event))
-        (url (thing-at-point 'url)))
+         (url (thing-at-point 'url)))
     (cond
      ((and (equal (event-modifiers event) '(alt)) url) ;; Alt pressed
       (start-process "firefox" nil "firefox" url))

@@ -36,6 +36,9 @@
 (use-package csharp-mode
   :ensure t
   :defer t
+  :init
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "module" "про-код-на-c loaded"))
   :config
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
   ;; Поддержка Nix: если shell.nix, использовать nix-shell для компиляции/загрузки через Eglot.

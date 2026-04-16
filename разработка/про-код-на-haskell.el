@@ -179,7 +179,7 @@
   :ensure t
   :hook (haskell-mode . ormolu-format-on-save-mode)  ; Ormolu как альтернатива stylish.
   :bind (:map haskell-mode-map
-              ("C-c f" . ormolu-format-buffer)))  ; Ручное форматирование.
+              ("C-c M-f" . ormolu-format-buffer)))  ; Ручное форматирование.
 
 ;; Опционально: интеграция с format-all для универсальности.
 

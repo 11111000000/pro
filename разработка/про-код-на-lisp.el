@@ -45,6 +45,9 @@
 (require 'установить-из)          ; локальный хелпер для straight/quelpa/…
 (require 'cl-lib)                 ; cl-macros нужны «Мини-SICP»
 
+(when (fboundp 'pro/log-startup-stage)
+  (pro/log-startup-stage "module" "про-код-на-lisp loaded"))
+
 ;;;; 1. Базовые eval-команды
 (defun выполнить-регион-или-буфер ()
   "Eval активный регион или весь буфер.

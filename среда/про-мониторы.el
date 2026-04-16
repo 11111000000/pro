@@ -28,8 +28,6 @@
 ;;
 ;;; Code:
 
-(require 'exwm-randr)
-
 (defgroup про-мониторы nil
   "Настройка и управление конфигурацией мониторов под EXWM."
   :group 'exwm)
@@ -71,6 +69,7 @@
 (defun про-мониторы-инициализировать ()
   "Только установка workspace<->monitor привязки и хук пересборки xrandr.
 exwm-randr-mode и xrandr запускаются вне этой функции!"
+  (require 'exwm-randr)
   (setq exwm-randr-workspace-monitor-plist
         (list 0 имя-встроенного-монитора
               1 имя-внешнего-монитора
