@@ -51,6 +51,14 @@ Proof: -
 
 ---
 
+### Name: Agent.LocalPolicy
+Stability: [FLUID]
+Spec: Локальный агент этой репы работает по HDS и пишет commit message только на русском языке. Политика ограничена этим репозиторием.
+API: `.opencode/agents/hds.md`, `документация/agent-policy-ru.md`, `scripts/commit-ru.sh`, `scripts/install-local-hooks.sh`, `.githooks/commit-msg`
+Proof: `bash scripts/commit-ru.sh "Проверка политики" --dry-run`
+
+---
+
 ### Name: Completion.Perf
 Stability: [FLUID]
 Spec: Автодополнение не должно ставить постоянные `post-command` таймеры; Corfu работает без авто-popup и без лишних popupinfo-попапов.

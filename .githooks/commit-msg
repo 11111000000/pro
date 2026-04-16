@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+msg_file=${1:?missing commit message file}
+msg=$(tr -d '\r' < "$msg_file")
+
+if ! printf '%s' "$msg" | grep -Eq '[А-Яа-яЁё]'; then
+  printf '%s\n' "commit message must contain Russian text" >&2
+  exit 1
+fi
