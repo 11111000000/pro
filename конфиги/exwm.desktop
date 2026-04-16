@@ -3,3 +3,4 @@ Name=EXWM
 Comment=Emacs Window Manager
 Exec=exwm-start
 Type=Application
+X-GNOME-Autostart-enabled=true

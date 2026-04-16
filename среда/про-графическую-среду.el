@@ -1,4 +1,4 @@
-;;; про-графическую-среду.el --- Графическая среда Emacs с EXWM -*- lexical-binding: t; -*-
+;;; про-графическую-среду.el --- Графическая среда и EXWM -*- lexical-binding: t -*-
 ;;
 ;; Автор: Пётр <11111000000@email.com>
 ;; Версия: 1.1
@@ -7,36 +7,67 @@
 ;;
 ;;; Commentary:
 ;;
-;; Этот файл настраивает графическую среду в Emacs на базе EXWM (Emacs X Window Manager),
-;; ...
-;; Замечания: Мы предпочитаем отложенную загрузку (:defer t), локальные бинды
-;; и минимальные глобальные изменения. Запуск только в графическом режиме (window-system).
+;; Этот файл настраивает графическую среду Emacs на базе EXWM (Emacs X Window Manager).
+;; Фокус здесь на запуске WM, мульти-мониторной инициализации, системном трее,
+;; XIM и именовании EXWM-окон. Вспомогательные утилиты вынесены в отдельный модуль
+;; `про-графические-утилиты`, чтобы этот файл оставался про среду, а не про
+;; общие команды.
+;;
+;; Структура файла:
+;; 0. Введение и зависимости: базовые require и пакетная рамка.
+;; 1. Базовые данные: simulation keys и классы окон.
+;; 2. Общие вспомогатели: трей, RandR, touchpad и имена окон.
+;; 3. Инициализация EXWM: запуск, хуки и конфигурация поведения.
+;; 4. Дополнительные возможности: EXWM-расширения, подключаемые модули.
+;; 5. Утилиты: вынесены в `про-графические-утилиты`.
+;;
+;; Файл рассчитан на загрузку только в графической сессии.
 
 ;;; Code:
 
-;;;; 0. Введение и зависимости
-;; Здесь мы подключаем базовые пакеты. `установить-из` — для установки из репозиториев,
-;; `про-мониторы` — для мультимониторной поддержки. Это основа: без них EXWM не сможет
-;; работать с X-сервером и мониторами.
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "про-графическую-среду load entered"))
 
+;;;; 0. Введение и зависимости
+;; Здесь подключаем базовые пакеты и модули, которые нужны до старта EXWM.
+;; `установить-из` отвечает за установку зависимостей, `про-мониторы` — за
+;; вычисление и применение физической раскладки дисплеев.
+
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "require установить-из begin"))
 (require 'установить-из)
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "require установить-из done"))
+
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "require про-мониторы begin"))
 (require 'про-мониторы)
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "require про-мониторы done"))
+
+(unless (featurep 'установить-из)
+  (defun установить-из (&rest _args)
+    "Fallback no-op during partial loads."
+    nil))
 
 ;;;; 1. Подсистема X (xelb)
-;; Xelb — низкоуровневая библиотека для взаимодействия с X11. Она необходима для EXWM,
-;; предоставляя базовые протоколы. Мы загружаем её отложенно, только в графическом режиме.
+;; Xelb дает низкоуровневый доступ к X11 и нужен EXWM как транспортный слой.
+;; Загружаем его только в графической сессии.
 
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "use-package xelb begin"))
 (use-package xelb
   :ensure t
   :if window-system)
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "use-package xelb done"))
 
-;;;; 2. EXWM — главный оконный менеджер
-;; EXWM превращает Emacs в WM, управляя X-окнами как буферами. Мы настраиваем
-;; workspaces, буферы, tiling и клавиатурные эмуляции для Emacs-подобного поведения
-;; в внешних приложениях. Это сердце файла: всё строится вокруг него.
+;;;; 2. Базовые данные EXWM
+;; Здесь лежат неизменяемые списки и макросы, которые используются на этапе старта.
+;; Они отделены от инициализации, чтобы логика запуска оставалась читаемой.
 
 ;; --- Клавиатурные эмуляции стандартных перемещений/редактирования в X приложениях
-(defvar exwm-input-simulation-keys
+(defconst pro/exwm-default-simulation-keys
   '(([?\C-b] . left)
     ([?\M-b] . C-left)
     ([?\C-f] . right)
@@ -56,6 +87,11 @@
     ;; search
     ([?\C-s] . ?\C-f))
   "Сочетания клавиш, переотправляемых X приложениям для эмуляции behavior Emacs.")
+
+(defconst pro/exwm-browser-classes
+  '("firefox" "chromium" "google-chrome" "chromium-browser"
+    "brave-browser" "vivaldi-stable")
+  "Классы окон, которые надо считать браузерами.")
 
 ;; --- Удобный макрос для глобальных горячих клавиш EXWM
 (defmacro exwm-input-set-keys (&rest key-bindings)
@@ -81,25 +117,24 @@ fi"))
     (start-process-shell-command "dwt-touchpad" nil script)))
 
 ;;;; 3. Инициализация
-;; Поэтапный старт: мониторы, пауза, RandR, workspaces, клавиши, трей, хуки.
-;; Мы гарантируем однократный запуск, чтобы избежать повторений, и автостарт в графическом режиме.
+;; Здесь собирается поэтапный старт: мониторы, EXWM, трей, XIM, хуки.
+;; Функция `pro/старт-графической-среды` остается тонкой точкой сборки шагов.
 
 ;; --- Стартовая инициализация EXWM. Выполняется только один раз!
 (defvar pro/графика-initialized nil
   "Истина, если графическая среда уже инициализирована.")
 
+(defvar pro/exwm-booted nil
+  "Истина, если EXWM реально поднялся и exwm-init-hook отработал.")
+
+;; Пользовательские параметры графической среды.
 (defgroup pro/графика nil
   "Настройки графической среды EXWM."
   :group 'exwm)
 
-(defcustom pro/tray-restart-delay 6.0
-  "Задержка (в секундах) перед рестартом exwm-session.target после запуска EXWM и трея.
-Увеличьте, если иконки (например, nm-applet) не успевают зарегистрироваться."
-  :type 'number
-  :group 'pro/графика)
-
+;; Передает X11-окружение в systemd --user, чтобы tray-сервисы видели EXWM.
 (defun pro/exwm-import-display-env ()
-  "Передать DISPLAY/XAUTHORITY в systemd --user, чтобы tray-сервисы увидели X11."
+  "Передать DISPLAY/XAUTHORITY в systemd --user."
   (let ((display (or (getenv "DISPLAY") ":0"))
         (xauth (or (getenv "XAUTHORITY")
                    (expand-file-name "~/.Xauthority"))))
@@ -110,30 +145,204 @@ fi"))
                      "systemctl" "--user" "import-environment"
                      "DISPLAY" "XAUTHORITY"))))
 
-(defun pro/exwm-restart-tray-services ()
-  "Перезапустить target с tray-сервисами после того, как EXWM поднял XEmbed host."
-  (ignore-errors
-    (start-process "systemctl-user-reset-failed" nil
-                   "systemctl" "--user" "reset-failed"
-                   "nm-applet.service" "pasystray.service"
-                   "blueman-applet.service" "snixembed.service"
-                   "udiskie-tray.service" "copyq.service")
-    (start-process "systemctl-user-restart" nil
-                   "systemctl" "--user" "restart" "exwm-session.target")))
+;; Готовит окружение для EXWM system tray.
+(defun pro/exwm-configure-systemtray ()
+  "Подготовить окружение для system tray."
+  (pro/exwm-import-display-env))
 
+;; Отслеживает ВСЕ вызовы exwm-systemtray-mode (включение и выключение).
+;; Добавлено для диагностики — показывает, не отключается ли трей где-то после включения.
+(defun pro/exwm-systemtray-mode-advice (orig-fn &rest args)
+  "Перехватывает вызовы exwm-systemtray-mode для диагностики."
+  (message "PRO: exwm-systemtray-mode вызван: args=%s" args)
+  (let ((val (apply orig-fn args)))
+    (message "PRO: exwm-systemtray-mode=%s после вызова" exwm-systemtray-mode)
+    val))
+
+(advice-add 'exwm-systemtray-mode :around #'pro/exwm-systemtray-mode-advice)
+
+(defvar pro/exwm-systemtray-log-timer nil
+  "Timer for periodic system tray diagnostics.")
+
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "core definitions done"))
+
+(defun pro/exwm-log-systemtray-state (&optional stage)
+  "Log the current EXWM system tray state."
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "systemtray" (format "begin %s" (or stage "?"))))
+  (let ((target (string-trim
+                 (shell-command-to-string
+                  "systemctl --user is-active exwm-session.target 2>/dev/null || true"))))
+    (when (fboundp 'pro/startup-log)
+      (pro/startup-log "systemtray" (format "after systemctl %s" (or stage "?"))))
+    (message "PRO: systemtray[%s] feature=%s mode=%s booted=%s target-active=%s"
+             (or stage "?")
+             (featurep 'exwm-systemtray)
+             (and (boundp 'exwm-systemtray-mode) exwm-systemtray-mode)
+             (and (boundp 'pro/exwm-booted) pro/exwm-booted)
+             (if (string-empty-p target) "unknown" target))))
+
+;; Включает EXWM system tray после инициализации EXWM.
+(defun pro/exwm-enable-systemtray ()
+  "Включить системный трей и запустить user target для EXWM-сессии."
+  (message "PRO: exwm-enable-systemtray вызвана")
+  (pro/exwm-log-systemtray-state "enable-before")
+  (require 'exwm-systemtray nil t)
+  (when (fboundp 'exwm-systemtray-mode)
+    (message "PRO: exwm-systemtray-mode ДО=%s" exwm-systemtray-mode)
+    (exwm-systemtray-mode t)
+    (message "PRO: exwm-systemtray-mode ПОСЛЕ=%s" exwm-systemtray-mode))
+  (pro/exwm-log-systemtray-state "enable-after")
+  (run-at-time 1 nil
+               (lambda ()
+                 (pro/exwm-log-systemtray-state "enable-delayed")
+                 (ignore-errors
+                   (start-process "systemctl-user-reset-failed" nil
+                                  "systemctl" "--user" "reset-failed")
+                   (start-process "systemctl-user-start" nil
+                                  "systemctl" "--user" "start" "exwm-session.target")))))
+
+(defun pro/exwm-wm-mode-safe ()
+  "Запустить `exwm-wm-mode` с диагностикой."
+  (message "PRO: вызываю exwm-wm-mode 1 (featurep exwm=%s, fn=%s)"
+           (featurep 'exwm) (fboundp 'exwm-wm-mode))
+  (exwm-wm-mode 1)
+  (message "PRO: exwm-wm-mode 1 выполнен успешно"))
+
+;; Подключает XIM и стандартные simulation keys для внешних приложений.
+(defun pro/exwm-configure-input-methods ()
+  "Включить XIM и стандартные simulation keys."
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "input-methods" "begin configure-input-methods"))
+  (require 'exwm-xim nil t)
+  (when (fboundp 'exwm-xim-mode)
+    (when (fboundp 'pro/startup-log)
+      (pro/startup-log "input-methods" "before exwm-xim-mode"))
+    (exwm-xim-mode t))
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "input-methods" "before set simulation keys"))
+  (setq exwm-input-simulation-keys pro/exwm-default-simulation-keys)
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "input-methods" "after set simulation keys"))
+  (unless (member ?\C-\\ exwm-input-prefix-keys)
+    (when (fboundp 'pro/startup-log)
+      (pro/startup-log "input-methods" "before push prefix key"))
+    (push ?\C-\\ exwm-input-prefix-keys))
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "input-methods" "end configure-input-methods")))
+
+;; Активирует RandR и обновляет раскладку экранов после старта EXWM.
+(defun pro/exwm-configure-randr ()
+  "Включить RandR и обновить конфигурацию экранов."
+  (when (fboundp 'exwm-randr-mode)
+    (exwm-randr-mode 1)
+    (ignore-errors (exwm-randr-refresh))))
+
+;; Включает защиту от случайных кликов тачпадом во время набора.
+(defun pro/exwm-configure-touchpad ()
+  "Включить защиту от случайных кликов тачпадом."
+  (when (display-graphic-p)
+    (when (fboundp 'pro/startup-log)
+      (pro/startup-log "touchpad" "begin configure-touchpad"))
+    (pro/disable-touchpad-while-typing-enable)
+    (with-eval-after-load 'exwm-randr
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "touchpad" "install randr hook"))
+      (add-hook 'exwm-randr-screen-change-hook
+                #'pro/disable-touchpad-while-typing-enable))
+    (when (fboundp 'pro/startup-log)
+      (pro/startup-log "touchpad" "end configure-touchpad"))))
+
+;; Детектирует браузеры для правил именования окна.
+(defun pro/exwm-browser-p ()
+  "Ненулевой результат, если текущее окно похоже на браузер."
+  (let ((class (and (boundp 'exwm-class-name) exwm-class-name)))
+    (and class
+         (member (downcase class) pro/exwm-browser-classes))))
+
+;; Возвращает title окна EXWM, если он уже доступен.
+(defun pro/exwm-window-title ()
+  "Вернуть заголовок окна EXWM, если он есть."
+  (when (and (boundp 'exwm-title) exwm-title (> (length exwm-title) 0))
+    exwm-title))
+
+;; Возвращает WM_CLASS окна EXWM, если он уже доступен.
+(defun pro/exwm-window-class ()
+  "Вернуть класс окна EXWM, если он есть."
+  (when (and (boundp 'exwm-class-name) exwm-class-name (> (length exwm-class-name) 0))
+    exwm-class-name))
+
+;; Правило именования: сначала title для браузеров, затем class, instance и fallback.
+(defun pro/exwm-app-name ()
+  "Вернуть имя для EXWM-буфера: title, class, instance или EXWM."
+  (or (pro/exwm-window-title)
+      (pro/exwm-window-class)
+      (and (boundp 'exwm-instance-name) exwm-instance-name)
+      "EXWM"))
+
+;; Переименовывает активный EXWM-буфер по текущим данным окна.
+(defun pro/exwm-rename-buffer ()
+  "Переименовать текущий EXWM-буфер."
+  (when (derived-mode-p 'exwm-mode)
+    (let ((name (pro/exwm-app-name)))
+      (when (and name (> (length name) 0))
+        (exwm-workspace-rename-buffer name)))))
+
+;; Применяет правила именования ко всем уже открытым EXWM-буферам.
+(defun pro/exwm-rename-all-buffers ()
+  "Переименовать все текущие EXWM-буферы по тем же правилам."
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (derived-mode-p 'exwm-mode)
+        (pro/exwm-rename-buffer)))))
+
+;; Регистрирует хуки, чтобы новые окна и обновления title/class переименовывались автоматически.
+(defun pro/exwm-setup-window-hooks ()
+  "Настроить хуки переименования EXWM-окон."
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "hooks" "begin setup-window-hooks"))
+  (add-hook 'exwm-update-class-hook #'pro/exwm-rename-buffer)
+  (add-hook 'exwm-update-title-hook #'pro/exwm-rename-buffer)
+  (add-hook 'exwm-manage-finish-hook #'pro/exwm-rename-buffer)
+  (add-hook 'exwm-init-hook #'pro/exwm-rename-all-buffers)
+  (when (fboundp 'pro/startup-log)
+    (pro/startup-log "hooks" "end setup-window-hooks")))
+
+;; Главная точка старта графической среды.
 (defun pro/старт-графической-среды ()
   "Поэтапная инициализация графического окружения: мониторы, EXWM, трей, раскладка."
   (interactive)
+  (message "PRO: про/старт-графической-среды вызвана")
+  (when (fboundp 'pro/log-startup-stage)
+    (pro/log-startup-stage "exwm-start" "pro/старт-графической-среды entered"))
   (unless pro/графика-initialized
     (setq pro/графика-initialized t)
     (catch 'pro/exwm-start
-      ;; -- Физическое размещение мониторов (xrandr) ДО запуска EXWM
+      (when (fboundp 'pro/log-startup-stage)
+        (pro/log-startup-stage "exwm-start" "applying monitor layout"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before monitor layout"))
+      ;; Сначала применяем физическую раскладку дисплеев до запуска EXWM.
       (применить-расположение-мониторов)
-      ;; -- Инициализация сопоставлений workspace <-> monitor
+      (when (fboundp 'pro/log-startup-stage)
+        (pro/log-startup-stage "exwm-start" "initializing monitor mapping"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before monitor mapping"))
+      ;; Затем строим соответствие workspace <-> monitor.
       (про-мониторы-инициализировать)
-      ;; -- Запустить собственно EXWM
+      (when (fboundp 'pro/log-startup-stage)
+        (pro/log-startup-stage "exwm-start" "requiring exwm"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before require exwm"))
+      ;; Загружаем EXWM только после подготовки дисплеев.
       (require 'exwm)
-      ;; -- Глобальные рабочие клавиши (Super+F1‒F9, Super+цифры)
+      (when (fboundp 'pro/log-startup-stage)
+        (pro/log-startup-stage "exwm-start" "after require exwm"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after require exwm"))
+      ;; Глобальные рабочие клавиши для переключения workspace и tab-bar.
       (dotimes (i 9)
         (exwm-input-set-key (kbd (format "s-<f%d>" i))
                             `(lambda () (interactive) (exwm-workspace-switch-create ,i)))
@@ -143,79 +352,54 @@ fi"))
                             `(lambda () (interactive) (tab-bar-select-tab ,i))))
       (exwm-input-set-key (kbd "s-<f10>")
                           `(lambda () (interactive) (exwm-workspace-switch-create 0)))
-      ;; Эмуляция «эмаксовских» клавиш в X-приложениях (для line-mode).
-      ;; Текущая версия EXWM не содержит exwm-input-set-simulation-keys — задаём напрямую.
-      (setq exwm-input-simulation-keys
-            '(([?\C-b] . left)
-              ([?\C-f] . right)
-              ([?\C-p] . up)
-              ([?\C-n] . down)
-              ([?\C-a] . home)
-              ([?\C-e] . end)
-              ([?\M-v] . prior)
-              ([?\C-v] . next)
-              ([?\M-b] . C-left)
-              ([?\M-f] . C-right)
-              ;; Редактирование
-              ([?\C-d] . delete)
-              ([?\C-k] . (S-end delete))
-              ;; Копирование/вставка (часто удобны в браузерах)
-              ([?\M-w] . ?\C-c)
-              ([?\C-y] . ?\C-v)))
-      (push ?\C-\\ exwm-input-prefix-keys)  ;; Быстрая смена раскладки
       (condition-case err
-          (exwm-wm-mode 1)
+          (pro/exwm-wm-mode-safe)
         (error
          (setq pro/графика-initialized nil)
-         (message "EXWM не запущен, остаёмся в обычном Emacs: %s"
-                  (error-message-string err))
+         (when (fboundp 'pro/log-startup-stage)
+           (pro/log-startup-stage "exwm-error" (format "%S" err)))
+         (when (fboundp 'pro/startup-log)
+           (pro/startup-log "module" (format "exwm-wm-mode error %S" err)))
+         (message "PRO: exwm-wm-mode ОШИБКА: %S" err)
          (throw 'pro/exwm-start nil)))
-      (unless (bound-and-true-p pro/exwm-booted)
-        (setq pro/графика-initialized nil)
-        (message "EXWM не запущен, остаёмся в обычном Emacs")
-        (throw 'pro/exwm-start nil))
-      ;; -- Браузеры: Firefox/Chromium — всегда line-mode + симуляция Emacs-навигирования
-      ;; (defun pro/exwm-браузеры-line+sim ()
-      ;;         "Для Firefox/Chromium включать line-mode и локальные simulation-keys,
-      ;; чтобы C-n/C-p и др. вели себя как в Emacs. Совместимо с exwm-xim-mode:
-      ;; при необходимости можно вручную переключиться в char-mode (s-i)."
-      ;;         (when (and (derived-mode-p 'exwm-mode)
-      ;;                    exwm-class-name
-      ;;                    (member (downcase exwm-class-name)
-      ;;                            '("firefox" "chromium" "google-chrome" "chromium-browser")))
-      ;;           (exwm-input-line-mode)
-      ;;           (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)))
-      ;; (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
-      ;; -- RandR после запуска EXWM (иначе “not connected”)
-      (when (fboundp 'exwm-randr-mode)
-        (exwm-randr-mode 1)
-        (ignore-errors (exwm-randr-refresh)))
-      ;; -- Системный трей и XIM/импорт ввода
-      (when (fboundp 'exwm-systemtray-mode)
-        (exwm-systemtray-mode t))
-      (when (fboundp 'exwm-xim-mode)
-        (exwm-xim-mode t))
-      ;; -- Отключать тачпад при наборе (Disable-While-Typing) — предотвращает случайные клики
-      (when (display-graphic-p)
-        (pro/disable-touchpad-while-typing-enable)
-        ;; Повторно применять при изменении конфигурации дисплеев
-        (with-eval-after-load 'exwm-randr
-          (add-hook 'exwm-randr-screen-change-hook #'pro/disable-touchpad-while-typing-enable)))
+      (message "PRO: exwm-wm-mode запущен, жду exwm-init-hook; pro/exwm-booted=%s" pro/exwm-booted)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after exwm-wm-mode"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "systemtray" "calling post-exwm-wm-mode log"))
+      (pro/exwm-log-systemtray-state "post-exwm-wm-mode")
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "systemtray" "returned post-exwm-wm-mode log"))
+      ;; RandR включаем после старта EXWM, иначе некоторые конфигурации не находятся.
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before configure-randr"))
+      (pro/exwm-configure-randr)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after configure-randr"))
+      ;; Системный трей включаем уже на живом XEmbed host.
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before configure-systemtray"))
+      (pro/exwm-configure-systemtray)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after configure-systemtray"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before configure-input-methods"))
+      (pro/exwm-configure-input-methods)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after configure-input-methods"))
+      ;; Защита тачпада от случайных кликов при наборе.
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before configure-touchpad"))
+      (pro/exwm-configure-touchpad)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after configure-touchpad"))
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "before setup-window-hooks"))
+      (pro/exwm-setup-window-hooks)
+      (when (fboundp 'pro/startup-log)
+        (pro/startup-log "module" "after setup-window-hooks"))
+      ;; Правила для специальных окон и floating-поведения.
 
-      ;; -- Хуки для имён окон по приложению, а не по заголовку страницы/документа
-      (defun pro/exwm-app-name ()
-        "Вернуть имя приложения для EXWM-буфера."
-        (or (and (boundp 'exwm-class-name) exwm-class-name)
-            (and (boundp 'exwm-instance-name) exwm-instance-name)
-            "EXWM"))
-
-      (defun pro/exwm-rename-buffer ()
-        "Переименовать EXWM-буфер по имени приложения."
-        (when (derived-mode-p 'exwm-mode)
-          (exwm-workspace-rename-buffer (pro/exwm-app-name))))
-      (add-hook 'exwm-update-class-hook #'pro/exwm-rename-buffer)
-      (add-hook 'exwm-manage-finish-hook #'pro/exwm-rename-buffer)
-      ;; -- Конфигурация специальных окон и поведение floating
       (setq exwm-manage-configurations
             `(
               ;; Blueman Applet/Manager — не floating и управляются
@@ -230,24 +414,33 @@ fi"))
               ((equal exwm-class-name "chromebug") floating t floating-mode-line nil width 280
                height 175 x 30 y 30 managed t)
               ))
-      ;; -- Копипаста
+
+      ;; Интеграция с xclip для буфера обмена.
       (when (require 'xclip nil t)
         (when (fboundp 'xclip-mode)
           (xclip-mode 1)))
 
-      ;; Помечаем, что EXWM реально поднялся, чтобы не убивать обычный Emacs,
-      ;; если старт EXWM был прерван на вопросе про замену WM.
-      (defvar pro/exwm-booted nil)
+      ;; Флаг нужен, чтобы не завершать обычный Emacs, если EXWM так и не поднялся.
       (setq pro/exwm-booted nil)
       (add-hook 'exwm-init-hook
                 (lambda ()
+                  (message "PRO: exwm-init-hook вызван!")
+                  (when (fboundp 'pro/log-startup-stage)
+                    (pro/log-startup-stage "exwm-init-hook" "fired"))
+                  (when (fboundp 'pro/startup-log)
+                    (pro/startup-log "module" "exwm-init-hook fired"))
                   (setq pro/exwm-booted t)
                   (pro/exwm-import-display-env)
-                  ;; Рестарт сервисов после полной инициализации EXWM и трея.
-                  ;; Без этого delay аплеты могут стартовать без DISPLAY/XAUTHORITY.
-                  (run-at-time pro/tray-restart-delay nil
-                               #'pro/exwm-restart-tray-services)))
-      )))
+                  (pro/exwm-log-systemtray-state "init-hook-before")
+                  (pro/exwm-enable-systemtray)
+                  (pro/exwm-log-systemtray-state "init-hook-after")
+                  (pro/exwm-rename-all-buffers))))))
+
+(when (fboundp 'pro/startup-log)
+  (pro/startup-log "module" "про-графическую-среду load finished"))
+
+;;;; 4. Дополнительные возможности EXWM
+;; Расширения EXWM подключаем отдельно, чтобы базовый запуск оставался компактным.
 
 (use-package xclip
   :ensure t)
@@ -263,7 +456,6 @@ fi"))
         exwm-layout-show-all-buffers t
         exwm-manage-force-tiling nil
         exwm-systemtray-background-color 'default
-        ;; exwm-systemtray-height 25
         ;; Точные пиксельные ресайзы, минимизация промежуточных пересчётов
         frame-resize-pixelwise t
         window-resize-pixelwise t
@@ -282,20 +474,19 @@ fi"))
   (when window-system
     (pro/старт-графической-среды)))
 
-;;;; 4. Дополнительные возможности EXWM
-;; Расширения для удобства: трей, редактор текстовых полей, фокус мыши.
-;; Они дополняют базовый EXWM, делая его полноценным десктопом.
-
-;; -- Системный трей (иконки в панели)
+;; Системный трей (иконки в панели) предоставляется отдельным модулем EXWM.
 (require 'exwm-systemtray nil t)
 
-;; -- Встроенный редактор для внешних текстовых полей
+;; Вспомогательные графические команды: скриншоты, скринкасты и shutdown.
+(require 'про-графические-утилиты)
+
+;; Встроенный редактор для внешних текстовых полей.
 (use-package exwm-edit
   :after exwm
   :if window-system
   :ensure t)
 
-;; -- Курсор мыши автоматически следует за фокусом окна
+;; Курсор мыши автоматически следует за фокусом окна.
 (use-package exwm-mff
   :after exwm
   :if window-system
@@ -304,310 +495,6 @@ fi"))
   :init
   (when (fboundp 'exwm-mff-mode)
     (exwm-mff-mode t)))
-
-;;;; 5. Утилиты: Скриншоты и очистка
-;; Практичные инструменты: скриншоты в clipboard, очистка "мёртвых" буферов.
-;; Это упрощает повседневные задачи, интегрируя с copyq и мониторя конфигурацию окон.
-
-(defun скриншот-области ()
-  "Снять скриншот выделенной области и отправить в буфер обмена (copyq).
-Сохраняет файлы в ~/Скриншоты/"
-  (interactive)
-  (let* ((dir (expand-file-name "~/Скриншоты/")))
-    (unless (file-directory-p dir)
-      (make-directory dir t))
-    (start-process-shell-command
-     "scrot-area" nil
-     (format "scrot -s '%s%%Y-%%m-%%d_%%H.%%M.%%S.png' -e 'copyq write image/png - < $f && copyq select 0'"
-             dir))))
-
-(defun скриншот ()
-  "Сделать скриншот всего экрана и отправить в copyq.
-Сохраняет файлы в ~/Скриншоты/"
-  (interactive)
-  (sit-for 1)
-  (let* ((dir (expand-file-name "~/Скриншоты/")))
-    (unless (file-directory-p dir)
-      (make-directory dir t))
-    (start-process-shell-command
-     "scrot-full" nil
-     (format "scrot -d 3 '%s%%Y-%%m-%%d-%%H-%%M_$wx$h.png' -e 'copyq write image/png - < $f && copyq select 0'"
-             dir))))
-
-(defun скринкаст (&optional duration)
-  "Запустить скринкаст экрана с помощью ffmpeg.
-Файл сохраняется в ~/Скринкасты/. Формат максимально совместим с Android и Telegram:
-H.264 Baseline (yuv420p) + AAC (тихий аудиотрек) в MP4 с +faststart. Лог в отдельном буфере.
-Если DURATION задан (в секундах), запись завершится автоматически.
-Важно: для корректного закрытия файла используйте M-x скринкаст-стоп (посылает «q» в ffmpeg),
-иначе при принудительном убийстве процесса MP4 может не содержать moov."
-  (interactive "P")
-  (let* ((dir (expand-file-name "~/Скринкасты/"))
-         (_ (unless (file-directory-p dir)
-              (make-directory dir t)))
-         (fname (read-string "Имя скринкаста (без расширения): "
-                             (format-time-string "%Y-%m-%d_%H-%M-%S")))
-         (path (expand-file-name (concat fname ".mp4") dir))
-         (log-buf (get-buffer-create (format "*скринкаст %s*" fname)))
-         (size (string-trim
-                (shell-command-to-string
-                 "xrandr | grep '*' | head -n1 | awk '{print $1}'")))
-         (display (or (getenv "DISPLAY") ":0"))
-         (args (append
-                (list
-                 "-video_size" size
-                 "-framerate" "30"
-                 "-f" "x11grab"
-                 "-i" display
-                 ;; добавляем «тихий» аудиотрек для совместимости с плеерами Android
-                 "-f" "lavfi"
-                 "-i" "anullsrc=channel_layout=stereo:sample_rate=48000"
-                 ;; видео: максимально совместимый baseline профиль
-                 "-c:v" "libx264"
-                 "-pix_fmt" "yuv420p"
-                 "-profile:v" "baseline"
-                 "-level:v" "3.1"
-                 "-preset" "faster"
-                 "-crf" "23"
-                 "-maxrate" "4500k"
-                 "-bufsize" "9000k"
-                 "-g" "60"
-                 ;; moov в начале и безопасная фрагментация — файл будет читаем даже при аварийной остановке
-                 "-movflags" "+faststart+frag_keyframe+empty_moov"
-                 "-vf" "scale=trunc(iw/2)*2:trunc(ih/2)*2"
-                 ;; аудио: AAC стерео
-                 "-c:a" "aac"
-                 "-b:a" "128k"
-                 "-ac" "2"
-                 ;; Явное сопоставление потоков и запас для muxer'а
-                 "-map" "0:v:0"
-                 "-map" "1:a:0"
-                 "-max_muxing_queue_size" "9999")
-                (when duration (list "-t" (format "%s" duration)))
-                ;; Параметры выходного контейнера должны предшествовать пути
-                (list "-shortest" "-f" "mp4" path)))
-         (proc nil))
-    (with-current-buffer log-buf (erase-buffer))
-    (setq proc (apply #'start-process
-                      "ffmpeg-с-кринкаст" log-buf "ffmpeg" args))
-    ;; Не задавать вопросы при выходе Emacs, если ffmpeg ещё жив
-    (set-process-query-on-exit-flag proc nil)
-    (setq скринкаст-процесс proc)
-    (setq скринкаст-лог-був log-buf)
-    (message "Скринкаст запущен: %s (лог в %s, остановка: M-x скринкаст-стоп)"
-             path (buffer-name log-buf))))
-
-(defun скринкаст-показать-лог ()
-  "Показать лог последнего процесса скринкаста (буфер ffmpeg)."
-  (interactive)
-  (if (and (boundp 'скринкаст-лог-був) (buffer-live-p скринкаст-лог-був))
-      (pop-to-buffer скринкаст-лог-був)
-    (message "Лог ещё не создан")))
-
-(defun скринкаст-стоп ()
-  "Корректно остановить запись скринкаста.
-Сначала посылает 'q' во stdin ffmpeg (он дописывает индекс moov),
-через 3 сек при необходимости посылает SIGINT, затем (крайняя мера) SIGKILL."
-  (interactive)
-  (if (and (boundp 'скринкаст-процесс) (process-live-p скринкаст-процесс))
-      (progn
-        ;; Мягкая остановка: ffmpeg по 'q' пишет трейлер и закрывает файл
-        (condition-case _err
-            (process-send-string скринкаст-процесс "q")
-          (error nil))
-        (message "Скринкаст: отправлена команда остановки (q). Ждите финализации файла...")
-        ;; Фолбэк: если по какой-то причине не завершился — посылаем SIGINT
-        (run-at-time
-         3 nil
-         (lambda ()
-           (when (process-live-p скринкаст-процесс)
-             (ignore-errors (interrupt-process скринкаст-процесс))
-             (message "Скринкаст: SIGINT отправлен, завершаем запись..."))))
-        ;; Крайняя мера: жёсткое убийство
-        (run-at-time
-         7 nil
-         (lambda ()
-           (when (process-live-p скринкаст-процесс)
-             (ignore-errors (kill-process скринкаст-процесс))
-             (message "Скринкаст: принудительно остановлен (SIGKILL).")))))
-    (message "Нет активного процесса скринкаста! Используйте killall ffmpeg для остановки всех ffmpeg.")))
-
-;; -- Очистка служебных буферов EXWM ("dead window")
-(defun my/kill-old-buffer-message-buffer-maybe ()
-  "Если буфер содержит служебное сообщение EXWM о dead window — закрыть его."
-  (when (and (< (buffer-size) 2000)
-             (string-match-p "^This window displayed the buffer ‘"
-                             (buffer-string)))
-    (let ((buf (current-buffer)))
-      (when (get-buffer-window buf)
-        (delete-window (get-buffer-window buf)))
-      (kill-buffer buf))))
-
-(defun my/kill-old-buffer-message-buffers-in-visible-windows ()
-  "Проверить все окна, закрыть буфер, если это служебное сообщение о dead window."
-  (dolist (win (window-list))
-    (let ((buf (window-buffer win)))
-      (when (and
-             (< (buffer-size buf) 2000)
-             (with-current-buffer buf
-               (string-match-p "^This window displayed the buffer ‘" (buffer-string))))
-        (ignore-errors (delete-window win))
-        (kill-buffer buf)))))
-
-;; -- Удалять служебные буферы при каждом изменении конфигурации окон
-(add-hook 'window-configuration-change-hook
-          #'my/kill-old-buffer-message-buffers-in-visible-windows)
-
-;;;; 6. Мягкое завершение X окружения/Emacs/компьютера
-;; Грациозный шатдаун: закрытие окон, Emacs и системы "в одну кнопку".
-;; Это предотвращает потери данных и упрощает выход.
-
-(defun my/exwm-close-all-windows ()
-  "Закрыть все внешние X-приложения, управляемые EXWM."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (with-current-buffer buf
-      (when (eq major-mode 'exwm-mode)
-        ;; Каждое kill-buffer вызовет WM_DELETE_WINDOW/close через EXWM
-        (kill-buffer buf)))))
-
-(defun my/exwm-running-x-buffers-p ()
-  "Есть ли ещё активные EXWM-буферы (живые X-клиенты)?"
-  (seq-some (lambda (buf)
-              (with-current-buffer buf
-                (eq major-mode 'exwm-mode)))
-            (buffer-list)))
-
-(defun my/exwm-shutdown (&optional force)
-  "Мягко завершить все X-приложения, потом Emacs, затем выключить компьютер.
-Если FORCE — не спрашивать подтверждения."
-  (interactive)
-  (my/exwm-close-all-windows)
-  (dotimes (_ 10) ;; 10 попыток с паузой
-    (when (my/exwm-running-x-buffers-p)
-      (sleep-for 1)
-      (my/exwm-close-all-windows)))
-  (save-buffers-kill-emacs))
-
-;; -- Универсальное сочетание для выключения (Super + Alt(M) + q)
-(global-set-key (kbd "s-M-q") #'my/exwm-shutdown)
-
-;;;; 6.9 EXWM: Логи для диагностики симуляции клавиш (C-n/C-p в браузерах)
-
-;; (defvar pro/exwm-keys-log-buffer "*EXWM-keys-log*"
-;;   "Буфер, куда пишем диагностические сообщения о симуляции клавиш EXWM.")
-
-;; (defun pro/exwm-log (&rest args)
-;;   "Записать строку в лог и вывести в echo-area."
-;;   (let* ((msg (apply #'format args))
-;;          (ts  (format-time-string "%F %T.%3N")))
-;;     (with-current-buffer (get-buffer-create pro/exwm-keys-log-buffer)
-;;       (goto-char (point-max))
-;;       (insert (format "[%s] %s\n" ts msg)))
-;;     (message "%s" msg)))
-
-;; (defun pro/exwm-show-keys-log ()
-;;   "Открыть буфер с логами EXWM-симуляции клавиш."
-;;   (interactive)
-;;   (pop-to-buffer (get-buffer-create pro/exwm-keys-log-buffer)))
-
-;; (defvar-local pro/exwm--mode 'unknown
-;;   "Текущий режим ввода для EXWM-буфера: 'line, 'char или 'unknown.")
-
-;; (with-eval-after-load 'exwm
-;;   ;; Отмечаем смену режимов (line/char) и логируем
-;;   (advice-add 'exwm-input-line-mode :after
-;;               (lambda (&rest _)
-;;                 (setq pro/exwm--mode 'line)
-;;                 (pro/exwm-log "→ line-mode для %s (%s)"
-;;                               (or (bound-and-true-p exwm-class-name) "?")
-;;                               (buffer-name))))
-;;   (advice-add 'exwm-input-char-mode :after
-;;               (lambda (&rest _)
-;;                 (setq pro/exwm--mode 'char)
-;;                 (pro/exwm-log "→ char-mode для %s (%s)"
-;;                               (or (bound-and-true-p exwm-class-name) "?")
-;;                               (buffer-name))))
-;;   ;; Логируем фактическую отправку fake-keys во внешний клиент
-;;   (advice-add 'exwm-input--fake-key :around
-;;               (lambda (orig key &rest args)
-;;                 (pro/exwm-log "fake-key: %S -> class=%s buf=%s mode=%s"
-;;                               key
-;;                               (or (bound-and-true-p exwm-class-name) "?")
-;;                               (buffer-name)
-;;                               pro/exwm--mode)
-;;                 (apply orig key args))))
-
-;; (defun pro/exwm--sim-mapping (key)
-;;   "Вернуть cons-мэппинг из (local/global) simulation-keys для KEY."
-;;   (or (and (boundp 'exwm-local-simulation-keys)
-;;            (assoc key exwm-local-simulation-keys))
-;;       (and (boundp 'exwm-input-simulation-keys)
-;;            (assoc key exwm-input-simulation-keys))))
-
-;; (defun pro/exwm--log-state (trigger)
-;;   "Снять срез состояния по TRIGGER (строка «C-n»/«C-p» и т.д.)."
-;;   (pro/exwm-log "%s: class=%s buf=%s mode=%s xim=%s local-sim=%S"
-;;                 trigger
-;;                 (or (and (boundp 'exwm-class-name) exwm-class-name) "?")
-;;                 (buffer-name)
-;;                 pro/exwm--mode
-;;                 (if (bound-and-true-p exwm-xim-mode) 'on 'off)
-;;                 (and (boundp 'exwm-local-simulation-keys)
-;;                      exwm-local-simulation-keys)))
-
-;; (defun pro/exwm-C-n ()
-;;   "Логирующий обработчик C-n для EXWM-буфера браузера."
-;;   (interactive)
-;;   (pro/exwm--log-state "C-n")
-;;   (let ((m (pro/exwm--sim-mapping [?\C-n])))
-;;     (pro/exwm-log "C-n: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
-;;     ;; Пытаемся использовать штатную симуляцию; если маппинга нет,
-;;     ;; EXWM обычно пошлёт исходный ключ клиенту — это тоже видно по эффекту.
-;;     (when (fboundp 'exwm-input-send-simulation-keys)
-;;       (exwm-input-send-simulation-keys (kbd "C-n")))))
-
-;; (defun pro/exwm-C-p ()
-;;   "Логирующий обработчик C-p для EXWM-буфера браузера."
-;;   (interactive)
-;;   (pro/exwm--log-state "C-p")
-;;   (let ((m (pro/exwm--sim-mapping [?\C-p])))
-;;     (pro/exwm-log "C-p: mapping=%S; вызываю exwm-input-send-simulation-keys" m)
-;;     (when (fboundp 'exwm-input-send-simulation-keys)
-;;       (exwm-input-send-simulation-keys (kbd "C-p")))))
-
-;; (defun pro/exwm-браузеры-line+sim ()
-;;   "Для Firefox/Chromium: включить line-mode и локальные simulation-keys."
-;;   (when (and (derived-mode-p 'exwm-mode)
-;;              (boundp 'exwm-class-name)
-;;              exwm-class-name
-;;              (member (downcase exwm-class-name)
-;;                      '("firefox" "chromium" "google-chrome" "chromium-browser")))
-;;     (pro/exwm-log "exwm-manage: %s → line-mode + локальные simulation-keys (xim=%s)"
-;;                   exwm-class-name (if (bound-and-true-p exwm-xim-mode) 'on 'off))
-;;     (when (fboundp 'exwm-input-line-mode)
-;;       (exwm-input-line-mode))
-;;     (setq-local pro/exwm--mode 'line)
-;;     (when (fboundp 'exwm-input-set-local-simulation-keys)
-;;       (exwm-input-set-local-simulation-keys exwm-input-simulation-keys)
-;;       (pro/exwm-log "local-sim set: %S"
-;;                     (and (boundp 'exwm-local-simulation-keys)
-;;                          exwm-local-simulation-keys)))))
-
-;; (with-eval-after-load 'exwm
-;;   (add-hook 'exwm-manage-finish-hook #'pro/exwm-браузеры-line+sim)
-
-
-;;;; 7. Блокировка случайных Ctrl/Shift+мышь
-;; Игнорируем комбо, чтобы избежать неожиданных меню в приложениях.
-
-(dolist (mod '([C-down-mouse-1] [C-mouse-1]
-               [C-down-mouse-2] [C-mouse-2]
-               [C-down-mouse-3] [C-mouse-3]
-               [S-down-mouse-1] [S-mouse-1]
-               [S-down-mouse-2] [S-mouse-2]
-               [S-down-mouse-3] [S-mouse-3]))
-  (global-set-key mod #'ignore))
 
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here
