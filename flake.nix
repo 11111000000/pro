@@ -37,6 +37,15 @@
           emacsPkg = pkgs.emacs.pkgs.withPackages (epkgs: [
             epkgs.gptel
             epkgs.use-package
+            epkgs.exwm
+            epkgs.xelb
+            epkgs.xclip
+            epkgs.avy
+            epkgs.multiple-cursors
+            epkgs.expand-region
+            epkgs.whole-line-or-region
+            epkgs.shift-text
+            epkgs.reverse-im
           ]);
 
           emacs-headless = pkgs.writeShellApplication {
@@ -136,11 +145,40 @@
             ${cleanPath}
             "${emacsBin}" --batch -Q --eval '(princ "ok")' > "$out"
           '';
+
+          checks.byteCompileConfig = pkgs.runCommand "emacs-config-byte-compile" {
+            nativeBuildInputs = [ emacsPkg pkgs.coreutils ];
+          } ''
+            set -euo pipefail
+
+            export EMACS_HEADLESS_ROOT=${self}
+            unset NIX_LD LD_LIBRARY_PATH
+            ${cleanPath}
+
+            workdir="$(mktemp -d)"
+            trap 'chmod -R u+w "$workdir" >/dev/null 2>&1 || true; rm -rf "$workdir" >/dev/null 2>&1 || true' EXIT
+
+            mkdir -p "$workdir/repo"
+            install -m 644 ${self}/среда/про-графическую-среду.el "$workdir/repo/config.el"
+            cd "$workdir/repo"
+
+            "${emacsPkg}/bin/emacs" --batch -Q \
+              --eval '(setq user-emacs-directory (file-name-as-directory (or (getenv "EMACS_HEADLESS_ROOT") default-directory)))' \
+              --eval '(require (quote package))' \
+              --eval '(package-initialize)' \
+              --eval '(dolist (dir (directory-files (getenv "EMACS_HEADLESS_ROOT") t "^[^.].*")) (when (file-directory-p dir) (add-to-list (quote load-path) dir)))' \
+              --eval '(setq byte-compile-error-on-warn nil)' \
+              --eval '(byte-compile-file "config.el")'
+
+            test -f "config.elc"
+            printf 'ok\n' > "$out"
+          '';
         };
     in
     {
       packages = nixpkgs.lib.genAttrs systems (system: (forSystem system).packages);
       apps = nixpkgs.lib.genAttrs systems (system: (forSystem system).apps);
       devShells = nixpkgs.lib.genAttrs systems (system: (forSystem system).devShells);
+      checks = nixpkgs.lib.genAttrs systems (system: (forSystem system).checks);
     };
 }

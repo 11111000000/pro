@@ -16,20 +16,37 @@
   "Загружает FEATURE из FILENAME, как `require', но с аккуратной обработкой ошибок.
 Если возникнет ошибка, её текст будет отображен в сообщении.
 Вернёт FEATURE если всё ок, и nil если файла нет, или другие ошибки возникли."
+  (when (fboundp 'pro/log-startup-stage)
+    (pro/log-startup-stage "require-begin"
+                           (format "%s %s" feature (or filename ""))))
   (condition-case err
       (progn
         (message "%s..." feature)
-        (require feature filename))
+        (prog1 (require feature filename)
+          (when (fboundp 'pro/log-startup-stage)
+            (pro/log-startup-stage "require-end" (format "%s" feature)))))
     (error
-     (message "%s %s: \"%s\"" (propertize "Ошибка загрузки" 'face 'highlight) (if filename (format "%s (%s)" feature filename) feature)
+     (when (fboundp 'pro/log-startup-stage)
+       (pro/log-startup-stage "require-error"
+                              (format "%s: %s" feature (error-message-string err))))
+     (message "%s %s: \"%s\"" (propertize "Ошибка загрузки" 'face 'highlight)
+              (if filename (format "%s (%s)" feature filename) feature)
               (error-message-string err))
      nil)))
 
 (defun pro/load-module (feature)
   "Load FEATURE and continue on error."
   (condition-case err
-      (загрузить feature)
+      (progn
+        (when (fboundp 'pro/log-startup-stage)
+          (pro/log-startup-stage "module-begin" (format "%s" feature)))
+        (prog1 (загрузить feature)
+          (when (fboundp 'pro/log-startup-stage)
+            (pro/log-startup-stage "module-end" (format "%s" feature)))))
     (error
+     (when (fboundp 'pro/log-startup-stage)
+       (pro/log-startup-stage "module-error"
+                              (format "%s: %s" feature (error-message-string err))))
      (message "Модуль %s упал: %s" feature (error-message-string err))
      nil)))
 

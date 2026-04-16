@@ -20,6 +20,8 @@
 (load-file (expand-file-name "~/.emacs.d/feeds.el"))
 
 (require 'загрузить)
+(require 'про-отладку)
+(pro/log-startup-stage "init" "sample-init.el loaded")
 (defvar pro/startup-modules
   '(про-оптимизацию
     ;;(загрузить 'про-отладку)
@@ -61,4 +63,5 @@
   "Список стартовых модулей для e2e запуска.")
 
 (dolist (feature pro/startup-modules)
+  (pro/log-startup-stage "module-begin" (format "%s" feature))
   (pro/load-module feature))

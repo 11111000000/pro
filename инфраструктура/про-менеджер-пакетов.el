@@ -34,6 +34,17 @@
 (require 'subr-x)
 (require 'cus-edit)
 
+(defun pro/package--log (stage &optional detail)
+  "Log package bootstrap stages without changing behavior."
+  (let ((line (if detail
+                  (format "package[%s] %s" stage detail)
+                (format "package[%s]" stage))))
+    (message "%s" line)
+    (when (fboundp 'pro/log-startup-stage)
+      (pro/log-startup-stage (concat "package-" stage) detail))))
+
+(pro/package--log "bootstrap" "package.el loaded")
+
 (when noninteractive
   (defun package--save-selected-packages (&rest _args)
     "Avoid Customize save-time errors during batch runs."
@@ -55,6 +66,8 @@
 
 (package-initialize)
 
+(pro/package--log "bootstrap" "package-initialize done")
+
 (setq package-install-upgrade-built-in t)
 
 (defun pro/package--maybe-install (pkg)
@@ -62,12 +75,18 @@
   (unless (package-installed-p pkg)
     (condition-case err
         (progn
+          (pro/package--log "install-start" (format "%s" pkg))
           (package-refresh-contents)
+          (pro/package--log "refresh-done" (format "%s" pkg))
           (package-install pkg))
       (error
+       (pro/package--log "install-error" (format "%s: %s" pkg (error-message-string err)))
        (message "Package install skipped for %s: %s" pkg (error-message-string err))))))
 
+(pro/package--log "bootstrap" "checking use-package")
 (pro/package--maybe-install 'use-package)
+
+(pro/package--log "bootstrap" "use-package ensured")
 
 (custom-set-variables
  '(use-package-enable-imenu-support t))
