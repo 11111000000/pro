@@ -55,38 +55,49 @@
     ;; Load global key-bindings-table
     (let ((keys-table (org-get-named-table "key-bindings-table")))
       (when keys-table
-        (mapc (lambda (row)
-                (when (consp row)
-                  (cl-destructuring-bind (key func) row
-                    (global-set-key (kbd key) (intern func)))))
-              keys-table)))
+        (dolist (row keys-table)
+          (when (consp row)
+            (cl-destructuring-bind (key func) row
+              (global-set-key (kbd key) (intern func))
+              ;; TTY support: add explicit binding for ESC after C-c
+              (when (string-match-p "^C-c M-" key)
+                (let* ((letter (substring key (length "C-c M-")))
+                       (cmd (intern func)))
+                  ;; Direct binding with explicit ESC key
+                  (define-key global-map (kbd (format "C-c %c%s" ?\e letter)) cmd)
+                  (message "TTY: bound C-c ESC%s -> %s" letter cmd)))))
 
     ;; Load exwm-key-bindings-table (global + EXWM if available)
     (let ((exwm-keys-table (org-get-named-table "exwm-key-bindings-table")))
       (when exwm-keys-table
-        (mapc (lambda (row)
-                (when (consp row)
-                  (cl-destructuring-bind (key func) row
-                    (global-set-key (kbd key) (intern func)))))
-              exwm-keys-table)
+        (dolist (row exwm-keys-table)
+          (when (consp row)
+            (cl-destructuring-bind (key func) row
+              (global-set-key (kbd key) (intern func))
+              ;; TTY support for EXWM bindings too
+              (when (string-match-p "^C-c M-" key)
+                (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
+                  (global-set-key (kbd tty-key) (intern func)))))))
         ;; EXWM-specific bindings if in window-system and function exists
         (when (and window-system (functionp 'exwm-input-set-key))
-          (mapc (lambda (row)
-                  (when (consp row)
-                    (cl-destructuring-bind (key func) row
-                      (exwm-input-set-key (kbd key) (intern func)))))
-                exwm-keys-table))))
+          (dolist (row exwm-keys-table)
+            (when (consp row)
+              (cl-destructuring-bind (key func) row
+                (exwm-input-set-key (kbd key) (intern func))
+                ;; TTY support
+                (when (string-match-p "^C-c M-" key)
+                  (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
+                    (exwm-input-set-key (kbd tty-key) (intern func)))))))))
 
-    ;; Load modes-key-bindings-table (mode-specific)
-    (let ((modes-table (org-get-named-table "modes-key-bindings-table")))
-      (when modes-table
-        (mapc (lambda (row)
-                (when (consp row)
-                  (cl-destructuring-bind (mode key func) row
-                    (let ((mode-map (intern (concat mode "-map"))))
-                      (when (boundp mode-map)
-                        (define-key (symbol-value mode-map) (kbd key) (intern func)))))))
-              modes-table)))))
+      ;; Load modes-key-bindings-table (mode-specific)
+      (let ((modes-table (org-get-named-table "modes-key-bindings-table")))
+        (when modes-table
+          (dolist (row modes-table)
+            (when (consp row)
+              (cl-destructuring-bind (mode key func) row
+                (let ((mode-map (intern (concat mode "-map"))))
+                  (when (boundp mode-map)
+                    (define-key (symbol-value mode-map) (kbd key) (intern func))))))))))))
 
 (defalias 'pro/klavishy-iz-org #'pro/клавиши-из-org)
 
