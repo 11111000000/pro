@@ -32,6 +32,9 @@
   "Настройка и управление конфигурацией мониторов под EXWM."
   :group 'exwm)
 
+(defvar pro/monitor-refresh-delay 0.2
+  "Fallback delay used while custom is initializing.")
+
 (defcustom pro/monitor-refresh-delay 0.2
   "Сколько секунд ждать после вызова xrandr,
 прежде чем отправлять `exwm-randr-refresh`."
@@ -69,18 +72,24 @@
 (defun про-мониторы-инициализировать ()
   "Только установка workspace<->monitor привязки и хук пересборки xrandr.
 exwm-randr-mode и xrandr запускаются вне этой функции!"
-  (require 'exwm-randr)
+  (when (fboundp 'pro/log-startup-stage)
+    (pro/log-startup-stage "monitors" "before monitor init"))
   (setq exwm-randr-workspace-monitor-plist
         (list 0 имя-встроенного-монитора
               1 имя-внешнего-монитора
               2 имя-третьего-монитора))
+  (when (fboundp 'pro/log-startup-stage)
+    (pro/log-startup-stage "monitors" "after plist set"))
   ;; Смена топологии при изменении состава мониторов — дебаунс, чтобы не мигало на старте
-  (add-hook 'exwm-randr-screen-change-hook
-            (lambda ()
-              (when pro/monitor-refresh-timer
-                (cancel-timer pro/monitor-refresh-timer))
-              (setq pro/monitor-refresh-timer
-                    (run-at-time 0.2 nil #'применить-расположение-мониторов)))))
+  (with-eval-after-load 'exwm-randr
+    (add-hook 'exwm-randr-screen-change-hook
+              (lambda ()
+                (when pro/monitor-refresh-timer
+                  (cancel-timer pro/monitor-refresh-timer))
+                (setq pro/monitor-refresh-timer
+                      (run-at-time 0.2 nil #'применить-расположение-мониторов)))))
+  (when (fboundp 'pro/log-startup-stage)
+    (pro/log-startup-stage "monitors" "after monitor init")))
 
 (provide 'про-мониторы)
 ;;; про-мониторы.el ends here
