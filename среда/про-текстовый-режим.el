@@ -80,6 +80,7 @@
   (setq visible-cursor t
         cursor-type 'box
         cursor-in-non-selected-windows 'hollow)
+  (blink-cursor-mode -1)
 
   ;; Цвета терминала: максимальная поддержка палитры
   (setq-default xterm-color-preserve-properties t
@@ -104,8 +105,8 @@
 
   ;; Быстрая перерисовка без потери качества
   (setq fast-but-imprecise-scrolling t
-        redisplay-skip-fontification-on-input nil
-        jit-lock-defer-time nil)
+        redisplay-skip-fontification-on-input t
+        jit-lock-defer-time 0.05)
 
   ;; Отключаем ненужные в TTY функции для экономии ресурсов
   (setq use-file-dialog nil
@@ -118,9 +119,11 @@
   ;;;; 5. Мышь и навигация
   ;; Включаем поддержку мыши в терминале, улучшаем навигацию.
 
-  ;; Поддержка мыши в xterm-совместимых терминалах
-  (unless (and (boundp 'xterm-mouse-mode) xterm-mouse-mode)
-    (xterm-mouse-mode 1))
+  ;; Включение mouse tracking в TTY может провоцировать лишние обновления
+  ;; экрана в некоторых терминалах, поэтому делаем это только по явному
+  ;; запросу пользователя.
+  ;; (unless (and (boundp 'xterm-mouse-mode) xterm-mouse-mode)
+  ;;   (xterm-mouse-mode 1))
 
   ;; Поддержка колёсика мыши
   (setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
@@ -142,10 +145,10 @@
   ;; Пакеты и функции, которые особенно полезны в текстовом режиме.
 
   ;; Усиленная поддержка цветов в терминале
+  ;; xterm-color включается только для comint-буферов; глобальный фильтр
+  ;; здесь не нужен и может добавлять лишние обновления.
   (when (require 'xterm-color nil t)
-    (setq comint-output-filter-functions
-          (remove 'ansi-color-process-output comint-output-filter-functions))
-    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter))
+    (setq xterm-color-preserve-properties t))
 
   ;; Подсказка контекста для навигации без мыши
   (setq which-key-popup-type 'side-window
@@ -159,22 +162,20 @@
 ;; Настройки, полезные как в TTY, так и в GUI режимах.
 
 (when (текстовый-режим-p)
-  ;; Режим подсветки парных скобок
-  (show-paren-mode 1)
-  (setq show-paren-delay 0
-        show-paren-style 'parenthesis)
+  ;; В TTY подсветка пар скобок и номера строк часто вызывают заметную
+  ;; перерисовку на каждом вводе, поэтому по умолчанию не включаем их здесь.
+  (show-paren-mode -1)
 
   ;; Подсветка текущей строки не нужна глобально
   ;;(global-hl-line-mode 1)
 
-  ;; Относительные номера строк (особенно полезны в TTY для навигации)
-  (when (version<= "26.0.50" emacs-version)
-    (global-display-line-numbers-mode)
-    (setq-default display-line-numbers-type 'relative
-                  display-line-numbers-width-start t))
+  ;; Номера строк в TTY отключены по той же причине.
+  (when (fboundp 'display-line-numbers-mode)
+    (global-display-line-numbers-mode -1))
 
-  ;; Показ номера колонки
-  (column-number-mode 1)
+  ;; Номер колонки обновляет mode-line на каждый ввод; в TTY это тоже видно
+  ;; как перерисовка, поэтому отключаем.
+  (column-number-mode -1)
 
   ;; Стандартные настройки табуляции
   (setq-default tab-width 4
@@ -198,13 +199,6 @@
 ;; Автоматические действия для поддержания оптимального состояния TTY.
 
 (when (текстовый-режим-p)
-  ;; Хук для оптимизации после смены буфера
-  (add-hook 'buffer-list-update-hook
-            (lambda ()
-              (when (текстовый-режим-p)
-                ;; Принудительная перерисовка для стабильности
-                (redraw-display))))
-
   ;; Хук для восстановления настроек после suspend/resume
   (add-hook 'suspend-resume-hook
             (lambda ()
@@ -223,7 +217,8 @@
   (interactive)
   (when (текстовый-режим-p)
     (message "Оптимизация TTY режима...")
-    ;; Очистка экрана
+    ;; Очистка экрана делается только вручную, чтобы не провоцировать мерцание
+    ;; при обычных командах вроде `M-x`.
     (redraw-display)
     ;; Сброс мыши
     (xterm-mouse-mode -1)
@@ -242,10 +237,13 @@
                (if xterm-mouse-mode "включена" "выключена"))
     (message "Работаем в графическом режиме")))
 
-;; Удобная клавиша для оптимизации TTY
-(when (текстовый-режим-p)
+  ;; Удобная клавиша для оптимизации TTY
+  (when (текстовый-режим-p)
   (global-set-key (kbd "C-c t o") #'tty-optimize)
   (global-set-key (kbd "C-c t i") #'tty-info))
+
+;; Если это всё ещё моргает, следующий кандидат - `xterm-mouse-mode` или
+;; терминал/эмулятор, а не классические visual-mode включатели.
 
 
 ;;;; 11. Финал

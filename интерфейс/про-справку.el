@@ -95,6 +95,7 @@
 
 (use-package eldoc-box
   :ensure t
+  :if (display-graphic-p)
   :functions (eldoc-box-hover-mode)
   :bind (("M-/" . eldoc-box-help-at-point)) ;; TODO: Перенести в org
   :custom ((eldoc-idle-delay 0.2)
@@ -110,10 +111,14 @@
 (use-package keyfreq
   :defer t
   :ensure t
+  :if (display-graphic-p)
   :functions (keyfreq-mode keyfreq-autosave-mode)
   :config
   (keyfreq-mode t)
   (keyfreq-autosave-mode))
+
+;; В TTY не включаем hover-posframe-стиль подсказок: они часто вызывают
+;; лишнюю перерисовку и визуальный шум при вводе.
 
 
 (provide 'про-справку)

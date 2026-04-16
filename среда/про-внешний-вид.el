@@ -275,19 +275,22 @@
 
                                         ;(add-to-list 'package--builtin-versions '(transient 0 4 3))
 
-(use-package transient-posframe
-  :ensure t
-  :config
-  (transient-posframe-mode t))
+(when (display-graphic-p)
+  (use-package transient-posframe
+    :ensure t
+    :config
+    (transient-posframe-mode t)))
 
 ;; Универсальные визуальные улучшения для всех режимов.
 
-;; Новое: показывать относительные номера строк в буферах с кодом.
-(use-package display-line-numbers
-  :hook (prog-mode . display-line-numbers-mode)
-  :custom
-  (display-line-numbers-type t)
-  (display-line-numbers-width-start t))
+;; Номера строк оставляем только для GUI: в TTY они часто дают лишнюю
+;; перерисовку при каждом вводе.
+(when (display-graphic-p)
+  (use-package display-line-numbers
+    :hook (prog-mode . display-line-numbers-mode)
+    :custom
+    (display-line-numbers-type t)
+    (display-line-numbers-width-start t)))
 
 (when (display-graphic-p)
   ;; Базовая поддержка изображений везде

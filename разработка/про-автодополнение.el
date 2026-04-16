@@ -136,9 +136,10 @@
 ;; Corfu-terminal адаптирует Corfu для не-графических (TTY) сессий,
 ;; используя overlay вместо попапов. Это обеспечивает единый опыт везде.
 
-(use-package corfu-terminal
-  :ensure t
-  :hook (after-init . corfu-terminal-mode))  ; Включаем глобально после init.
+(when (not (display-graphic-p))
+  (use-package corfu-terminal
+    :ensure t
+    :hook (after-init . corfu-terminal-mode)))  ; Включаем только в TTY.
 
 ;; В GUI-сессиях подключаем corfu-posframe, чтобы всплывающее окно
 ;; корректно позиционировалось на текущем мониторе. Child-frames GTK
