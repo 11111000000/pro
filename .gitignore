@@ -9,3 +9,5 @@ zai.conf
 /.agent-shell/
 emacs.log
 .emacs.d-init.el
+emacs-startup.log
+result
