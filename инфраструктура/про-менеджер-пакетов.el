@@ -34,6 +34,7 @@
 (require 'subr-x)
 (require 'cus-edit)
 
+
 (defun pro/package--log (stage &optional detail)
   "Log package bootstrap stages without changing behavior."
   (let ((line (if detail

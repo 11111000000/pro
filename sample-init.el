@@ -44,6 +44,10 @@
 (message "sample-init: requiring про-отладку")
 (require 'про-отладку)
 (pro/log-startup-stage "init" "sample-init.el loaded")
+
+;; Emacs 30.2 needs this prebound before package bootstrap.
+(defvar url-honor-refresh-requests nil)
+
 (defvar pro/startup-modules
   '(про-оптимизацию
     ;;(загрузить 'про-отладку)

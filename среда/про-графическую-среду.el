@@ -90,5 +90,8 @@
 (when (fboundp 'pro/startup-log)
   (pro/startup-log "module" "про-графическую-среду load finished"))
 
+(when (fboundp 'pro/log-startup-stage)
+  (pro/log-startup-stage "exwm-start" "pro-графическую-среду module loaded"))
+
 (provide 'про-графическую-среду)
 ;;; про-графическую-среду.el ends here
