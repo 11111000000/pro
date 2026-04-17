@@ -11,3 +11,4 @@ emacs.log
 .emacs.d-init.el
 emacs-startup.log
 result
+var
