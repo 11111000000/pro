@@ -91,6 +91,14 @@ Proof: -
 
 ---
 
+### Name: TTY.CleanUI
+Stability: [FLUID]
+Spec: В TTY интерфейс остаётся plain-text: без `prettify-symbols`, без `org-modern`, без Unicode ellipsis и без декоративных glyph в Eshell prompt/banner.
+API: `про-tty-clean-ui-setup`, `про-текстовый-режим`, `приглашение-eshell`, `pro/eshell-system-banner-string`
+Proof: `emacs --batch -l тесты/unit/tty-clean-ui.el`
+
+---
+
 ### Name: Org.Roundtrip
 Stability: [FROZEN]
 Spec: Org-mode ↔ Emacs Lisp: конвертация org→el (org-element-parse-buffer) и обратно (org-element-interpret-data) без потери данных.

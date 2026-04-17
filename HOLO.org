@@ -38,6 +38,7 @@ RealityCheck
 - [Fluid] JitLock.Perf: stealth fontification disabled to reduce background timer churn. Exit: `jit-lock-stealth-time nil`.
 - [Fluid] Savehist.Perf: autosave timer for savehist disabled to reduce background timer churn. Exit: `savehist-autosave-interval nil`.
 - [Fluid] Timer.Optimization: background timer-heavy settings are annotated as performance optimizations. Exit: reduced timer churn in config.
+- [Fluid] TTY.CleanUI: TTY uses plain-text UI without decorative symbols; fallback prompt/banner stay readable. Exit: tty modules enforce ASCII fallback and disable prettification.
 
 ## Key Modules (по зависимостям)
 - Инфраструктура: про-менеджер-пакетов, про-оптимизацию, установить-из

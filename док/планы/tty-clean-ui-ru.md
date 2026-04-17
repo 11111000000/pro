@@ -24,8 +24,10 @@
 - В TTY не появляются символы-заглушки и “битые” Unicode-значки.
 - Все иконки и декоративные элементы отключены.
 - GUI продолжает использовать прежний внешний вид.
+- Eshell prompt и banner в TTY используют plain-text fallback.
 
 ## Verify
 
 - `emacs --batch -l tests/e2e/healthcheck.el`
 - Ручная проверка TTY с открытием Org, Lisp и completion-буферов.
+- `emacs --batch -l tests/unit/tty-clean-ui.el`

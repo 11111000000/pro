@@ -391,7 +391,7 @@
 
 (defun приглашение-eshell ()
   "Быстрый и красивый промпт Eshell: иконка+путь+проект+git-ветка+статус."
-  (let* ((icons t)
+  (let* ((icons (display-graphic-p))
          (default-dir (or (and (stringp default-directory) default-directory) ""))
          (project (when (fboundp 'project-root)
                     (ignore-errors
@@ -420,19 +420,19 @@
                        (shell-command-to-string (format "git -C %s status --porcelain" (shell-quote-argument git-root)))))))))
            (exit-code (if (boundp 'eshell-last-command-status)
                           eshell-last-command-status 0)))
-      (concat
-       " " (if icons (all-the-icons-octicon "terminal" :height 1.0) "⎈") " "
+       (concat
+        " " (if icons (all-the-icons-octicon "terminal" :height 1.0) ">") " "
        (when path-car (propertize path-car 'face 'bold))
        (when path-cdr (propertize path-cdr 'face 'default))
        (when project
          (concat
           " "
-          (if icons (all-the-icons-octicon "repo" :height 0.85 :v-adjust 0) "")
+           (if icons (all-the-icons-octicon "repo" :height 0.85 :v-adjust 0) "[repo]")
           " "
           (propertize project 'face 'success)))
        (when (and git-root git-branch)
          (concat " "
-                 (if icons (all-the-icons-octicon "git-branch" :height 0.9 :v-adjust 0) "")
+                  (if icons (all-the-icons-octicon "git-branch" :height 0.9 :v-adjust 0) "[git]")
                  " "
                  (propertize (format "%s" git-branch)
                              'face 'font-lock-type-face)
@@ -441,11 +441,11 @@
        (let ((prompt-color (if (> exit-code 0) "#bb7744" "#44bb44")))
          (set-face-foreground 'eshell-prompt prompt-color)
          (set-face-attribute 'eshell-prompt nil :weight 'bold)
-         (concat
-          "\n"
-          (propertize
-           " ❯ "
-           'face 'eshell-prompt)))))))
+          (concat
+           "\n"
+           (propertize
+            (if icons " ❯ " " > ")
+            'face 'eshell-prompt)))))))
 
 (setq eshell-prompt-function #'приглашение-eshell)
 
@@ -458,10 +458,10 @@
          (os   (capitalize (symbol-name system-type)))
          (emacs-version-string (format "Emacs %s" emacs-version))
          (time (format-time-string "%Y-%m-%d %H:%M:%S"))
-         (line (make-string 58 ?─)))
+          (line (make-string 58 (if (display-graphic-p) ?─ ?-))))
     (concat
      "\n"
-     (format "  👤 %s  ⭐ %s  💻 %s  ⏰ %s\n" user host os time)
+      (format "  user:%s  host:%s  os:%s  time:%s\n" user host os time)
      (format "  %s\n" emacs-version-string)
      "  " line "\n\n")))
 

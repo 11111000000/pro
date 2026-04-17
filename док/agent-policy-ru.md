@@ -17,6 +17,12 @@
 - Для каждого изменения нужен Change Gate.
 - Если затронут `[FROZEN]`, обязателен `Migration Block`.
 
+## TTY
+
+- В TTY агент должен сохранять plain-text UI без лишних символов, иконок и декоративных Unicode-замен.
+- В TTY предпочитай ASCII fallback для промптов, баннеров и model-line, если графические glyph'ы недоступны.
+- В TTY не включай `prettify-symbols`, `org-modern`, Unicode ellipsis и декоративные glyph'ы в prompt/banner.
+
 ## Границы
 
 - Эти правила не распространяются на другие репозитории.

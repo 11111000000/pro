@@ -95,9 +95,10 @@
   :config
   (fira-code-mode-set-font))  ;; Настраиваем шрифт Fira Code для использования
 
-;; Включаем "красивые" символы в тексте
-(when (display-graphic-p)
-  (global-prettify-symbols-mode +1))
+;; Включаем "красивые" символы только в GUI.
+(if (display-graphic-p)
+    (global-prettify-symbols-mode +1)
+  (global-prettify-symbols-mode -1))
 (setq prettify-symbols-unprettify-at-point t)  ;; Возвращаем оригинальный символ при наведении курсора
 
 (provide 'про-шрифты) ;; Экспортируем текущий пакет
