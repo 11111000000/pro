@@ -40,6 +40,35 @@
   "Проверить, работает ли Emacs в текстовом режиме."
   (not (display-graphic-p)))
 
+(defvar про-tty-clean-ui--hook-installed nil
+  "Non-nil when TTY clean-UI hooks were already installed.")
+
+(defun про-tty-clean-ui--disable-symbol-prettification ()
+  "Отключить символическое украшение и декоративные режимы в текущем буфере."
+  (when (bound-and-true-p prettify-symbols-mode)
+    (prettify-symbols-mode -1))
+  (when (bound-and-true-p org-modern-mode)
+    (org-modern-mode -1))
+  (when (derived-mode-p 'org-mode)
+    (setq-local org-ellipsis "..."
+                org-pretty-entities nil
+                prettify-symbols-alist nil))
+  (when (fboundp 'display-line-numbers-mode)
+    (display-line-numbers-mode -1)))
+
+(defun про-tty-clean-ui-setup ()
+  "Привести TTY к plain-text виду без лишних символов."
+  (when (текстовый-режим-p)
+    (setq-default org-ellipsis "..."
+                  org-pretty-entities nil)
+    (unless про-tty-clean-ui--hook-installed
+      (setq про-tty-clean-ui--hook-installed t)
+      (add-hook 'after-change-major-mode-hook
+                #'про-tty-clean-ui--disable-symbol-prettification))
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (про-tty-clean-ui--disable-symbol-prettification)))))
+
 (when (текстовый-режим-p)
 
   ;;;; 2. Клавиатурные настройки
@@ -156,12 +185,15 @@
 
   ;; Улучшенная поддержка буфера *scratch* в TTY
   (setq initial-scratch-message
-        ";; TTY режим активен. Caps Lock работает как Ctrl.\n;; Доступна поддержка мыши и 256 цветов.\n\n"))
+        ";; TTY режим активен. Caps Lock работает как Ctrl.\n;; Plain-text UI включён.\n\n"))
 
 ;;;; 8. Универсальные улучшения
 ;; Настройки, полезные как в TTY, так и в GUI режимах.
 
 (when (текстовый-режим-p)
+  (про-tty-clean-ui-setup)
+  (add-hook 'after-init-hook #'про-tty-clean-ui-setup)
+
   ;; В TTY подсветка пар скобок и номера строк часто вызывают заметную
   ;; перерисовку на каждом вводе, поэтому по умолчанию не включаем их здесь.
   (show-paren-mode -1)
@@ -181,7 +213,7 @@
   (setq-default tab-width 4
                 indent-tabs-mode nil)
 
-  ;; Альтернативы fringes в TTY - используем символы
+  ;; Альтернативы fringes в TTY - используем простую текстовую индикацию.
   (setq-default indicate-buffer-boundaries 'left
                 indicate-empty-lines t)
 

@@ -83,9 +83,17 @@
                   (pro/exwm-import-display-env)
                   (pro/exwm-log-systemtray-state "init-hook-before")
                   (pro/exwm-configure-systemtray)
-                  (pro/exwm-enable-systemtray)
-                  (pro/exwm-log-systemtray-state "init-hook-after")
-                  (pro/exwm-rename-all-buffers))))))
+                   (pro/exwm-enable-systemtray)
+                   (pro/exwm-log-systemtray-state "init-hook-after")
+                   (pro/exwm-rename-all-buffers))))))
+
+(defun pro/старт-графической-среды-авто (&optional frame)
+  "Автоматически стартовать EXWM в графическом FRAME."
+  (when (or (null frame) (display-graphic-p frame))
+    (pro/старт-графической-среды)))
+
+(add-hook 'after-init-hook #'pro/старт-графической-среды-авто)
+(add-hook 'after-make-frame-functions #'pro/старт-графической-среды-авто)
 
 (when (fboundp 'pro/startup-log)
   (pro/startup-log "module" "про-графическую-среду load finished"))

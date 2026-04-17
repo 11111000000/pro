@@ -259,8 +259,11 @@
    org-special-ctrl-a/e t
    org-insert-heading-respect-content t
    org-hide-emphasis-markers t
-   org-pretty-entities t
-   org-ellipsis "…"))
+   org-pretty-entities (display-graphic-p)
+   org-ellipsis (if (display-graphic-p) "…" "...")))
+
+(unless (display-graphic-p)
+  (setq org-hide-emphasis-markers nil))
 
 ;;;; Org Capture и шаблоны
 

@@ -29,8 +29,12 @@
 ;; Использование: (pro/клавиши-из-org "~/path/to/keys.org")
 ;;
 ;;; Code:
-(require 'cl-lib)
-(require 'exwm nil t)  ;; Загружать только если EXWM доступен
+(condition-case err
+    (progn
+      (require 'cl-lib)
+      (require 'exwm nil t))
+  (error
+   (message "Ошибка require в про-клавиши-из-org: %s" err)))
 
 (defun org-get-named-table (name)
   "Extract a named Org table as Lisp list from current buffer."
@@ -67,37 +71,37 @@
                   (define-key global-map (kbd (format "C-c %c%s" ?\e letter)) cmd)
                   (message "TTY: bound C-c ESC%s -> %s" letter cmd)))))
 
-    ;; Load exwm-key-bindings-table (global + EXWM if available)
-    (let ((exwm-keys-table (org-get-named-table "exwm-key-bindings-table")))
-      (when exwm-keys-table
-        (dolist (row exwm-keys-table)
-          (when (consp row)
-            (cl-destructuring-bind (key func) row
-              (global-set-key (kbd key) (intern func))
-              ;; TTY support for EXWM bindings too
-              (when (string-match-p "^C-c M-" key)
-                (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
-                  (global-set-key (kbd tty-key) (intern func)))))))
-        ;; EXWM-specific bindings if in window-system and function exists
-        (when (and window-system (functionp 'exwm-input-set-key))
-          (dolist (row exwm-keys-table)
-            (when (consp row)
-              (cl-destructuring-bind (key func) row
-                (exwm-input-set-key (kbd key) (intern func))
-                ;; TTY support
-                (when (string-match-p "^C-c M-" key)
-                  (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
-                    (exwm-input-set-key (kbd tty-key) (intern func)))))))))
+          ;; Load exwm-key-bindings-table (global + EXWM if available)
+          (let ((exwm-keys-table (org-get-named-table "exwm-key-bindings-table")))
+            (when exwm-keys-table
+              (dolist (row exwm-keys-table)
+                (when (consp row)
+                  (cl-destructuring-bind (key func) row
+                    (global-set-key (kbd key) (intern func))
+                    ;; TTY support for EXWM bindings too
+                    (when (string-match-p "^C-c M-" key)
+                      (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
+                        (global-set-key (kbd tty-key) (intern func)))))))
+              ;; EXWM-specific bindings if in window-system and function exists
+              (when (and window-system (functionp 'exwm-input-set-key))
+                (dolist (row exwm-keys-table)
+                  (when (consp row)
+                    (cl-destructuring-bind (key func) row
+                      (exwm-input-set-key (kbd key) (intern func))
+                      ;; TTY support
+                      (when (string-match-p "^C-c M-" key)
+                        (let ((tty-key (replace-regexp-in-string "M-" "ESC" key)))
+                          (exwm-input-set-key (kbd tty-key) (intern func)))))))))
 
-      ;; Load modes-key-bindings-table (mode-specific)
-      (let ((modes-table (org-get-named-table "modes-key-bindings-table")))
-        (when modes-table
-          (dolist (row modes-table)
-            (when (consp row)
-              (cl-destructuring-bind (mode key func) row
-                (let ((mode-map (intern (concat mode "-map"))))
-                  (when (boundp mode-map)
-                    (define-key (symbol-value mode-map) (kbd key) (intern func))))))))))))
+            ;; Load modes-key-bindings-table (mode-specific)
+            (let ((modes-table (org-get-named-table "modes-key-bindings-table")))
+              (when modes-table
+                (dolist (row modes-table)
+                  (when (consp row)
+                    (cl-destructuring-bind (mode key func) row
+                      (let ((mode-map (intern (concat mode "-map"))))
+                        (when (boundp mode-map)
+                          (define-key (symbol-value mode-map) (kbd key) (intern func)))))))))))))))
 
 (defalias 'pro/klavishy-iz-org #'pro/клавиши-из-org)
 
@@ -121,6 +125,9 @@
 
 
 ;; Автоматически загрузить клавиши при загрузке модуля
-(pro/автозагрузка-клавиш)
+(condition-case err
+    (pro/автозагрузка-клавиш)
+  (error
+   (message "Ошибка загрузки клавиш: %s" err)))
 
 (provide 'про-клавиши-из-org)
